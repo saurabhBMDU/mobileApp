@@ -130,9 +130,14 @@ export const getJwt = async () => {
 };
 
 
-
 export const deleteJwt = async () => {
-  // let response= await axios.post("https://api.fever99.com/api/logout")
-  await AsyncStorage.removeItem(AUTH_TOKEN);
+  let response= await axios.post(`${url}/logout`);
+  console.log(response.status==200);
+  if(response.status==200){
+    await AsyncStorage.removeItem(AUTH_TOKEN);
+  }
+  else{
+    toastError("Logout Fail")
+  }
   return true;
 };

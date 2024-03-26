@@ -43,13 +43,23 @@ const ForgotPassword = () => {
     }
     return (
         <View style={{ width: width, alignItems: 'center', justifyContent: 'center', height: height }}>
-            <ImageBackground source={require('../../assets/images/background_img.png')} resizeMode='contain' style={{ height: height, width: width, backgroundColor: "#1263AC" }} >
-                <View style={{ backgroundColor: 'rgba(0,0,0,.65)', height: height, width: width, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontSize: hp(3), color: 'white', alignSelf: 'center', fontFamily: mainFont, marginBottom: 30 }}>Forgot Password</Text>
+            <ImageBackground 
+            // source={require('../../assets/images/background_img.png')} 
+            // resizeMode='contain' 
+            // style={{ height: height, width: width, backgroundColor: "#1263AC" }} 
+            
+            source={require('../../assets/images/Logo.png')}
+            resizeMode='contain'
+            style={{ width: wp(70), height: hp(20), marginTop: hp(2), alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}
+            >
+            </ImageBackground>
+
+            <View style={{ backgroundColor: '#eee', height: height-200, width: width, justifyContent: 'center', alignItems: 'center', }}>
+                    <Text style={{ fontSize: hp(3), color: '#1263AC',fontWeight:'bold', alignSelf: 'center', fontFamily: mainFont, marginBottom: 30 }}>Forgot Password</Text>
                     <View style={{ width: wp(90), alignSelf: 'center' }}>
 
                         {/* Email section >>>>>>>>>>>>>>>>>>>>>*/}
-                        <Text style={{ color: 'white' }}>Mobile Number</Text>
+                        <Text style={{ color: '#1263AC' }}>Mobile Number</Text>
                         <View style={{ width: '100%', height: hp(5.5), backgroundColor: '#E8E8E8', marginTop: hp(1), borderRadius: 5, alignItems: 'center', paddingLeft: wp(4), flexDirection: 'row' }}>
                             {/* <Image source={require('../../assets/images/Mail.png')}
                                 style={{ height: wp(5.5), width: wp(5.5), resizeMode: 'contain', tintColor: 'grey' }} /> */}
@@ -69,7 +79,6 @@ const ForgotPassword = () => {
 
                     </View>
                 </View>
-            </ImageBackground>
         </View>
     )
 }

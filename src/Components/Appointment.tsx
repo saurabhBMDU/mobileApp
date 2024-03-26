@@ -437,7 +437,7 @@ const Appointment = () => {
                         }
 
                         // Display original date if within 4 days or greater than 4 days
-                        if (Math.abs(gapInDays) < -4 || gapInDays > 4) {
+                        if (Math.abs(gapInDays) < -3 || gapInDays > 3) {
                             dateText = moment(item?.dateTime).format("DD-MM-YYYY");
                         }
 

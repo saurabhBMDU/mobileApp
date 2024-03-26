@@ -31,6 +31,7 @@ import BottamTab from '../TabNavigators/BottamTab';
 import { useLinkTo } from '@react-navigation/native';
 import ForgotPassword from '../Components/ForgotPassword';
 import PaymentFail from '../paymentScreen/PaymentFail';
+import Abouts_dr from '../Components/dr_full_detail/Abouts_dr';
 
 const Stack = createNativeStackNavigator();
 
@@ -84,6 +85,7 @@ export default function Root() {
             <Stack.Screen name='AppointHistory' component={Appointment_History} />
             <Stack.Screen name='Chat' component={Chat} />
             <Stack.Screen name='BookAppt' component={Book_Appointment} />
+            <Stack.Screen name='About Doctor' component={Abouts_dr} />
             <Stack.Screen name='BookVdo' component={BookVideo} />
             <Stack.Screen name='BookClient' component={BookClient} />
             <Stack.Screen name='EditiProfile' component={EditProfile} />
