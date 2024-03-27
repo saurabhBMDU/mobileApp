@@ -122,8 +122,8 @@ const Profile = () => {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 80, width: wp(95), alignSelf: 'center' }}>
         <View style={{ width: wp(95), marginTop: hp(3), flexDirection: 'row' }}>
           <View style={{ position: "relative" }}>
-            <Image source={(userObj?.image && userObj?.image != "" && userObj?.image.includes("file")) ? { uri: generateFilePath(userObj?.image) } : require('../../assets/images/user_frame.png')}
-              style={{ height: wp(20), width: wp(20), resizeMode: 'contain', borderRadius: wp(40) }} />
+            <Image source={(userObj?.image && userObj?.image != "" && userObj?.image.includes("file")) ? { uri: generateFilePath(userObj?.image) } : require('../../assets/images/profile.png')}
+              style={{ height: wp(20), width: wp(20), resizeMode: 'center', borderRadius: wp(40),backgroundColor:"#eee" }} />
             {
               userObj.role == Roles.DOCTOR &&
               <View style={{ position: "absolute", top: 5, right: 5, backgroundColor: userObj?.userStatus == "online" ? "green" : "red", height: 10, width: 10, borderRadius: 10 }}></View>
@@ -165,19 +165,18 @@ const Profile = () => {
 
           </View>
         </View>
+        
 
         <View style={{ width: wp(95), marginTop: hp(7) }}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Settings')}
+        <TouchableOpacity
+            onPress={() => navigation.navigate('EditiProfile')}
             style={styles.clickbleLines}>
             <View style={{ flexDirection: 'row', height: wp(8), alignItems: 'center' }}>
-              <Setting_Sharealt name='setting' style={styles.allIconsStyle} />
-              <Text style={{ fontSize: hp(1.8), color: '#4A4D64', fontFamily: mainFont, marginLeft: wp(2) }}> Setting</Text>
+              <Edit_Phone_icons name='edit' style={styles.allIconsStyle} />
+              <Text style={{ fontSize: hp(1.8), color: '#4A4D64', fontFamily: mainFont, marginLeft: wp(2) }}> Edit Profile</Text>
             </View>
             <Right_Icons name='right' style={{ fontSize: hp(3.1) }} />
           </TouchableOpacity>
-
-
           <TouchableOpacity
             onPress={() => navigation.navigate('Appointment')}
             style={styles.clickbleLines}>
@@ -187,6 +186,34 @@ const Profile = () => {
             </View>
             <Right_Icons name='right' style={{ fontSize: hp(3.1) }} />
 
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate('ContactUs')}
+            style={styles.clickbleLines}>
+            <View style={{ flexDirection: 'row', height: wp(8), alignItems: 'center' }}>
+              <Contacts name='contacts' style={styles.allIconsStyle} />
+              <Text style={{ fontSize: hp(1.8), color: '#4A4D64', fontFamily: mainFont, marginLeft: wp(2) }}>Contact Us</Text>
+            </View>
+            <Right_Icons name='right' style={{ fontSize: hp(3.1) }} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.clickbleLines}
+            onPress={() => shareContent()}>
+            <View style={{ flexDirection: 'row', height: wp(8), alignItems: 'center' }}>
+              <Setting_Sharealt name='sharealt' style={styles.allIconsStyle} />
+              <Text style={{ fontSize: hp(1.8), color: '#4A4D64', fontFamily: mainFont, marginLeft: wp(2) }}>Share App</Text>
+            </View>
+            <Right_Icons name='right' style={{ fontSize: hp(3.1) }} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Settings')}
+            style={styles.clickbleLines}>
+            <View style={{ flexDirection: 'row', height: wp(8), alignItems: 'center' }}>
+              <Setting_Sharealt name='setting' style={styles.allIconsStyle} />
+              <Text style={{ fontSize: hp(1.8), color: '#4A4D64', fontFamily: mainFont, marginLeft: wp(2) }}> Setting</Text>
+            </View>
+            <Right_Icons name='right' style={{ fontSize: hp(3.1) }} />
           </TouchableOpacity>
 
           {
@@ -227,26 +254,7 @@ const Profile = () => {
             </>
 
           }
-
-          <TouchableOpacity
-            onPress={() => navigation.navigate('EditiProfile')}
-            style={styles.clickbleLines}>
-            <View style={{ flexDirection: 'row', height: wp(8), alignItems: 'center' }}>
-              <Edit_Phone_icons name='edit' style={styles.allIconsStyle} />
-              <Text style={{ fontSize: hp(1.8), color: '#4A4D64', fontFamily: mainFont, marginLeft: wp(2) }}> Edit Profile</Text>
-            </View>
-            <Right_Icons name='right' style={{ fontSize: hp(3.1) }} />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => navigation.navigate('ContactUs')}
-            style={styles.clickbleLines}>
-            <View style={{ flexDirection: 'row', height: wp(8), alignItems: 'center' }}>
-              <Contacts name='contacts' style={styles.allIconsStyle} />
-              <Text style={{ fontSize: hp(1.8), color: '#4A4D64', fontFamily: mainFont, marginLeft: wp(2) }}>Contact Us</Text>
-            </View>
-            <Right_Icons name='right' style={{ fontSize: hp(3.1) }} />
-          </TouchableOpacity>
+          
 
           <TouchableOpacity
             onPress={() => navigation.navigate('TAC')}
@@ -281,15 +289,7 @@ const Profile = () => {
             <Right_Icons name='right' style={{ fontSize: hp(3.1) }} />
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.clickbleLines}
-            onPress={() => shareContent()}>
-            <View style={{ flexDirection: 'row', height: wp(8), alignItems: 'center' }}>
-              <Setting_Sharealt name='sharealt' style={styles.allIconsStyle} />
-              <Text style={{ fontSize: hp(1.8), color: '#4A4D64', fontFamily: mainFont, marginLeft: wp(2) }}>Share App</Text>
-            </View>
-            <Right_Icons name='right' style={{ fontSize: hp(3.1) }} />
-          </TouchableOpacity>
+          
 
           <TouchableOpacity
             onPress={() => setBookmodal(true)}

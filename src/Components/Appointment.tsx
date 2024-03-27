@@ -70,12 +70,11 @@ const Appointment = () => {
     const [fromDate, setFromDate] = useState("");
     const [toDate, settoDate] = useState("");
 
-    // animation css code 
     const [animation] = useState(new Animated.Value(1));
 
     useEffect(() => {
         startAnimation();
-    }, []); // Run the animation on component mount
+    }, []);
 
     const startAnimation = () => {
         Animated.loop(
@@ -134,12 +133,10 @@ const Appointment = () => {
             if (toDate && toDate !== "") {
                 queryString = `${queryString}&toDate=${toDate}`;
             }
-            // console.log("query");
 
             let { data: res } = await getAppointments(queryString);
 
             if (res.data) {
-                // Check if the new data is different from the existing data
                 if (!isEqual(res.data, appointmentsArr)) {
                     setAppointmentsArr([...res.data]);
                 }
@@ -432,7 +429,7 @@ const Appointment = () => {
                                 dateText = 'Tomorrow';
                                 break;
                             default:
-                                dateText = gapInDays > 0 ? `After ${gapInDays-1} days at` : `${Math.abs(gapInDays)} days ago at`;
+                                dateText = gapInDays > 0 ? `After ${gapInDays - 1} days at` : `${Math.abs(gapInDays)} days ago at`;
                                 break;
                         }
 
@@ -529,7 +526,7 @@ const Appointment = () => {
                                                 <Calendar_icons name='calendar-day' style={styles.iconsStyls} />
                                                 <Text> Request Date:</Text>
                                             </View>
-                                            <Text style={{  color: dateText == 'Today' ? "Green" : "gray", fontFamily: dateText == 'Today' ? "mainFontBold" : "mainFont" }}>{dateText} ({item?.selectedTimeSlot})</Text>
+                                            <Text style={{ color: dateText == 'Today' ? "Green" : "gray", fontFamily: dateText == 'Today' ? "mainFontBold" : "mainFont" }}>{dateText} ({item?.selectedTimeSlot})</Text>
                                         </View>
                                         <View style={[styles.common_displayFlex, { justifyContent: "space-between" }]}>
                                             <View style={[styles.common_displayFlex, { width: wp(40) }]}>
@@ -571,7 +568,7 @@ const Appointment = () => {
                                             </TouchableOpacity>
                                         }
                                         {
-                                            userObj?.role == Roles.PATIENT && item.status === appointmentStatus.COMPLETED && item.mode == consultationMode.ONLINE &&
+                                            userObj?.role == Roles.PATIENT && item.status === "prescription-ready" && item.mode == consultationMode.ONLINE &&
                                             <TouchableOpacity onPress={() => handleDownloadPrescription(item._id)} style={{ flex: 1, minWidth: wp(41), marginRight: 10, marginTop: 15, height: hp(5), backgroundColor: '#50B148', borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}>
                                                 <Text style={{ color: 'white', fontFamily: mainFont, fontSize: hp(1.8) }}>Downloade Prescription</Text>
                                             </TouchableOpacity>

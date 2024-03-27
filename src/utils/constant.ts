@@ -15,7 +15,8 @@ export const appointmentStatus  = {
     COMPLETED:"completed",
     CONFIRMED:"confirmed",
     FOLLOWUP:"Follow-up",
-    REJECTED:"rejected"
+    REJECTED:"rejected",
+    REDY:"Prescription-Ready"
 }
 
 export const consultationMode  = {

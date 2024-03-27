@@ -135,28 +135,33 @@ const Register = () => {
         // source={require('../../../assets/images/background_img.png')}
         // resizeMode='contain'
         // style={{ height: height, width: width, backgroundColor: "#1263AC" }}
-        source={require('../../../assets/images/Logo.png')}
-        resizeMode="contain"
-        style={{
-          width: wp(70),
-          height: hp(20),
-          marginTop: hp(2),
-          alignItems: 'center',
-          justifyContent: 'center',
-          alignSelf: 'center',
-        }}></ImageBackground>
+        source={require('../../../assets/images/LoginPageNew.png')}
+        resizeMode="cover"
+        // style={{
+          // width: wp(70),
+          // height: hp(20),
+          // marginTop: hp(2),
+          // alignItems: 'center',
+          // justifyContent: 'center',
+          // alignSelf: 'center',
+        // }}
+        style={{ flex: 1, width: width, backgroundColor: "#1263AC" }}
+        >
 
       <KeyboardAvoidingView
         behavior={'padding'}
         keyboardVerticalOffset={Platform.OS == 'ios' ? 100 : 50}
-        style={{flex: 1, backgroundColor: '#eee'}}>
+        style={{flex: 1,}}>
         <View
           style={{
-            backgroundColor: '#eee',
-            height: height,
-            width: width,
-            justifyContent: 'center',
-            alignItems: 'center',
+            // backgroundColor: '#eee',
+            // height: height,
+            // width: width,
+            // justifyContent: 'center',
+            // alignItems: 'center',
+            flex:1,
+            justifyContent:'center',
+            marginTop:200,
           }}>
           <Text
             style={{
@@ -379,6 +384,7 @@ const Register = () => {
           </View>
         </View>
       </KeyboardAvoidingView>
+      </ImageBackground>
     </ScrollView>
   );
 };

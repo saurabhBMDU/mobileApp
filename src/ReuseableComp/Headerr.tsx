@@ -86,8 +86,8 @@ const Headerr = (props: any) => {
                 <View style={{ width: width, flexDirection: 'row', paddingLeft: wp(2), paddingRight: wp(3), alignItems: 'center', height: hp(10), justifyContent: 'space-between' }}>
                     <View style={{ flexDirection: 'row', }}>
                         <Pressable onPress={() => navigation.navigate("Profile")}>
-                            <Image source={userData.image ? { uri: generateFilePath(userData.image) } : require('../../assets/images/user_frame.png')}
-                                style={{ height: wp(15), width: wp(15), resizeMode: 'contain', borderRadius: wp(30) }} />
+                            <Image source={userData.image ? { uri: generateFilePath(userData.image) } : require('../../assets/images/profile.png')}
+                                style={{ height: wp(15), width: wp(15),  resizeMode: 'center', borderRadius: wp(30),backgroundColor:"#eee" }} />
                         </Pressable>
                         <View style={{ marginLeft: wp(2), height: wp(15), justifyContent: 'flex-end', flexDirection: "column", paddingBottom: 5 }}>
                             <Text style={{ color: 'white', fontSize: hp(1.8), fontFamily: mainFont }}>{greeting}</Text>
