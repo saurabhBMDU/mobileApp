@@ -65,8 +65,9 @@ const ForgotPassword = () => {
         // style={{ height: height, width: width, backgroundColor: "#1263AC" }}
 
         source={require('../../assets/images/LoginPageNew.png')}
-        resizeMode="cover"
-        style={{flex: 1, width: width, backgroundColor: '#1263AC'}}
+        resizeMode="stretch"
+        style={{ flex: 1, width: wp(100), height: hp(100), alignItems: 'center', justifyContent: 'center' }}
+        // style={{flex: 1, width: width, backgroundColor: '#1263AC'}}
         // style={{ width: wp(70), height: hp(20), marginTop: hp(2), alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}
       >
         <View

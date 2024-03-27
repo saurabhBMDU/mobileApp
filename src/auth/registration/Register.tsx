@@ -129,115 +129,262 @@ const Register = () => {
         width: width,
         alignItems: 'center',
         justifyContent: 'center',
-        minHeight: height,
+        // maxHeight: height,
+        backgroundColor:'white',
+        height:1100,
       }}>
       <ImageBackground
         // source={require('../../../assets/images/background_img.png')}
         // resizeMode='contain'
         // style={{ height: height, width: width, backgroundColor: "#1263AC" }}
-        source={require('../../../assets/images/LoginPageNew.png')}
-        resizeMode="cover"
+        source={require('../../../assets/images/final.png')}
+        resizeMode="stretch"
         // style={{
-          // width: wp(70),
-          // height: hp(20),
-          // marginTop: hp(2),
-          // alignItems: 'center',
-          // justifyContent: 'center',
-          // alignSelf: 'center',
+        // width: wp(70),
+        // height: hp(20),
+        // marginTop: hp(2),
+        // alignItems: 'center',
+        // justifyContent: 'center',
+        // alignSelf: 'center',
         // }}
-        style={{ flex: 1, width: width, backgroundColor: "#1263AC" }}
-        >
-
-      <KeyboardAvoidingView
-        behavior={'padding'}
-        keyboardVerticalOffset={Platform.OS == 'ios' ? 100 : 50}
-        style={{flex: 1,}}>
-        <View
+        // style={{ flex: 1, width: width, backgroundColor: "#1263AC" }}
+        style={{
+          flex: 1,
+          width: wp(100),
+          height: hp(100),
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <KeyboardAvoidingView
+          behavior={'padding'}
+          keyboardVerticalOffset={Platform.OS == 'ios' ? 100 : 50}
           style={{
-            // backgroundColor: '#eee',
-            // height: height,
-            // width: width,
-            // justifyContent: 'center',
-            // alignItems: 'center',
-            flex:1,
-            justifyContent:'center',
-            marginTop:200,
-          }}>
-          <Text
-            style={{
-              fontSize: hp(3),
-              color: '#1263AC',
-              alignSelf: 'center',
-              marginTop: hp(7),
-              fontFamily: mainFont,
-              fontWeight: 'bold',
+            flex: 1,
+            marginBottom:100,
             }}>
-            Register
-          </Text>
           <View
             style={{
-              width: wp(95),
-              alignSelf: 'center',
-              marginTop: hp(2),
-              backgroundColor: 'rgba(255,255,255,0.1)',
-              paddingHorizontal: 20,
-              borderRadius: 10,
-              paddingBottom: 10,
+              // backgroundColor: '#eee',
+              // height: height,
+              // width: width,
+              // justifyContent: 'center',
+              // alignItems: 'center',
+              flex: 1,
+              justifyContent: 'center',
+              marginTop:400,
             }}>
-            {/* Email section >>>>>>>>>>>>>>>>>>>>>*/}
-            <Text style={styles.common_Text_Styl}>Name</Text>
-            <View style={styles.input_fild_parent_View}>
-              <TextInput
-                placeholder="Enter Name"
-                placeholderTextColor="gray"
-                onChangeText={e => setName(e)}
-                value={name}
-                style={styles.all_input_BOx_ctyl}
-              />
-            </View>
-            <Text style={styles.common_Text_Styl}>Email</Text>
-            <View style={styles.input_fild_parent_View}>
-              <TextInput
-                placeholder="Enter Email Address"
-                placeholderTextColor="gray"
-                onChangeText={e => setEmail(e)}
-                value={email}
-                style={styles.all_input_BOx_ctyl}
-              />
-            </View>
-            <Text style={styles.common_Text_Styl}>Mobile number</Text>
-
-            {/* <View > */}
+            <Text
+              style={{
+                fontSize: hp(3),
+                color: '#1263AC',
+                alignSelf: 'center',
+                marginTop: hp(6),
+                fontFamily: mainFont,
+                fontWeight: 'bold',
+              }}>
+              Register
+            </Text>
             <View
               style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
+                width: wp(95),
+                alignSelf: 'center',
+                // marginTop: hp(2),
+                backgroundColor: 'rgba(255,255,255,0.1)',
+                paddingHorizontal: 20,
+                borderRadius: 10,
+                paddingBottom: 10,
               }}>
-              <TextInput
-                placeholder="Enter Mobile Number"
-                placeholderTextColor="gray"
-                keyboardType={'number-pad'}
-                maxLength={10}
-                onChangeText={e => setMobile(e)}
-                value={mobile}
+              {/* Email section >>>>>>>>>>>>>>>>>>>>>*/}
+              <Text style={styles.common_Text_Styl}>Name</Text>
+              <View style={styles.input_fild_parent_View}>
+                <TextInput
+                  placeholder="Enter Name"
+                  placeholderTextColor="gray"
+                  onChangeText={e => setName(e)}
+                  value={name}
+                  style={styles.all_input_BOx_ctyl}
+                />
+              </View>
+              <Text style={styles.common_Text_Styl}>Email</Text>
+              <View style={styles.input_fild_parent_View}>
+                <TextInput
+                  placeholder="Enter Email Address"
+                  placeholderTextColor="gray"
+                  onChangeText={e => setEmail(e)}
+                  value={email}
+                  style={styles.all_input_BOx_ctyl}
+                />
+              </View>
+              <Text style={styles.common_Text_Styl}>Mobile number</Text>
+
+              {/* <View > */}
+              <View
                 style={{
-                  flex: 1,
-                  height: hp(5.5),
-                  backgroundColor: '#E8E8E8',
-                  borderRadius: 5,
-                  alignItems: 'center',
-                  paddingLeft: wp(4),
+                  display: 'flex',
                   flexDirection: 'row',
-                }}
-              />
-              <TouchableOpacity
-                onPress={() => handleSendOtp()}
+                  alignItems: 'center',
+                }}>
+                <TextInput
+                  placeholder="Enter Mobile Number"
+                  placeholderTextColor="gray"
+                  keyboardType={'number-pad'}
+                  maxLength={10}
+                  onChangeText={e => setMobile(e)}
+                  value={mobile}
+                  style={{
+                    flex: 1,
+                    height: hp(5.5),
+                    backgroundColor: '#E8E8E8',
+                    borderRadius: 5,
+                    alignItems: 'center',
+                    paddingLeft: wp(4),
+                    flexDirection: 'row',
+                  }}
+                />
+                <TouchableOpacity
+                  onPress={() => handleSendOtp()}
+                  style={{
+                    width: wp(25),
+                    height: hp(5),
+                    backgroundColor: '#1263AC',
+                    marginLeft: 10,
+                    borderRadius: 5,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontFamily: 'AvenirNextLTPro-Regular',
+                    }}>
+                    {showOtpInput == false ? 'Resend OTP' : 'Request OTP'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              {!showOtpInput && (
+                <>
+                  <Text style={styles.common_Text_Styl}>OTP</Text>
+                  <View style={styles.input_fild_parent_View}>
+                    <TextInput
+                      placeholder="Enter OTP"
+                      placeholderTextColor="gray"
+                      onChangeText={e => setOtp(e)}
+                      value={otp}
+                      style={styles.all_input_BOx_ctyl}
+                    />
+                  </View>
+                </>
+              )}
+              <Text style={styles.common_Text_Styl}>Gender</Text>
+              <View style={{width: '100%'}}>
+                <Dropdown
+                  style={[styles.dropdown, {width: '100%'}]}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  data={[
+                    {label: 'Male', value: 'Male'},
+                    {label: 'Female', value: 'Female'},
+                    {label: 'Others', value: 'Others'},
+                  ]}
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder="Select Gender"
+                  value={gender}
+                  onChange={(item: any) => {
+                    setGender(item.value);
+                  }}
+                />
+              </View>
+              <Text style={styles.common_Text_Styl}>Password</Text>
+              <View style={styles.input_fild_parent_View}>
+                <TextInput
+                  placeholder="Enter Password"
+                  placeholderTextColor="gray"
+                  secureTextEntry
+                  onChangeText={e => setPassword(e)}
+                  value={password}
+                  style={styles.all_input_BOx_ctyl}
+                />
+              </View>
+              <Text style={styles.common_Text_Styl}>Confirm password</Text>
+              <View style={styles.input_fild_parent_View}>
+                <TextInput
+                  placeholder="Enter Confirm Password"
+                  placeholderTextColor="gray"
+                  onChangeText={e => setRePassword(e)}
+                  value={rePassword}
+                  secureTextEntry
+                  style={styles.all_input_BOx_ctyl}
+                />
+              </View>
+              <View
                 style={{
-                  width: wp(25),
-                  height: hp(6),
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  marginVertical: 20,
+                }}>
+                <Pressable
+                  onPress={() => setIsAggreed(prev => !prev)}
+                  style={{
+                    padding: 2,
+                    borderRadius: 5,
+                    backgroundColor: 'white',
+                    marginRight: 5,
+                  }}>
+                  <View
+                    style={{
+                      height: 15,
+                      width: 15,
+                      borderRadius: 5,
+                      backgroundColor: isAggreed ? 'black' : 'white',
+                      borderWidth:1,
+                    }}></View>
+                </Pressable>
+                <Text
+                  style={{
+                    color: '#1263AC',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontFamily: 'AvenirNextLTPro-Regular',
+                  }}>
+                  I accept Fever99
+                </Text>
+                <Pressable onPress={() => navigation.navigate('PAC')}>
+                  <Text style={{color: '#1263AC', fontWeight: '800'}}>
+                    {' '}
+                    Privacy Policy{' '}
+                  </Text>
+                </Pressable>
+                <Text
+                  style={{
+                    color: '#1263AC',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontFamily: 'AvenirNextLTPro-Regular',
+                  }}>
+                  and
+                </Text>
+                <Pressable
+                  style={{marginLeft: 5}}
+                  onPress={() => navigation.navigate('TAC')}>
+                  <Text style={{color: '#1263AC', fontWeight: '800'}}>
+                    T&C{' '}
+                  </Text>
+                </Pressable>
+              </View>
+
+              {/* Button section >>>>>>>>>>>>>>>>>> */}
+              <TouchableOpacity
+                onPress={() => handleRegister()}
+                style={{
+                  width: '100%',
+                  height: hp(5),
                   backgroundColor: '#1263AC',
-                  marginLeft: 10,
                   borderRadius: 5,
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -247,143 +394,12 @@ const Register = () => {
                     color: 'white',
                     fontFamily: 'AvenirNextLTPro-Regular',
                   }}>
-                  {showOtpInput == false ? 'Resend OTP' : 'Request OTP'}
+                  Continue
                 </Text>
               </TouchableOpacity>
             </View>
-            {!showOtpInput && (
-              <>
-                <Text style={styles.common_Text_Styl}>OTP</Text>
-                <View style={styles.input_fild_parent_View}>
-                  <TextInput
-                    placeholder="Enter OTP"
-                    placeholderTextColor="gray"
-                    onChangeText={e => setOtp(e)}
-                    value={otp}
-                    style={styles.all_input_BOx_ctyl}
-                  />
-                </View>
-              </>
-            )}
-            <Text style={styles.common_Text_Styl}>Gender</Text>
-            <View style={{width: '100%'}}>
-              <Dropdown
-                style={[styles.dropdown, {width: '100%'}]}
-                placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={styles.selectedTextStyle}
-                inputSearchStyle={styles.inputSearchStyle}
-                iconStyle={styles.iconStyle}
-                data={[
-                  {label: 'Male', value: 'Male'},
-                  {label: 'Female', value: 'Female'},
-                  {label: 'Others', value: 'Others'},
-                ]}
-                maxHeight={300}
-                labelField="label"
-                valueField="value"
-                placeholder="Select Gender"
-                value={gender}
-                onChange={(item: any) => {
-                  setGender(item.value);
-                }}
-              />
-            </View>
-            <Text style={styles.common_Text_Styl}>Password</Text>
-            <View style={styles.input_fild_parent_View}>
-              <TextInput
-                placeholder="Enter Password"
-                placeholderTextColor="gray"
-                secureTextEntry
-                onChangeText={e => setPassword(e)}
-                value={password}
-                style={styles.all_input_BOx_ctyl}
-              />
-            </View>
-            <Text style={styles.common_Text_Styl}>Confirm password</Text>
-            <View style={styles.input_fild_parent_View}>
-              <TextInput
-                placeholder="Enter Confirm Password"
-                placeholderTextColor="gray"
-                onChangeText={e => setRePassword(e)}
-                value={rePassword}
-                secureTextEntry
-                style={styles.all_input_BOx_ctyl}
-              />
-            </View>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                marginVertical: 20,
-              }}>
-              <Pressable
-                onPress={() => setIsAggreed(prev => !prev)}
-                style={{
-                  padding: 2,
-                  borderRadius: 5,
-                  backgroundColor: 'white',
-                  marginRight: 5,
-                }}>
-                <View
-                  style={{
-                    height: 15,
-                    width: 15,
-                    borderRadius: 5,
-                    backgroundColor: isAggreed ? 'black' : 'white',
-                  }}></View>
-              </Pressable>
-              <Text
-                style={{
-                  color: '#1263AC',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontFamily: 'AvenirNextLTPro-Regular',
-                }}>
-                I accept Fever99
-              </Text>
-              <Pressable onPress={() => navigation.navigate('PAC')}>
-                <Text style={{color: '#1263AC', fontWeight: '800'}}>
-                  {' '}
-                  Privacy Policy{' '}
-                </Text>
-              </Pressable>
-              <Text
-                style={{
-                  color: '#1263AC',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontFamily: 'AvenirNextLTPro-Regular',
-                }}>
-                and
-              </Text>
-              <Pressable
-                style={{marginLeft: 5}}
-                onPress={() => navigation.navigate('TAC')}>
-                <Text style={{color: '#1263AC', fontWeight: '800'}}>T&C </Text>
-              </Pressable>
-            </View>
-
-            {/* Button section >>>>>>>>>>>>>>>>>> */}
-            <TouchableOpacity
-              onPress={() => handleRegister()}
-              style={{
-                width: '100%',
-                height: hp(6),
-                backgroundColor: '#1263AC',
-                borderRadius: 5,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Text
-                style={{color: 'white', fontFamily: 'AvenirNextLTPro-Regular'}}>
-                Continue
-              </Text>
-            </TouchableOpacity>
           </View>
-        </View>
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
       </ImageBackground>
     </ScrollView>
   );

@@ -66,7 +66,7 @@ const Password = (props: any) => {
         // resizeMode='contain'
         // style={{ flex: 1, width: width, backgroundColor: "#1263AC" }}
         source={require('../../../assets/images/LoginPageNew.png')}
-        resizeMode="cover"
+        resizeMode="stretch"
         // style={{
           // width: wp(70),
           // height: hp(20),
@@ -75,7 +75,8 @@ const Password = (props: any) => {
           // justifyContent: 'center',
           // alignSelf: 'center',
         // }}
-        style={{ flex: 1, width: width, backgroundColor: "#1263AC" }}
+        // style={{ flex: 1, width: width, backgroundColor: "#1263AC" }}
+        style={{ flex: 1, width: wp(100), height: hp(100), alignItems: 'center', justifyContent: 'center' }}
         >
 
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
