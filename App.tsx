@@ -13,6 +13,10 @@ export const LoginContext = createContext<any>(null);
 export const UserDataContext = createContext<any>(null);
 export const AuthContext = createContext<any>(false)
 
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
+LogBox.ignoreAllLogs(); //Ignore all log notifications
+
 function App(): JSX.Element {
 
   const [isAuthorized, setIsAuthorized] = useState(false)
@@ -151,6 +155,8 @@ function App(): JSX.Element {
 
     return unsubscribe;
   }, []);
+
+  
 
 
   const [routeName, setRouteName] = useState<any>();

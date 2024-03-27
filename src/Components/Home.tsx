@@ -714,7 +714,8 @@ const Home = () => {
               Book Home Healthcare Service{' '}
             </Text>
             <View style={{width: wp(95), marginTop: hp(2)}}>
-              <FlatList
+             
+              {/* <FlatList
                 data={servicesArr}
                 numColumns={2}
                 columnWrapperStyle={{justifyContent: 'space-between'}}
@@ -762,7 +763,54 @@ const Home = () => {
                     </Pressable>
                   );
                 }}
-              />
+              /> */}
+
+
+<View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+  {servicesArr && servicesArr.length>0 && servicesArr.map((item, index) => (
+    <Pressable
+      key={index}
+      onPress={() =>
+        navigation.navigate('CategoryStack', {
+          screen: 'CategoryDetail',
+          params: { data: item._id },
+        })
+      }
+      style={{
+        width: wp(46),
+        minHeight: hp(18),
+        backgroundColor: 'white',
+        elevation: 2,
+        marginTop: hp(1),
+        borderRadius: 5,
+        marginBottom: hp(1),
+        alignItems: 'center',
+        paddingVertical: 25,
+      }}>
+      <FastImage
+        source={{
+          uri: generateFilePath(item.image),
+          priority: FastImage.priority.normal,
+        }}
+        style={{ height: hp(15), width: wp(30) }}
+        resizeMode={FastImage.resizeMode.cover}
+      />
+      <Text
+        style={{
+          fontSize: hp(1.8),
+          width: wp(35),
+          alignSelf: 'center',
+          textAlign: 'center',
+          color: 'black',
+          fontFamily: mainFont,
+          marginTop: hp(0.5),
+        }}>
+        {item.name}
+      </Text>
+    </Pressable>
+  ))}
+</View>
+
             </View>
           </View>
         </View>
@@ -770,7 +818,8 @@ const Home = () => {
         <View style={{width: wp(95), alignSelf: 'center'}}>
           <View
             style={{width: wp(95), paddingTop: hp(2), paddingBottom: hp(2)}}>
-            <FlatList
+           
+            {/* <FlatList
               data={[
                 ...docData.filter((el: any) =>
                   el.roleArr.some((ele: string) => ele == userObj?.role),
@@ -817,7 +866,52 @@ const Home = () => {
                   </Pressable>
                 );
               }}
-            />
+            /> */}
+
+
+<View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+  {[...docData.filter((el: any) => el.roleArr.some((ele: string) => ele == userObj?.role))].map((item, index) => (
+    <Pressable
+      key={index}
+      onPress={() => navigation.navigate(item.url)}
+      style={{
+        width: wp(46),
+        height: hp(15),
+        backgroundColor: 'white',
+        marginRight: wp(3),
+        marginBottom: hp(2),
+        elevation: 1,
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+      <Image
+        source={item.img}
+        style={{ height: wp(9), width: wp(9) }}
+      />
+      <Text
+        style={{
+          color: 'black',
+          fontFamily: mainFont,
+          fontSize: hp(1.6),
+          marginTop: hp(1),
+        }}>
+        {item?.title}
+      </Text>
+      <Text
+        style={{
+          color: 'black',
+          fontFamily: mainFont,
+          fontSize: hp(1.6),
+          marginTop: hp(1),
+        }}>
+        {item?.data} {item?.title == 'Total Earning' ? '₹' : null}
+      </Text>
+    </Pressable>
+  ))}
+</View>
+
+
           </View>
           <View style={{width: wp(95)}}>
             <Text
