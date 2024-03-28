@@ -507,8 +507,7 @@ const BookVideo = (props: any) => {
                 animationIn={'bounceIn'}
                 animationOut={'bounceOut'}
                 onBackButtonPress={() => setDateModal(false)}
-                style={{ marginLeft: 0, marginRight: 0 }}
-            >
+                style={{ marginLeft: 0, marginRight: 0 }}>
                 <View style={{ width: wp(85), paddingTop: hp(3), paddingBottom: hp(3), backgroundColor: 'white', alignSelf: 'center', borderRadius: 5, paddingLeft: wp(4), paddingRight: wp(4) }}>
                     <TouchableOpacity
                         onPress={() => setDateModal(false)}

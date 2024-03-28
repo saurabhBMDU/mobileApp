@@ -29,6 +29,7 @@ import Check_icons from "react-native-vector-icons/FontAwesome6";
 
 import { useNetInfo } from '@react-native-community/netinfo';  // <--- internet connection
 import InterNetError from '../noInterNet/InterNetError';
+import Reschedule from '../allModals/Reschedule';
 const { height, width } = Dimensions.get('window')
 const mainFontBold = 'Montserrat-Bold'
 
@@ -287,6 +288,7 @@ const Appointment = () => {
             toastError(err)
         }
     }
+    // ***********feedback function 
     const [modalVisible, setModalVisible1] = useState(false);
     const [provideId, setProvideId] = useState('');
 
@@ -299,6 +301,18 @@ const Appointment = () => {
         setModalVisible1(false);
         setProvideId('');
     }
+    // *************** reschedule and state of 
+    const [rescheduleId,setRescheduleId]=useState('');
+    const [soModalreschedule,setSoModalreschedule]=useState(false);
+    const onPressReschedule=(id: String)=>{
+        setRescheduleId(`${id}`);
+        setSoModalreschedule(true)
+    }
+
+    const closeRescheduleModal=()=>{
+        setSoModalreschedule(false);
+        setRescheduleId('');
+    }
 
     if (isConnected === false) {
         return (
@@ -309,6 +323,7 @@ const Appointment = () => {
             <View style={{ height: height, width: width, backgroundColor: '#eee' }}>
                 {/* sending the header */}
                 <Headerr secndheader={true} label='Appointment' btn={(userObj?.role == Roles.PATIENT || userObj?.role == Roles.FRANCHISE) ? true : false} btnlbl='Book Appointment' />
+                {/* this is feedback  */}
                 <Modal
                     isVisible={modalVisible}
                     animationIn={'bounceIn'}
@@ -456,21 +471,21 @@ const Appointment = () => {
                                             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                                                 {
                                                     item.status === "pending" ? (
-                                                        <TouchableOpacity style={{ backgroundColor: "#cb9608", height: hp(4), borderRadius: 5, marginTop: hp(3), alignItems: 'center', justifyContent: 'center', paddingHorizontal: wp(2) }} onPress={() => setBookmodal(true)}>
-                                                            <Text style={{ color: "#fff", fontFamily: mainFont, textTransform: "capitalize", fontSize: hp(1.7), }}>Withdraw</Text>
-                                                        </TouchableOpacity>
+                                                        <View style={{ backgroundColor: "#cb9608", height: hp(4), borderRadius: 5, marginTop: hp(3), alignItems: 'center', justifyContent: 'center', paddingHorizontal: wp(2) }}>
+                                                            <Text style={{ color: "#fff", fontFamily: mainFont, textTransform: "capitalize", fontSize: hp(1.7), }}>Pending</Text>
+                                                        </View>
                                                     ) : (
                                                         item.status === "completed" ? (
                                                             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                                                                <TouchableOpacity style={{ backgroundColor: "#8CC1C9", height: hp(4), borderRadius: 5, marginTop: hp(3), alignItems: 'center', justifyContent: 'center', paddingHorizontal: wp(2) }}
+                                                                <TouchableOpacity style={{ backgroundColor: "rgba(65, 129, 139, 0.96)", height: hp(4), borderRadius: 5, marginTop: hp(3), alignItems: 'center', justifyContent: 'center', paddingHorizontal: wp(2) }}
                                                                     onPress={() => submitFeedback(item?.doctor?._id)}
                                                                 >
                                                                     <Text style={{ fontSize: hp(1.7), color: "#fff", fontFamily: mainFont, textTransform: "capitalize" }}>Feedback</Text>
                                                                 </TouchableOpacity>
                                                             </View>
                                                         ) : (
-                                                            <View style={{ backgroundColor: item.status === "canceled" ? '#fff' : "rgba(52, 235, 113, 0.2)", height: hp(4), borderRadius: 5, marginTop: hp(3), alignItems: 'center', justifyContent: 'center', paddingHorizontal: wp(2) }}>
-                                                                <Text style={{ fontSize: hp(1.7), color: item.status === "canceled" ? '#D96C06' : "green", fontFamily: mainFont, textTransform: "capitalize" }}>{item?.status}</Text>
+                                                            <View style={{ backgroundColor: item.status === "rejected" ? '#fa9b42' : "rgba(11, 116, 46, 0.7)", height: hp(4), borderRadius: 5, marginTop: hp(3), alignItems: 'center', justifyContent: 'center', paddingHorizontal: wp(2) }}>
+                                                                <Text style={{ fontSize: hp(1.7), color: item.status === "rejected" ? '#fff' : "#fff", fontFamily: mainFont, textTransform: "capitalize" }}>{item?.status}</Text>
                                                             </View>
                                                         )
                                                     )
@@ -612,12 +627,31 @@ const Appointment = () => {
                                                 <Text style={{ color: 'white', fontFamily: mainFont, fontSize: hp(1.8) }}>Raise Issue</Text>
                                             </TouchableOpacity>
                                         }
+                                        {/* reascudle */}
+                                        {
+                                            userObj?.role == Roles.DOCTOR ||  userObj?.role == Roles.DOCTOR ||   userObj?.role == Roles.FRANCHISE ||  item.status == appointmentStatus.PENDING &&
+                                            <TouchableOpacity onPress={() => onPressReschedule(item?._id)} style={{ flex: 1, minWidth: wp(41), marginRight: 10, marginTop: 15, alignSelf: "center", height: hp(5), backgroundColor: '#1263AC', borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}>
+                                                <Text style={{ color: 'white', fontFamily: mainFont, fontSize: hp(1.8) }}>Reschedule</Text>
+                                            </TouchableOpacity>
+                                        }
                                     </View>
                                 )
                                 }
                             </View>
                         )
                     }} />
+
+                <Modal
+                    isVisible={soModalreschedule}
+                    animationIn={'bounceIn'}
+                    animationOut={'slideOutDown'}
+                    onBackButtonPress={() => setSoModalreschedule(false)}
+                    style={{ marginLeft: 0, marginRight: 0 }}>
+
+                    <TouchableWithoutFeedback onPress={() => setSoModalreschedule(false)}>
+                       <Reschedule cartID={rescheduleId} closeModal={closeRescheduleModal}  />
+                    </TouchableWithoutFeedback>
+                </Modal>
 
                 {/*  this is  */}
                 <Modal
