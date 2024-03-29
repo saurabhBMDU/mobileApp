@@ -374,7 +374,6 @@ const Profile = () => {
                   fontFamily: mainFont,
                   marginLeft: wp(2),
                 }}>
-                {' '}
                 Setting
               </Text>
             </View>
@@ -400,7 +399,6 @@ const Profile = () => {
                       fontFamily: mainFont,
                       marginLeft: wp(2),
                     }}>
-                    {' '}
                     Recharge Wallet
                   </Text>
                 </View>
@@ -500,7 +498,6 @@ const Profile = () => {
                   fontFamily: mainFont,
                   marginLeft: wp(2),
                 }}>
-                {' '}
                 Terms & Conditions
               </Text>
             </View>
@@ -527,7 +524,6 @@ const Profile = () => {
                   fontFamily: mainFont,
                   marginLeft: wp(2),
                 }}>
-                {' '}
                 Cancellation & Refund Policy
               </Text>
             </View>
@@ -578,7 +574,6 @@ const Profile = () => {
                   fontFamily: mainFont,
                   marginLeft: wp(2),
                 }}>
-                {' '}
                 Logout
               </Text>
             </View>
