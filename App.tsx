@@ -14,6 +14,10 @@ export const UserDataContext = createContext<any>(null);
 export const AuthContext = createContext<any>(false)
 
 import { LogBox } from 'react-native';
+import UpdateModal from './updateModal';
+import { AppVersioinCheck, deleteJwt, isUserLoggedIn } from './src/Services/user.service';
+import { toastError } from './src/utils/toast.utils';
+import DeviceInfo from 'react-native-device-info';
 LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
 
@@ -23,7 +27,7 @@ function App(): JSX.Element {
   const linkTo = useLinkTo()
 
 
-
+ 
 
   useEffect(() => {
     const getUrlAsync = async () => {
@@ -37,6 +41,72 @@ function App(): JSX.Element {
   }, []);
 
 
+
+
+
+  const handleLogout = async () => {
+    try {
+      if(isAuthorized){
+      await deleteJwt();
+      setIsAuthorized(false);
+    }
+    } catch (err) {
+      toastError(err);
+    }
+  };
+
+
+  useEffect(() => {
+    CheckIsUserLoggedIn();
+    appVersioinCheckInApp();
+  },[])
+
+
+
+  const CheckIsUserLoggedIn = async () => {
+    try {
+      const {data: res}: any = await isUserLoggedIn();
+      console.log('response from backend vikram',res)
+      if (res.status == false) {
+        handleLogout()
+        console.log('response from backend',res)
+        throw new Error(res.error);
+      }
+    } catch (err) {
+      toastError(err);
+    }
+  };
+
+
+
+  //getting this device id 
+  const [deviceVersion, setDeviceVersion] = useState(0);
+  const [backendVeriosn,setBackendVersion] = useState(0)
+  useEffect(() => {
+    const fetchDeviceVersion = async () => {
+      let  version =  DeviceInfo.getBuildNumber();
+      console.log('this is device verions',version)
+      setDeviceVersion(parseInt(version));
+    };
+
+    fetchDeviceVersion();
+  }, []);
+
+  
+  const appVersioinCheckInApp = async () => {
+    try {
+      const { data: res } = await AppVersioinCheck();
+      if (res.data && res.data.length > 0 && res.data[0].versionCode) {
+        console.log('App Version Check in App', res.data[0].version);
+        setBackendVersion(parseInt(res.data[0].version));
+      } else {
+        // If version code is not present in the response
+        toastError("Version code not found in response.");
+      }
+    } catch (err) {
+      toastError(err);
+    }    
+  };
 
 
   // useEffect(() => {
@@ -234,6 +304,22 @@ function App(): JSX.Element {
   // });
 
 
+
+  const [showUpdateModal, setShowUpdateModal] = useState(false); // State to control the visibility of UpdateModal
+
+
+  useEffect(() => {
+    // Open UpdateModal after 10 seconds when the user is authorized
+    if (isAuthorized) {
+      const timer = setTimeout(() => {
+        setShowUpdateModal(true);
+      }, 10000);
+
+      return () => clearTimeout(timer); // Cleanup function
+    }
+  }, [isAuthorized]);
+
+
   const linking = {
     prefixes: ['fever99://app'],
     config: {
@@ -263,6 +349,10 @@ function App(): JSX.Element {
               <Root />
               <Toast />
             </NavigationContainer>
+            {deviceVersion < backendVeriosn && 
+            <UpdateModal isVisible={showUpdateModal} onClose={() => setShowUpdateModal(false)} />
+            }
+            {/* Render UpdateModal */}
           </AuthContext.Provider>
         </LanguageContext.Provider>
       </LoginContext.Provider>
