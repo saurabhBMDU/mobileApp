@@ -2,7 +2,7 @@
 import messaging from '@react-native-firebase/messaging';
 import { NavigationContainer, useLinkTo } from '@react-navigation/native';
 import React, { createContext, useEffect, useState } from 'react';
-import { Linking } from 'react-native';
+import { Linking,PermissionsAndroid } from 'react-native';
 import RNCallKeep from 'react-native-callkeep';
 import PushNotification from 'react-native-push-notification';
 import Toast from 'react-native-toast-message';
@@ -35,6 +35,42 @@ function App(): JSX.Element {
 
     getUrlAsync();
   }, []);
+
+
+
+
+  // useEffect(() => {
+  //   requestPermissions();
+  // }, []);
+
+  const requestPermissions = async () => {
+    try {
+      const granted = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.READ_PHONE_STATE,
+        PermissionsAndroid.PERMISSIONS.CALL_PHONE,
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+        PermissionsAndroid.PERMISSIONS.MODIFY_AUDIO_SETTINGS,
+        PermissionsAndroid.PERMISSIONS.BIND_TELECOM_CONNECTION_SERVICE,
+        PermissionsAndroid.PERMISSIONS.FOREGROUND_SERVICE,
+      ]);
+
+      console.log('Permissions granted:', granted);
+
+      // Check if all permissions are granted
+      if (
+        Object.values(granted).every(
+          (permission) => permission === PermissionsAndroid.RESULTS.GRANTED
+        )
+      ) {
+        console.log('All permissions granted');
+      } else {
+        console.log('Some permissions not granted');
+        // You can handle the scenario where permissions are not granted here
+      }
+    } catch (error) {
+      console.error('Error requesting permissions:', error);
+    }
+  };
 
 
   RNCallKeep.addEventListener('answerCall', async ({ callUUID }) => {
@@ -162,40 +198,40 @@ function App(): JSX.Element {
   const [routeName, setRouteName] = useState<any>();
 
 
-  const options = {
-    ios: {
-      appName: 'fever99',
-    },
-    android: {
-      alertTitle: 'Permission required',
-      alertDescription: 'This application needs to access your phone accounts',
-      cancelButton: 'Cancel',
-      okButton: 'OK',
-      imageName: "ic_launcher",
-      additionalPermissions: [
-        'android.permission.READ_PHONE_STATE',
-        'android.permission.CALL_PHONE',
-        'android.permission.RECORD_AUDIO',
-        'android.permission.MODIFY_AUDIO_SETTINGS',
-        'android.permission.BIND_TELECOM_CONNECTION_SERVICE',
-        'android.permission.FOREGROUND_SERVICE',
-      ],
-      callKitEnabled: true,
-      foregroundService: {
-        channelId: "com.fever99",
-        channelName: "fever99",
-        notificationTitle: "Call from background",
-        notificationIcon: "ic_launcher"
-      }
-    }
-  };
+  // const options = {
+  //   ios: {
+  //     appName: 'fever99',
+  //   },
+  //   android: {
+  //     alertTitle: 'Permission required',
+  //     alertDescription: 'This application needs to access your phone accounts',
+  //     cancelButton: 'Cancel',
+  //     okButton: 'OK',
+  //     imageName: "ic_launcher",
+  //     additionalPermissions: [
+  //       // 'android.permission.READ_PHONE_STATE',
+  //       // 'android.permission.CALL_PHONE',
+  //       'android.permission.RECORD_AUDIO',
+  //       'android.permission.MODIFY_AUDIO_SETTINGS',
+  //       'android.permission.BIND_TELECOM_CONNECTION_SERVICE',
+  //       'android.permission.FOREGROUND_SERVICE',
+  //     ],
+  //     callKitEnabled: true,
+  //     foregroundService: {
+  //       channelId: "com.fever99",
+  //       channelName: "fever99",
+  //       notificationTitle: "Call from background",
+  //       notificationIcon: "ic_launcher"
+  //     }
+  //   }
+  // };
 
 
-  RNCallKeep.setup(options).then(() => {
-    console.log('CallKeep setup done');
-  }).catch(error => {
-    console.error('CallKeep Setup Error:', error);
-  });
+  // RNCallKeep.setup(options).then(() => {
+  //   console.log('CallKeep setup done');
+  // }).catch(error => {
+  //   console.error('CallKeep Setup Error:', error);
+  // });
 
 
   const linking = {
