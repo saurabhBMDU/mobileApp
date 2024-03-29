@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -17,17 +17,17 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import Headerr from '../ReuseableComp/Headerr';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import {toastError} from '../utils/toast.utils';
-import {getDoctors} from '../Services/doctor.service';
-import {generateFilePath} from '../Services/url.service';
-import {getstateAndCities} from '../Services/stateCity.service';
-import {Dropdown} from 'react-native-element-dropdown';
-import {getUser} from '../Services/user.service';
-import {Roles} from '../utils/constant';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { toastError } from '../utils/toast.utils';
+import { getDoctors } from '../Services/doctor.service';
+import { generateFilePath } from '../Services/url.service';
+import { getstateAndCities } from '../Services/stateCity.service';
+import { Dropdown } from 'react-native-element-dropdown';
+import { getUser } from '../Services/user.service';
+import { Roles } from '../utils/constant';
 import LoadingService from '../All_Loding_page/Loding_service';
 
-const {height, width} = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 const Book_Appointment = () => {
   const mainFont = 'Montserrat-Regular';
   const mainFontBold = 'Montserrat-Bold';
@@ -64,7 +64,7 @@ const Book_Appointment = () => {
 
   const HandleGetStatesAndCities = async () => {
     try {
-      let {data: res} = await getstateAndCities();
+      let { data: res } = await getstateAndCities();
       if (res.data && res.data.length > 0) {
         setStatesArr([
           ...res.data.map((el: any) => ({
@@ -89,11 +89,11 @@ const Book_Appointment = () => {
         queryString = `${queryString}&city=${city}`;
       }
 
-      let {data: res} = await getDoctors(queryString);
+      let { data: res } = await getDoctors(queryString);
       if (res.data && res.data.length > 0) {
         setDoctorsArr((prev: any) => [...prev, ...res.data]);
         setSpecialisationArr(
-          res.spacility.map((el: any) => ({label: el, value: el})),
+          res.spacility.map((el: any) => ({ label: el, value: el })),
         );
       } else {
         setLastPageReached(true);
@@ -126,7 +126,7 @@ const Book_Appointment = () => {
         queryString = `${queryString}&pricesort=${sortType}`;
       }
       console.log(queryString, 'queryString', city);
-      let {data: res} = await getDoctors(queryString);
+      let { data: res } = await getDoctors(queryString);
       if (res.data) {
         setDoctorsArr([...res.data]);
       } else {
@@ -179,9 +179,9 @@ const Book_Appointment = () => {
   };
 
   return (
-    <View style={{width: width, backgroundColor: '#F1F8FF', flex: 1}}>
+    <View style={{ width: width, backgroundColor: '#F1F8FF', flex: 1 }}>
       <Headerr secndheader={true} label="Book Appointment" />
-      <View style={{width: wp(95), alignSelf: 'center', marginTop: hp(1)}}>
+      <View style={{ width: wp(95), alignSelf: 'center', marginTop: hp(1) }}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -366,7 +366,7 @@ const Book_Appointment = () => {
               placeholder={`Please search Doctor Name`}
               value={query}
               onChangeText={e => setQuery(e)}
-              style={{flex: 1, paddingLeft: 10}}
+              style={{ flex: 1, paddingLeft: 10 }}
             />
             <TouchableOpacity
               onPress={() => handleSearch()}
@@ -405,7 +405,7 @@ const Book_Appointment = () => {
               placeholder={`Please search price`}
               value={price}
               onChangeText={e => setPrice(e)}
-              style={{flex: 1, paddingLeft: 10}}
+              style={{ flex: 1, paddingLeft: 10 }}
               keyboardType="number-pad"
             />
             <TouchableOpacity
@@ -443,7 +443,7 @@ const Book_Appointment = () => {
               alignItems: 'center',
             }}>
             <Dropdown
-              style={[styles.dropdown, {width: wp(69)}]}
+              style={[styles.dropdown, { width: wp(69) }]}
               placeholderStyle={styles.placeholderStyle}
               selectedTextStyle={styles.selectedTextStyle}
               inputSearchStyle={styles.inputSearchStyle}
@@ -493,14 +493,14 @@ const Book_Appointment = () => {
               alignItems: 'center',
             }}>
             <Dropdown
-              style={[styles.dropdown, {width: wp(69)}]}
+              style={[styles.dropdown, { width: wp(69) }]}
               placeholderStyle={styles.placeholderStyle}
               selectedTextStyle={styles.selectedTextStyle}
               inputSearchStyle={styles.inputSearchStyle}
               iconStyle={styles.iconStyle}
               data={[
-                {label: 'Male', value: 'Male'},
-                {label: 'Female', value: 'Female'},
+                { label: 'Male', value: 'Male' },
+                { label: 'Female', value: 'Female' },
               ]}
               // search
               maxHeight={300}
@@ -548,7 +548,7 @@ const Book_Appointment = () => {
               alignItems: 'center',
             }}>
             <View>
-              <Text style={{paddingHorizontal: 10, marginBottom: 5}}>
+              <Text style={{ paddingHorizontal: 10, marginBottom: 5 }}>
                 Price
               </Text>
               <View
@@ -680,7 +680,7 @@ const Book_Appointment = () => {
               <Dropdown
                 style={[
                   styles.dropdown,
-                  isFocus && {borderColor: 'blue', borderWidth: 0.5},
+                  isFocus && { borderColor: 'blue', borderWidth: 0.5 },
                 ]}
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={styles.selectedTextStyle}
@@ -698,7 +698,7 @@ const Book_Appointment = () => {
                 onBlur={() => setIsFocus(false)}
                 onChange={(item: any) => {
                   setCityArr([
-                    ...item.cities.map((el: any) => ({label: el, value: el})),
+                    ...item.cities.map((el: any) => ({ label: el, value: el })),
                   ]);
                   setIsFocus(false);
                 }}
@@ -708,7 +708,7 @@ const Book_Appointment = () => {
                 <Dropdown
                   style={[
                     styles.dropdown,
-                    cityIsFocused && {borderColor: 'blue', borderWidth: 0.5},
+                    cityIsFocused && { borderColor: 'blue', borderWidth: 0.5 },
                   ]}
                   placeholderStyle={styles.placeholderStyle}
                   selectedTextStyle={styles.selectedTextStyle}
@@ -785,7 +785,7 @@ const Book_Appointment = () => {
         )}
 
         <View
-          style={{width: wp(95), marginTop: hp(1), height: height - hp(10)}}>
+          style={{ width: wp(95), marginTop: hp(1), height: height - hp(10) }}>
           <FlatList
             data={doctorsArr}
             showsVerticalScrollIndicator={false}
@@ -803,7 +803,7 @@ const Book_Appointment = () => {
             onEndReached={() => {
               handleOnEndReached();
             }}
-            renderItem={({item, index}) => {
+            renderItem={({ item, index }) => {
               return (
                 <View
                   style={{
@@ -818,7 +818,7 @@ const Book_Appointment = () => {
                   }}>
                   <TouchableOpacity
                     onPress={() =>
-                      navigation.navigate('About Doctor', {doctorId: item})
+                      navigation.navigate('About Doctor', { doctorId: item })
                     }>
                     <View
                       style={{
@@ -826,10 +826,10 @@ const Book_Appointment = () => {
                         justifyContent: 'space-between',
                         width: '100%',
                       }}>
-                      <TouchableOpacity style={{flexDirection: 'row'}}>
+                      <TouchableOpacity style={{ flexDirection: 'row' }}>
                         <Image
-                          source={{uri: generateFilePath(item.image)}}
-                          style={{height: wp(18), width: wp(18)}}
+                          source={{ uri: generateFilePath(item.image) }}
+                          style={{ height: wp(18), width: wp(18) }}
                         />
                         <View
                           style={{
@@ -883,10 +883,10 @@ const Book_Appointment = () => {
                           alignItems: 'flex-end',
                           justifyContent: 'space-between',
                         }}>
-                        <View style={{flexDirection: 'row', maxWidth: wp(35)}}>
+                        <View style={{ flexDirection: 'row', maxWidth: wp(35) }}>
                           <Image
                             source={require('../../assets/images/location.png')}
-                            style={{height: wp(4), width: wp(4)}}
+                            style={{ height: wp(4), width: wp(4) }}
                           />
                           <Text
                             style={{
@@ -913,7 +913,7 @@ const Book_Appointment = () => {
                               backgroundColor:
                                 item?.userStatus == 'online' ? 'green' : 'red',
                             }}></Text>
-                          <Text style={{marginLeft: 5}}>
+                          <Text style={{ marginLeft: 5 }}>
                             {item?.userStatus == 'online'
                               ? 'Available'
                               : 'Not available'}
@@ -942,7 +942,7 @@ const Book_Appointment = () => {
                     }}>
                     <TouchableOpacity
                       onPress={() =>
-                        navigation.navigate('BookVdo', {doctor: item})
+                        navigation.navigate('BookVdo', { doctor: item })
                       }
                       style={{
                         flex: 1,
@@ -965,7 +965,7 @@ const Book_Appointment = () => {
                     {userObj?.role !== Roles.FRANCHISE && (
                       <TouchableOpacity
                         onPress={() =>
-                          navigation.navigate('BookClient', {doctor: item})
+                          navigation.navigate('BookClient', { doctor: item })
                         }
                         style={{
                           flex: 1,

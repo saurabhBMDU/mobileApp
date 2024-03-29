@@ -1,5 +1,5 @@
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import React, {useContext, useEffect, useState} from 'react';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Alert,
   Dimensions,
@@ -17,10 +17,10 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {AuthContext} from '../../App';
+import { AuthContext } from '../../App';
 
 import Headerr from '../ReuseableComp/Headerr';
-import {generateFilePath} from '../Services/url.service';
+import { generateFilePath } from '../Services/url.service';
 import {
   deleteJwt,
   getUser,
@@ -28,9 +28,9 @@ import {
   setUser,
   updateUserStatus,
 } from '../Services/user.service';
-import {Roles} from '../utils/constant';
-import {toastError, toastSuccess} from '../utils/toast.utils';
-import {ScrollView} from 'react-native';
+import { Roles } from '../utils/constant';
+import { toastError, toastSuccess } from '../utils/toast.utils';
+import { ScrollView } from 'react-native';
 // all  icons import form ---> Edit_Phone_icons meen that there is two type  of  icons is there one is Edit and other is Phone icons
 import Setting_Sharealt from 'react-native-vector-icons/AntDesign';
 import Edit_Phone_icons from 'react-native-vector-icons/Feather';
@@ -43,7 +43,7 @@ import Polocy_Icons from 'react-native-vector-icons/MaterialIcons';
 import Tandcondition_icons from 'react-native-vector-icons/Ionicons';
 import Money_Icons from 'react-native-vector-icons/FontAwesome';
 
-const {height, width} = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
 const Profile = () => {
   const mainFont = 'Montserrat-Regular';
@@ -119,7 +119,7 @@ const Profile = () => {
     }
   }, [focused, count]);
 
-  useEffect(() => {}, [focused, userObj]);
+  useEffect(() => { }, [focused, userObj]);
 
   const handleChangeStatus = async () => {
     try {
@@ -131,12 +131,12 @@ const Profile = () => {
         tempStatus = 'online';
       }
 
-      let {data: res} = await updateUserStatus(userObj?._id, {
+      let { data: res } = await updateUserStatus(userObj?._id, {
         userStatus: tempStatus,
       });
       if (res) {
         await setUser(res.data);
-        setUserObj({...res.data});
+        setUserObj({ ...res.data });
       }
     } catch (err) {
       toastError(err);
@@ -160,7 +160,7 @@ const Profile = () => {
         return;
       }
       setPaymentModal(false);
-      navigation.navigate('PayementScreen', {amount: tempAmount});
+      navigation.navigate('PayementScreen', { amount: tempAmount });
     } catch (error) {
       toastError(error);
     }
@@ -182,14 +182,14 @@ const Profile = () => {
           width: wp(95),
           alignSelf: 'center',
         }}>
-        <View style={{width: wp(95), marginTop: hp(3), flexDirection: 'row'}}>
-          <View style={{position: 'relative'}}>
+        <View style={{ width: wp(95), marginTop: hp(3), flexDirection: 'row' }}>
+          <View style={{ position: 'relative' }}>
             <Image
               source={
                 userObj?.image &&
-                userObj?.image != '' &&
-                userObj?.image.includes('file')
-                  ? {uri: generateFilePath(userObj?.image)}
+                  userObj?.image != '' &&
+                  userObj?.image.includes('file')
+                  ? { uri: generateFilePath(userObj?.image) }
                   : require('../../assets/images/profile.png')
               }
               style={{
@@ -214,21 +214,21 @@ const Profile = () => {
                 }}></View>
             )}
           </View>
-          <View style={{height: wp(20), marginLeft: wp(3)}}>
-            <View style={{flexDirection: 'row'}}>
-              <Text style={{fontSize: hp(1.9), fontFamily: mainFontBold}}>
+          <View style={{ height: wp(20), marginLeft: wp(3) }}>
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={{ fontSize: hp(1.9), fontFamily: mainFontBold }}>
                 {userObj?.name}
               </Text>
               <TouchableOpacity
                 onPress={() => navigation.navigate('EditiProfile')}
-                style={{marginLeft: wp(30)}}>
+                style={{ marginLeft: wp(30) }}>
                 <Edit_Phone_icons
                   name="edit-3"
-                  style={[styles.allIconsStyle, {fontSize: hp(2.5)}]}
+                  style={[styles.allIconsStyle, { fontSize: hp(2.5) }]}
                 />
               </TouchableOpacity>
             </View>
-            <View style={{flexDirection: 'row', marginTop: hp(0.5)}}>
+            <View style={{ flexDirection: 'row', marginTop: hp(0.5) }}>
               <Mail_icons name="mail" style={styles.profuleIcons} />
 
               <Text
@@ -241,7 +241,7 @@ const Profile = () => {
                 {userObj?.email}
               </Text>
             </View>
-            <View style={{flexDirection: 'row', marginTop: hp(0.5)}}>
+            <View style={{ flexDirection: 'row', marginTop: hp(0.5) }}>
               <Phone_icons name="phone-alt" style={styles.profuleIcons} />
               <Text
                 style={{
@@ -282,10 +282,10 @@ const Profile = () => {
               userObj?.state != '' &&
               userObj?.pincode &&
               userObj?.pincode != '' && (
-                <View style={{flexDirection: 'row', marginTop: hp(0.5)}}>
+                <View style={{ flexDirection: 'row', marginTop: hp(0.5) }}>
                   <Image
                     source={require('../../assets/images/Location2.png')}
-                    style={{height: wp(4), width: wp(4)}}
+                    style={{ height: wp(4), width: wp(4) }}
                   />
                   <Text
                     style={{
@@ -302,7 +302,7 @@ const Profile = () => {
           </View>
         </View>
 
-        <View style={{width: wp(95), marginTop: hp(7)}}>
+        <View style={{ width: wp(95), marginTop: hp(7) }}>
           <TouchableOpacity
             onPress={() => navigation.navigate('EditiProfile')}
             style={styles.clickbleLines}>
@@ -324,7 +324,7 @@ const Profile = () => {
                 Edit Profile
               </Text>
             </View>
-            <Right_Icons name="right" style={{fontSize: hp(3.1)}} />
+            <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate('Appointment')}
@@ -350,7 +350,7 @@ const Profile = () => {
                 Appointment History
               </Text>
             </View>
-            <Right_Icons name="right" style={{fontSize: hp(3.1)}} />
+            <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -373,7 +373,7 @@ const Profile = () => {
                 Contact Us
               </Text>
             </View>
-            <Right_Icons name="right" style={{fontSize: hp(3.1)}} />
+            <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.clickbleLines}
@@ -395,7 +395,7 @@ const Profile = () => {
                 Share App
               </Text>
             </View>
-            <Right_Icons name="right" style={{fontSize: hp(3.1)}} />
+            <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate('Settings')}
@@ -417,7 +417,7 @@ const Profile = () => {
                 Setting
               </Text>
             </View>
-            <Right_Icons name="right" style={{fontSize: hp(3.1)}} />
+            <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
           </TouchableOpacity>
 
           {userObj.role == Roles.FRANCHISE && (
@@ -442,7 +442,7 @@ const Profile = () => {
                     Recharge Wallet
                   </Text>
                 </View>
-                <Right_Icons name="right" style={{fontSize: hp(3.1)}} />
+                <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
               </TouchableOpacity>
 
               <Modal
@@ -450,7 +450,7 @@ const Profile = () => {
                 animationIn={'bounceIn'}
                 animationOut={'slideOutDown'}
                 onBackButtonPress={() => setPaymentModal(false)}
-                style={{marginLeft: 0, marginRight: 0}}>
+                style={{ marginLeft: 0, marginRight: 0 }}>
                 <View
                   style={{
                     width: wp(85),
@@ -464,10 +464,10 @@ const Profile = () => {
                   }}>
                   <TouchableOpacity
                     onPress={() => setPaymentModal(false)}
-                    style={{alignSelf: 'flex-end'}}>
+                    style={{ alignSelf: 'flex-end' }}>
                     <Image
                       source={require('../../assets/images/close.png')}
-                      style={{tintColor: 'black', height: wp(5), width: wp(5)}}
+                      style={{ tintColor: 'black', height: wp(5), width: wp(5) }}
                     />
                   </TouchableOpacity>
                   <Text
@@ -541,7 +541,7 @@ const Profile = () => {
                 Terms & Conditions
               </Text>
             </View>
-            <Right_Icons name="right" style={{fontSize: hp(3.1)}} />
+            <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -567,7 +567,7 @@ const Profile = () => {
                 Cancellation & Refund Policy
               </Text>
             </View>
-            <Right_Icons name="right" style={{fontSize: hp(3.1)}} />
+            <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -591,7 +591,7 @@ const Profile = () => {
                 Privacy Policy
               </Text>
             </View>
-            <Right_Icons name="right" style={{fontSize: hp(3.1)}} />
+            <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -617,7 +617,7 @@ const Profile = () => {
                 Logout
               </Text>
             </View>
-            <Right_Icons name="right" style={{fontSize: hp(3.1)}} />
+            <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -627,7 +627,7 @@ const Profile = () => {
         animationIn={'bounceIn'}
         animationOut={'bounceOut'}
         onBackButtonPress={() => setBookmodal(false)}
-        style={{marginLeft: 0, marginRight: 0}}>
+        style={{ marginLeft: 0, marginRight: 0 }}>
         <View
           style={{
             width: wp(85),
@@ -641,10 +641,10 @@ const Profile = () => {
           }}>
           <TouchableOpacity
             onPress={() => setBookmodal(false)}
-            style={{alignSelf: 'flex-end'}}>
+            style={{ alignSelf: 'flex-end' }}>
             <Image
               source={require('../../assets/images/close.png')}
-              style={{tintColor: 'black', height: wp(5), width: wp(5)}}
+              style={{ tintColor: 'black', height: wp(5), width: wp(5) }}
             />
           </TouchableOpacity>
           <View
@@ -659,7 +659,7 @@ const Profile = () => {
             }}>
             <Image
               source={require('../../assets/images/logouticn.png')}
-              style={{height: wp(9), width: wp(9), resizeMode: 'contain'}}
+              style={{ height: wp(9), width: wp(9), resizeMode: 'contain' }}
             />
           </View>
           <Text
@@ -715,7 +715,7 @@ const Profile = () => {
                 justifyContent: 'center',
               }}>
               <Text
-                style={{color: 'white', fontFamily: mainFont, fontSize: hp(2)}}>
+                style={{ color: 'white', fontFamily: mainFont, fontSize: hp(2) }}>
                 Logout
               </Text>
             </TouchableOpacity>

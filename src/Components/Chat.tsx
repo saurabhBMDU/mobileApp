@@ -539,35 +539,35 @@ import {
   Pressable,
   Linking,
 } from 'react-native';
-import React, {useContext, useEffect, useState, useRef} from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import url, {fileurl, generateFilePath} from '../Services/url.service';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import url, { fileurl, generateFilePath } from '../Services/url.service';
 import DocumentPicker from 'react-native-document-picker';
 
 import io from 'socket.io-client';
 import moment from 'moment';
-import {Roles} from '../utils/constant';
-import {getAppointmentById} from '../Services/appointments.service';
-import {LoginContext} from '../../App';
-import {toastError, toastSuccess} from '../utils/toast.utils';
-import {addAppointmentHistory} from '../Services/appointmentHistory.service';
-import {getUser} from '../Services/user.service';
-import {fileUpload} from '../Services/fileUpload.service';
+import { Roles } from '../utils/constant';
+import { getAppointmentById } from '../Services/appointments.service';
+import { LoginContext } from '../../App';
+import { toastError, toastSuccess } from '../utils/toast.utils';
+import { addAppointmentHistory } from '../Services/appointmentHistory.service';
+import { getUser } from '../Services/user.service';
+import { fileUpload } from '../Services/fileUpload.service';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 import Attachment_Send_icons from 'react-native-vector-icons/MaterialCommunityIcons'; // send and attachment
 
-const {height, width} = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 export default function Chat(props: any) {
   //  auto scroller code
   const flatListRef = useRef<FlatList>(null);
   const scrollToBottom = () => {
     if (flatListRef.current) {
-      flatListRef.current.scrollToEnd({animated: true});
+      flatListRef.current.scrollToEnd({ animated: true });
     }
   };
 
@@ -623,7 +623,7 @@ export default function Chat(props: any) {
         socket.emit('join', userObj._id);
         socket.on(userObj._id, (data: any) => {
           console.log(data, 'data');
-          setMsgArr(prevData => [...prevData, {...data, toId: data.toUserId}]);
+          setMsgArr(prevData => [...prevData, { ...data, toId: data.toUserId }]);
         });
       }
     } else {
@@ -690,7 +690,7 @@ export default function Chat(props: any) {
 
   const handleGetAppointmentById = async () => {
     try {
-      let {data: res} = await getAppointmentById(
+      let { data: res } = await getAppointmentById(
         props?.route?.params?.data._id,
       );
       if (res.data) {
@@ -730,7 +730,7 @@ export default function Chat(props: any) {
         for (const el of file) {
           let formData = new FormData();
           formData.append('file', el);
-          let {data: res} = await fileUpload(formData);
+          let { data: res } = await fileUpload(formData);
           if (res.message) {
             console.log(res, 'response', el, 'ele');
             toastSuccess(res.message);
@@ -779,7 +779,7 @@ export default function Chat(props: any) {
       height: height,
       // height: height - wp(50) - hp(20), 
       // backgroundColor:'white'
-      }}>
+    }}>
       <View
         style={{
           width: width,
@@ -787,7 +787,7 @@ export default function Chat(props: any) {
 
           // height: height - wp(5) - hp(10),
           // backgroundColor: '#E2E2E2',
-          backgroundColor:'white',
+          backgroundColor: 'white',
           justifyContent: 'space-between',
         }}>
         <View
@@ -838,179 +838,179 @@ export default function Chat(props: any) {
         </View>
         {/* {/  chat render screen /} */}
         <View
-        style={{
-          marginBottom: height - wp(187), 
-          backgroundColor:'white',
-        }}
+          style={{
+            marginBottom: height - wp(187),
+            backgroundColor: 'white',
+          }}
         >
-        <FlatList
-          ref={flatListRef}
-          data={msgArr}
-          renderItem={({item, index}) => {
-            return (
-              <View
-              style={{
-                backgroundColor:'black',
+          <FlatList
+            ref={flatListRef}
+            data={msgArr}
+            renderItem={({ item, index }) => {
+              return (
+                <View
+                  style={{
+                    backgroundColor: 'black',
 
-              }}
-              >
-              <View
-                style={{
-                  width: width,
-                  // paddingTop: hp(1),
-                  paddingBottom: hp(2),
-                  backgroundColor: 'white',
-                  alignSelf: 'center',
-                  paddingLeft: wp(1),
-                 
-                }}>
-                {getFromUser(item) === 'user' && (
+                  }}
+                >
                   <View
                     style={{
-                      width: wp(98),
-                      flexDirection: 'column',
-                      marginBottom: hp(1),
-                      justifyContent: 'space-between',
-                      paddingRight: wp(1),
-                      paddingLeft: wp(0.5),
+                      width: width,
+                      // paddingTop: hp(1),
+                      paddingBottom: hp(2),
+                      backgroundColor: 'white',
                       alignSelf: 'center',
+                      paddingLeft: wp(1),
+
                     }}>
-                    {!item.type || item.type == 'text' ? (
+                    {getFromUser(item) === 'user' && (
                       <View
                         style={{
-                          backgroundColor: maincolor,
-                          padding: wp(3.8),
-                          borderTopLeftRadius: 30,
-                          borderTopRightRadius: 30,
-                          borderBottomLeftRadius: 30,
-                          borderBottomRightRadius: 1,
-                          marginLeft: wp(1),
-                          alignSelf: 'flex-end',
+                          width: wp(98),
+                          flexDirection: 'column',
+                          marginBottom: hp(1),
+                          justifyContent: 'space-between',
+                          paddingRight: wp(1),
+                          paddingLeft: wp(0.5),
+                          alignSelf: 'center',
                         }}>
+                        {!item.type || item.type == 'text' ? (
+                          <View
+                            style={{
+                              backgroundColor: maincolor,
+                              padding: wp(3.8),
+                              borderTopLeftRadius: 30,
+                              borderTopRightRadius: 30,
+                              borderBottomLeftRadius: 30,
+                              borderBottomRightRadius: 1,
+                              marginLeft: wp(1),
+                              alignSelf: 'flex-end',
+                            }}>
+                            <Text
+                              style={{
+                                color: '#fff',
+                                fontSize: hp(1.5),
+                                fontFamily: mainFont,
+                              }}>
+                              {item.message}
+                            </Text>
+                          </View>
+                        ) : allowedFile.some(el =>
+                          el.toLowerCase().includes(item.type.toLowerCase()),
+                        ) ? (
+                          <Image
+                            source={{ uri: generateFilePath(item.message) }}
+                            style={{
+                              height: wp(40),
+                              width: wp(40),
+                              borderRadius: 10,
+                              alignSelf: 'flex-end',
+                            }}
+                          />
+                        ) : (
+                          <Pressable
+                            onPress={() =>
+                              Linking.openURL(generateFilePath(item.message))
+                            }
+                            style={{
+                              backgroundColor: maincolor,
+                              padding: 15,
+                              borderRadius: 5,
+                              marginLeft: wp(1),
+                              alignSelf: 'flex-end',
+                            }}>
+                            <Text style={{ color: 'white' }}>Click to open file</Text>
+                          </Pressable>
+                        )}
+                        {/* {/ date time /} */}
                         <Text
                           style={{
-                            color: '#fff',
+                            color: '#4A4040B2',
+                            fontSize: hp(1.2),
+                            fontFamily: mainFont,
+                            alignSelf: 'flex-end',
+                          }}>
+                          {moment(item.timestamp).format('DD/MM/YY hh:mm a')}
+                        </Text>
+                      </View>
+                    )}
+
+                    {!(getFromUser(item) === 'user') && (
+                      <View
+                        style={{
+                          width: wp(98),
+                          flexDirection: 'column',
+                          marginBottom: hp(1),
+                          justifyContent: 'space-between',
+                          paddingRight: wp(1),
+                          alignSelf: 'center',
+                        }}>
+                        {!item.type || item.type == 'text' ? (
+                          <View
+                            style={{
+                              backgroundColor: 'gray',
+                              padding: wp(3.8),
+                              borderTopLeftRadius: 1,
+                              borderTopRightRadius: 30,
+                              borderBottomLeftRadius: 30,
+                              borderBottomRightRadius: 30,
+                              alignSelf: 'flex-start',
+                            }}>
+                            <Text
+                              style={{
+                                color: '#fff',
+                                fontSize: hp(1.7),
+                                fontFamily: mainFont,
+                              }}>
+                              {item.message}
+                            </Text>
+                          </View>
+                        ) : allowedFile.some(el =>
+                          el.toLowerCase().includes(item.type.toLowerCase()),
+                        ) ? (
+                          <Image
+                            source={{ uri: generateFilePath(item.message) }}
+                            style={{
+                              height: wp(40),
+                              width: wp(40),
+                              borderRadius: 10,
+                              alignSelf: 'flex-start',
+                            }}
+                          />
+                        ) : (
+                          <Pressable
+                            onPress={() =>
+                              Linking.openURL(generateFilePath(item.message))
+                            }
+                            style={{
+                              backgroundColor: maincolor,
+                              padding: 15,
+                              borderRadius: 5,
+                              marginLeft: wp(1),
+                              alignSelf: 'flex-start',
+                            }}>
+                            <Text style={{ color: 'white' }}>Click to open file</Text>
+                          </Pressable>
+                        )}
+                        <Text
+                          style={{
+                            color: '#4A4040B2',
                             fontSize: hp(1.5),
                             fontFamily: mainFont,
                           }}>
-                          {item.message}
+                          {moment(item.timestamp).format('DD/MM/YY hh:mm a')}
                         </Text>
                       </View>
-                    ) : allowedFile.some(el =>
-                        el.toLowerCase().includes(item.type.toLowerCase()),
-                      ) ? (
-                      <Image
-                        source={{uri: generateFilePath(item.message)}}
-                        style={{
-                          height: wp(40),
-                          width: wp(40),
-                          borderRadius: 10,
-                          alignSelf: 'flex-end',
-                        }}
-                      />
-                    ) : (
-                      <Pressable
-                        onPress={() =>
-                          Linking.openURL(generateFilePath(item.message))
-                        }
-                        style={{
-                          backgroundColor: maincolor,
-                          padding: 15,
-                          borderRadius: 5,
-                          marginLeft: wp(1),
-                          alignSelf: 'flex-end',
-                        }}>
-                        <Text style={{color: 'white'}}>Click to open file</Text>
-                      </Pressable>
                     )}
-                    {/* {/ date time /} */}
-                    <Text
-                      style={{
-                        color: '#4A4040B2',
-                        fontSize: hp(1.2),
-                        fontFamily: mainFont,
-                        alignSelf: 'flex-end',
-                      }}>
-                      {moment(item.timestamp).format('DD/MM/YY hh:mm a')}
-                    </Text>
                   </View>
-                )}
-
-                {!(getFromUser(item) === 'user') && (
-                  <View
-                    style={{
-                      width: wp(98),
-                      flexDirection: 'column',
-                      marginBottom: hp(1),
-                      justifyContent: 'space-between',
-                      paddingRight: wp(1),
-                      alignSelf: 'center',
-                    }}>
-                    {!item.type || item.type == 'text' ? (
-                      <View
-                        style={{
-                          backgroundColor: 'gray',
-                          padding: wp(3.8),
-                          borderTopLeftRadius: 1,
-                          borderTopRightRadius: 30,
-                          borderBottomLeftRadius: 30,
-                          borderBottomRightRadius: 30,
-                          alignSelf: 'flex-start',
-                        }}>
-                        <Text
-                          style={{
-                            color: '#fff',
-                            fontSize: hp(1.7),
-                            fontFamily: mainFont,
-                          }}>
-                          {item.message}
-                        </Text>
-                      </View>
-                    ) : allowedFile.some(el =>
-                        el.toLowerCase().includes(item.type.toLowerCase()),
-                      ) ? (
-                      <Image
-                        source={{uri: generateFilePath(item.message)}}
-                        style={{
-                          height: wp(40),
-                          width: wp(40),
-                          borderRadius: 10,
-                          alignSelf: 'flex-start',
-                        }}
-                      />
-                    ) : (
-                      <Pressable
-                        onPress={() =>
-                          Linking.openURL(generateFilePath(item.message))
-                        }
-                        style={{
-                          backgroundColor: maincolor,
-                          padding: 15,
-                          borderRadius: 5,
-                          marginLeft: wp(1),
-                          alignSelf: 'flex-start',
-                        }}>
-                        <Text style={{color: 'white'}}>Click to open file</Text>
-                      </Pressable>
-                    )}
-                    <Text
-                      style={{
-                        color: '#4A4040B2',
-                        fontSize: hp(1.5),
-                        fontFamily: mainFont,
-                      }}>
-                      {moment(item.timestamp).format('DD/MM/YY hh:mm a')}
-                    </Text>
-                  </View>
-                )}
-              </View>
-              </View>
-            );
-          }}
-          keyExtractor={(item, index) => index.toString()}
-          onContentSizeChange={scrollToBottom} // Automatically scrolls to bottom when content size changes
-          onLayout={scrollToBottom}
-        />
+                </View>
+              );
+            }}
+            keyExtractor={(item, index) => index.toString()}
+            onContentSizeChange={scrollToBottom} // Automatically scrolls to bottom when content size changes
+            onLayout={scrollToBottom}
+          />
         </View>
       </View>
 
@@ -1020,7 +1020,7 @@ export default function Chat(props: any) {
         style={{
           // backgroundColor: 'red'
           // marginTop:100,
-          }}>
+        }}>
         {/* <View
           style={{
             width: width,
@@ -1074,32 +1074,32 @@ export default function Chat(props: any) {
             </TouchableOpacity>
           </View>
         </View> */}
- 
 
-<View style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'white', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-  <View style={{ width: '75%' }}>
-    <View style={{ backgroundColor: 'white', borderRadius: 15, margin: 20 }}>
-      <TextInput
-        placeholder="Message..."
-        placeholderTextColor={'gray'}
-        style={{ color: 'black', padding: 10, borderRadius: 10, borderWidth: 1 }}
-        value={userMessage}
-        onChangeText={text => setUserMessage(text)}
-      />
-    </View>
-  </View>
 
-  <View style={{ width: '25%', flexDirection: 'row', justifyContent: 'space-between', marginRight: 10 }}>
-    <TouchableOpacity onPress={() => handleDocumentPicker()}>
-      <Attachment_Send_icons name="attachment" style={{ fontSize: wp(9), color: maincolor }} />
-    </TouchableOpacity>
-    <TouchableOpacity onPress={() => handleSubmit()}>
-      <Attachment_Send_icons name="send" style={{ fontSize: wp(9), color: maincolor, marginRight: 3 }} />
-    </TouchableOpacity>
-  </View>
-</View>
-</KeyboardAvoidingView>
-    
+        <View style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'white', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <View style={{ width: '75%' }}>
+            <View style={{ backgroundColor: 'white', borderRadius: 15, margin: 20 }}>
+              <TextInput
+                placeholder="Message..."
+                placeholderTextColor={'gray'}
+                style={{ color: 'black', padding: 10, borderRadius: 10, borderWidth: 1 }}
+                value={userMessage}
+                onChangeText={text => setUserMessage(text)}
+              />
+            </View>
+          </View>
+
+          <View style={{ width: '25%', flexDirection: 'row', justifyContent: 'space-between', marginRight: 10 }}>
+            <TouchableOpacity onPress={() => handleDocumentPicker()}>
+              <Attachment_Send_icons name="attachment" style={{ fontSize: wp(9), color: maincolor }} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleSubmit()}>
+              <Attachment_Send_icons name="send" style={{ fontSize: wp(9), color: maincolor, marginRight: 3 }} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+
     </View>
   );
 }
