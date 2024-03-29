@@ -161,27 +161,25 @@ const BookVideo = (props: any) => {
                 timeSlot,
                 timeSlotoffline,
             }
-            console.log(obj)
-            navigation.navigate("PaymentFail")
-            // let { data: res } = await addAppointments(obj);
-            // console.log("here 2", JSON.stringify(res, null, 2))
-            // if (res.appointment.status == "pending") {
-            //     console.log(JSON.stringify(res, null, 2), "res");
-            //     setMeetingConfirmation(false);
-            //     if (!res.status) {
-            //         setMeetingConfirmation(false)
-            //         toastError(res.message)
-            //         return;
-            //     }
-            //     if (userObj?.role == "FRANCHISE" && res.appointment.appointmentCharge <= balance) {
-            //         await SendNotificationForMeetingCreation({ appointment: res.appointment._id })
-            //         navigation.navigate("Appointment");
-            //     }
-            //     else if (res.appointment.appointmentCharge) {
-            //         navigation.navigate("PayementScreen", { amount: res.appointment.appointmentCharge, appointmentId: res.appointment._id })
-            //     }
+            let { data: res } = await addAppointments(obj);
+            console.log("here 2", JSON.stringify(res, null, 2))
+            if (res.appointment.status == "pending") {
+                console.log(JSON.stringify(res, null, 2), "res");
+                setMeetingConfirmation(false);
+                if (!res.status) {
+                    setMeetingConfirmation(false)
+                    toastError(res.message)
+                    return;
+                }
+                if (userObj?.role == "FRANCHISE" && res.appointment.appointmentCharge <= balance) {
+                    await SendNotificationForMeetingCreation({ appointment: res.appointment._id })
+                    navigation.navigate("Appointment");
+                }
+                else if (res.appointment.appointmentCharge) {
+                    navigation.navigate("PayementScreen", { amount: res.appointment.appointmentCharge, appointmentId: res.appointment._id })
+                }
 
-            // }
+            }
         }
         catch (err) {
             toastError(err)

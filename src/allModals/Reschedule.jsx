@@ -1,59 +1,89 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
   View,
   TextInput,
   TouchableOpacity,
-  Modal,
-  Image,
-  Alert
 } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
-import { Calendar } from 'react-native-calendars';
-import axios from 'axios';
+import {Calendar} from 'react-native-calendars';
+import {Dropdown} from 'react-native-element-dropdown';
+// import axios from '../Services/axios.service';
+import axios from '../Services/axios.service';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import CloseBtn_incon from 'react-native-vector-icons/Entypo';
+import CloseBtnIcon from 'react-native-vector-icons/Entypo';
 
 const mainFont = 'Montserrat-Regular';
+const url = 'https://api.fever99.com/api/';
 
-const Reschedule = ({ cartID, closeModal }) => {
+const Reschedule = ({cartID, closeModal, drrIdes, modeOf}) => {
   const [selectedDate, setSelectedDate] = useState('');
-  const [gender, setGender] = useState('');
-  const [isGenderFocused, setIsGenderFocused] = useState(false);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
+  const [isFocus, setIsFocus] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [errors, seterrors] = useState();
+  const [timeSlotss, setTimeSlot] = useState([]);
 
-  const handleSubmit = async () => {
-    if (!selectedDate || !gender) {
-      Alert.alert('Validation Error', 'Please select date and gender');
-      return;
-    }
-
-    // Construct your API request payload
-    const requestData = {
-      date: selectedDate,
-      gender: gender,
-      // Add other fields as needed
-    };
-
-    setIsLoading(true);
-    try {
-      // Make API request
-      const response = await axios.post('YOUR_API_ENDPOINT', requestData);
-      console.log('API Response:', response.data);
-      setIsLoading(false);
-      closeModal();
-      // Handle success response
-    } catch (error) {
-      console.error('API Error:', error);
-      setIsLoading(false);
-      // Handle error response
+  const fetchTimeSlot = async () => {
+    const response = await axios.get(`${url}time-slot/${drrIdes}`);
+    console.log('resopnse for time slot', response.data.data.timeSlotOnline);
+    if (modeOf == 'Video') {
+      setTimeSlot(response.data.data.timeSlotOnline);
+    } else {
+      setTimeSlot(response.data.data.timeSlotoffline);
     }
   };
 
+  useEffect(() => {
+    fetchTimeSlot();
+  }, [drrIdes]);
+
+  console.log(timeSlotss);
+
+  // Function to handle opening the calendar
+
+  const openCalendar = () => {
+    const currentDate = new Date();
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 because month index starts from 0
+    const year = currentDate.getFullYear();
+    const formattedDate = `${day}-${month}-${year}`;
+
+    setSelectedDate(formattedDate);
+    setShowCalendar(!showCalendar);
+  };
+
+  // Function to handle form submission
+  const handleSubmit = async () => {
+    if (!selectedDate || !selectedTimeSlot) {
+      seterrors('Both fields are required');
+      return;
+    }
+    const requestData = {
+      date: selectedDate,
+      timeSlot: selectedTimeSlot,
+    };
+    try {
+      const response = await axios.put(
+        `${url}appointment/reschedule/${cartID}`,
+        requestData,
+      );
+      console.log('API Response:', response);
+      console.log(requestData)
+      setIsLoading(false);
+      closeModal();
+    } catch (error) {
+      seterrors(response.data.message)
+      console.error('API Error:', error);
+      setIsLoading(false);
+    }
+  };
+
+  // Function to close the modal
   const offModal = () => {
     closeModal();
   };
@@ -62,50 +92,82 @@ const Reschedule = ({ cartID, closeModal }) => {
     <View style={styles.mainView}>
       <View style={styles.modalContent}>
         <View style={styles.d_Flex}>
-          <Text style={styles.modalTitle}>Update</Text>
+          <Text style={styles.modalTitle}>Reschedule</Text>
           <TouchableOpacity onPress={offModal}>
-            <CloseBtn_incon
-              name="cross"
-              style={styles.closeIcon}
-            />
+            <CloseBtnIcon name="cross" style={styles.closeIcon} />
           </TouchableOpacity>
         </View>
+        <View style={{width: wp(95), marginTop: 0}}>
+          <Text style={{color: 'red', fontSize: hp(1.5)}}>{errors}</Text>
+        </View>
         <View style={styles.formContainer}>
-          <TouchableOpacity onPress={() => setSelectedDate(new Date())}>
+          <TouchableOpacity onPress={openCalendar}>
             <Text style={styles.label}>Select Date:</Text>
             <TextInput
               value={selectedDate ? selectedDate.toString() : ''}
               editable={false}
-              placeholder="YYYY-MM-DD"
+              placeholder="DD-MM-YYYY"
               placeholderTextColor={'gray'}
-              style={styles.inputField}
+              style={[styles.inputField, !selectedDate && styles.errorBorder]}
             />
           </TouchableOpacity>
-          <Calendar
-            onDayPress={(day) => setSelectedDate(day.dateString)}
-            minDate={new Date()}
-          />
-          <Text style={styles.label}>Gender:</Text>
-          <Dropdown
-            data={[
-              { label: 'Male', value: 'Male' },
-              { label: 'Female', value: 'Female' },
-              { label: 'Other', value: 'Other' },
-            ]}
-            value={gender}
-            onChangeText={(value) => setGender(value)}
-            containerStyle={styles.dropdownContainer}
-            inputContainerStyle={styles.dropdownInput}
-          />
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={handleSubmit}
-            disabled={isLoading}
-          >
-            <Text style={styles.submitButtonText}>
-              {isLoading ? 'Submitting...' : 'Submit'}
-            </Text>
-          </TouchableOpacity>
+          {showCalendar && (
+            <Calendar
+              onDayPress={day => {
+                const selectedDay = day.dateString;
+                const [year, month, date] = selectedDay.split('-');
+                const formattedDate = `${date}-${month}-${year}`;
+                setSelectedDate(formattedDate);
+                setShowCalendar(false);
+              }}
+              minDate={new Date()}
+            />
+          )}
+
+          {showCalendar ? null : (
+            <>
+              <View style={styles.dropdownContainer}>
+                <Text
+                  style={styles.label}
+                  onPress={() => generateRandomTimeSlots()}>
+                  Select Slot:
+                </Text>
+                <Dropdown
+                  style={[
+                    styles.inputField,
+                    isFocus && {borderWidth: 0.5},
+                    !selectedTimeSlot && styles.errorBorder,
+                  ]}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  data={timeSlotss}
+                  search
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder="Select Slot"
+                  searchPlaceholder="Search..."
+                  value={selectedTimeSlot}
+                  onFocus={() => setIsFocus(true)}
+                  onBlur={() => setIsFocus(false)}
+                  onChange={item => {
+                    setSelectedTimeSlot(item.value);
+                    setIsFocus(false);
+                  }}
+                />
+              </View>
+              <TouchableOpacity
+                style={styles.submitButton}
+                onPress={handleSubmit}
+                disabled={isLoading}>
+                <Text style={styles.submitButtonText}>
+                  {isLoading ? 'Submitting...' : 'Submit'}
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </View>
     </View>
@@ -115,6 +177,9 @@ const Reschedule = ({ cartID, closeModal }) => {
 export default Reschedule;
 
 const styles = StyleSheet.create({
+  errorBorder: {
+    borderColor: '#b48e8e',
+  }, // border color red
   mainView: {
     flex: 1,
     justifyContent: 'center',
@@ -125,9 +190,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 5,
     padding: hp(1),
-    width: wp(95),
+    width: wp(100),
+    alignItems: 'center',
   },
   d_Flex: {
+    width: wp(95),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -140,13 +207,10 @@ const styles = StyleSheet.create({
   },
   closeIcon: {
     fontSize: hp(5),
-    padding: 8,
+    padding: 3,
     backgroundColor: '#dfeefc',
     color: '#1263AC',
     borderRadius: wp(40),
-  },
-  formContainer: {
-    marginTop: hp(1),
   },
   label: {
     fontSize: hp(1.8),
@@ -167,12 +231,25 @@ const styles = StyleSheet.create({
   dropdownContainer: {
     width: wp(95),
     marginTop: hp(1),
+  },
+  dropdown: {
+    marginTop: hp(1),
     borderRadius: 5,
     borderColor: 'gray',
     borderWidth: 0.7,
   },
-  dropdownInput: {
-    borderBottomWidth: 0,
+  placeholderStyle: {
+    fontSize: 14,
+    color: 'gray',
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+    color: '#8E8E8E',
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
+    color: '#8E8E8E',
   },
   submitButton: {
     width: wp(95),
