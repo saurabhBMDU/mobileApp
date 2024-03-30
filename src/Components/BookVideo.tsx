@@ -161,11 +161,8 @@ const BookVideo = (props: any) => {
                 timeSlot,
                 timeSlotoffline,
             }
-<<<<<<< HEAD
             // console.log(obj)
             // navigation.navigate("PaymentFail")
-=======
->>>>>>> 151628aff6e5b7efeddeb364b5817269205afe69
             let { data: res } = await addAppointments(obj);
             console.log("here 2", JSON.stringify(res, null, 2))
             if (res.appointment.status == "pending") {

@@ -616,7 +616,6 @@ const Appointment = () => {
                     data={appointmentsArr}
                     ListEmptyComponent={
                         <>
-<<<<<<< HEAD
                             {
                                 loading ?
                                     <View style={styles.mainView}>
@@ -640,7 +639,6 @@ const Appointment = () => {
                                         }
                                     </View>
                             }
-=======
                             {loading ? (
                                 <View style={styles.mainView}>
                                     <Pressable
@@ -686,7 +684,6 @@ const Appointment = () => {
                                     )}
                                 </View>
                             )}
->>>>>>> 151628aff6e5b7efeddeb364b5817269205afe69
                         </>
                     }
                     removeClippedSubviews={true}
