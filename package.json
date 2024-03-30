@@ -43,6 +43,7 @@
     "react-native-document-picker": "^9.0.1",
     "react-native-element-dropdown": "^2.10.0",
     "react-native-fast-image": "^8.6.3",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-modal": "^13.0.1",
     "react-native-modal-datetime-picker": "^17.1.0",
     "react-native-push-notification": "^8.1.1",
