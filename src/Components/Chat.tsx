@@ -848,7 +848,8 @@ export default function Chat(props: any) {
           style={{
             width: width,
             height: hp(7),
-            backgroundColor: '#F1F8FF',
+            // backgroundColor: '#F1F8FF',
+           backgroundColor: '#1263AC',
             paddingLeft: wp(3),
             paddingRight: wp(4),
             alignItems: 'center',
@@ -864,7 +865,7 @@ export default function Chat(props: any) {
             <Text
               style={{
                 fontSize: hp(2),
-                color: 'black',
+                color: '#fff',
                 fontFamily: mainFontBold,
                 textTransform: 'capitalize',
               }}>
@@ -882,7 +883,7 @@ export default function Chat(props: any) {
             <Image
               source={require('../../assets/images/close.png')}
               style={{
-                tintColor: 'black',
+                tintColor: '#fff',
                 height: wp(4),
                 width: wp(4),
                 resizeMode: 'contain',
