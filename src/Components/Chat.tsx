@@ -913,7 +913,7 @@ export default function Chat(props: any) {
                     style={{
                       width: width,
                       // paddingTop: hp(1),
-                      paddingBottom: hp(2),
+                      // paddingBottom: hp(2),
                       backgroundColor: '#EFE6DD',
                       alignSelf: 'center',
                       // paddingLeft: wp(1),   
@@ -1145,9 +1145,9 @@ export default function Chat(props: any) {
         </View> */}
 
 
-        <View style={{ position: 'absolute', bottom:10, width: '100%', backgroundColor: '#EFE6DD', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <View style={{ width: '75%' }}>
-            <View style={{ backgroundColor: 'white', borderRadius: 15, margin: 20 }}>
+        <View style={{ position: 'absolute', bottom:10, width: '100%', backgroundColor: '#EFE6DD', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',}}>
+          <View style={{ width: '75%',}}>
+            <View style={{ backgroundColor: 'white', borderRadius: 15}}>
               <TextInput
                 placeholder="Message..."
                 placeholderTextColor={'gray'}
