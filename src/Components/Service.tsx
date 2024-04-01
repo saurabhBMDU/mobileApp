@@ -7,6 +7,7 @@ import Headerr from '../ReuseableComp/Headerr';
 import { getServiceBookings } from '../Services/serviceOrder.service';
 import { generateFilePath } from '../Services/url.service';
 import { toastError } from '../utils/toast.utils';
+import { deleteJwt, isUserLoggedIn } from '../Services/user.service';
 
 const { height, width } = Dimensions.get('window')
 
@@ -17,6 +18,41 @@ const Service = () => {
 
     const [actvbtn, setActvbtn] = useState('used')
 
+
+
+  //check user is logged in or not 
+  
+  const handleLogout = async () => {
+    try {
+      await deleteJwt();
+    } catch (err) {
+      toastError(err);
+    }
+  };
+
+
+  useEffect(() => {
+    CheckIsUserLoggedIn();
+  },[])
+
+
+
+  const CheckIsUserLoggedIn = async () => {
+    try {
+      const {data: res}: any = await isUserLoggedIn();
+      console.log('response from backend vikram',res)
+      if (res.status == false) {
+        handleLogout()
+        console.log('response from backend',res)
+        throw new Error(res.error);
+      }
+    } catch (err) {
+      toastError(err);
+    }
+  };
+    
+
+  
     const serviceData = [
         {
             name: 'Ritesh',

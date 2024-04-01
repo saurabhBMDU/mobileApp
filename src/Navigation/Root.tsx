@@ -26,12 +26,13 @@ import TermAndC from '../t&c/TermAndC';
 import Write_Prescription from '../Components/Write_Prescription';
 import PayementScreen from '../paymentScreen/PayementScreen';
 import ClintPayment from '../ReuseableComp/ClintPayment';
-import { getJwt, getUser } from '../Services/user.service';
+import { deleteJwt, getJwt, getUser, isUserLoggedIn } from '../Services/user.service';
 import BottamTab from '../TabNavigators/BottamTab';
 import { useLinkTo } from '@react-navigation/native';
 import ForgotPassword from '../Components/ForgotPassword';
 import PaymentFail from '../paymentScreen/PaymentFail';
 import Abouts_dr from '../Components/dr_full_detail/Abouts_dr';
+import { toastError } from '../utils/toast.utils';
 
 const Stack = createNativeStackNavigator();
 
@@ -39,6 +40,39 @@ const Stack = createNativeStackNavigator();
 
 export default function Root() {
 
+
+
+
+  const handleLogout = async () => {
+    try {
+      if(isAuthorized){
+      await deleteJwt();
+      setIsAuthorized(false);
+      }
+    } catch (err) {
+      toastError(err);
+    }
+  };
+
+  useEffect(() => {
+    CheckIsUserLoggedIn();
+  },[])
+
+
+
+  const CheckIsUserLoggedIn = async () => {
+    try {
+      const {data: res}: any = await isUserLoggedIn();
+      console.log('response from backend vikram',res)
+      if (res.status == false) {
+        handleLogout()
+        console.log('response from backend',res)
+        throw new Error(res.error);
+      }
+    } catch (err) {
+      toastError(err);
+    }
+  };
 
 
   const linkTo = useLinkTo()

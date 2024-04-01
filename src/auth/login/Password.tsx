@@ -11,6 +11,7 @@ import {
   View,
   TouchableWithoutFeedback,
   Keyboard,
+  Modal,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -18,7 +19,7 @@ import {
 } from 'react-native-responsive-screen';
 import {LoginContext, UserDataContext} from '../../../App';
 import {AuthContext} from '../../../App';
-import {loginUser, setJwt} from '../../Services/user.service';
+import {loginUser, setJwt,ProceedToLoginUser} from '../../Services/user.service';
 import {toastError} from '../../utils/toast.utils';
 const {height, width} = Dimensions.get('window');
 import Openeye_closeEye from 'react-native-vector-icons/Ionicons';
@@ -33,6 +34,7 @@ const Password = (props: any) => {
   const [isAuthorized, setIsAuthorized] = useContext<any>(AuthContext);
   const [user, setUser] = useContext(LoginContext);
   const [userData, setUserData] = useContext(UserDataContext);
+  const [showModal, setShowModal] = useState(false);
 
   const handleLogin = async () => {
     try {
@@ -47,7 +49,12 @@ const Password = (props: any) => {
 
       const {data: res}: any = await loginUser(obj);
       if (res.status == false) {
-        throw new Error(res.error);
+        if(res.error === 'User already login in other device'){
+          showModalPopup();
+          console.log('response from backend',res)
+        }else{
+          throw new Error(res.error);
+       }
       }
       if (res.token) {
         await setJwt(res?.token, res?.user);
@@ -59,13 +66,53 @@ const Password = (props: any) => {
       toastError(err);
     }
   };
+
+
+
+
+  const ProceedToLogin = async () => {
+    try {
+      if (password == '') {
+        toastError('Password is mandatory !!!');
+        return;
+      }
+      let obj = {
+        email: props.route.params.data,
+        password,
+      };
+      const {data: res}: any = await ProceedToLoginUser(obj);
+      if (res.status == false) {
+        console.log('response from backend',res)
+        throw new Error(res.error);
+      }
+      if (res.token) {
+        closeModal();
+        await setJwt(res?.token, res?.user);
+        setUser(res?.user?.role);
+        setUserData(JSON.stringify(res?.user));
+        setIsAuthorized(true);
+      }
+    } catch (err) {
+      toastError(err);
+    }
+  };
+
+
+  const showModalPopup = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <View style={{flex: 1, width: width}}>
       <ImageBackground
         // source={require('../../../assets/images/background_img.png')}
         // resizeMode='contain'
         // style={{ flex: 1, width: width, backgroundColor: "#1263AC" }}
-        source={require('../../../assets/images/LoginPageNew.png')}
+        source={require('../../../assets/images/feverNewLogo.png')}
         resizeMode="stretch"
         // style={{
           // width: wp(70),
@@ -184,6 +231,56 @@ const Password = (props: any) => {
       </TouchableWithoutFeedback>
 
       </ImageBackground>
+
+      {/* <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showModal}
+        onRequestClose={() => closeModal()}
+      >
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+          
+          <View style={{ backgroundColor: '#ececec', padding: 20, borderRadius: 10, width: '80%' }}>
+          <Lock name="lock" style={{ height: wp(5.5), width: wp(5.5), color: 'grey', fontSize: hp(2.8) , alignSelf:"center",marginBottom:10, }} />
+            <Text style={{ fontSize: 18, fontWeight:'normal', textAlign: 'center', marginBottom: 20 }}>Are you sure you want to log out from another device and log in here?</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <TouchableOpacity onPress={() => closeModal()} style={{ padding: 10, backgroundColor: '#fa1640', borderRadius: 5 }}>
+                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { closeModal(); handleLogin(); }} style={{ padding: 10, backgroundColor: '#1263AC', borderRadius: 5 }}>
+                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Proceed</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal> */}
+
+
+
+<Modal
+  animationType="slide"
+  transparent={true}
+  visible={showModal}
+  onRequestClose={() => closeModal()}
+>
+  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+    <View style={{ backgroundColor: '#ececec', padding: 20, borderRadius: 10, width: '80%' }}>
+      <Lock name="lock" style={{ height: wp(5.5), width: wp(5.5), color: 'grey', fontSize: hp(2.8), alignSelf: "center", marginBottom: 10 }} />
+      <Text style={{ fontSize: 18, fontWeight: 'normal', textAlign: 'center', marginBottom: 20 }}>Are you sure you want to log out from another device and log in here?</Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <TouchableOpacity onPress={() => closeModal()} style={{ flex: 1, marginRight: 10, backgroundColor: '#fa1640', borderRadius: 5,padding:10 }}>
+          <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center' }}>Cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+        onPress={() => { closeModal(); ProceedToLogin(); }} style={{ flex: 1, marginLeft: 10, backgroundColor: '#1263AC', borderRadius: 5,padding:10 }}>
+          <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center' }}>Proceed</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  </View>
+</Modal>
+
+
     </View>
   );
 };

@@ -137,7 +137,7 @@ const Register = () => {
         // source={require('../../../assets/images/background_img.png')}
         // resizeMode='contain'
         // style={{ height: height, width: width, backgroundColor: "#1263AC" }}
-        source={require('../../../assets/images/final.png')}
+        source={require('../../../assets/images/feverNewLogo.png')}
         resizeMode="stretch"
         // style={{
         // width: wp(70),

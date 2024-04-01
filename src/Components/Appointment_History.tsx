@@ -11,7 +11,7 @@ import { toastError, toastSuccess } from '../utils/toast.utils';
 import { getAppointmentById, updateAppointments } from '../Services/appointments.service';
 import url, { fileurl } from '../Services/url.service';
 import { Roles } from '../utils/constant';
-import { getUser } from '../Services/user.service';
+import { deleteJwt, getUser, isUserLoggedIn } from '../Services/user.service';
 import { Calendar } from 'react-native-calendars';
 import { Dropdown } from 'react-native-element-dropdown';
 import moment from 'moment';
@@ -31,6 +31,39 @@ const Appointment_History = (props: any) => {
     const mainFontmedium = 'Montserrat-Medium';
     const maincolor = '#1263AC'
     const navigation: any = useNavigation()
+
+
+    //check user logged in or not
+
+    
+  const handleLogout = async () => {
+    try {
+      await deleteJwt();
+    } catch (err) {
+      toastError(err);
+    }
+  };
+
+
+  useEffect(() => {
+    CheckIsUserLoggedIn();
+  },[])
+
+
+
+  const CheckIsUserLoggedIn = async () => {
+    try {
+      const {data: res}: any = await isUserLoggedIn();
+      console.log('response from backend vikram',res)
+      if (res.status == false) {
+        handleLogout()
+        console.log('response from backend',res)
+        throw new Error(res.error);
+      }
+    } catch (err) {
+      toastError(err);
+    }
+  };
 
 
     const [rr, setrr] = useState("");

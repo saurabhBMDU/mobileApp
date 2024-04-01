@@ -34,7 +34,7 @@ import {
 import { SendNotification } from '../Services/notificationSevice';
 import { addSupportComplaint } from '../Services/support.service';
 import url, { generateFilePath } from '../Services/url.service';
-import { getUser } from '../Services/user.service';
+import { deleteJwt, getUser, isUserLoggedIn } from '../Services/user.service';
 import { Roles, appointmentStatus, consultationMode } from '../utils/constant';
 import { toastError, toastSuccess } from '../utils/toast.utils';
 import isEqual from 'lodash/isEqual';
@@ -56,6 +56,43 @@ const mainFontBold = 'Montserrat-Bold';
 
 const Appointment = () => {
     // checking internet connection
+
+    
+    //cheking login info
+
+    
+  const handleLogout = async () => {
+    try {
+      await deleteJwt();
+    } catch (err) {
+      toastError(err);
+    }
+  };
+
+
+  useEffect(() => {
+    CheckIsUserLoggedIn();
+  },[])
+
+
+
+  const CheckIsUserLoggedIn = async () => {
+    try {
+      const {data: res}: any = await isUserLoggedIn();
+      console.log('response from backend vikram',res)
+      if (res.status == false) {
+        handleLogout()
+        console.log('response from backend',res)
+      }else{
+        navigation.navigate("BookAppt")
+      }
+    } catch (err) {
+      toastError(err);
+    }
+  };
+
+
+
     const netInfo = useNetInfo();
     const isConnected = netInfo.isConnected;
     const [loading, setLoading] = useState(true);
@@ -585,6 +622,29 @@ const Appointment = () => {
                     data={appointmentsArr}
                     ListEmptyComponent={
                         <>
+                            {
+                                loading ?
+                                    <View style={styles.mainView}>
+                                        <Pressable style={{ display: "flex", height: hp(80), justifyContent: 'center', alignItems: 'center' }}>
+                                            <Animated.Image
+                                                source={require('../../assets/images/Logo.png')}
+                                                style={{
+                                                    resizeMode: "contain",
+                                                    height: wp(10),
+                                                    width: wp(30),
+                                                    transform: [{ scale: animation }],
+                                                }}
+                                            />
+                                        </Pressable>
+                                    </View>
+
+                                    : <View style={{ display: "flex", height: height, justifyContent: 'center', alignItems: 'center' }}>
+                                        <Text>No appointments found  </Text>
+                                        {userObj?.role == Roles.PATIENT &&
+                                            <Text style={{ color: "#fff", fontSize: wp(3.5), marginTop: hp(2), backgroundColor: '#1263AC', borderRadius: 5, padding: wp(1.5) }} onPress={() => CheckIsUserLoggedIn() }>Book Your Appointments</Text>
+                                        }
+                                    </View>
+                            }
                             {loading ? (
                                 <View style={styles.mainView}>
                                     <Pressable

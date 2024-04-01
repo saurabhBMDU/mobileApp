@@ -69,6 +69,12 @@ export const loginUser = async (obj) => {
 };
 
 
+export const ProceedToLoginUser = async (obj) => {
+  console.log("this wala........", `${url}/proceed-to-logout`)
+  return await axios.post(`${url}/proceed-to-logout`, obj);
+};
+
+
 export const sendOtp = async (obj) => {
 
   return await axios.post(`${url}/temp-register`, obj);
@@ -141,3 +147,23 @@ export const deleteJwt = async () => {
   }
   return true;
 };
+
+
+
+
+export const isUserLoggedIn = async () => {
+  console.log('isndie is uer lgged in ')
+  let response= await axios.get(`${url}/is-user-loggedIn`);
+  // console.log('is user logged in check ',response);
+  return response
+};
+
+
+
+export const AppVersioinCheck = async () => {
+  console.log('isndie is uer lgged in ')
+  let response= await axios.get(`${url}/version`);
+  // console.log('is user logged in check ',response);
+  return response
+};
+

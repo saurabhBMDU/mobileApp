@@ -538,6 +538,7 @@ import {
   Platform,
   Pressable,
   Linking,
+  Keyboard,
 } from 'react-native';
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import {
@@ -558,8 +559,10 @@ import { addAppointmentHistory } from '../Services/appointmentHistory.service';
 import { getUser } from '../Services/user.service';
 import { fileUpload } from '../Services/fileUpload.service';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'; // Import useKeyboard hook from your library
 
 import Attachment_Send_icons from 'react-native-vector-icons/MaterialCommunityIcons'; // send and attachment
+import { SendNotification, SendNotificationForMeetingCreation } from '../Services/notificationSevice';
 
 const { height, width } = Dimensions.get('window');
 export default function Chat(props: any) {
@@ -574,7 +577,8 @@ export default function Chat(props: any) {
   const mainFont = 'Montserrat-Regular';
   const mainFontBold = 'Montserrat-Bold';
   const mainFontmedium = 'Montserrat-Medium';
-  const maincolor = '#1263AC';
+  // const maincolor = '#1263AC';
+  const maincolor = '#E7FFDD'
   const [doctorName, setDoctorName] = useState('');
   const [patientName, setPatientName] = useState('');
 
@@ -671,7 +675,24 @@ export default function Chat(props: any) {
         toId: toUserId,
         type: 'text',
       });
+     
+      // SendNotificationForMeetingCreation({ appointment: tmpMessage })
+      // SendNotification({ appointment: toUserId })
 
+
+
+      await SendNotificationForMeetingCreation({ appointment: userObj._id})
+        // SendNotificationForMeetingCreation({
+        //     appointmentId: appointmentData._id,
+           
+        // })
+    
+    
+    //   let result =   await SendNotification({
+    //     appointmentId: appointmentData._id,
+    //     userId: userObj._id,
+    // });
+  
       // dispatch(addHistory(data._id, { message: messages, toId: toUserId }));
     } catch (error) {
       toastError(error);
@@ -774,6 +795,38 @@ export default function Chat(props: any) {
     }
   };
 
+
+
+
+
+
+
+
+  // const flatListRef = useRef<FlatList>(null);
+  const [keyboardOffset, setKeyboardOffset] = useState<number>(0);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', keyboardDidShow);
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', keyboardDidHide);
+
+    // Clean up listeners
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  const keyboardDidShow = (event: KeyboardEvent): void => {
+    setKeyboardOffset(event.endCoordinates.height);
+    flatListRef.current?.scrollToEnd({ animated: true });
+  };
+
+  const keyboardDidHide = (): void => {
+    setKeyboardOffset(0);
+  };
+
+ 
+
   return (
     <View style={{
       height: height,
@@ -783,18 +836,20 @@ export default function Chat(props: any) {
       <View
         style={{
           width: width,
-          height: height - wp(5),
-
+          // height: height - wp(5),
+          height: height,
           // height: height - wp(5) - hp(10),
           // backgroundColor: '#E2E2E2',
-          backgroundColor: 'white',
+          // backgroundColor: 'white',
+          backgroundColor: '#EFE6DD',
           justifyContent: 'space-between',
         }}>
         <View
           style={{
             width: width,
             height: hp(7),
-            backgroundColor: '#F1F8FF',
+            // backgroundColor: '#F1F8FF',
+           backgroundColor: '#1263AC',
             paddingLeft: wp(3),
             paddingRight: wp(4),
             alignItems: 'center',
@@ -810,7 +865,7 @@ export default function Chat(props: any) {
             <Text
               style={{
                 fontSize: hp(2),
-                color: 'black',
+                color: '#fff',
                 fontFamily: mainFontBold,
                 textTransform: 'capitalize',
               }}>
@@ -828,7 +883,7 @@ export default function Chat(props: any) {
             <Image
               source={require('../../assets/images/close.png')}
               style={{
-                tintColor: 'black',
+                tintColor: '#fff',
                 height: wp(4),
                 width: wp(4),
                 resizeMode: 'contain',
@@ -839,8 +894,9 @@ export default function Chat(props: any) {
         {/* {/  chat render screen /} */}
         <View
           style={{
-            marginBottom: height - wp(187),
-            backgroundColor: 'white',
+            // marginBottom: height - wp(187),
+            backgroundColor: '#EFE6DD',
+            marginBottom:149,
           }}
         >
           <FlatList
@@ -850,19 +906,21 @@ export default function Chat(props: any) {
               return (
                 <View
                   style={{
-                    backgroundColor: 'black',
-
+                    backgroundColor: '#EFE6DD',
                   }}
                 >
                   <View
                     style={{
                       width: width,
                       // paddingTop: hp(1),
-                      paddingBottom: hp(2),
-                      backgroundColor: 'white',
+                      // paddingBottom: hp(2),
+                      backgroundColor: '#EFE6DD',
                       alignSelf: 'center',
-                      paddingLeft: wp(1),
-
+                      // paddingLeft: wp(1),   
+                      paddingTop:10,
+                      // padding:10 
+                      paddingRight:10,
+                      paddingLeft:10,
                     }}>
                     {getFromUser(item) === 'user' && (
                       <View
@@ -886,12 +944,14 @@ export default function Chat(props: any) {
                               borderBottomRightRadius: 1,
                               marginLeft: wp(1),
                               alignSelf: 'flex-end',
+                              marginRight: wp(2),
                             }}>
                             <Text
                               style={{
-                                color: '#fff',
-                                fontSize: hp(1.5),
-                                fontFamily: mainFont,
+                                color: 'black',
+                                fontSize: hp(2),
+                                // fontFamily: mainFont,
+                                // fontWeight:'400'
                               }}>
                               {item.message}
                             </Text>
@@ -926,10 +986,12 @@ export default function Chat(props: any) {
                         {/* {/ date time /} */}
                         <Text
                           style={{
-                            color: '#4A4040B2',
+                            color:'#453f3b',
                             fontSize: hp(1.2),
                             fontFamily: mainFont,
                             alignSelf: 'flex-end',
+                            fontWeight:"bold",
+                            marginRight: wp(2),
                           }}>
                           {moment(item.timestamp).format('DD/MM/YY hh:mm a')}
                         </Text>
@@ -949,19 +1011,21 @@ export default function Chat(props: any) {
                         {!item.type || item.type == 'text' ? (
                           <View
                             style={{
-                              backgroundColor: 'gray',
+                              backgroundColor: 'white',
                               padding: wp(3.8),
                               borderTopLeftRadius: 1,
                               borderTopRightRadius: 30,
                               borderBottomLeftRadius: 30,
                               borderBottomRightRadius: 30,
                               alignSelf: 'flex-start',
+                              marginLeft: wp(2),
                             }}>
                             <Text
                               style={{
-                                color: '#fff',
-                                fontSize: hp(1.7),
-                                fontFamily: mainFont,
+                                color: 'black',
+                                fontSize: hp(2),
+                                // fontFamily: mainFont,
+                                // fontWeight:"650"
                               }}>
                               {item.message}
                             </Text>
@@ -995,9 +1059,11 @@ export default function Chat(props: any) {
                         )}
                         <Text
                           style={{
-                            color: '#4A4040B2',
+                            color: '#453f3b',
                             fontSize: hp(1.5),
                             fontFamily: mainFont,
+                            fontWeight:'bold',
+                            marginLeft: wp(2),
                           }}>
                           {moment(item.timestamp).format('DD/MM/YY hh:mm a')}
                         </Text>
@@ -1007,15 +1073,18 @@ export default function Chat(props: any) {
                 </View>
               );
             }}
+            ListFooterComponent={<View style={{ height: keyboardOffset }} />} // Add empty 
             keyExtractor={(item, index) => index.toString()}
             onContentSizeChange={scrollToBottom} // Automatically scrolls to bottom when content size changes
             onLayout={scrollToBottom}
           />
         </View>
+
+        
       </View>
 
       <KeyboardAvoidingView
-        keyboardVerticalOffset={hp(0)}
+        // keyboardVerticalOffset={hp(10)}
         behavior={'position'}
         style={{
           // backgroundColor: 'red'
@@ -1076,13 +1145,13 @@ export default function Chat(props: any) {
         </View> */}
 
 
-        <View style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'white', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <View style={{ width: '75%' }}>
-            <View style={{ backgroundColor: 'white', borderRadius: 15, margin: 20 }}>
+        <View style={{ position: 'absolute', bottom:10, width: '100%', backgroundColor: '#EFE6DD', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',}}>
+          <View style={{ width: '75%',}}>
+            <View style={{ backgroundColor: 'white', borderRadius: 15}}>
               <TextInput
                 placeholder="Message..."
                 placeholderTextColor={'gray'}
-                style={{ color: 'black', padding: 10, borderRadius: 10, borderWidth: 1 }}
+                style={{ color: 'black', padding: 10, borderRadius:20, borderWidth: 1 }}
                 value={userMessage}
                 onChangeText={text => setUserMessage(text)}
               />
@@ -1091,10 +1160,10 @@ export default function Chat(props: any) {
 
           <View style={{ width: '25%', flexDirection: 'row', justifyContent: 'space-between', marginRight: 10 }}>
             <TouchableOpacity onPress={() => handleDocumentPicker()}>
-              <Attachment_Send_icons name="attachment" style={{ fontSize: wp(9), color: maincolor }} />
+              <Attachment_Send_icons name="attachment" style={{ fontSize: wp(9), color: '#1263AC' }} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleSubmit()}>
-              <Attachment_Send_icons name="send" style={{ fontSize: wp(9), color: maincolor, marginRight: 3 }} />
+              <Attachment_Send_icons name="send" style={{ fontSize: wp(9), color: '#1263AC', marginRight: 3 }} />
             </TouchableOpacity>
           </View>
         </View>

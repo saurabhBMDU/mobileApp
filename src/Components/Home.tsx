@@ -32,7 +32,7 @@ import {getDoctors} from '../Services/doctor.service';
 import {getServicesPaginated} from '../Services/services.service';
 import {getstateAndCities} from '../Services/stateCity.service';
 import {generateFilePath} from '../Services/url.service';
-import {getUser, saveTokenToDatabase} from '../Services/user.service';
+import {deleteJwt, getUser, isUserLoggedIn, saveTokenToDatabase} from '../Services/user.service';
 import {getWallet} from '../Services/wallet.service';
 import {Roles} from '../utils/constant';
 import {toastError} from '../utils/toast.utils';
@@ -165,6 +165,40 @@ const Home = () => {
     }
   };
 
+
+
+  const handleLogout = async () => {
+    try {
+      if(isAuthorized){
+      await deleteJwt();
+      setIsAuthorized(false);
+      }
+    } catch (err) {
+      toastError(err);
+    }
+  };
+
+
+  useEffect(() => {
+    CheckIsUserLoggedIn();
+  },[])
+
+
+
+  const CheckIsUserLoggedIn = async () => {
+    try {
+      const {data: res}: any = await isUserLoggedIn();
+      console.log('response from backend vikram',res)
+      if (res.status == false) {
+        handleLogout()
+        console.log('response from backend',res)
+        throw new Error(res.error);
+      }
+    } catch (err) {
+      toastError(err);
+    }
+  };
+
   const handleGetDashboard = async () => {
     try {
       let {data: res}: any = await getDashboard();
@@ -214,6 +248,7 @@ const Home = () => {
       }
     } catch (err) {
       // toastError(err)
+      alert('error in home page ')
     }
   };
   const handleGetWallet = async () => {

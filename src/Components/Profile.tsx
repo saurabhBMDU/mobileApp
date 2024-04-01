@@ -24,6 +24,7 @@ import { generateFilePath } from '../Services/url.service';
 import {
   deleteJwt,
   getUser,
+  isUserLoggedIn,
   setUser,
   updateUserStatus,
 } from '../Services/user.service';
@@ -58,10 +59,49 @@ const Profile = () => {
   const [paymentModal, setPaymentModal] = useState(false);
   const [amount, setAmount] = useState('');
 
-  const handleLogout = async () => {
+
+
+  //to check user is loggged in or not 
+
+  
+  const handleLogout2 = async () => {
     try {
+      if(isAuthorized){
       await deleteJwt();
       setIsAuthorized(false);
+      }
+    } catch (err) {
+      toastError(err);
+    }
+  };
+
+
+  useEffect(() => {
+    CheckIsUserLoggedIn();
+  },[])
+
+
+
+  const CheckIsUserLoggedIn = async () => {
+    try {
+      const {data: res}: any = await isUserLoggedIn();
+      console.log('response from backend vikram',res)
+      if (res.status == false) {
+        handleLogout2()
+        console.log('response from backend',res)
+        throw new Error(res.error);
+      }
+    } catch (err) {
+      toastError(err);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      if(isAuthorized){
+      await deleteJwt();
+      setIsAuthorized(false);
+      }
     } catch (err) {
       toastError(err);
     }

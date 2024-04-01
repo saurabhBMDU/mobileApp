@@ -60,7 +60,7 @@ const Login = () => {
       </View>
       <ImageBackground
         // source={require('../../../assets/images/LoginPageNew.png')}
-        source={require('../../../assets/images/LoginPageNew.png')}
+        source={require('../../../assets/images/feverNewLogo.png')}
         resizeMode='stretch'
         // style={{
         //   width: wp(70),

@@ -17,6 +17,7 @@ import Calendar_icons from 'react-native-vector-icons/FontAwesome5';
 
 const { height, width } = Dimensions.get('window');
 import { useNetInfo } from '@react-native-community/netinfo';  // <--- internet connection
+import { deleteJwt, isUserLoggedIn } from '../Services/user.service';
 
 
 const Service = () => {
@@ -29,6 +30,37 @@ const Service = () => {
     const maincolor = '#1263AC'
 
     const [actvbtn, setActvbtn] = useState('used')
+    //to chekc user is logged out 
+    
+  const handleLogout = async () => {
+    try {
+      await deleteJwt();
+    } catch (err) {
+      toastError(err);
+    }
+  };
+
+
+  useEffect(() => {
+    CheckIsUserLoggedIn();
+  },[])
+
+
+
+  const CheckIsUserLoggedIn = async () => {
+    try {
+      const {data: res}: any = await isUserLoggedIn();
+      console.log('response from backend vikram',res)
+      if (res.status == false) {
+        handleLogout()
+        console.log('response from backend',res)
+        throw new Error(res.error);
+      }
+    } catch (err) {
+      toastError(err);
+    }
+  };
+
 
     const [serviceRequests, setServiceRequests] = useState([]);
     const focused = useIsFocused();
