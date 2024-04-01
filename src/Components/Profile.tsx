@@ -110,6 +110,7 @@ const Profile = () => {
   const handleGetAndSetUser = async () => {
     let userData = await getUser();
     if (userData) {
+      console.log('user data in profile section',userData)
       setUserObj(userData);
     }
   };
@@ -545,7 +546,9 @@ const Profile = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('ReturnandRefundPolicy')}
+            // onPress={() => navigation.navigate('ReturnandRefundPolicy')}
+            onPress={() => navigation.navigate('faq')}
+            
             style={styles.clickbleLines}>
             <View
               style={{
@@ -571,7 +574,9 @@ const Profile = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('PAC')}
+            // onPress={() => navigation.navigate('PAC')}
+            onPress={() => navigation.navigate('ProfileTemrs')}
+            //ProfileTemrs
             style={styles.clickbleLines}>
             <View
               style={{

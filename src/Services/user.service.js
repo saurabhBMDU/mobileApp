@@ -75,6 +75,13 @@ export const ProceedToLoginUser = async (obj) => {
 };
 
 
+// using this funciton in profile terms and condition file
+export const GetTeam = async (obj) => {
+  console.log("this wala........", `${url}/team`)
+  return await axios.get(`${url}/team`);
+};
+
+
 export const sendOtp = async (obj) => {
 
   return await axios.post(`${url}/temp-register`, obj);

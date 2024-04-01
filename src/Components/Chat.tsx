@@ -1147,7 +1147,7 @@ export default function Chat(props: any) {
 
         <View style={{ position: 'absolute', bottom:10, width: '100%', backgroundColor: '#EFE6DD', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',}}>
           <View style={{ width: '75%',}}>
-            <View style={{ backgroundColor: 'white', borderRadius: 15}}>
+            <View style={{ backgroundColor: 'white', borderRadius: 15,marginLeft:5,}}>
               <TextInput
                 placeholder="Message..."
                 placeholderTextColor={'gray'}
