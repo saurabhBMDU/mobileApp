@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useContext, useState, useEffect } from 'react';
-import { Dimensions, Image, Text, View } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { LoginContext } from '../../App';
 import Appointment from '../Components/Appointment';
@@ -48,7 +48,7 @@ const BottamTab = () => {
 
     return (
         <Botmtab.Navigator screenOptions={{
-            tabBarStyle: { height: hp(7.2) },
+            tabBarStyle: { height: hp(7.2), width: wp(100) },
             tabBarShowLabel: false,
             headerShown: false,
 
@@ -57,31 +57,16 @@ const BottamTab = () => {
             <Botmtab.Screen name='Home' component={Home}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <View style={{
-                            height: 60
-                        }}>
-                            <View style={{
-                                height: 3,
+                        <View style={styles.optionMainView}>
+                            <View style={[styles.focusedDiv, {
                                 backgroundColor: focused ? '#1263AC' : "",
-                                width: 80,
-                            }}></View>
+                            }]}></View>
                             <Home_icons
                                 name="home"
-                                size={23}
                                 color={focused ? '#1263AC' : 'grey'}
-                                style={{
-                                    height: wp(6),
-                                    width: wp(6),
-                                    alignSelf: 'center',
-                                    marginTop: 5
-                                }}
+                                style={styles.iconsStyle}
                             />
-                            <Text style={{
-                                color: focused ? '#1263AC' : 'grey',
-                                alignSelf: 'center',
-                                textAlign: 'center',
-                                fontSize: 12
-                            }}>
+                            <Text style={[styles.textStyling, { color: focused ? '#1263AC' : 'grey', }]}>
                                 Home
                             </Text>
                         </View>
@@ -92,32 +77,17 @@ const BottamTab = () => {
             {user == 'PATIENT' && <Botmtab.Screen name='Service' component={Service}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <View style={{
-                            height: 60
-                        }}>
-                            <View style={{
-                                height: 3,
+                        <View style={styles.optionMainView}>
+
+                            <View style={[styles.focusedDiv, {
                                 backgroundColor: focused ? '#1263AC' : "",
-                                width: 80,
-                                // justifyContent:'center'
-                            }}></View>
+                            }]}></View>
                             <HisTory_icon
                                 name="history"
-                                size={25}
                                 color={focused ? '#1263AC' : 'grey'}
-                                style={{
-                                    height: wp(6),
-                                    width: wp(6),
-                                    alignSelf: 'center',
-                                    marginTop: 5
-                                }}
+                                style={styles.iconsStyle}
                             />
-                            <Text style={{
-                                color: focused ? '#1263AC' : 'grey',
-                                alignSelf: 'center',
-                                textAlign: 'center',
-                                fontSize: 12
-                            }}>
+                            <Text style={[styles.textStyling, { color: focused ? '#1263AC' : 'grey', }]}>
                                 History
                             </Text>
                         </View>
@@ -128,32 +98,17 @@ const BottamTab = () => {
             {user == 'PATIENT' && <Botmtab.Screen name='CategoryStack' component={CategoryStack}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <View style={{
-                            height: 60
-                        }}>
-                            <View style={{
-                                height: 3,
+                        <View style={styles.optionMainView}>
+
+                            <View style={[styles.focusedDiv, {
                                 backgroundColor: focused ? '#1263AC' : "",
-                                width: 80,
-                                // justifyContent:'center'
-                            }}></View>
+                            }]}></View>
                             <Services_icons
                                 name="medical-services"
-                                size={25}
                                 color={focused ? '#1263AC' : 'grey'}
-                                style={{
-                                    height: wp(6),
-                                    width: wp(6),
-                                    alignSelf: 'center',
-                                    marginTop: 5
-                                }}
+                                style={styles.iconsStyle}
                             />
-                            <Text style={{
-                                color: focused ? '#1263AC' : 'grey',
-                                alignSelf: 'center',
-                                textAlign: 'center',
-                                fontSize: 12
-                            }}>
+                            <Text style={[styles.textStyling, { color: focused ? '#1263AC' : 'grey', }]}>
                                 Services
                             </Text>
                         </View>
@@ -164,32 +119,17 @@ const BottamTab = () => {
             <Botmtab.Screen name='Appointment' component={Appointment}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <View style={{
-                            height: 60
-                        }}>
-                            <View style={{
-                                height: 3,
+                        <View style={styles.optionMainView}>
+
+                            <View style={[styles.focusedDiv, {
                                 backgroundColor: focused ? '#1263AC' : "",
-                                width: 80,
-                                // justifyContent:'center'
-                            }}></View>
+                            }]}></View>
                             <Appointement_icons
                                 name="card-account-details-outline"
-                                size={21}
                                 color={focused ? '#1263AC' : 'grey'}
-                                style={{
-                                    height: wp(6),
-                                    width: wp(6),
-                                    alignSelf: 'center',
-                                    marginTop: 5
-                                }}
+                                style={styles.iconsStyle}
                             />
-                            <Text style={{
-                                color: focused ? '#1263AC' : 'grey',
-                                alignSelf: 'center',
-                                textAlign: 'center',
-                                fontSize: 12
-                            }}>
+                            <Text style={[styles.textStyling, { color: focused ? '#1263AC' : 'grey', }]}>
                                 Appointment
                             </Text>
                         </View>
@@ -201,32 +141,17 @@ const BottamTab = () => {
                 <Botmtab.Screen name='Referal' component={Referal}
                     options={{
                         tabBarIcon: ({ focused }) => (
-                            <View style={{
-                                height: 60
-                            }}>
-                                <View style={{
-                                    height: 3,
+                            <View style={styles.optionMainView}>
+
+                                <View style={[styles.focusedDiv, {
                                     backgroundColor: focused ? '#1263AC' : "",
-                                    width: 80,
-                                    // justifyContent:'center'
-                                }}></View>
+                                }]}></View>
                                 <Refral_icons
                                     name="share-from-square"
-                                    size={21}
                                     color={focused ? '#1263AC' : 'grey'}
-                                    style={{
-                                        height: wp(6),
-                                        width: wp(6),
-                                        alignSelf: 'center',
-                                        marginTop: 5
-                                    }}
+                                    style={styles.iconsStyle}
                                 />
-                                <Text style={{
-                                    color: focused ? '#1263AC' : 'grey',
-                                    alignSelf: 'center',
-                                    textAlign: 'center',
-                                    fontSize: 12
-                                }}>
+                                <Text style={[styles.textStyling, { color: focused ? '#1263AC' : 'grey', }]}>
                                     Referal
                                 </Text>
                             </View>
@@ -239,32 +164,17 @@ const BottamTab = () => {
                 <Botmtab.Screen name='Transaction' component={Transactions}
                     options={{
                         tabBarIcon: ({ focused }) => (
-                            <View style={{
-                                height: 60
-                            }}>
-                                <View style={{
-                                    height: 3,
+                            <View style={styles.optionMainView}>
+
+                                <View style={[styles.focusedDiv, {
                                     backgroundColor: focused ? '#1263AC' : "",
-                                    width: 80,
-                                    // justifyContent:'center'
-                                }}></View>
+                                }]}></View>
                                 <Transfer_icons
                                     name="arrow-right-arrow-left"
-                                    size={23}
                                     color={focused ? '#1263AC' : 'grey'}
-                                    style={{
-                                        height: wp(6),
-                                        width: wp(6),
-                                        alignSelf: 'center',
-                                        marginTop: 5
-                                    }}
+                                    style={styles.iconsStyle}
                                 />
-                                <Text style={{
-                                    color: focused ? '#1263AC' : 'grey',
-                                    alignSelf: 'center',
-                                    textAlign: 'center',
-                                    fontSize: 12
-                                }}>
+                                <Text style={[styles.textStyling, { color: focused ? '#1263AC' : 'grey', }]}>
                                     Transaction
                                 </Text>
                             </View>
@@ -276,32 +186,16 @@ const BottamTab = () => {
             <Botmtab.Screen name='Profile' component={Profile}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <View style={{
-                            height: 60
-                        }}>
-                            <View style={{
-                                height: 3,
+                        <View style={styles.optionMainView}>
+                            <View style={[styles.focusedDiv, {
                                 backgroundColor: focused ? '#1263AC' : "",
-                                width: 80,
-                                // justifyContent:'center'
-                            }}></View>
+                            }]}></View>
                             <Uesr_icons
                                 name="user-o"
-                                size={22}
                                 color={focused ? '#1263AC' : 'grey'}
-                                style={{
-                                    height: wp(6),
-                                    width: wp(6),
-                                    alignSelf: 'center',
-                                    marginTop: 5
-                                }}
+                                style={styles.iconsStyle}
                             />
-                            <Text style={{
-                                color: focused ? '#1263AC' : 'grey',
-                                alignSelf: 'center',
-                                textAlign: 'center',
-                                fontSize: 12
-                            }}>
+                            <Text style={[styles.textStyling, { color: focused ? '#1263AC' : 'grey', }]}>
                                 Profile
                             </Text>
                         </View>
@@ -313,4 +207,24 @@ const BottamTab = () => {
     )
 }
 
-export default BottamTab
+export default BottamTab;
+const styles = StyleSheet.create({
+    optionMainView: {
+        height: hp(7.5),
+        width: wp(20)
+    },
+    focusedDiv: {
+        height: hp(.30),
+        width: wp(20),
+    },
+    textStyling: {
+        alignSelf: 'center',
+        textAlign: 'center',
+        fontSize: hp(1.50)
+    },
+    iconsStyle: {
+        alignSelf: 'center',
+        marginTop: hp(.5),
+        fontSize: hp(2.9),
+    }
+})
