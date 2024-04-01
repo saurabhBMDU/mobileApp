@@ -2,8 +2,6 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import moment from 'moment';
 import React, { useContext, useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
     Dimensions,
     FlatList,
     Image,
@@ -17,6 +15,7 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback,
     View,
+    Alert,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import Modal from 'react-native-modal';
@@ -47,13 +46,11 @@ import Status_icons from 'react-native-vector-icons/FontAwesome6';
 import Calendar_icons from 'react-native-vector-icons/FontAwesome5';
 import Walkink_Video_icons from 'react-native-vector-icons/FontAwesome5';
 import FeedBack from '../allModals/FeedBack';
-import Cress_icons from 'react-native-vector-icons/Entypo';
-import Check_icons from 'react-native-vector-icons/FontAwesome6';
 
 import { useNetInfo } from '@react-native-community/netinfo'; // <--- internet connection
 import InterNetError from '../noInterNet/InterNetError';
 import Reschedule from '../allModals/Reschedule';
-import Complete_followup_moda from '../allModals/Complete_followup_moda';
+import CompleteFollowupModal from '../allModals/CompleteFollowupModal';
 const { height, width } = Dimensions.get('window');
 const mainFontBold = 'Montserrat-Bold';
 
@@ -374,25 +371,34 @@ const Appointment = () => {
         doctor: {
             _id: string;
         };
-        mode:string;
+        mode: string;
     }
-    const [rescheduleId, setRescheduleId] = useState<string>('');
+    //  this is common code for the Reschedule btn
+    const [pacentID, setpacentID] = useState<string>('');
     const [soModalreschedule, setSoModalreschedule] = useState<boolean>(false);
     const [drIds, setDrisd] = useState<string>('');
-    const [modeOftreetement,setModeoftreetment]=useState<string>('')
+    const [modeOftreetement, setModeoftreetment] = useState<string>('')
     const onPressReschedule = (item: Item) => {
-        setRescheduleId(item._id);
+        setpacentID(item._id);
         setSoModalreschedule(true);
         setDrisd(item.doctor._id);
         setModeoftreetment(item.mode);
     };
-
-
     const closeRescheduleModal = () => {
         setSoModalreschedule(false);
     };
+    //  this code for upodate status botton
+    const [soUpdateModals, setSoupdateModals] = useState<boolean>(false)
+    const onPressUpdateStatus = (item: Item) => {
+        setpacentID(item._id);
+        setDrisd(item.doctor._id);
+        setModeoftreetment(item.mode);
+        setSoupdateModals(true)
+    }
+    const closeUpdateStatusModal=()=>{
+        setSoupdateModals(false)
+    }
 
-    /////// 
     if (isConnected === false) {
         return <InterNetError labels={'Appointment'} />;
     } else {
@@ -663,17 +669,17 @@ const Appointment = () => {
                                 <View
                                     style={{
                                         display: 'flex',
-                                        height: height,
+                                        height: hp(85),
                                         justifyContent: 'center',
                                         alignItems: 'center',
                                     }}>
-                                    <Text>No appointments found </Text>
+                                    <Text style={{ fontSize: hp(2) }}>No appointments found </Text>
                                     {userObj?.role == Roles.PATIENT && (
                                         <Text
                                             style={{
                                                 color: '#fff',
-                                                fontSize: wp(3.5),
-                                                marginTop: hp(2),
+                                                fontSize: wp(3),
+                                                marginTop: hp(1),
                                                 backgroundColor: '#1263AC',
                                                 borderRadius: 5,
                                                 padding: wp(1.5),
@@ -699,7 +705,6 @@ const Appointment = () => {
                         const apiDate = moment(item?.dateTime).format('YYYY-MM-DD'); // real date time
                         const currentDate = moment().format('YYYY-MM-DD'); // current date time
                         const gapInDays = moment(apiDate).diff(moment(currentDate), 'days'); // diffrent
-                        console.log(",,,,,,,,,,,,,,,,,,,,,,..,.,..,.,.....,,.,.",item._id)
 
                         let dateText = '';
 
@@ -1274,10 +1279,7 @@ const Appointment = () => {
                                             (item.status == appointmentStatus.CONFIRMED ||
                                                 item.status == appointmentStatus.FOLLOWUP) && (
                                                 <TouchableOpacity
-                                                    onPress={() => {
-                                                        setShowCnfMOdal(true);
-                                                        setid(item._id);
-                                                    }}
+                                                    onPress={() => onPressUpdateStatus(item)}
                                                     style={{
                                                         flex: 1,
                                                         minWidth: wp(41),
@@ -1399,7 +1401,7 @@ const Appointment = () => {
                     style={{ marginLeft: 0, marginRight: 0 }}>
                     <TouchableWithoutFeedback onPress={() => setSoModalreschedule(false)}>
                         <Reschedule
-                            cartID={rescheduleId}
+                            cartID={pacentID}
                             closeModal={closeRescheduleModal}
                             drrIdes={drIds}
                             modeOf={modeOftreetement}
@@ -1407,15 +1409,19 @@ const Appointment = () => {
                     </TouchableWithoutFeedback>
                 </Modal>
 
-                {/*  this is  */}
+                {/* this is code for the update the status  of pacent appointment by dr */}
                 <Modal
-                    isVisible={showConModal}
+                    isVisible={soUpdateModals}
                     animationIn={'bounceIn'}
                     animationOut={'bounceOut'}
-                    onBackButtonPress={() => setShowCnfMOdal(false)}
+                    onBackButtonPress={() => setSoupdateModals(false)}
                     style={{ marginLeft: 0, marginRight: 0 }}>
                     <View>
-                        <Complete_followup_moda />
+                        <CompleteFollowupModal
+                            cartID={pacentID}
+                            closeModal={closeUpdateStatusModal}
+                            drrIdes={drIds}
+                            modeOf={modeOftreetement} />
                     </View>
                 </Modal>
 

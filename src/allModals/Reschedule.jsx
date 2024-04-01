@@ -5,6 +5,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import {Dropdown} from 'react-native-element-dropdown';
@@ -29,6 +30,7 @@ const Reschedule = ({cartID, closeModal, drrIdes, modeOf}) => {
   const [timeSlotss, setTimeSlot] = useState([]);
 
   const fetchTimeSlot = async () => {
+    console.log('calling function');
     const response = await axios.get(`${url}time-slot/${drrIdes}`);
     console.log('resopnse for time slot', response.data.data.timeSlotOnline);
     if (modeOf == 'Video') {
@@ -40,6 +42,7 @@ const Reschedule = ({cartID, closeModal, drrIdes, modeOf}) => {
 
   useEffect(() => {
     fetchTimeSlot();
+    console.log('calling effect');
   }, [drrIdes]);
 
   console.log(timeSlotss);
@@ -56,36 +59,44 @@ const Reschedule = ({cartID, closeModal, drrIdes, modeOf}) => {
     setSelectedDate(formattedDate);
     setShowCalendar(!showCalendar);
   };
-
+  // Function to close the modal
+  const offModal = () => {
+    closeModal();
+  };
   // Function to handle form submission
   const handleSubmit = async () => {
     if (!selectedDate || !selectedTimeSlot) {
       seterrors('Both fields are required');
       return;
     }
+
     const requestData = {
       date: selectedDate,
       timeSlot: selectedTimeSlot,
     };
+
     try {
       const response = await axios.put(
         `${url}appointment/reschedule/${cartID}`,
         requestData,
       );
       console.log('API Response:', response);
-      console.log(requestData)
+      // Reset errors and isLoading
+      seterrors(null);
       setIsLoading(false);
       closeModal();
     } catch (error) {
-      seterrors(response.data.message)
-      console.error('API Error:', error);
+      if (error.response) {
+        console.error('API Error:', error.response);
+        seterrors(error.response.data.message);
+        // offModal();
+      } else if (error.request) {
+        seterrors('No response received from the server.');
+      } else {
+        seterrors('Error in setting up the request.');
+      }
       setIsLoading(false);
     }
-  };
-
-  // Function to close the modal
-  const offModal = () => {
-    closeModal();
   };
 
   return (

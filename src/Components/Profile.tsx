@@ -166,14 +166,15 @@ const Profile = () => {
       toastError(error);
     }
   };
+  const imageSize = Math.min(hp(27), wp(17));
 
   return (
     <View
       style={{
         width: width,
-        height: height,
+        // height: height,
         backgroundColor: 'white',
-        paddingBottom: 50,
+        paddingBottom: hp(2),
       }}>
       <Headerr secndheader={true} label="Profile" />
       <ScrollView
@@ -194,11 +195,11 @@ const Profile = () => {
                   : require('../../assets/images/profile.png')
               }
               style={{
-                height: wp(20),
-                width: wp(20),
-                resizeMode: 'center',
-                borderRadius: wp(40),
-                backgroundColor: '#eee',
+                height: imageSize,
+                width: imageSize,
+                resizeMode: 'center', // Use 'cover' to ensure the image fills the container
+                borderRadius: imageSize / 2, // Set the borderRadius dynamically
+                backgroundColor: 'red',
               }}
             />
             {userObj.role == Roles.DOCTOR && (
@@ -220,18 +221,17 @@ const Profile = () => {
               <Text style={{ fontSize: hp(1.9), fontFamily: mainFontBold }}>
                 {userObj?.name}
               </Text>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => navigation.navigate('EditiProfile')}
                 style={{ marginLeft: wp(30) }}>
                 <Edit_Phone_icons
                   name="edit-3"
                   style={[styles.allIconsStyle, { fontSize: hp(2.5) }]}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
             <View style={{ flexDirection: 'row', marginTop: hp(0.5) }}>
               <Mail_icons name="mail" style={styles.profuleIcons} />
-
               <Text
                 style={{
                   color: '#4A4D64',
@@ -303,7 +303,7 @@ const Profile = () => {
           </View>
         </View>
 
-        <View style={{ width: wp(95), marginTop: hp(7) }}>
+        <View style={{ width: wp(95), marginTop: hp(6) }}>
           <TouchableOpacity
             onPress={() => navigation.navigate('EditiProfile')}
             style={styles.clickbleLines}>
@@ -321,7 +321,6 @@ const Profile = () => {
                   fontFamily: mainFont,
                   marginLeft: wp(2),
                 }}>
-                {' '}
                 Edit Profile
               </Text>
             </View>
@@ -592,7 +591,6 @@ const Profile = () => {
                   fontFamily: mainFont,
                   marginLeft: wp(2),
                 }}>
-                {' '}
                 Privacy Policy
               </Text>
             </View>
