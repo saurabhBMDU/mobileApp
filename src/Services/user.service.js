@@ -161,7 +161,6 @@ export const isUserLoggedIn = async () => {
 
 
 export const AppVersioinCheck = async () => {
-  console.log('isndie is uer lgged in ')
   let response= await axios.get(`${url}/version`);
   // console.log('is user logged in check ',response);
   return response

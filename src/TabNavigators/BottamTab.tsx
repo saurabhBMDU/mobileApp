@@ -78,7 +78,6 @@ const BottamTab = () => {
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <View style={styles.optionMainView}>
-
                             <View style={[styles.focusedDiv, {
                                 backgroundColor: focused ? '#1263AC' : "",
                             }]}></View>
