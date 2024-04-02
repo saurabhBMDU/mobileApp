@@ -34,6 +34,7 @@ import { ScrollView } from 'react-native';
 // all  icons import form ---> Edit_Phone_icons meen that there is two type  of  icons is there one is Edit and other is Phone icons
 import Setting_Sharealt from 'react-native-vector-icons/AntDesign';
 import Edit_Phone_icons from 'react-native-vector-icons/Feather';
+import Icon from 'react-native-vector-icons/Feather';
 import Phone_icons from 'react-native-vector-icons/FontAwesome5';
 import CashRefund_History_LogOut from 'react-native-vector-icons/MaterialCommunityIcons';
 import Right_Icons from 'react-native-vector-icons/AntDesign';
@@ -110,6 +111,7 @@ const Profile = () => {
   const handleGetAndSetUser = async () => {
     let userData = await getUser();
     if (userData) {
+      console.log('user data in profile section',userData)
       setUserObj(userData);
     }
   };
@@ -216,6 +218,9 @@ const Profile = () => {
             )}
           </View>
           <View style={{ height: wp(20), marginLeft: wp(3) }}>
+         
+            
+                    
             <View style={{ flexDirection: 'row' }}>
               <Text style={{ fontSize: hp(1.9), fontFamily: mainFontBold }}>
                 {userObj?.name}
@@ -230,7 +235,7 @@ const Profile = () => {
               </TouchableOpacity> */}
             </View>
             <View style={{ flexDirection: 'row', marginTop: hp(0.5) }}>
-              <Mail_icons name="mail" style={styles.profuleIcons} />
+              <Mail_icons name="mail" style={styles.profileIcons} />
               <Text
                 style={{
                   color: '#4A4D64',
@@ -242,7 +247,7 @@ const Profile = () => {
               </Text>
             </View>
             <View style={{ flexDirection: 'row', marginTop: hp(0.5) }}>
-              <Phone_icons name="phone-alt" style={styles.profuleIcons} />
+              <Phone_icons name="phone-alt" style={styles.profileIcons} />
               <Text
                 style={{
                   color: '#4A4D64',
@@ -253,6 +258,62 @@ const Profile = () => {
                 {userObj?.mobile}
               </Text>
             </View>
+
+            {userObj && userObj.role === 'FRANCHISE' && (
+  <>
+    {userObj.address && (
+      <View style={{ flexDirection: 'row', marginTop: hp(0.5), width: 300 }}>
+        <Icon name="map-pin" style={styles.profileIcons} />
+        <Text
+          style={{
+            color: '#4A4D64',
+            fontSize: hp(1.5),
+            fontFamily: mainFontmedium,
+            marginLeft: wp(2),
+          }}>
+          {userObj.address}
+        </Text>
+      </View>
+    )}
+
+    {userObj.createdAt && (
+      <View style={{ flexDirection: 'row', marginTop: hp(0.5), width: 300 }}>
+        <Icon name="calendar" style={styles.profileIcons} />
+        <Text
+          style={{
+            color: '#4A4D64',
+            fontSize: hp(1.5),
+            fontFamily: mainFontmedium,
+            marginLeft: wp(2),
+          }}>
+          {userObj.createdAt.match(/^\d{4}-\d{2}-\d{2}/)[0]}
+        </Text>
+      </View>
+    )}
+
+    {userObj.refrelCode && (
+      <View style={{ flexDirection: 'row', marginTop: hp(0.5), width: 300 }}>
+        <Icon name="hash" style={styles.profileIcons} />
+        <Text
+          style={{
+            color: '#4A4D64',
+            fontSize: hp(1.5),
+            fontFamily: mainFontmedium,
+            marginLeft: wp(2),
+          }}>
+          {userObj.refrelCode}
+        </Text>
+      </View>
+    )}
+  </>
+)}
+
+
+            {/* refrelCode */}
+
+      
+
+
             {userObj.role == Roles.DOCTOR && (
               <Pressable
                 style={{
@@ -517,7 +578,7 @@ const Profile = () => {
             </>
           )}
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => navigation.navigate('TAC')}
             style={styles.clickbleLines}>
             <View
@@ -541,10 +602,12 @@ const Profile = () => {
               </Text>
             </View>
             <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate('ReturnandRefundPolicy')}
+          {/* <TouchableOpacity
+            // onPress={() => navigation.navigate('ReturnandRefundPolicy')}
+            onPress={() => navigation.navigate('faq')}
+            
             style={styles.clickbleLines}>
             <View
               style={{
@@ -567,10 +630,14 @@ const Profile = () => {
               </Text>
             </View>
             <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('PAC')}
+            // onPress={() => navigation.navigate('PAC')}
+            // onPress={() => navigation.navigate('ProfileTemrs')}
+            onPress={() => navigation.navigate('About Fever99')}
+            
+            //ProfileTemrs
             style={styles.clickbleLines}>
             <View
               style={{
@@ -586,7 +653,7 @@ const Profile = () => {
                   fontFamily: mainFont,
                   marginLeft: wp(2),
                 }}>
-                Privacy Policy
+                About Fever99
               </Text>
             </View>
             <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
@@ -742,7 +809,7 @@ const styles = StyleSheet.create({
     borderRadius: wp(1),
     marginTop: hp(2),
   },
-  profuleIcons: {
+  profileIcons: {
     fontSize: hp(1.75),
   },
 });

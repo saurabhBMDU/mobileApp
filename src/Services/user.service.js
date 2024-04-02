@@ -75,6 +75,28 @@ export const ProceedToLoginUser = async (obj) => {
 };
 
 
+
+//notificaion get and check read or not read
+
+export const getNotifications = async (obj) => {
+  console.log("this wala........ get all notification 80", `${url}/notifications`)
+  return await axios.get(`${url}/notifications`);
+};
+
+export const isReadNotification = async (id) => {
+  console.log("this wala........ in is read notificaion fle line 80", `${url}/notifications`,id)
+  return await axios.put(`${url}/notifications/read/${id}`);
+};
+
+
+
+// using this funciton in profile terms and condition file
+export const GetTeam = async (obj) => {
+  console.log("this wala........", `${url}/team`)
+  return await axios.get(`${url}/team`);
+};
+
+
 export const sendOtp = async (obj) => {
 
   return await axios.post(`${url}/temp-register`, obj);
