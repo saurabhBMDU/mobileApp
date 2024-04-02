@@ -819,13 +819,7 @@ const Book_Appointment = () => {
                     justifyContent: 'space-between',
 
                   }}>
-                  {!Array.isArray(value) ? (
-                    value.map((item: any, index: number) => (
-                      <Text key={index}>{item.label}</Text>
-                    ))
-                  ) : (
-                    <Text>{value}</Text>
-                  )}
+                 
                   <TouchableOpacity
                     onPress={() =>
                       navigation.navigate('About Doctor', { doctorId: item })
