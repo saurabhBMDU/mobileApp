@@ -518,7 +518,7 @@ const Profile = () => {
             </>
           )}
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => navigation.navigate('TAC')}
             style={styles.clickbleLines}>
             <View
@@ -542,9 +542,9 @@ const Profile = () => {
               </Text>
             </View>
             <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             // onPress={() => navigation.navigate('ReturnandRefundPolicy')}
             onPress={() => navigation.navigate('faq')}
             
@@ -570,11 +570,13 @@ const Profile = () => {
               </Text>
             </View>
             <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity
             // onPress={() => navigation.navigate('PAC')}
-            onPress={() => navigation.navigate('ProfileTemrs')}
+            // onPress={() => navigation.navigate('ProfileTemrs')}
+            onPress={() => navigation.navigate('About Fever99')}
+            
             //ProfileTemrs
             style={styles.clickbleLines}>
             <View
@@ -591,7 +593,7 @@ const Profile = () => {
                   fontFamily: mainFont,
                   marginLeft: wp(2),
                 }}>
-                Privacy Policy
+                About Fever99
               </Text>
             </View>
             <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />

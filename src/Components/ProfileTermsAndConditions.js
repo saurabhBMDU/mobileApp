@@ -460,6 +460,7 @@ const AboutUsPage = () => {
 {teamObject.map((employee, index) => {
   console.log('Employee Image:', employee.image);
   return (
+    <View>
     <View style={styles.employee} key={index}>
       <Image
         source={employee.image ? { uri: generateFilePath(employee.image) } : require('../../assets/images/profile.png')}
@@ -467,25 +468,13 @@ const AboutUsPage = () => {
         style={{ height: 100, width: 100 }}
       />
       <View
-      style={{
-        // faqContainer: {
-            // borderBottomWidth: 1,
-            // borderBottomColor: '#ccc',
-            // paddingHorizontal: 20,
-            // paddingVertical: 10,
-        //   },
-      }}
+     style={styles.faqContainer}
       >
       <Text style={styles.employeeName}>{employee.name}</Text>
       <Text style={styles.employeeSpecialization}>{employee.role}</Text>
       <Text style={styles.employeeSpecialization}>{employee.status}</Text>
-      {/* <Text 
-      style={{
-        // backgroundColor:"red"
-      }}
-      >
-        {employee.about}</Text> */}
       </View>
+    </View>
     </View>
   );
 })}
@@ -500,7 +489,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 10,
+    bottom:10,
   },
+  faqContainer: {
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#ccc',
+    paddingHorizontal: 20,
+    // paddingVertical: 10,
+    width: '60%', // Adjust the width as needed
+  },  
   logoContainer: {
     alignItems: 'center',
     marginBottom: 20,
@@ -578,9 +575,9 @@ employee: {
     marginBottom: 10,
     flexDirection:"row",
     //   borderBottomWidth: 1,
-    //         borderBottomColor: '#ccc',
-    //         paddingHorizontal: 20,
-    //         paddingVertical: 10,
+            // borderBottomColor: '#ccc',
+            // paddingHorizontal: 20,
+            // paddingVertical: 10,
     // width: '90%',
   },
   employeeName: {
