@@ -195,6 +195,13 @@ const ProfileTermsAndConditions = () => {
     // Add functionality for cancellation and refund policy button
   };
 
+  const AboutUsFunction = () => {
+    navigation.navigate('ProfileTemrs')
+       // Add functionality for cancellation and refund policy button
+     };
+
+  
+
   return (
     <View
     style={{
@@ -260,6 +267,12 @@ const ProfileTermsAndConditions = () => {
             onPress={onPressCancellationAndRefundPolicy}>
             <Icon name="corner-up-left" size={wp('5%')} color="#ffffff" />
             <Text style={styles.buttonText}>Cancellation & Refund Policy</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={AboutUsFunction}>
+            <Icon name="corner-up-left" size={wp('5%')} color="#ffffff" />
+            <Text style={styles.buttonText}>About Us</Text>
           </TouchableOpacity>
         </Animated.View>
       </View>

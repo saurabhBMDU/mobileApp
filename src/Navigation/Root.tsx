@@ -36,6 +36,7 @@ import { toastError } from '../utils/toast.utils';
 import ProfileTermsAndConditions from '../Components/ProfileTermsAndConditions';
 import FAQ from '../Components/FAQ';
 import AboutFeverMainPage from '../Components/AboutFeverMainPage';
+import NotificationShow from '../ReuseableComp/NotificatoinShow';
 
 const Stack = createNativeStackNavigator();
 
@@ -126,6 +127,7 @@ export default function Root() {
             <Stack.Screen name='BookVdo' component={BookVideo} />
             <Stack.Screen name='ProfileTemrs' component={ProfileTermsAndConditions} />
             <Stack.Screen name='faq' component={FAQ} />
+            <Stack.Screen name='Notifications' component={NotificationShow} />
             <Stack.Screen name='About Fever99' component={AboutFeverMainPage} />
             <Stack.Screen name='BookClient' component={BookClient} />
             <Stack.Screen name='EditiProfile' component={EditProfile} />

@@ -1,4 +1,4 @@
-import { View, Text, Dimensions, Image, TouchableOpacity, StatusBar, Pressable, TextInput, Alert } from 'react-native'
+import { View, Text, Dimensions, Image, TouchableOpacity, StatusBar, Pressable, TextInput, Alert, StyleSheet } from 'react-native'
 import React, { useContext, useState, useEffect } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { LanguageContext, LoginContext, UserDataContext } from '../../App';
@@ -7,12 +7,16 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { generateFilePath } from '../Services/url.service';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { toastError, toastSuccess } from '../utils/toast.utils';
-import { getUser } from '../Services/user.service';
+import { getNotifications, getUser } from '../Services/user.service';
 import Back_Icons from "react-native-vector-icons/Ionicons"
+
+import Icon from 'react-native-vector-icons/Feather';
+
 
 const { height, width } = Dimensions.get('window')
 
 const Headerr = (props: any) => {
+    console.log('props in header in data ',props)
     const mainFont = 'Montserrat-Regular'
     const mainFontBold = 'Montserrat-Bold'
     const navigation: any = useNavigation();
@@ -80,6 +84,44 @@ const Headerr = (props: any) => {
     }
     const imageSize = Math.min(wp(15), hp(15)); // Set the maximum size for the image
 
+
+
+    const [notificationClicked, setNotificationClicked] = useState(false);
+
+  const handleNotificationPress = () => {
+
+    // Notifications
+    navigation.navigate('Notifications')
+
+    setNotificationClicked(!notificationClicked);
+    // You can add additional logic here related to notification handling
+  };
+
+
+
+
+  
+  const [notificationCount,setNotifications] = useState(0)
+
+  const getAllNotifications = async () => {
+    try {
+      const {data: res} = await getNotifications();
+      // console.log('notificaoitn',res)
+      if (res.status == true) {
+        console.log('getting all notifications in Notifiiton show page  backend',res)
+        setNotifications(res.data.length);
+        throw new Error(res.error);
+      }
+    } catch (err) {
+      toastError(err);
+    }
+  };
+
+
+  useEffect(() =>{
+    getAllNotifications();
+  },[])
+
     return (
         <View style={{ width: width, backgroundColor: '#1263AC', alignItems: 'center', }}>
             <StatusBar backgroundColor="#1263AC" />
@@ -97,7 +139,42 @@ const Headerr = (props: any) => {
                             <Text style={{ color: 'white', fontSize: hp(1.8), fontFamily: mainFont }}>{greeting}</Text>
                             <Text style={{ color: 'white', fontSize: hp(2), fontFamily: mainFontBold, textTransform: "capitalize" }}>Hello {userData?.name}</Text>
                         </View>
+
                     </View>
+
+                  
+
+                     {/* Notification icon */}
+
+                    {/* <Pressable onPress={handleNotificationPress}>
+                        <Icon name="bell" size={24} color={notificationClicked ? 'grey' : 'white'} />
+                    </Pressable> */}
+
+
+{/* <Pressable onPress={handleNotificationPress}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Icon name="bell" size={30} color="white" />
+        {notificationCount > 0 && (
+          <View style={{ backgroundColor: 'blue', borderRadius: 10,  marginLeft: 5 }}>
+            <Text style={{ color: 'white' }}>{notificationCount}</Text>
+          </View>
+        )}
+      </View>
+    </Pressable> */}
+
+
+
+<Pressable onPress={handleNotificationPress} style={styles.container}>
+      <View style={styles.iconContainer}>
+        <Icon name="bell" size={30} color="white" style={styles.bellIcon} />
+        {notificationCount > 0 && (
+          <View style={styles.countContainer}>
+            <Text style={styles.countText}>{notificationCount}</Text>
+          </View>
+        )}
+      </View>
+    </Pressable>
+
                 </View>
             }
             {props.secndheader &&
@@ -173,3 +250,33 @@ const Headerr = (props: any) => {
 }
 
 export default Headerr
+
+
+
+const styles = StyleSheet.create({
+    container: {
+      position: 'relative',
+    marginRight:20
+    },
+    iconContainer: {
+      position: 'relative',
+    },
+    bellIcon: {
+      marginTop:-1, // Adjust the margin to crop the top of the icon
+    },
+    countContainer: {
+      position: 'absolute',
+      top: -5, // Adjust the position of the count above the bell icon
+      right: -15, // Adjust the position of the count on the right side of the bell icon
+      backgroundColor: 'white',
+      borderRadius: 10, 
+      borderWidth:2,
+      borderColor:"white"
+ 
+    //   paddingHorizontal: 5,
+    },
+    countText: {
+      color: 'black',
+      fontWeight:'bold'
+    },
+  });
