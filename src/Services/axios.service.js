@@ -17,7 +17,7 @@ axiosAuth.interceptors.request.use(
     if (error.response.status === 401) {
       // trigger logout or refresh token
       // localStorage.removeItem(AUTH_TOKEN)
-      await deleteJwt()
+      // await deleteJwt()
       // window.location.href = '/'
     }
     return Promise.reject(error);
@@ -33,7 +33,7 @@ axiosAuth.interceptors.response.use(
       // trigger logout  or refresh token
       // console.error("LOGOUT", error.response)
       // localStorage.removeItem(AUTH_TOKEN)
-      await deleteJwt()
+      // await deleteJwt()
       // window.location.href = '/'
     }
     return Promise.reject(error);

@@ -15,7 +15,7 @@ export const AuthContext = createContext<any>(false)
 
 import { LogBox } from 'react-native';
 import UpdateModal from './updateModal';
-import { AppVersioinCheck, deleteJwt, isUserLoggedIn } from './src/Services/user.service';
+import { AppVersioinCheck, deleteJwt, getJwt, isUserLoggedIn } from './src/Services/user.service';
 import { toastError } from './src/utils/toast.utils';
 import DeviceInfo from 'react-native-device-info';
 LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
@@ -51,20 +51,32 @@ function App(): JSX.Element {
       setIsAuthorized(false);
     }
     } catch (err) {
-      toastError(err);
+      // toastError(err);
     }
   };
 
 
   useEffect(() => {
-    CheckIsUserLoggedIn();
     appVersioinCheckInApp();
+    CheckIsUserLoggedIn();
   },[])
 
+
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     if (isAuthorized) {
+  //       CheckIsUserLoggedIn();
+  //     }
+  //   }, 10000); // 10 seconds delay
+  
+  //   return () => clearTimeout(timer);
+  // }, []);
 
 
   const CheckIsUserLoggedIn = async () => {
     try {
+      let token = await getJwt();
+      if(token){
       const {data: res}: any = await isUserLoggedIn();
       console.log('response from backend vikram',res)
       if (res.status == false) {
@@ -72,8 +84,9 @@ function App(): JSX.Element {
         console.log('response from backend',res)
         throw new Error(res.error);
       }
+    }
     } catch (err) {
-      toastError(err);
+      // toastError(err);
     }
   };
 

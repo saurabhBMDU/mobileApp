@@ -11,7 +11,7 @@ import { toastError, toastSuccess } from '../utils/toast.utils';
 import { getAppointmentById, updateAppointments } from '../Services/appointments.service';
 import url, { fileurl } from '../Services/url.service';
 import { Roles } from '../utils/constant';
-import { deleteJwt, getUser, isUserLoggedIn } from '../Services/user.service';
+import { deleteJwt, getJwt, getUser, isUserLoggedIn } from '../Services/user.service';
 import { Calendar } from 'react-native-calendars';
 import { Dropdown } from 'react-native-element-dropdown';
 import moment from 'moment';
@@ -53,6 +53,8 @@ const Appointment_History = (props: any) => {
 
   const CheckIsUserLoggedIn = async () => {
     try {
+        let token = await getJwt();
+      if(token){
       const {data: res}: any = await isUserLoggedIn();
       console.log('response from backend vikram',res)
       if (res.status == false) {
@@ -60,6 +62,7 @@ const Appointment_History = (props: any) => {
         console.log('response from backend',res)
         throw new Error(res.error);
       }
+    }
     } catch (err) {
       toastError(err);
     }

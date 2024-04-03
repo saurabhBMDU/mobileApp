@@ -34,7 +34,7 @@ import {
 import { SendNotification } from '../Services/notificationSevice';
 import { addSupportComplaint } from '../Services/support.service';
 import url, { generateFilePath } from '../Services/url.service';
-import { deleteJwt, getUser, isUserLoggedIn } from '../Services/user.service';
+import { deleteJwt, getJwt, getUser, isUserLoggedIn } from '../Services/user.service';
 import { Roles, appointmentStatus, consultationMode } from '../utils/constant';
 import { toastError, toastSuccess } from '../utils/toast.utils';
 import isEqual from 'lodash/isEqual';
@@ -65,7 +65,7 @@ const Appointment = () => {
     try {
       await deleteJwt();
     } catch (err) {
-      toastError(err);
+    //   toastError(err);
     }
   };
 
@@ -78,16 +78,20 @@ const Appointment = () => {
 
   const CheckIsUserLoggedIn = async () => {
     try {
+        let token = await getJwt();
+      if(token){
       const {data: res}: any = await isUserLoggedIn();
       console.log('response from backend vikram',res)
       if (res.status == false) {
         handleLogout()
         console.log('response from backend',res)
-      }else{
+      }
+    }else{
         navigation.navigate("BookAppt")
       }
+    
     } catch (err) {
-      toastError(err);
+    //   toastError(err);
     }
   };
 

@@ -23,6 +23,7 @@ import Headerr from '../ReuseableComp/Headerr';
 import { generateFilePath } from '../Services/url.service';
 import {
   deleteJwt,
+  getJwt,
   getUser,
   isUserLoggedIn,
   setUser,
@@ -72,7 +73,7 @@ const Profile = () => {
       setIsAuthorized(false);
       }
     } catch (err) {
-      toastError(err);
+      // toastError(err);
     }
   };
 
@@ -85,6 +86,8 @@ const Profile = () => {
 
   const CheckIsUserLoggedIn = async () => {
     try {
+      let token = await getJwt();
+      if(token){
       const {data: res}: any = await isUserLoggedIn();
       console.log('response from backend vikram',res)
       if (res.status == false) {
@@ -92,8 +95,9 @@ const Profile = () => {
         console.log('response from backend',res)
         throw new Error(res.error);
       }
+    }
     } catch (err) {
-      toastError(err);
+      // toastError(err);
     }
   };
 
@@ -635,6 +639,34 @@ const Profile = () => {
           <TouchableOpacity
             // onPress={() => navigation.navigate('PAC')}
             // onPress={() => navigation.navigate('ProfileTemrs')}
+            onPress={() => navigation.navigate('SMART PRESCRIPTION')}
+            
+            //ProfileTemrs
+            style={styles.clickbleLines}>
+            <View
+              style={{
+                flexDirection: 'row',
+                height: wp(8),
+                alignItems: 'center',
+              }}>
+              <Polocy_Icons name="policy" style={styles.allIconsStyle} />
+              <Text
+                style={{
+                  fontSize: hp(1.8),
+                  color: '#4A4D64',
+                  fontFamily: mainFont,
+                  marginLeft: wp(2),
+                }}>
+                Smart Prescription
+              </Text>
+            </View>
+            <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
+          </TouchableOpacity>
+
+
+          <TouchableOpacity
+            // onPress={() => navigation.navigate('PAC')}
+            // onPress={() => navigation.navigate('ProfileTemrs')}
             onPress={() => navigation.navigate('About Fever99')}
             
             //ProfileTemrs
@@ -658,6 +690,7 @@ const Profile = () => {
             </View>
             <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
           </TouchableOpacity>
+
 
           <TouchableOpacity
             onPress={() => setBookmodal(true)}

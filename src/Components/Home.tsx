@@ -32,7 +32,7 @@ import {getDoctors} from '../Services/doctor.service';
 import {getServicesPaginated} from '../Services/services.service';
 import {getstateAndCities} from '../Services/stateCity.service';
 import {generateFilePath} from '../Services/url.service';
-import {deleteJwt, getUser, isUserLoggedIn, saveTokenToDatabase} from '../Services/user.service';
+import {deleteJwt, getJwt, getUser, isUserLoggedIn, saveTokenToDatabase} from '../Services/user.service';
 import {getWallet} from '../Services/wallet.service';
 import {Roles} from '../utils/constant';
 import {toastError} from '../utils/toast.utils';
@@ -182,13 +182,20 @@ const Home = () => {
 
 
   useEffect(() => {
-    CheckIsUserLoggedIn();
-  },[])
-
-
+    const timer = setTimeout(() => {
+      if (isAuthorized) {
+        CheckIsUserLoggedIn();
+      }
+    }, 10000); // 10 seconds delay
+  
+    return () => clearTimeout(timer);
+  }, []);
+  
 
   const CheckIsUserLoggedIn = async () => {
     try {
+      let token = await getJwt();
+      if(token){
       const {data: res}: any = await isUserLoggedIn();
       console.log('response from backend vikram',res)
       if (res.status == false) {
@@ -196,6 +203,7 @@ const Home = () => {
         console.log('response from backend',res)
         throw new Error(res.error);
       }
+    }
     } catch (err) {
       console.log('line 199 in hoe page',err)
       // alert('this is errr')

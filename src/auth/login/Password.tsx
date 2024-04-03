@@ -19,7 +19,7 @@ import {
 } from 'react-native-responsive-screen';
 import {LoginContext, UserDataContext} from '../../../App';
 import {AuthContext} from '../../../App';
-import {loginUser, setJwt,ProceedToLoginUser} from '../../Services/user.service';
+import {loginUser, setJwt,ProceedToLoginUser, getJwt} from '../../Services/user.service';
 import {toastError} from '../../utils/toast.utils';
 const {height, width} = Dimensions.get('window');
 import Openeye_closeEye from 'react-native-vector-icons/Ionicons';
@@ -46,7 +46,7 @@ const Password = (props: any) => {
         email: props.route.params.data,
         password,
       };
-
+      console.log('user login object',obj)
       const {data: res}: any = await loginUser(obj);
       if (res.status == false) {
         if(res.error === 'User already login in other device'){
@@ -80,11 +80,16 @@ const Password = (props: any) => {
         email: props.route.params.data,
         password,
       };
+      console.log('id and password ',obj)
+      
+    // let token = await getJwt();
+    // if(token){
       const {data: res}: any = await ProceedToLoginUser(obj);
       if (res.status == false) {
-        console.log('response from backend',res)
+        console.log('response from backend',res);
         throw new Error(res.error);
       }
+    
       if (res.token) {
         closeModal();
         await setJwt(res?.token, res?.user);
@@ -92,6 +97,7 @@ const Password = (props: any) => {
         setUserData(JSON.stringify(res?.user));
         setIsAuthorized(true);
       }
+    // }
     } catch (err) {
       toastError(err);
     }
