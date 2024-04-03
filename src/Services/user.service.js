@@ -174,7 +174,7 @@ export const deleteJwt = async () => {
 
 
 export const isUserLoggedIn = async () => {
-  console.log('isndie is uer lgged in ')
+  console.log('isndie is uer lgged in ',url)
   let response= await axios.get(`${url}/is-user-loggedIn`);
   // console.log('is user logged in check ',response);
   return response

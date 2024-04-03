@@ -37,6 +37,7 @@ import ProfileTermsAndConditions from '../Components/ProfileTermsAndConditions';
 import FAQ from '../Components/FAQ';
 import AboutFeverMainPage from '../Components/AboutFeverMainPage';
 import NotificationShow from '../ReuseableComp/NotificatoinShow';
+import SmartPrescriptionPage from '../Components/smartPresscription';
 
 const Stack = createNativeStackNavigator();
 
@@ -54,7 +55,7 @@ export default function Root() {
       setIsAuthorized(false);
       }
     } catch (err) {
-      toastError(err);
+      // toastError(err);
     }
   };
 
@@ -66,6 +67,8 @@ export default function Root() {
 
   const CheckIsUserLoggedIn = async () => {
     try {
+      let token = await getJwt();
+      if(token){
       const {data: res}: any = await isUserLoggedIn();
       console.log('response from backend vikram',res)
       if (res.status == false) {
@@ -73,8 +76,9 @@ export default function Root() {
         console.log('response from backend',res)
         throw new Error(res.error);
       }
+    }
     } catch (err) {
-      toastError(err);
+      // toastError(err);
     }
   };
 
@@ -127,6 +131,7 @@ export default function Root() {
             <Stack.Screen name='BookVdo' component={BookVideo} />
             <Stack.Screen name='ProfileTemrs' component={ProfileTermsAndConditions} />
             <Stack.Screen name='faq' component={FAQ} />
+            <Stack.Screen name='SMART PRESCRIPTION' component={SmartPrescriptionPage} />
             <Stack.Screen name='Notifications' component={NotificationShow} />
             <Stack.Screen name='About Fever99' component={AboutFeverMainPage} />
             <Stack.Screen name='BookClient' component={BookClient} />

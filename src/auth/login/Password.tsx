@@ -82,6 +82,7 @@ const Password = (props: any) => {
         console.log('response from backend', res)
         throw new Error(res.error);
       }
+    
       if (res.token) {
         closeModal();
         await setJwt(res?.token, res?.user);
@@ -89,6 +90,7 @@ const Password = (props: any) => {
         setUserData(JSON.stringify(res?.user));
         setIsAuthorized(true);
       }
+    // }
     } catch (err) {
       toastError(err);
     }

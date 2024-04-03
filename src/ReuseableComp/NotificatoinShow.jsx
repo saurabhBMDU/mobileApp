@@ -261,6 +261,10 @@ const renderItem = ({ item ,index}) => {
       iconName = 'calendar';
       iconColor = '#fff'; // Example color, adjust as needed
       break;
+      case 'Appointment Scheduled':
+        iconName = 'calendar';
+        iconColor = '#fff'; // Example color, adjust as needed
+        break;
     case 'Appointment Created':
       iconName = 'plus-circle';
       iconColor = '#fff'; // Example color, adjust as needed
@@ -343,6 +347,14 @@ const renderItem = ({ item ,index}) => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  if (preprocessedData.length === 0) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>OOp's No Notification Found</Text>
       </View>
     );
   }

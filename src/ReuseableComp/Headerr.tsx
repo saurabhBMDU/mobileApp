@@ -113,7 +113,8 @@ const Headerr = (props: any) => {
         throw new Error(res.error);
       }
     } catch (err) {
-      toastError(err);
+        // console.log('err in nofiticaion for inside header',err.message)
+    //   toastError(err);
     }
   };
 
@@ -145,25 +146,6 @@ const Headerr = (props: any) => {
                   
 
                      {/* Notification icon */}
-
-                    {/* <Pressable onPress={handleNotificationPress}>
-                        <Icon name="bell" size={24} color={notificationClicked ? 'grey' : 'white'} />
-                    </Pressable> */}
-
-
-{/* <Pressable onPress={handleNotificationPress}>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Icon name="bell" size={30} color="white" />
-        {notificationCount > 0 && (
-          <View style={{ backgroundColor: 'blue', borderRadius: 10,  marginLeft: 5 }}>
-            <Text style={{ color: 'white' }}>{notificationCount}</Text>
-          </View>
-        )}
-      </View>
-    </Pressable> */}
-
-
-
 <Pressable onPress={handleNotificationPress} style={styles.container}>
       <View style={styles.iconContainer}>
         <Icon name="bell" size={30} color="white" style={styles.bellIcon} />

@@ -7,7 +7,7 @@ import Headerr from '../ReuseableComp/Headerr';
 import { getServiceBookings } from '../Services/serviceOrder.service';
 import { generateFilePath } from '../Services/url.service';
 import { toastError } from '../utils/toast.utils';
-import { deleteJwt, isUserLoggedIn } from '../Services/user.service';
+import { deleteJwt, getJwt, isUserLoggedIn } from '../Services/user.service';
 
 const { height, width } = Dimensions.get('window')
 
@@ -26,7 +26,7 @@ const Service = () => {
     try {
       await deleteJwt();
     } catch (err) {
-      toastError(err);
+    //   toastError(err);
     }
   };
 
@@ -39,6 +39,8 @@ const Service = () => {
 
   const CheckIsUserLoggedIn = async () => {
     try {
+        let token = await getJwt();
+      if(token){
       const {data: res}: any = await isUserLoggedIn();
       console.log('response from backend vikram',res)
       if (res.status == false) {
@@ -46,8 +48,9 @@ const Service = () => {
         console.log('response from backend',res)
         throw new Error(res.error);
       }
+    }
     } catch (err) {
-      toastError(err);
+    //   toastError(err);
     }
   };
     
