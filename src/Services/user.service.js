@@ -159,6 +159,7 @@ export const getJwt = async () => {
 
 
 export const deleteJwt = async () => {
+  console.log('delete jwt is working')
   let response= await axios.post(`${url}/logout`);
   console.log(response.status==200);
   if(response.status==200){
@@ -187,4 +188,3 @@ export const AppVersioinCheck = async () => {
   // console.log('is user logged in check ',response);
   return response
 };
-

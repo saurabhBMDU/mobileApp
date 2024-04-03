@@ -46,6 +46,7 @@ function App(): JSX.Element {
 
   const handleLogout = async () => {
     try {
+      console.log('woriing in app.js file')
       if(isAuthorized){
       await deleteJwt();
       setIsAuthorized(false);
@@ -82,7 +83,7 @@ function App(): JSX.Element {
       if (res.status == false) {
         handleLogout()
         console.log('response from backend',res)
-        throw new Error(res.error);
+        // throw new Error(res.error);
       }
     }
     } catch (err) {
@@ -117,7 +118,7 @@ function App(): JSX.Element {
         toastError("Version code not found in response.");
       }
     } catch (err) {
-      toastError(err);
+      // toastError(err);
     }    
   };
 

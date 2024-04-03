@@ -46,7 +46,7 @@ const Service = () => {
       if (res.status == false) {
         handleLogout()
         console.log('response from backend',res)
-        throw new Error(res.error);
+        // throw new Error(res.error);
       }
     }
     } catch (err) {

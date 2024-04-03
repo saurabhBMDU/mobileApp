@@ -93,7 +93,7 @@ const Profile = () => {
       if (res.status == false) {
         handleLogout2()
         console.log('response from backend',res)
-        throw new Error(res.error);
+        // throw new Error(res.error);
       }
     }
     } catch (err) {
@@ -108,7 +108,7 @@ const Profile = () => {
       setIsAuthorized(false);
       }
     } catch (err) {
-      toastError(err);
+      // toastError(err);
     }
   };
 
