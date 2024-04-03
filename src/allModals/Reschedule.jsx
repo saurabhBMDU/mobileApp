@@ -34,7 +34,7 @@ const Reschedule = ({cartID, closeModal, drrIdes, modeOf}) => {
     const response = await axios.get(`${url}time-slot/${drrIdes}`);
     console.log('resopnse for time slot', response.data.data.timeSlotOnline);
     if (modeOf == 'Video') {
-      setTimeSlot(response.data.data.extractedOnlineTimes);
+      setTimeSlot(response.data.data.extractedOnlineTimes); 
     } else {
       setTimeSlot(response.data.data.extractedOfflineTime);
     }

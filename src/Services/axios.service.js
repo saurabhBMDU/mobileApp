@@ -14,12 +14,12 @@ axiosAuth.interceptors.request.use(
 
   },
   async function (error) {
-    if (error.response.status === 401) {
-      // trigger logout or refresh token
-      // localStorage.removeItem(AUTH_TOKEN)
-      await deleteJwt()
-      // window.location.href = '/'
-    }
+    // if (error.response.status === 401) {
+    //   // trigger logout or refresh token
+    //   // localStorage.removeItem(AUTH_TOKEN)
+    //   await deleteJwt()
+    //   // window.location.href = '/'
+    // }
     return Promise.reject(error);
   },
 );
@@ -29,13 +29,13 @@ axiosAuth.interceptors.response.use(
     return response;
   },
   async error => {
-    if (error.response && error.response.status === 401) {
-      // trigger logout  or refresh token
-      // console.error("LOGOUT", error.response)
-      // localStorage.removeItem(AUTH_TOKEN)
-      await deleteJwt()
-      // window.location.href = '/'
-    }
+    // if (error.response && error.response.status === 401) {
+    //   // trigger logout  or refresh token
+    //   // console.error("LOGOUT", error.response)
+    //   // localStorage.removeItem(AUTH_TOKEN)
+    //   await deleteJwt()
+    //   // window.location.href = '/'
+    // }
     return Promise.reject(error);
   },
 );

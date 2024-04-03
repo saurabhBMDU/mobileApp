@@ -516,7 +516,7 @@ const Appointment = () => {
             </TouchableOpacity>
           </View>
         )}
-          
+
         <Modal
           isVisible={bookmodal}
           animationIn={'bounceIn'}
@@ -892,7 +892,7 @@ const Appointment = () => {
                           name="profile"
                           style={styles.iconsStyls}
                         />
-                        <Text>Patient Name:</Text>
+                        <Text style={{ fontSize: hp(2) }}>Patient Name:</Text>
                       </View>
                       <Text
                         style={{ color: 'gray', textTransform: 'capitalize' }}>
@@ -911,7 +911,7 @@ const Appointment = () => {
                           name="setting"
                           style={styles.iconsStyls}
                         />
-                        <Text>Service Booked:</Text>
+                        <Text style={{ fontSize: hp(2) }}>Service Booked:</Text>
                       </View>
                       <View style={styles.common_displayFlex}>
                         <Text
@@ -950,7 +950,7 @@ const Appointment = () => {
                       <View
                         style={[styles.common_displayFlex, { width: wp(40) }]}>
                         <Mans_icons name="man" style={styles.iconsStyls} />
-                        <Text>Age:</Text>
+                        <Text style={{ fontSize: hp(2) }}>Age:</Text>
                       </View>
                       <Text
                         style={{ color: 'gray', textTransform: 'capitalize' }}>
@@ -966,7 +966,7 @@ const Appointment = () => {
                       <View
                         style={[styles.common_displayFlex, { width: wp(40) }]}>
                         <Money_icons name="money" style={styles.iconsStyls} />
-                        <Text>Price:</Text>
+                        <Text style={{ fontSize: hp(2) }}>Price:</Text>
                       </View>
                       <Text
                         style={{ color: 'gray', textTransform: 'capitalize' }}>
@@ -985,7 +985,7 @@ const Appointment = () => {
                           name="calendar-day"
                           style={styles.iconsStyls}
                         />
-                        <Text> Request Date:</Text>
+                        <Text style={{ fontSize: hp(2) }}>Request Date:</Text>
                       </View>
                       <Text
                         style={{
@@ -1007,7 +1007,7 @@ const Appointment = () => {
                           name="money-bill"
                           style={styles.iconsStyls}
                         />
-                        <Text>Payment Status:</Text>
+                        <Text style={{ fontSize: hp(2) }}>Payment Status:</Text>
                       </View>
                       <Text
                         style={{ color: 'gray', textTransform: 'capitalize' }}>
@@ -1028,7 +1028,7 @@ const Appointment = () => {
                               name="money-bill-transfer"
                               style={styles.iconsStyls}
                             />
-                            <Text>Status:</Text>
+                           <Text style={{fontSize:hp(2)}}>Status:</Text>
                           </View>
                           <Text
                             style={{

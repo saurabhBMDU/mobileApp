@@ -804,8 +804,7 @@ const Book_Appointment = () => {
               handleOnEndReached();
             }}
             renderItem={({ item, index }) => {
-              let value = item?.languageKnown[0];
-              console.log("vikram", value);
+             
               return (
                 <View
                   style={{
@@ -828,7 +827,7 @@ const Book_Appointment = () => {
                       style={{
                         flexDirection: 'row',
                         justifyContent: 'space-between',
-                        width: '85%',
+                        width: '89%',
                       }}>
                       <TouchableOpacity style={{ flexDirection: 'row' }}>
                         <Image

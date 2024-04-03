@@ -86,13 +86,6 @@ const OTP = () => {
                             <Text style={{ color: 'white', fontFamily: 'AvenirNextLTPro-Regular' }}>Verify OTP</Text>
                         </TouchableOpacity>
 
-                        {/* Or Section >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */}
-                        {/* <View style={{marginTop:hp(4), flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
-                <View style={{width:wp(40), borderBottomColor:'black', borderBottomWidth:1, }}></View>
-                <Text style={{fontSize:hp(2), fontWeight:'600', color:'black'}}>Or</Text>
-                <View style={{width:wp(40), borderBottomColor:'black', borderBottomWidth:1, }}></View>
-                </View> */}
-
                         {/* Via OTP Login Button >>>>>>>>>>>>>>>>>>>>>>>>> */}
                         <TouchableOpacity style={{ width: '100%', height: hp(6), borderColor: '#fff', borderWidth: 1, marginTop: hp(4), borderRadius: 5, alignItems: 'center', justifyContent: 'center' }}>
                             <Text style={{ color: 'white', fontFamily: 'AvenirNextLTPro-Regular' }}>Resend OTP</Text>

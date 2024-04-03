@@ -1,6 +1,6 @@
 import messaging from '@react-native-firebase/messaging';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import React, {useContext, useEffect, useState} from 'react';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -15,29 +15,31 @@ import {
   View,
 } from 'react-native';
 import Modal from 'react-native-modal';
+import BookApt_icos from "react-native-vector-icons/AntDesign";
+import Search_icons from "react-native-vector-icons/AntDesign";
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {AuthContext, LoginContext} from '../../App';
+import { AuthContext, LoginContext } from '../../App';
 import Headerr from '../ReuseableComp/Headerr';
-import {useNetInfo} from '@react-native-community/netinfo';
+import { useNetInfo } from '@react-native-community/netinfo';
 
-import {LineChart} from 'react-native-chart-kit';
-import {Dropdown} from 'react-native-element-dropdown';
+import { LineChart } from 'react-native-chart-kit';
+import { Dropdown } from 'react-native-element-dropdown';
 import FastImage from 'react-native-fast-image';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {getDashboard} from '../Services/dashboard.service';
-import {getDoctors} from '../Services/doctor.service';
-import {getServicesPaginated} from '../Services/services.service';
-import {getstateAndCities} from '../Services/stateCity.service';
-import {generateFilePath} from '../Services/url.service';
-import {deleteJwt, getUser, isUserLoggedIn, saveTokenToDatabase} from '../Services/user.service';
-import {getWallet} from '../Services/wallet.service';
-import {Roles} from '../utils/constant';
-import {toastError} from '../utils/toast.utils';
+import { getDashboard } from '../Services/dashboard.service';
+import { getDoctors } from '../Services/doctor.service';
+import { getServicesPaginated } from '../Services/services.service';
+import { getstateAndCities } from '../Services/stateCity.service';
+import { generateFilePath } from '../Services/url.service';
+import { deleteJwt, getUser, isUserLoggedIn, saveTokenToDatabase } from '../Services/user.service';
+import { getWallet } from '../Services/wallet.service';
+import { Roles } from '../utils/constant';
+import { toastError } from '../utils/toast.utils';
 
-const {height, width} = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
 const Home = () => {
   // checking internet connection
@@ -150,7 +152,7 @@ const Home = () => {
 
   const handleGetServices = async () => {
     try {
-      let {data: res}: any = await getServicesPaginated('page=1&size=120');
+      let { data: res }: any = await getServicesPaginated('page=1&size=120');
       if (res) {
         setServicesArr(
           res?.data.filter((el: any) => el.name != 'Doctor Video Consultation'),
@@ -169,9 +171,9 @@ const Home = () => {
 
   const handleLogout = async () => {
     try {
-      if(isAuthorized){
-      await deleteJwt();
-      setIsAuthorized(false);
+      if (isAuthorized) {
+        await deleteJwt();
+        setIsAuthorized(false);
       }
     } catch (err) {
       toastError(err);
@@ -181,17 +183,17 @@ const Home = () => {
 
   useEffect(() => {
     CheckIsUserLoggedIn();
-  },[])
+  }, [])
 
 
 
   const CheckIsUserLoggedIn = async () => {
     try {
-      const {data: res}: any = await isUserLoggedIn();
-      console.log('response from backend vikram',res)
+      const { data: res }: any = await isUserLoggedIn();
+      console.log('response from backend vikram', res)
       if (res.status == false) {
         handleLogout()
-        console.log('response from backend',res)
+        console.log('response from backend', res)
         throw new Error(res.error);
       }
     } catch (err) {
@@ -201,7 +203,7 @@ const Home = () => {
 
   const handleGetDashboard = async () => {
     try {
-      let {data: res}: any = await getDashboard();
+      let { data: res }: any = await getDashboard();
       if (res) {
         setDashboardData(res?.data);
         console.log(JSON.stringify(res, null, 2), 'dashbpard');
@@ -248,12 +250,12 @@ const Home = () => {
       }
     } catch (err) {
       // toastError(err)
-      alert('error in home page ')
+      // alert('error in home page ')
     }
   };
   const handleGetWallet = async () => {
     try {
-      let {data: res}: any = await getWallet();
+      let { data: res }: any = await getWallet();
       if (res) {
         setWallet(res?.balance);
         let tempDocData = docData;
@@ -289,7 +291,7 @@ const Home = () => {
     return () => setDoctorsArr([]);
   }, [focused]);
 
-  const renderDoctor = ({item, index}: any) => {
+  const renderDoctor = ({ item, index }: any) => {
     return (
       <View
         style={{
@@ -308,10 +310,10 @@ const Home = () => {
             justifyContent: 'space-between',
             width: '100%',
           }}>
-          <TouchableOpacity style={{flexDirection: 'row'}}>
+          <TouchableOpacity style={{ flexDirection: 'row' }}>
             <Image
-              source={{uri: generateFilePath(item.image)}}
-              style={{height: wp(18), width: wp(18)}}
+              source={{ uri: generateFilePath(item.image) }}
+              style={{ height: wp(18), width: wp(18) }}
             />
             <View
               style={{
@@ -349,7 +351,7 @@ const Home = () => {
                       backgroundColor:
                         item?.userStatus == 'online' ? 'green' : 'red',
                     }}></Text>
-                  <Text style={{marginLeft: 5}}>
+                  <Text style={{ marginLeft: 5 }}>
                     {item?.userStatus == 'online'
                       ? 'Available'
                       : 'Not available'}
@@ -385,10 +387,10 @@ const Home = () => {
               alignItems: 'flex-end',
               justifyContent: 'space-between',
             }}>
-            <View style={{flexDirection: 'row', maxWidth: wp(35)}}>
+            <View style={{ flexDirection: 'row', maxWidth: wp(35) }}>
               <Image
                 source={require('../../assets/images/location.png')}
-                style={{height: wp(4), width: wp(4)}}
+                style={{ height: wp(4), width: wp(4) }}
               />
               <Text
                 style={{
@@ -421,7 +423,7 @@ const Home = () => {
             paddingTop: hp(1.5),
           }}>
           <TouchableOpacity
-            onPress={() => navigation.navigate('BookVdo', {doctor: item})}
+            onPress={() => navigation.navigate('BookVdo', { doctor: item })}
             style={{
               flex: 1,
               marginRight: 5,
@@ -431,14 +433,14 @@ const Home = () => {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Text style={{color: 'white', fontFamily: mainFont, fontSize: 13}}>
+            <Text style={{ color: 'white', fontFamily: mainFont, fontSize: 13 }}>
               Book Video Consult
             </Text>
           </TouchableOpacity>
           {userObj?.role !== Roles.FRANCHISE && (
             <TouchableOpacity
               // onPress={() => setBookmodal(true)} BookClient
-              onPress={() => navigation.navigate('BookClient', {doctor: item})}
+              onPress={() => navigation.navigate('BookClient', { doctor: item })}
               style={{
                 flex: 1,
                 marginLeft: 5,
@@ -449,7 +451,7 @@ const Home = () => {
                 alignItems: 'center',
               }}>
               <Text
-                style={{color: 'white', fontFamily: mainFont, fontSize: 13}}>
+                style={{ color: 'white', fontFamily: mainFont, fontSize: 13 }}>
                 Book Client Visit
               </Text>
             </TouchableOpacity>
@@ -461,7 +463,7 @@ const Home = () => {
 
   const HandleGetStatesAndCities = async () => {
     try {
-      let {data: res} = await getstateAndCities();
+      let { data: res } = await getstateAndCities();
       if (res.data && res.data.length > 0) {
         setStatesArr([
           ...res?.data?.map((el: any) => ({
@@ -490,11 +492,11 @@ const Home = () => {
 
       console.log(isAuthorized, 'asdasd');
 
-      let {data: res} = await getDoctors(queryString);
+      let { data: res } = await getDoctors(queryString);
       if (res.data && res.data.length > 0) {
         setDoctorsArr(res?.data);
         setSpecialisationArr(
-          res?.spacility.map((el: any) => ({label: el, value: el})),
+          res?.spacility.map((el: any) => ({ label: el, value: el })),
         );
       }
     } catch (err) {
@@ -524,7 +526,7 @@ const Home = () => {
       if (sortType && sortType != '') {
         queryString = `${queryString}&pricesort=${sortType}`;
       }
-      let {data: res} = await getDoctors(queryString);
+      let { data: res } = await getDoctors(queryString);
       if (res.data) {
         setDoctorsArr([...res?.data]);
       } else {
@@ -566,144 +568,111 @@ const Home = () => {
   };
 
   return (
-      <View style={{flex: 1, backgroundColor: '#F1F8FF'}}>
+    <View style={{ flex: 1, backgroundColor: '#F1F8FF' }}>
       <Headerr user={true} height={true} />
 
-      <ScrollView style={{flex: 1, backgroundColor: '#F1F8FF'}}>
-      {user == 'PATIENT' ? (
-        <View
-          style={{
-            width: width,
-            backgroundColor: '#F1F8FF',
-            paddingBottom: hp(5),
-          }}>
-          <TouchableOpacity
-            onPress={() => {
-              Linking.openURL('fever99://app/PAC');
-            }}
-            style={{width: wp(95), alignSelf: 'center', marginTop: hp(1)}}>
-            <Image
-              source={require('../../assets/images/homebnnr.jpg')}
-              style={{width: wp(95), height: hp(18), resizeMode: 'contain'}}
-            />
-          </TouchableOpacity>
-
+      <ScrollView style={{ flex: 1, backgroundColor: '#F1F8FF' }}>
+        {user == 'PATIENT' ? (
           <View
             style={{
-              width: wp(95),
-              height: hp(17),
-              backgroundColor: 'white',
-              alignSelf: 'center',
-              position: 'relative',
-              marginTop: hp(2),
-              elevation: 3,
-              borderRadius: wp(2),
-              paddingTop: hp(1.5),
-              paddingLeft: wp(2),
+              width: width,
+              backgroundColor: '#F1F8FF',
+              paddingBottom: hp(5),
             }}>
-            <View
-              style={{
-                width: wp(92),
-                alignSelf: 'center',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                paddingRight: wp(3),
-              }}>
-              <Image
-                source={require('../../assets/images/img1.png')}
-                style={{height: hp(5), width: wp(12), resizeMode: 'contain'}}
-              />
-              <Text
-                onPress={() => navigation.navigate('BookAppt')}
-                style={{
-                  fontSize: hp(1.8),
-                  color: maincolor,
-                  fontFamily: mainFontBold,
-                }}>
-                Book an Appointment
-              </Text>
-            </View>
-
             <TouchableOpacity
-              onPress={() => setDoctorSearchModal(true)}
-              style={{
-                width: wp(85),
-                height: hp(6),
-                backgroundColor: '#EEF7FF',
-                alignSelf: 'center',
-                marginTop: hp(2),
-                borderRadius: wp(1.5),
-                flexDirection: 'row',
-                paddingRight: wp(2),
-                paddingLeft: wp(2),
-                justifyContent: 'space-between',
-              }}>
-              <TextInput
-                editable={false}
-                placeholder="Search Doctor"
-                style={{color: 'gray'}}
-                placeholderTextColor="gray"
-              />
+              onPress={() => navigation.navigate('BookAppt')}
+              style={{ width: wp(95), alignSelf: 'center', marginTop: hp(1) }}>
               <Image
-                source={require('../../assets/images/srch.png')}
-                style={{height: wp(11), width: wp(11)}}
+                source={require('../../assets/images/homebnnr.jpg')}
+                style={{ width: wp(95), height: hp(18), resizeMode: 'contain' }}
               />
             </TouchableOpacity>
-          </View>
 
-          {/* Book Home Healthcare Service >>>>>>>>>>>>>>>>>>>> */}
-          <View
-            style={{
-              width: wp(95),
-              alignSelf: 'center',
-              paddingTop: hp(2),
-              marginTop: hp(1),
-              zIndex: -1,
-            }}>
-            <Text
-              style={{fontSize: hp(2), fontFamily: mainFont, color: maincolor}}>
-              Book Doctor Appointment
-            </Text>
             <View
               style={{
                 width: wp(95),
-                flexDirection: 'row',
+                backgroundColor: 'white',
+                alignSelf: 'center',
+                position: 'relative',
                 marginTop: hp(2),
-                justifyContent: 'space-between',
+                paddingBottom: 30,
+                elevation: 3,
+                borderRadius: wp(2),
               }}>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('BookAppt')}
+              <View
                 style={{
-                  width: wp(45.5),
-                  backgroundColor: 'white',
-                  elevation: 3,
-                  height: hp(13),
-                  borderRadius: wp(2),
-                  justifyContent: 'center',
-                  alignItems: 'center',
+                  width: wp(92),
+                  marginTop: hp(1.9),
+                  alignSelf: 'center',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: "center",
+                  paddingRight: wp(3.3),
                 }}>
                 <Image
-                  source={require('../../assets/images/icn1.png')}
-                  style={{height: wp(11), width: wp(11)}}
+                  source={require('../../assets/images/img1.png')}
+                  style={{ height: hp(5), width: wp(12), resizeMode: 'contain' }}
                 />
                 <Text
+                  onPress={() => navigation.navigate('BookAppt')}
                   style={{
-                    fontSize: hp(1.65),
-                    color: 'black',
-                    fontFamily: mainFont,
-                    marginTop: hp(1.5),
+                    fontSize: hp(1.8),
+                    color: maincolor,
+                    fontFamily: mainFontBold,
+
                   }}>
-                  Book New Appointment
+                  Book an Appointment
                 </Text>
+              </View>
+
+              <TouchableOpacity
+                onPress={() => setDoctorSearchModal(true)}
+                style={{
+                  width: wp(85),
+                  height: hp(6),
+                  backgroundColor: '#EEF7FF',
+                  alignSelf: 'center',
+                  marginTop: hp(2),
+                  borderRadius: wp(1.5),
+                  flexDirection: 'row',
+                  paddingRight: wp(2),
+                  paddingLeft: wp(2),
+                  justifyContent: 'space-between',
+                  alignItems: "center"
+                }}>
+                <TextInput
+                  editable={false}
+                  placeholder="Search Doctor"
+                  style={{ color: 'gray', fontSize: hp(2) }}
+                  placeholderTextColor="gray"
+
+                />
+                <Search_icons name='search1' style={{ color: maincolor, fontSize: hp(4.5) }} />
               </TouchableOpacity>
-              {doctorHomeVisit && doctorHomeVisit._id && (
+            </View>
+
+            {/* Book Home Healthcare Service >>>>>>>>>>>>>>>>>>>> */}
+            <View
+              style={{
+                width: wp(95),
+                alignSelf: 'center',
+                paddingTop: hp(2),
+                marginTop: hp(1),
+                zIndex: -1,
+              }}>
+              <Text
+                style={{ fontSize: hp(2), fontFamily: mainFont, color: maincolor }}>
+                Book Doctor Appointment
+              </Text>
+              <View
+                style={{
+                  width: wp(95),
+                  flexDirection: 'row',
+                  marginTop: hp(2),
+                  justifyContent: 'space-between',
+                }}>
                 <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate('CategoryStack', {
-                      screen: 'CategoryDetail',
-                      params: {data: doctorHomeVisit._id},
-                    })
-                  }
+                  onPress={() => navigation.navigate('BookAppt')}
                   style={{
                     width: wp(45.5),
                     backgroundColor: 'white',
@@ -713,15 +682,7 @@ const Home = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                  <View
-                    style={{
-                      borderWidth: 1,
-                      borderRadius: 150,
-                      borderColor: maincolor,
-                      padding: 5,
-                    }}>
-                    <Entypo name="home" color={maincolor} size={30} />
-                  </View>
+                  <BookApt_icos name='addfile' style={{ color: maincolor, fontSize: hp(4.5) }} />
                   <Text
                     style={{
                       fontSize: hp(1.65),
@@ -729,28 +690,64 @@ const Home = () => {
                       fontFamily: mainFont,
                       marginTop: hp(1.5),
                     }}>
-                    Doctor Home Visit
+                    Book New Appointment
                   </Text>
                 </TouchableOpacity>
-              )}
+                {doctorHomeVisit && doctorHomeVisit._id && (
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate('CategoryStack', {
+                        screen: 'CategoryDetail',
+                        params: { data: doctorHomeVisit._id },
+                      })
+                    }
+                    style={{
+                      width: wp(45.5),
+                      backgroundColor: 'white',
+                      elevation: 3,
+                      height: hp(13),
+                      borderRadius: wp(2),
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <View
+                      style={{
+                        borderWidth: 1,
+                        borderRadius: 150,
+                        borderColor: maincolor,
+                        padding: 5,
+                      }}>
+                      <Entypo name="home" style={{ color: maincolor, fontSize: hp(4.5) }} />
+                    </View>
+                    <Text
+                      style={{
+                        fontSize: hp(1.65),
+                        color: 'black',
+                        fontFamily: mainFont,
+                        marginTop: hp(1.5),
+                      }}>
+                      Doctor Home Visit
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
-          </View>
 
-          {/* Last View >>>>>>>>>>> */}
-          <View
-            style={{
-              width: wp(95),
-              alignSelf: 'center',
-              paddingTop: hp(2),
-              marginTop: hp(1),
-            }}>
-            <Text
-              style={{fontSize: hp(2), fontFamily: mainFont, color: maincolor}}>
-              Book Home Healthcare Service{' '}
-            </Text>
-            <View style={{width: wp(95), marginTop: hp(2)}}>
-             
-              {/* <FlatList
+            {/* Last View >>>>>>>>>>> */}
+            <View
+              style={{
+                width: wp(95),
+                alignSelf: 'center',
+                paddingTop: hp(2),
+                marginTop: hp(1),
+              }}>
+              <Text
+                style={{ fontSize: hp(2), fontFamily: mainFont, color: maincolor }}>
+                Book Home Healthcare Service{' '}
+              </Text>
+              <View style={{ width: wp(95), marginTop: hp(2) }}>
+
+                {/* <FlatList
                 data={servicesArr}
                 numColumns={2}
                 columnWrapperStyle={{justifyContent: 'space-between'}}
@@ -801,60 +798,60 @@ const Home = () => {
               /> */}
 
 
-<View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-  {servicesArr && servicesArr.length>0 && servicesArr.map((item, index) => (
-    <Pressable
-      key={index}
-      onPress={() =>
-        navigation.navigate('CategoryStack', {
-          screen: 'CategoryDetail',
-          params: { data: item._id },
-        })
-      }
-      style={{
-        width: wp(46),
-        minHeight: hp(18),
-        backgroundColor: 'white',
-        elevation: 2,
-        marginTop: hp(1),
-        borderRadius: 5,
-        marginBottom: hp(1),
-        alignItems: 'center',
-        paddingVertical: 25,
-      }}>
-      <FastImage
-        source={{
-          uri: generateFilePath(item.image),
-          priority: FastImage.priority.normal,
-        }}
-        style={{ height: hp(15), width: wp(30) }}
-        resizeMode={FastImage.resizeMode.cover}
-      />
-      <Text
-        style={{
-          fontSize: hp(1.8),
-          width: wp(35),
-          alignSelf: 'center',
-          textAlign: 'center',
-          color: 'black',
-          fontFamily: mainFont,
-          marginTop: hp(0.5),
-        }}>
-        {item.name}
-      </Text>
-    </Pressable>
-  ))}
-</View>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                  {servicesArr && servicesArr.length > 0 && servicesArr.map((item, index) => (
+                    <Pressable
+                      key={index}
+                      onPress={() =>
+                        navigation.navigate('CategoryStack', {
+                          screen: 'CategoryDetail',
+                          params: { data: item._id },
+                        })
+                      }
+                      style={{
+                        width: wp(46),
+                        minHeight: hp(18),
+                        backgroundColor: 'white',
+                        elevation: 2,
+                        marginTop: hp(1),
+                        borderRadius: 5,
+                        marginBottom: hp(1),
+                        alignItems: 'center',
+                        paddingVertical: 25,
+                      }}>
+                      <FastImage
+                        source={{
+                          uri: generateFilePath(item.image),
+                          priority: FastImage.priority.normal,
+                        }}
+                        style={{ height: hp(15), width: wp(30) }}
+                        resizeMode={FastImage.resizeMode.cover}
+                      />
+                      <Text
+                        style={{
+                          fontSize: hp(1.8),
+                          width: wp(35),
+                          alignSelf: 'center',
+                          textAlign: 'center',
+                          color: 'black',
+                          fontFamily: mainFont,
+                          marginTop: hp(0.5),
+                        }}>
+                        {item.name}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
 
+              </View>
             </View>
           </View>
-        </View>
-      ) : (
-        <View style={{width: wp(95), alignSelf: 'center'}}>
-          <View
-            style={{width: wp(95), paddingTop: hp(2), paddingBottom: hp(2)}}>
-           
-            {/* <FlatList
+        ) : (
+          <View style={{ width: wp(95), alignSelf: 'center' }}>
+            <View
+              style={{ width: wp(95), paddingTop: hp(2), paddingBottom: hp(2) }}>
+
+              {/* <FlatList
               data={[
                 ...docData.filter((el: any) =>
                   el.roleArr.some((ele: string) => ele == userObj?.role),
@@ -903,712 +900,352 @@ const Home = () => {
               }}
             /> */}
 
+              <View style={{ flexDirection: 'row',justifyContent: 'space-between',flexWrap:"wrap"}}>
+                {[...docData.filter((el: any) => el.roleArr.some((ele: string) => ele == userObj?.role))].map((item, index) => (
+                  <Pressable
+                    key={index}
+                    onPress={() => navigation.navigate(item.url)}
+                    style={{
+                      width: wp(42),
+                      height: hp(15),
+                      backgroundColor: "#fff",
+                      marginRight: wp(3),
+                      marginBottom: hp(2),
+                      elevation: 1,
+                      borderRadius: 5,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Image
+                      source={item.img}
+                      style={{ height: wp(9), width: wp(9) }}
+                    />
+                    <Text
+                      style={{
+                        color: 'black',
+                        fontFamily: mainFont,
+                        fontSize: hp(1.6),
+                        marginTop: hp(1),
+                      }}>
+                      {item?.title}
+                    </Text>
+                    <Text
+                      style={{
+                        color: 'black',
+                        fontFamily: mainFont,
+                        fontSize: hp(1.6),
+                        marginTop: hp(1),
+                      }}>
+                      {item?.data} {item?.title == 'Total Earning' ? '₹' : null}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
 
-<View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-  {[...docData.filter((el: any) => el.roleArr.some((ele: string) => ele == userObj?.role))].map((item, index) => (
-    <Pressable
-      key={index}
-      onPress={() => navigation.navigate(item.url)}
-      style={{
-        width: wp(46),
-        height: hp(15),
-        backgroundColor: 'white',
-        marginRight: wp(3),
-        marginBottom: hp(2),
-        elevation: 1,
-        borderRadius: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-      <Image
-        source={item.img}
-        style={{ height: wp(9), width: wp(9) }}
-      />
-      <Text
-        style={{
-          color: 'black',
-          fontFamily: mainFont,
-          fontSize: hp(1.6),
-          marginTop: hp(1),
-        }}>
-        {item?.title}
-      </Text>
-      <Text
-        style={{
-          color: 'black',
-          fontFamily: mainFont,
-          fontSize: hp(1.6),
-          marginTop: hp(1),
-        }}>
-        {item?.data} {item?.title == 'Total Earning' ? '₹' : null}
-      </Text>
-    </Pressable>
-  ))}
-</View>
 
+            </View>
+            <View style={{ width: wp(95) }}>
+              <Text
+                style={{
+                  color: 'black',
+                  fontFamily: mainFont,
+                  alignSelf: 'center',
+                  marginBottom: hp(2),
+                  fontSize: hp(1.8),
+                }}>
+                Number of Appointment
+              </Text>
+              {appointmentData && appointmentData.length > 0 && (
+                <LineChart
+                  data={{
+                    labels: [
+                      'Jan',
+                      'Feb',
+                      'Mar',
+                      'Apr',
+                      'May',
+                      'Jun',
+                      'Jul',
+                      'Aug',
+                      'Sep',
+                      'Oct',
+                      'Nov',
+                      'Dec',
+                    ],
+                    datasets: [
+                      {
+                        data: [...appointmentData],
+                      },
+                    ],
+                  }}
+                  width={wp(95)}
+                  height={220}
+                  chartConfig={chartConfig}
+                />
+              )}
+            </View>
 
+            <View style={{ width: wp(95) }}>
+              <Text
+                style={{
+                  color: 'black',
+                  fontFamily: mainFont,
+                  alignSelf: 'center',
+                  marginBottom: hp(2),
+                  fontSize: hp(1.8),
+                  marginTop: hp(2),
+                }}>
+                Total Income
+              </Text>
+              {monthlyIncomeData && monthlyIncomeData.length > 0 && (
+                <LineChart
+                  data={{
+                    labels: [
+                      'Jan',
+                      'Feb',
+                      'Mar',
+                      'Apr',
+                      'May',
+                      'Jun',
+                      'Jul',
+                      'Aug',
+                      'Sep',
+                      'Oct',
+                      'Nov',
+                      'Dec',
+                    ],
+                    datasets: [
+                      {
+                        data: [...monthlyIncomeData],
+                      },
+                    ],
+                  }}
+                  width={wp(95)}
+                  height={220}
+                  chartConfig={chartConfig}
+                />
+              )}
+            </View>
           </View>
-          <View style={{width: wp(95)}}>
-            <Text
-              style={{
-                color: 'black',
-                fontFamily: mainFont,
-                alignSelf: 'center',
-                marginBottom: hp(2),
-                fontSize: hp(1.8),
-              }}>
-              Number of Appointment
-            </Text>
-            {appointmentData && appointmentData.length > 0 && (
-              <LineChart
-                data={{
-                  labels: [
-                    'Jan',
-                    'Feb',
-                    'Mar',
-                    'Apr',
-                    'May',
-                    'Jun',
-                    'Jul',
-                    'Aug',
-                    'Sep',
-                    'Oct',
-                    'Nov',
-                    'Dec',
-                  ],
-                  datasets: [
-                    {
-                      data: [...appointmentData],
-                    },
-                  ],
-                }}
-                width={wp(95)}
-                height={220}
-                chartConfig={chartConfig}
-              />
-            )}
-          </View>
-
-          <View style={{width: wp(95)}}>
-            <Text
-              style={{
-                color: 'black',
-                fontFamily: mainFont,
-                alignSelf: 'center',
-                marginBottom: hp(2),
-                fontSize: hp(1.8),
-                marginTop: hp(2),
-              }}>
-              Total Income
-            </Text>
-            {monthlyIncomeData && monthlyIncomeData.length > 0 && (
-              <LineChart
-                data={{
-                  labels: [
-                    'Jan',
-                    'Feb',
-                    'Mar',
-                    'Apr',
-                    'May',
-                    'Jun',
-                    'Jul',
-                    'Aug',
-                    'Sep',
-                    'Oct',
-                    'Nov',
-                    'Dec',
-                  ],
-                  datasets: [
-                    {
-                      data: [...monthlyIncomeData],
-                    },
-                  ],
-                }}
-                width={wp(95)}
-                height={220}
-                chartConfig={chartConfig}
-              />
-            )}
-          </View>
-        </View>
-      )}
-      <Modal
-        isVisible={doctorSearchModal}
-        animationIn={'bounceIn'}
-        animationOut={'bounceOut'}
-        onBackButtonPress={() => setDoctorSearchModal(false)}
-        style={{marginLeft: 0, marginRight: 0}}>
-        <View
-          style={{
-            width: wp(100),
-            paddingTop: hp(3),
-            paddingBottom: hp(3),
-            backgroundColor: 'white',
-            alignSelf: 'center',
-            borderRadius: 5,
-            paddingLeft: wp(4),
-            paddingRight: wp(4),
-          }}>
-          <TouchableOpacity
-            onPress={() => setDoctorSearchModal(false)}
-            style={{alignSelf: 'flex-end'}}>
-            <Image
-              source={require('../../assets/images/close.png')}
-              style={{tintColor: 'black', height: wp(5), width: wp(5)}}
-            />
-          </TouchableOpacity>
-
-          <ScrollView
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            contentContainerStyle={{
+        )}
+        <Modal
+          isVisible={doctorSearchModal}
+          animationIn={'bounceIn'}
+          animationOut={'bounceOut'}
+          onBackButtonPress={() => setDoctorSearchModal(false)}
+          style={{ marginLeft: 0, marginRight: 0 }}>
+          <View
+            style={{
+              width: wp(100),
+              paddingTop: hp(3),
+              paddingBottom: hp(3),
+              backgroundColor: 'white',
               alignSelf: 'center',
-              flexDirection: 'row',
-              paddingBottom: hp(1),
-              marginVertical: 15,
+              borderRadius: 5,
+              paddingLeft: wp(4),
+              paddingRight: wp(4),
             }}>
             <TouchableOpacity
-              onPress={() => {
-                setSlctdsec('all');
-                setPosition((prev: any) => prev + 1);
-                handleClearAllfilter();
-              }}
-              style={{
-                height: hp(5),
-                marginRight: 10,
-                paddingLeft: wp(3),
-                paddingRight: wp(3),
-                backgroundColor: slctdsec == 'all' ? maincolor : '#F1F8FF',
-                justifyContent: 'center',
-                borderRadius: 5,
-                borderColor: maincolor,
-                borderWidth: slctdsec == 'all' ? 0 : 0.8,
-              }}>
-              <Text
-                style={{
-                  color: slctdsec == 'all' ? 'white' : maincolor,
-                  fontFamily: mainFont,
-                  fontSize: hp(1.8),
-                }}>
-                All
-              </Text>
+              onPress={() => setDoctorSearchModal(false)}
+              style={{ alignSelf: 'flex-end' }}>
+              <Image
+                source={require('../../assets/images/close.png')}
+                style={{ tintColor: 'black', height: wp(5), width: wp(5) }}
+              />
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setSlctdsec('Doc_name')}
-              style={{
-                height: hp(5),
-                marginRight: 10,
-                paddingLeft: wp(3),
-                paddingRight: wp(3),
-                backgroundColor: slctdsec == 'Doc_name' ? maincolor : '#F1F8FF',
-                justifyContent: 'center',
-                borderRadius: 5,
-                borderColor: maincolor,
-                borderWidth: slctdsec == 'Doc_name' ? 0 : 0.8,
-              }}>
-              <Text
-                style={{
-                  color: slctdsec == 'Doc_name' ? 'white' : maincolor,
-                  fontFamily: mainFont,
-                  fontSize: hp(1.8),
-                }}>
-                {' '}
-                Doctor Name
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setSlctdsec('spc')}
-              style={{
-                height: hp(5),
-                marginRight: 10,
-                paddingLeft: wp(3),
-                paddingRight: wp(3),
-                backgroundColor: slctdsec == 'spc' ? maincolor : '#F1F8FF',
-                justifyContent: 'center',
-                borderRadius: 5,
-                borderColor: maincolor,
-                borderWidth: slctdsec == 'spc' ? 0 : 0.8,
-              }}>
-              <Text
-                style={{
-                  color: slctdsec == 'spc' ? 'white' : maincolor,
-                  fontFamily: mainFont,
-                  fontSize: hp(1.8),
-                }}>
-                Speacialization
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setSlctdsec('gender')}
-              style={{
-                height: hp(5),
-                marginRight: 10,
-                paddingLeft: wp(3),
-                paddingRight: wp(3),
-                backgroundColor: slctdsec == 'gender' ? maincolor : '#F1F8FF',
-                justifyContent: 'center',
-                borderRadius: 5,
-                borderColor: maincolor,
-                borderWidth: slctdsec == 'gender' ? 0 : 0.8,
-              }}>
-              <Text
-                style={{
-                  color: slctdsec == 'gender' ? 'white' : maincolor,
-                  fontFamily: mainFont,
-                  fontSize: hp(1.8),
-                }}>
-                Gender
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setSlctdsec('loc')}
-              style={{
-                height: hp(5),
-                marginRight: 10,
-                paddingLeft: wp(3),
-                paddingRight: wp(3),
-                backgroundColor: slctdsec == 'loc' ? maincolor : '#F1F8FF',
-                justifyContent: 'center',
-                borderRadius: 5,
-                borderColor: maincolor,
-                borderWidth: slctdsec == 'loc' ? 0 : 0.8,
-              }}>
-              <Text
-                style={{
-                  color: slctdsec == 'loc' ? 'white' : maincolor,
-                  fontFamily: mainFont,
-                  fontSize: hp(1.8),
-                }}>
-                Location
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setSlctdsec('price')}
-              style={{
-                height: hp(5),
-                marginRight: 10,
-                paddingLeft: wp(3),
-                paddingRight: wp(3),
-                backgroundColor: slctdsec == 'price' ? maincolor : '#F1F8FF',
-                justifyContent: 'center',
-                borderRadius: 5,
-                borderColor: maincolor,
-                borderWidth: slctdsec == 'price' ? 0 : 0.8,
-              }}>
-              <Text
-                style={{
-                  color: slctdsec == 'price' ? 'white' : maincolor,
-                  fontFamily: mainFont,
-                  fontSize: hp(1.8),
-                }}>
-                Price
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setSlctdsec('sort')}
-              style={{
-                height: hp(5),
-                marginRight: 10,
-                paddingLeft: wp(3),
-                paddingRight: wp(3),
-                backgroundColor: slctdsec == 'sort' ? maincolor : '#F1F8FF',
-                justifyContent: 'center',
-                borderRadius: 5,
-                borderColor: maincolor,
-                borderWidth: slctdsec == 'sort' ? 0 : 0.8,
-              }}>
-              <Text
-                style={{
-                  color: slctdsec == 'sort' ? 'white' : maincolor,
-                  fontFamily: mainFont,
-                  fontSize: hp(1.8),
-                }}>
-                Sort
-              </Text>
-            </TouchableOpacity>
-          </ScrollView>
 
-          {slctdsec == 'Doc_name' && (
-            <View
-              style={{
-                display: 'flex',
+            <ScrollView
+              showsHorizontalScrollIndicator={false}
+              horizontal
+              contentContainerStyle={{
+                alignSelf: 'center',
                 flexDirection: 'row',
-                borderColor: 'gray',
-                borderWidth: 1,
-                borderRadius: 10,
-                justifyContent: 'space-between',
-                paddingHorizontal: 5,
-                alignItems: 'center',
+                paddingBottom: hp(1),
+                marginVertical: 15,
               }}>
-              <TextInput
-                placeholder={`Please search Doctor Name`}
-                value={query}
-                onChangeText={e => setQuery(e)}
-                style={{flex: 1, paddingLeft: 10}}
-              />
-              <TouchableOpacity
-                onPress={() => handleSearch()}
-                style={{
-                  paddingHorizontal: 15,
-                  height: hp(5),
-                  backgroundColor: '#50B148',
-                  borderRadius: 5,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text
-                  style={{
-                    color: 'white',
-                    fontFamily: mainFont,
-                    fontSize: hp(1.8),
-                  }}>
-                  Search
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )}
-          {slctdsec == 'price' && (
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                borderColor: 'gray',
-                borderWidth: 1,
-                borderRadius: 10,
-                justifyContent: 'space-between',
-                paddingHorizontal: 5,
-                alignItems: 'center',
-              }}>
-              <TextInput
-                placeholder={`Please search price`}
-                value={price}
-                onChangeText={e => setPrice(e)}
-                style={{flex: 1, paddingLeft: 10}}
-                keyboardType="number-pad"
-              />
-              <TouchableOpacity
-                onPress={() => handleSearch()}
-                style={{
-                  paddingHorizontal: 15,
-                  height: hp(5),
-                  backgroundColor: '#50B148',
-                  borderRadius: 5,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text
-                  style={{
-                    color: 'white',
-                    fontFamily: mainFont,
-                    fontSize: hp(1.8),
-                  }}>
-                  Search
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )}
-          {slctdsec == 'sort' && (
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                borderColor: 'gray',
-                borderWidth: 1,
-                borderRadius: 10,
-                paddingVertical: 10,
-                justifyContent: 'space-between',
-                paddingHorizontal: 5,
-                alignItems: 'center',
-              }}>
-              <View>
-                <Text style={{paddingHorizontal: 10, marginBottom: 5}}>
-                  Price
-                </Text>
-                <View
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    paddingHorizontal: 5,
-                    alignItems: 'center',
-                  }}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSortType('ASC');
-                    }}
-                    style={{
-                      paddingHorizontal: 15,
-                      paddingVertical: 5,
-                      backgroundColor: sortType == 'ASC' ? '#50B148' : 'gray',
-                      borderRadius: 5,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Text
-                      style={{
-                        color: 'white',
-                        fontFamily: mainFont,
-                        fontSize: hp(1.8),
-                      }}>
-                      Ascending
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSortType('DESC');
-                    }}
-                    style={{
-                      paddingHorizontal: 15,
-                      paddingVertical: 5,
-                      marginLeft: 10,
-                      backgroundColor: sortType == 'DESC' ? '#50B148' : 'gray',
-                      borderRadius: 5,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Text
-                      style={{
-                        color: 'white',
-                        fontFamily: mainFont,
-                        fontSize: hp(1.8),
-                      }}>
-                      Descending
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
               <TouchableOpacity
                 onPress={() => {
-                  handleSearch();
+                  setSlctdsec('all');
+                  setPosition((prev: any) => prev + 1);
+                  handleClearAllfilter();
                 }}
                 style={{
-                  paddingHorizontal: 15,
                   height: hp(5),
-                  backgroundColor: '#50B148',
-                  borderRadius: 5,
+                  marginRight: 10,
+                  paddingLeft: wp(3),
+                  paddingRight: wp(3),
+                  backgroundColor: slctdsec == 'all' ? maincolor : '#F1F8FF',
                   justifyContent: 'center',
-                  alignItems: 'center',
+                  borderRadius: 5,
+                  borderColor: maincolor,
+                  borderWidth: slctdsec == 'all' ? 0 : 0.8,
                 }}>
                 <Text
                   style={{
-                    color: 'white',
+                    color: slctdsec == 'all' ? 'white' : maincolor,
                     fontFamily: mainFont,
                     fontSize: hp(1.8),
                   }}>
-                  Search
+                  All
                 </Text>
               </TouchableOpacity>
-            </View>
-          )}
-          {slctdsec == 'spc' && (
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                borderColor: 'gray',
-                borderWidth: 1,
-                borderRadius: 10,
-                justifyContent: 'space-between',
-                paddingHorizontal: 5,
-                alignItems: 'center',
-              }}>
-              <Dropdown
-                style={[styles.dropdown, {width: wp(69)}]}
-                placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={styles.selectedTextStyle}
-                inputSearchStyle={styles.inputSearchStyle}
-                iconStyle={styles.iconStyle}
-                data={specialisationArr}
-                // search
-                maxHeight={300}
-                labelField="label"
-                valueField="value"
-                placeholder="Select One"
-                // searchPlaceholder="Search..."
-                value={specialization}
-                onChange={(item: any) => {
-                  setSpecialisation(item.value);
-                }}
-              />
               <TouchableOpacity
-                onPress={() => handleSearch()}
+                onPress={() => setSlctdsec('Doc_name')}
                 style={{
-                  paddingHorizontal: 15,
                   height: hp(5),
-                  backgroundColor: '#50B148',
-                  borderRadius: 5,
+                  marginRight: 10,
+                  paddingLeft: wp(3),
+                  paddingRight: wp(3),
+                  backgroundColor: slctdsec == 'Doc_name' ? maincolor : '#F1F8FF',
                   justifyContent: 'center',
-                  alignItems: 'center',
+                  borderRadius: 5,
+                  borderColor: maincolor,
+                  borderWidth: slctdsec == 'Doc_name' ? 0 : 0.8,
                 }}>
                 <Text
                   style={{
-                    color: 'white',
+                    color: slctdsec == 'Doc_name' ? 'white' : maincolor,
                     fontFamily: mainFont,
                     fontSize: hp(1.8),
                   }}>
-                  Search
+                  {' '}
+                  Doctor Name
                 </Text>
               </TouchableOpacity>
-            </View>
-          )}
+              <TouchableOpacity
+                onPress={() => setSlctdsec('spc')}
+                style={{
+                  height: hp(5),
+                  marginRight: 10,
+                  paddingLeft: wp(3),
+                  paddingRight: wp(3),
+                  backgroundColor: slctdsec == 'spc' ? maincolor : '#F1F8FF',
+                  justifyContent: 'center',
+                  borderRadius: 5,
+                  borderColor: maincolor,
+                  borderWidth: slctdsec == 'spc' ? 0 : 0.8,
+                }}>
+                <Text
+                  style={{
+                    color: slctdsec == 'spc' ? 'white' : maincolor,
+                    fontFamily: mainFont,
+                    fontSize: hp(1.8),
+                  }}>
+                  Speacialization
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setSlctdsec('gender')}
+                style={{
+                  height: hp(5),
+                  marginRight: 10,
+                  paddingLeft: wp(3),
+                  paddingRight: wp(3),
+                  backgroundColor: slctdsec == 'gender' ? maincolor : '#F1F8FF',
+                  justifyContent: 'center',
+                  borderRadius: 5,
+                  borderColor: maincolor,
+                  borderWidth: slctdsec == 'gender' ? 0 : 0.8,
+                }}>
+                <Text
+                  style={{
+                    color: slctdsec == 'gender' ? 'white' : maincolor,
+                    fontFamily: mainFont,
+                    fontSize: hp(1.8),
+                  }}>
+                  Gender
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setSlctdsec('loc')}
+                style={{
+                  height: hp(5),
+                  marginRight: 10,
+                  paddingLeft: wp(3),
+                  paddingRight: wp(3),
+                  backgroundColor: slctdsec == 'loc' ? maincolor : '#F1F8FF',
+                  justifyContent: 'center',
+                  borderRadius: 5,
+                  borderColor: maincolor,
+                  borderWidth: slctdsec == 'loc' ? 0 : 0.8,
+                }}>
+                <Text
+                  style={{
+                    color: slctdsec == 'loc' ? 'white' : maincolor,
+                    fontFamily: mainFont,
+                    fontSize: hp(1.8),
+                  }}>
+                  Location
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setSlctdsec('price')}
+                style={{
+                  height: hp(5),
+                  marginRight: 10,
+                  paddingLeft: wp(3),
+                  paddingRight: wp(3),
+                  backgroundColor: slctdsec == 'price' ? maincolor : '#F1F8FF',
+                  justifyContent: 'center',
+                  borderRadius: 5,
+                  borderColor: maincolor,
+                  borderWidth: slctdsec == 'price' ? 0 : 0.8,
+                }}>
+                <Text
+                  style={{
+                    color: slctdsec == 'price' ? 'white' : maincolor,
+                    fontFamily: mainFont,
+                    fontSize: hp(1.8),
+                  }}>
+                  Price
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setSlctdsec('sort')}
+                style={{
+                  height: hp(5),
+                  marginRight: 10,
+                  paddingLeft: wp(3),
+                  paddingRight: wp(3),
+                  backgroundColor: slctdsec == 'sort' ? maincolor : '#F1F8FF',
+                  justifyContent: 'center',
+                  borderRadius: 5,
+                  borderColor: maincolor,
+                  borderWidth: slctdsec == 'sort' ? 0 : 0.8,
+                }}>
+                <Text
+                  style={{
+                    color: slctdsec == 'sort' ? 'white' : maincolor,
+                    fontFamily: mainFont,
+                    fontSize: hp(1.8),
+                  }}>
+                  Sort
+                </Text>
+              </TouchableOpacity>
+            </ScrollView>
 
-          {slctdsec == 'gender' && (
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                borderColor: 'gray',
-                borderWidth: 1,
-                borderRadius: 10,
-                justifyContent: 'space-between',
-                paddingHorizontal: 5,
-                alignItems: 'center',
-              }}>
-              <Dropdown
-                style={[styles.dropdown, {width: wp(69)}]}
-                placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={styles.selectedTextStyle}
-                inputSearchStyle={styles.inputSearchStyle}
-                iconStyle={styles.iconStyle}
-                data={[
-                  {label: 'Male', value: 'Male'},
-                  {label: 'Female', value: 'Female'},
-                ]}
-                // search
-                maxHeight={300}
-                labelField="label"
-                valueField="value"
-                placeholder="Select gender"
-                // searchPlaceholder="Search..."
-                value={gender}
-                onChange={(item: any) => {
-                  setGender(item.value);
-                }}
-              />
-              <TouchableOpacity
-                onPress={() => handleSearch()}
-                style={{
-                  paddingHorizontal: 15,
-                  height: hp(5),
-                  backgroundColor: '#50B148',
-                  borderRadius: 5,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text
-                  style={{
-                    color: 'white',
-                    fontFamily: mainFont,
-                    fontSize: hp(1.8),
-                  }}>
-                  Search
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )}
-          {slctdsec == 'loc' && (
-            <View
-              style={{
-                borderColor: 'gray',
-                borderWidth: 1,
-                borderRadius: 10,
-                paddingVertical: 10,
-              }}>
+            {slctdsec == 'Doc_name' && (
               <View
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  marginBottom: 10,
-                  paddingHorizontal: 5,
-                  alignItems: 'center',
-                }}>
-                <Dropdown
-                  style={[
-                    styles.dropdown,
-                    isFocus && {borderColor: 'blue', borderWidth: 0.5},
-                  ]}
-                  placeholderStyle={styles.placeholderStyle}
-                  selectedTextStyle={styles.selectedTextStyle}
-                  inputSearchStyle={styles.inputSearchStyle}
-                  iconStyle={styles.iconStyle}
-                  data={statesArr}
-                  // search
-                  maxHeight={300}
-                  labelField="label"
-                  valueField="value"
-                  placeholder="Select One"
-                  // searchPlaceholder="Search..."
-                  value={city}
-                  onFocus={() => setIsFocus(true)}
-                  onBlur={() => setIsFocus(false)}
-                  onChange={(item: any) => {
-                    setCityArr([
-                      ...item.cities.map((el: any) => ({label: el, value: el})),
-                    ]);
-                    setIsFocus(false);
-                  }}
-                />
-                {cityArr && cityArr.length > 0 && (
-                  <Dropdown
-                    style={[
-                      styles.dropdown,
-                      cityIsFocused && {borderColor: 'blue', borderWidth: 0.5},
-                    ]}
-                    placeholderStyle={styles.placeholderStyle}
-                    selectedTextStyle={styles.selectedTextStyle}
-                    inputSearchStyle={styles.inputSearchStyle}
-                    iconStyle={styles.iconStyle}
-                    data={cityArr}
-                    // search
-                    maxHeight={300}
-                    labelField="label"
-                    valueField="value"
-                    placeholder="Select One"
-                    // searchPlaceholder="Search..."
-                    value={city}
-                    onFocus={() => setCityIsFocused(true)}
-                    onBlur={() => setCityIsFocused(false)}
-                    onChange={(item: any) => {
-                      setCity(item.value);
-                      setCityIsFocused(false);
-                    }}
-                  />
-                )}
-              </View>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
+                  borderColor: 'gray',
+                  borderWidth: 1,
                   borderRadius: 10,
                   justifyContent: 'space-between',
                   paddingHorizontal: 5,
                   alignItems: 'center',
                 }}>
-                <TouchableOpacity
-                  onPress={() => setCity('')}
-                  style={{
-                    marginHorizontal: 15,
-                    flex: 1,
-                    height: hp(5),
-                    backgroundColor: 'gray',
-                    borderRadius: 5,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      color: 'white',
-                      fontFamily: mainFont,
-                      fontSize: hp(1.8),
-                    }}>
-                    Clear
-                  </Text>
-                </TouchableOpacity>
+                <TextInput
+                  placeholder={`Please search Doctor Name`}
+                  value={query}
+                  onChangeText={e => setQuery(e)}
+                  style={{ flex: 1, paddingLeft: 10 }}
+                />
                 <TouchableOpacity
                   onPress={() => handleSearch()}
                   style={{
-                    marginHorizontal: 15,
-                    flex: 1,
+                    paddingHorizontal: 15,
                     height: hp(5),
                     backgroundColor: '#50B148',
                     borderRadius: 5,
@@ -1625,19 +1262,378 @@ const Home = () => {
                   </Text>
                 </TouchableOpacity>
               </View>
-            </View>
-          )}
-          <FlatList
-            contentContainerStyle={{backgroundColor: 'white', marginTop: 30}}
-            style={{maxHeight: hp(40)}}
-            data={doctorsArr}
-            keyExtractor={(itemX, indexX) => `${indexX}`}
-            renderItem={renderDoctor}
-            ListEmptyComponent={<Text>No data at the moment</Text>}
-          />
-        </View>
-      </Modal>
-    </ScrollView>
+            )}
+            {slctdsec == 'price' && (
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  borderColor: 'gray',
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 5,
+                  alignItems: 'center',
+                }}>
+                <TextInput
+                  placeholder={`Please search price`}
+                  value={price}
+                  onChangeText={e => setPrice(e)}
+                  style={{ flex: 1, paddingLeft: 10 }}
+                  keyboardType="number-pad"
+                />
+                <TouchableOpacity
+                  onPress={() => handleSearch()}
+                  style={{
+                    paddingHorizontal: 15,
+                    height: hp(5),
+                    backgroundColor: '#50B148',
+                    borderRadius: 5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontFamily: mainFont,
+                      fontSize: hp(1.8),
+                    }}>
+                    Search
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            {slctdsec == 'sort' && (
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  borderColor: 'gray',
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  paddingVertical: 10,
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 5,
+                  alignItems: 'center',
+                }}>
+                <View>
+                  <Text style={{ paddingHorizontal: 10, marginBottom: 5 }}>
+                    Price
+                  </Text>
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      paddingHorizontal: 5,
+                      alignItems: 'center',
+                    }}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setSortType('ASC');
+                      }}
+                      style={{
+                        paddingHorizontal: 15,
+                        paddingVertical: 5,
+                        backgroundColor: sortType == 'ASC' ? '#50B148' : 'gray',
+                        borderRadius: 5,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text
+                        style={{
+                          color: 'white',
+                          fontFamily: mainFont,
+                          fontSize: hp(1.8),
+                        }}>
+                        Ascending
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setSortType('DESC');
+                      }}
+                      style={{
+                        paddingHorizontal: 15,
+                        paddingVertical: 5,
+                        marginLeft: 10,
+                        backgroundColor: sortType == 'DESC' ? '#50B148' : 'gray',
+                        borderRadius: 5,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text
+                        style={{
+                          color: 'white',
+                          fontFamily: mainFont,
+                          fontSize: hp(1.8),
+                        }}>
+                        Descending
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    handleSearch();
+                  }}
+                  style={{
+                    paddingHorizontal: 15,
+                    height: hp(5),
+                    backgroundColor: '#50B148',
+                    borderRadius: 5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontFamily: mainFont,
+                      fontSize: hp(1.8),
+                    }}>
+                    Search
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            {slctdsec == 'spc' && (
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  borderColor: 'gray',
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 5,
+                  alignItems: 'center',
+                }}>
+                <Dropdown
+                  style={[styles.dropdown, { width: wp(69) }]}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  data={specialisationArr}
+                  // search
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder="Select One"
+                  // searchPlaceholder="Search..."
+                  value={specialization}
+                  onChange={(item: any) => {
+                    setSpecialisation(item.value);
+                  }}
+                />
+                <TouchableOpacity
+                  onPress={() => handleSearch()}
+                  style={{
+                    paddingHorizontal: 15,
+                    height: hp(5),
+                    backgroundColor: '#50B148',
+                    borderRadius: 5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontFamily: mainFont,
+                      fontSize: hp(1.8),
+                    }}>
+                    Search
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {slctdsec == 'gender' && (
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  borderColor: 'gray',
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 5,
+                  alignItems: 'center',
+                }}>
+                <Dropdown
+                  style={[styles.dropdown, { width: wp(69) }]}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  data={[
+                    { label: 'Male', value: 'Male' },
+                    { label: 'Female', value: 'Female' },
+                  ]}
+                  // search
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder="Select gender"
+                  // searchPlaceholder="Search..."
+                  value={gender}
+                  onChange={(item: any) => {
+                    setGender(item.value);
+                  }}
+                />
+                <TouchableOpacity
+                  onPress={() => handleSearch()}
+                  style={{
+                    paddingHorizontal: 15,
+                    height: hp(5),
+                    backgroundColor: '#50B148',
+                    borderRadius: 5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontFamily: mainFont,
+                      fontSize: hp(1.8),
+                    }}>
+                    Search
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            {slctdsec == 'loc' && (
+              <View
+                style={{
+                  borderColor: 'gray',
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  paddingVertical: 10,
+                }}>
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginBottom: 10,
+                    paddingHorizontal: 5,
+                    alignItems: 'center',
+                  }}>
+                  <Dropdown
+                    style={[
+                      styles.dropdown,
+                      isFocus && { borderColor: 'blue', borderWidth: 0.5 },
+                    ]}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    inputSearchStyle={styles.inputSearchStyle}
+                    iconStyle={styles.iconStyle}
+                    data={statesArr}
+                    // search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Select One"
+                    // searchPlaceholder="Search..."
+                    value={city}
+                    onFocus={() => setIsFocus(true)}
+                    onBlur={() => setIsFocus(false)}
+                    onChange={(item: any) => {
+                      setCityArr([
+                        ...item.cities.map((el: any) => ({ label: el, value: el })),
+                      ]);
+                      setIsFocus(false);
+                    }}
+                  />
+                  {cityArr && cityArr.length > 0 && (
+                    <Dropdown
+                      style={[
+                        styles.dropdown,
+                        cityIsFocused && { borderColor: 'blue', borderWidth: 0.5 },
+                      ]}
+                      placeholderStyle={styles.placeholderStyle}
+                      selectedTextStyle={styles.selectedTextStyle}
+                      inputSearchStyle={styles.inputSearchStyle}
+                      iconStyle={styles.iconStyle}
+                      data={cityArr}
+                      // search
+                      maxHeight={300}
+                      labelField="label"
+                      valueField="value"
+                      placeholder="Select One"
+                      // searchPlaceholder="Search..."
+                      value={city}
+                      onFocus={() => setCityIsFocused(true)}
+                      onBlur={() => setCityIsFocused(false)}
+                      onChange={(item: any) => {
+                        setCity(item.value);
+                        setCityIsFocused(false);
+                      }}
+                    />
+                  )}
+                </View>
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    borderRadius: 10,
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 5,
+                    alignItems: 'center',
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => setCity('')}
+                    style={{
+                      marginHorizontal: 15,
+                      flex: 1,
+                      height: hp(5),
+                      backgroundColor: 'gray',
+                      borderRadius: 5,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontFamily: mainFont,
+                        fontSize: hp(1.8),
+                      }}>
+                      Clear
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => handleSearch()}
+                    style={{
+                      marginHorizontal: 15,
+                      flex: 1,
+                      height: hp(5),
+                      backgroundColor: '#50B148',
+                      borderRadius: 5,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontFamily: mainFont,
+                        fontSize: hp(1.8),
+                      }}>
+                      Search
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+            <FlatList
+              contentContainerStyle={{ backgroundColor: 'white', marginTop: 30 }}
+              style={{ maxHeight: hp(40) }}
+              data={doctorsArr}
+              keyExtractor={(itemX, indexX) => `${indexX}`}
+              renderItem={renderDoctor}
+              ListEmptyComponent={<Text>No data at the moment</Text>}
+            />
+          </View>
+        </Modal>
+      </ScrollView>
     </View>
   );
 };
