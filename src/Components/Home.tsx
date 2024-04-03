@@ -161,7 +161,8 @@ const Home = () => {
         }
       }
     } catch (err) {
-      toastError(err);
+      console.log('err in home page line 164',err)
+      // toastError(err);
     }
   };
 
@@ -174,7 +175,8 @@ const Home = () => {
       setIsAuthorized(false);
       }
     } catch (err) {
-      toastError(err);
+      console.log('here error is ')
+      // toastError(err);
     }
   };
 
@@ -195,7 +197,9 @@ const Home = () => {
         throw new Error(res.error);
       }
     } catch (err) {
-      toastError(err);
+      console.log('line 199 in hoe page',err)
+      // alert('this is errr')
+      // toastError(err);
     }
   };
 
@@ -248,7 +252,7 @@ const Home = () => {
       }
     } catch (err) {
       // toastError(err)
-      alert('error in home page ')
+      // alert('error in home page ')
     }
   };
   const handleGetWallet = async () => {
@@ -264,7 +268,8 @@ const Home = () => {
         setDocData([...tempDocData]);
       }
     } catch (err) {
-      toastError(err);
+      console.log('err in line 270 in home page',err)
+      // toastError(err);
     }
   };
 
@@ -472,7 +477,8 @@ const Home = () => {
         ]);
       }
     } catch (err) {
-      toastError(err);
+      console.log('err in line 479',err)
+      // toastError(err);
     }
   };
 
@@ -498,7 +504,8 @@ const Home = () => {
         );
       }
     } catch (err) {
-      toastError(err);
+      console.log('err in line 506',err)
+      // toastError(err);
     }
   };
 
@@ -531,7 +538,8 @@ const Home = () => {
         setLastPageReached(true);
       }
     } catch (err) {
-      toastError(err);
+      console.log('err in line 540 in hoe page',err)
+      // toastError(err);
     }
   };
 
