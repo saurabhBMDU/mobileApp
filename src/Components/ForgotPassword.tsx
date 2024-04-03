@@ -8,16 +8,16 @@ import {
   ImageBackground,
   Pressable,
 } from 'react-native';
-import React, {useContext, useState} from 'react';
+import React, { useContext, useState } from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {useNavigation} from '@react-navigation/native';
-import {LoginContext} from '../../App';
-import {toastError, toastSuccess} from '../utils/toast.utils';
-import {forgotPassword} from '../Services/user.service';
-const {height, width} = Dimensions.get('window');
+import { useNavigation } from '@react-navigation/native';
+import { LoginContext } from '../../App';
+import { toastError, toastSuccess } from '../utils/toast.utils';
+import { forgotPassword } from '../Services/user.service';
+const { height, width } = Dimensions.get('window');
 
 const ForgotPassword = () => {
   const mainFont = 'Montserrat-Regular';
@@ -40,16 +40,14 @@ const ForgotPassword = () => {
         mobile,
       };
 
-      let {data: res} = await forgotPassword(obj);
+      let { data: res } = await forgotPassword(obj);
       if (res.message) {
         toastSuccess(res.message);
-        navigation.navigate('GetOTP', {data: mobile});
+        navigation.navigate('GetOTP', { data: mobile });
       }
     } catch (err) {
       toastError(err);
     }
-
-    // navigation.navigate("Password", { data: email })
   };
   return (
     <View
@@ -60,24 +58,13 @@ const ForgotPassword = () => {
         height: height,
       }}>
       <ImageBackground
-        // source={require('../../assets/images/background_img.png')}
-        // resizeMode='contain'
-        // style={{ height: height, width: width, backgroundColor: "#1263AC" }}
-
         source={require('../../assets/images/feverNewLogo.png')}
         resizeMode="stretch"
-        style={{ flex: 1, width: wp(100), height: hp(100), alignItems: 'center', justifyContent: 'center' }}
-        // style={{flex: 1, width: width, backgroundColor: '#1263AC'}}
-        // style={{ width: wp(70), height: hp(20), marginTop: hp(2), alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}
-      >
+        style={{ flex: 1, width: wp(100), height: hp(100), alignItems: 'center', justifyContent: 'center' }}>
         <View
           style={{
-            // backgroundColor: '#eee',
-            // height: height - 200,
-            // width: width,
             justifyContent: 'center',
-            // alignItems: 'center',
-            flex:1,
+            flex: 1,
           }}>
           <Text
             style={{
@@ -90,9 +77,9 @@ const ForgotPassword = () => {
             }}>
             Forgot Password
           </Text>
-          <View style={{width: wp(90), alignSelf: 'center'}}>
+          <View style={{ width: wp(90), alignSelf: 'center' }}>
             {/* Email section >>>>>>>>>>>>>>>>>>>>>*/}
-            <Text style={{color: '#1263AC'}}>Mobile Number</Text>
+            <Text style={{ color: '#1263AC',fontSize:hp(1.8) }}>Mobile Number</Text>
             <View
               style={{
                 width: '100%',
@@ -101,18 +88,16 @@ const ForgotPassword = () => {
                 marginTop: hp(1),
                 borderRadius: 5,
                 alignItems: 'center',
-                paddingLeft: wp(4),
+                paddingLeft: wp(2),
                 flexDirection: 'row',
               }}>
-              {/* <Image source={require('../../assets/images/Mail.png')}
-                                style={{ height: wp(5.5), width: wp(5.5), resizeMode: 'contain', tintColor: 'grey' }} /> */}
               <TextInput
                 placeholder="Enter Mobile Number"
                 placeholderTextColor="gray"
                 keyboardType="number-pad"
                 onChangeText={e => setMobile(e)}
                 value={mobile}
-                style={{marginLeft: 5, width: wp(70)}}
+                style={{ marginLeft: 2, width: wp(70),fontSize:hp(2) }}
               />
             </View>
             <TouchableOpacity
@@ -127,7 +112,7 @@ const ForgotPassword = () => {
                 justifyContent: 'center',
               }}>
               <Text
-                style={{color: 'white', fontFamily: 'AvenirNextLTPro-Regular'}}>
+                style={{ color: 'white', fontFamily: 'AvenirNextLTPro-Regular',fontSize:hp(1.9) }}>
                 Continue
               </Text>
             </TouchableOpacity>

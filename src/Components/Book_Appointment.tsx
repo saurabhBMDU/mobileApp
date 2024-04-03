@@ -804,6 +804,7 @@ const Book_Appointment = () => {
               handleOnEndReached();
             }}
             renderItem={({ item, index }) => {
+             
               return (
                 <View
                   style={{
@@ -815,7 +816,9 @@ const Book_Appointment = () => {
                     borderRadius: 5,
                     alignItems: 'center',
                     justifyContent: 'space-between',
+
                   }}>
+                 
                   <TouchableOpacity
                     onPress={() =>
                       navigation.navigate('About Doctor', { doctorId: item })
@@ -824,7 +827,7 @@ const Book_Appointment = () => {
                       style={{
                         flexDirection: 'row',
                         justifyContent: 'space-between',
-                        width: '100%',
+                        width: '89%',
                       }}>
                       <TouchableOpacity style={{ flexDirection: 'row' }}>
                         <Image
@@ -895,7 +898,7 @@ const Book_Appointment = () => {
                               fontFamily: mainFont,
                               marginLeft: wp(1),
                             }}>
-                            {item?.city}
+                            {item?.city} {item?.state}
                           </Text>
                         </View>
                         <View

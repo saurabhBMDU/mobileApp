@@ -40,7 +40,7 @@ const Appointment_History = (props: any) => {
     try {
       await deleteJwt();
     } catch (err) {
-      toastError(err);
+    //   toastError(err);
     }
   };
 
@@ -64,7 +64,7 @@ const Appointment_History = (props: any) => {
       }
     }
     } catch (err) {
-      toastError(err);
+    //   toastError(err);
     }
   };
 

@@ -42,9 +42,9 @@ const CompleteFollowupModal = ({cartID, closeModal, drrIdes, modeOf}) => {
   const fetchTimeSlot = async () => {
     const response = await axios.get(`${url}time-slot/${drrIdes}`);
     if (modeOf == 'Video') {
-      setTimeSlot(response.data.data.timeSlotOnline);
+      setTimeSlot(response.data.data.extractedOnlineTimes);
     } else {
-      setTimeSlot(response.data.data.timeSlotoffline);
+      setTimeSlot(response.data.data.extractedOfflineTime);
     }
   };
 

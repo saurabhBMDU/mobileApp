@@ -15,6 +15,7 @@ import { toastError, toastSuccess } from '../utils/toast.utils';
 import { addAppointments } from '../Services/appointments.service';
 import { getUser } from '../Services/user.service';
 import { getstateAndCities } from '../Services/stateCity.service';
+import Location_icos from "react-native-vector-icons/Entypo";
 import { SendNotificationForMeetingCreation } from '../Services/notificationSevice';
 
 const BookClient = (props: any) => {
@@ -41,6 +42,8 @@ const BookClient = (props: any) => {
     const [check, setcheck] = useState('online');
     const [dateModal, setDateModal] = useState(false);
     const [doctorObj, setDoctorObj] = useState(props?.route?.params?.doctor);
+
+
     const Dropdwndata = [
         {
             label: 'Male', value: 'Male'
@@ -154,19 +157,30 @@ const BookClient = (props: any) => {
         value: slot.value.split(' ')[0]
     }));
 
+    const [address, setAddress] = useState(props?.route?.params?.doctor?.address);
+    const [drPincode, setDrPincode] = useState(props?.route?.params?.doctor?.pinCode);
+    const [drCity, setDrCity] = useState(props?.route?.params?.doctor?.city);
+    const [drState, setDrState] = useState(props?.route?.params?.doctor?.state);
+    console.log("this is mt address", address)
+
 
 
     return (
         <ScrollView style={{ backgroundColor: 'white', }}>
             <Headerr secndheader={true} label='Book Client Details' />
             <View style={{ width: wp(95), alignSelf: 'center', height: height - hp(25) }}>
-                <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
+                <View style={{ width: wp(100), flexDirection: "row", paddingVertical: wp(2), alignItems: "center", }}>
+                    <Location_icos name="location" style={{color:"blue",fontSize:hp(3)}} />
+                    <Text style={{fontSize:hp(2),marginLeft:wp(2)}}>{address} {drCity} {state} {drPincode}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <View style={{ width: wp(45) }}>
                         <Text style={{ fontSize: hp(2), fontFamily: mainFont, color: 'black' }}>Date:</Text>
                         <Pressable onPress={() => setDateModal(true)}>
                             <TextInput placeholder='Select date' editable={false} onChangeText={(e) => setDateTime(e)} value={dateTime} style={{ height: hp(6.5), backgroundColor: '#F2F2F2E5', borderRadius: 6, borderColor: "gray", borderWidth: .5 }} />
                         </Pressable>
                     </View>
+
                     <View style={{ width: wp(45) }} >
                         <Text style={{ fontSize: hp(2), fontFamily: mainFont, color: 'black' }}>Select Slot:</Text>
                         <Dropdown

@@ -12,19 +12,23 @@ import {
   ScrollView,
   Pressable,
 } from 'react-native';
-import React, {useContext, useState} from 'react';
+
+import React, { useContext, useState } from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {useNavigation} from '@react-navigation/native';
-import {LoginContext} from '../../../App';
-import {toastError, toastSuccess} from '../../utils/toast.utils';
-import {Dropdown} from 'react-native-element-dropdown';
-import {registerUser, sendOtp} from '../../Services/user.service';
-const {height, width} = Dimensions.get('window');
+import { useNavigation } from '@react-navigation/native';
+import { LoginContext } from '../../../App';
+import { toastError, toastSuccess } from '../../utils/toast.utils';
+import { Dropdown } from 'react-native-element-dropdown';
+import { registerUser, sendOtp } from '../../Services/user.service';
+import Openeye_closeEye from 'react-native-vector-icons/Ionicons';
+
+const { height, width } = Dimensions.get('window');
 
 const Register = () => {
+
   const mainFont = 'Montserrat-Regular';
   const mainFontBold = 'Montserrat-Bold';
   const navigation: any = useNavigation();
@@ -37,6 +41,8 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [rePassword, setRePassword] = useState('');
   const [otp, setOtp] = useState('');
+  const [hide, setHide] = useState(true);
+  const [hide2, setHide2] = useState(true);
 
   const [showOtpInput, setShowOtpInput] = useState(true);
 
@@ -48,8 +54,13 @@ const Register = () => {
         toastError('Name is mandatory !!!');
         return;
       }
-      if (email == '') {
-        toastError('Email is mandatory !!!');
+      if (name.length > 20) {
+        toastError('Name must be less than or equal to 20 characters !!!');
+        return;
+      }
+      const emailRegex = /\S+@\S+\.\S+/;
+      if (!emailRegex.test(email)) {
+        toastError('Invalid email format !!!');
         return;
       }
       if (mobile == '') {
@@ -87,7 +98,7 @@ const Register = () => {
         rePassword,
       };
 
-      let {data: res} = await registerUser(obj);
+      let { data: res } = await registerUser(obj);
       if (res.message) {
         toastSuccess(res.message);
         navigation.navigate('Login');
@@ -106,7 +117,7 @@ const Register = () => {
       let obj = {
         mobile: mobile,
       };
-      let {data: res} = await sendOtp(obj);
+      let { data: res } = await sendOtp(obj);
       if (res.message) {
         toastSuccess(res.message);
         setShowOtpInput(false);
@@ -121,7 +132,7 @@ const Register = () => {
       toastError('Email is mandatory !!!');
       return;
     }
-    navigation.navigate('Password', {data: email});
+    navigation.navigate('Password', { data: email });
   };
   return (
     <ScrollView
@@ -130,24 +141,12 @@ const Register = () => {
         alignItems: 'center',
         justifyContent: 'center',
         // maxHeight: height,
-        backgroundColor:'white',
-        height:1100,
+        backgroundColor: 'white',
+        height: 1100,
       }}>
       <ImageBackground
-        // source={require('../../../assets/images/background_img.png')}
-        // resizeMode='contain'
-        // style={{ height: height, width: width, backgroundColor: "#1263AC" }}
         source={require('../../../assets/images/feverNewLogo.png')}
         resizeMode="stretch"
-        // style={{
-        // width: wp(70),
-        // height: hp(20),
-        // marginTop: hp(2),
-        // alignItems: 'center',
-        // justifyContent: 'center',
-        // alignSelf: 'center',
-        // }}
-        // style={{ flex: 1, width: width, backgroundColor: "#1263AC" }}
         style={{
           flex: 1,
           width: wp(100),
@@ -160,25 +159,20 @@ const Register = () => {
           keyboardVerticalOffset={Platform.OS == 'ios' ? 100 : 50}
           style={{
             flex: 1,
-            marginBottom:100,
-            }}>
+            marginBottom: hp(8),
+          }}>
           <View
             style={{
-              // backgroundColor: '#eee',
-              // height: height,
-              // width: width,
-              // justifyContent: 'center',
-              // alignItems: 'center',
               flex: 1,
               justifyContent: 'center',
-              marginTop:400,
+              marginTop: 400,
             }}>
             <Text
               style={{
                 fontSize: hp(3),
                 color: '#1263AC',
-                alignSelf: 'center',
                 marginTop: hp(6),
+                marginLeft: wp(2.9),
                 fontFamily: mainFont,
                 fontWeight: 'bold',
               }}>
@@ -237,7 +231,8 @@ const Register = () => {
                     backgroundColor: '#E8E8E8',
                     borderRadius: 5,
                     alignItems: 'center',
-                    paddingLeft: wp(4),
+                    paddingLeft: wp(1.5),
+                    fontSize: hp(2),
                     flexDirection: 'row',
                   }}
                 />
@@ -256,6 +251,7 @@ const Register = () => {
                     style={{
                       color: 'white',
                       fontFamily: 'AvenirNextLTPro-Regular',
+                      fontSize: hp(2)
                     }}>
                     {showOtpInput == false ? 'Resend OTP' : 'Request OTP'}
                   </Text>
@@ -276,17 +272,17 @@ const Register = () => {
                 </>
               )}
               <Text style={styles.common_Text_Styl}>Gender</Text>
-              <View style={{width: '100%'}}>
+              <View style={{ width: '100%' }}>
                 <Dropdown
-                  style={[styles.dropdown, {width: '100%'}]}
+                  style={[styles.dropdown, { width: '100%' }]}
                   placeholderStyle={styles.placeholderStyle}
                   selectedTextStyle={styles.selectedTextStyle}
                   inputSearchStyle={styles.inputSearchStyle}
                   iconStyle={styles.iconStyle}
                   data={[
-                    {label: 'Male', value: 'Male'},
-                    {label: 'Female', value: 'Female'},
-                    {label: 'Others', value: 'Others'},
+                    { label: 'Male', value: 'Male' },
+                    { label: 'Female', value: 'Female' },
+                    { label: 'Others', value: 'Others' },
                   ]}
                   maxHeight={300}
                   labelField="label"
@@ -303,11 +299,20 @@ const Register = () => {
                 <TextInput
                   placeholder="Enter Password"
                   placeholderTextColor="gray"
-                  secureTextEntry
+                  secureTextEntry={hide2}
                   onChangeText={e => setPassword(e)}
                   value={password}
                   style={styles.all_input_BOx_ctyl}
                 />
+                <Pressable onPress={() => setHide2(!hide2)} style={{ padding: 12 }}>
+                  <Openeye_closeEye
+                    name={hide2 ? "eye-off" : "eye"}
+                    style={{
+                      color: '#696968',
+                      fontSize: hp(3),
+                    }}
+                  />
+                </Pressable>
               </View>
               <Text style={styles.common_Text_Styl}>Confirm password</Text>
               <View style={styles.input_fild_parent_View}>
@@ -316,9 +321,19 @@ const Register = () => {
                   placeholderTextColor="gray"
                   onChangeText={e => setRePassword(e)}
                   value={rePassword}
-                  secureTextEntry
+                  secureTextEntry={hide}
                   style={styles.all_input_BOx_ctyl}
                 />
+                <Pressable onPress={() => setHide(!hide)} style={{ padding: 12 }}>
+                  <Openeye_closeEye
+                    name={hide ? "eye-off" : "eye"}
+                    style={{
+                      color: '#696968',
+                      fontSize: hp(3),
+                    }}
+                  />
+                </Pressable>
+
               </View>
               <View
                 style={{
@@ -338,11 +353,11 @@ const Register = () => {
                   }}>
                   <View
                     style={{
-                      height: 15,
-                      width: 15,
+                      height: hp(1.7),
+                      width: hp(1.7),
                       borderRadius: 5,
                       backgroundColor: isAggreed ? 'black' : 'white',
-                      borderWidth:1,
+                      borderWidth: 1,
                     }}></View>
                 </Pressable>
                 <Text
@@ -351,13 +366,14 @@ const Register = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontFamily: 'AvenirNextLTPro-Regular',
+                    fontSize: hp(1.8)
                   }}>
                   I accept Fever99
                 </Text>
                 <Pressable onPress={() => navigation.navigate('PAC')}>
-                  <Text style={{color: '#1263AC', fontWeight: '800'}}>
-                    {' '}
-                    Privacy Policy{' '}
+                  <Text style={{
+                    color: '#1263AC', fontWeight: '800', fontSize: hp(1.8)
+                  }}> Privacy Policy
                   </Text>
                 </Pressable>
                 <Text
@@ -366,15 +382,12 @@ const Register = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontFamily: 'AvenirNextLTPro-Regular',
-                  }}>
-                  and
-                </Text>
+                    fontSize: hp(1.8)
+                  }}> and</Text>
                 <Pressable
-                  style={{marginLeft: 5}}
+                  style={{ marginLeft: 5 }}
                   onPress={() => navigation.navigate('TAC')}>
-                  <Text style={{color: '#1263AC', fontWeight: '800'}}>
-                    T&C{' '}
-                  </Text>
+                  <Text style={{ color: '#1263AC', fontWeight: '800', fontSize: hp(1.8) }}> T&C </Text>
                 </Pressable>
               </View>
 
@@ -393,6 +406,7 @@ const Register = () => {
                   style={{
                     color: 'white',
                     fontFamily: 'AvenirNextLTPro-Regular',
+                    fontSize: hp(2)
                   }}>
                   Continue
                 </Text>
@@ -408,10 +422,11 @@ const styles = StyleSheet.create({
   common_Text_Styl: {
     color: '#1263AC',
     marginTop: 15,
+    fontSize: hp(1.8)
   },
   all_input_BOx_ctyl: {
-    marginLeft: 5,
     width: wp(70),
+    fontSize: hp(2)
   },
   input_fild_parent_View: {
     width: '100%',
@@ -420,41 +435,44 @@ const styles = StyleSheet.create({
     marginTop: hp(1),
     borderRadius: 5,
     alignItems: 'center',
-    paddingLeft: wp(4),
+    paddingLeft: wp(1.5),
     flexDirection: 'row',
+    justifyContent: "space-between"
   },
   dropdown: {
-    height: 50,
-    borderRadius: 8,
+    height: hp(5.5),
+    borderRadius: 5,
     paddingHorizontal: 8,
     marginTop: hp(1),
     width: wp(45),
-    backgroundColor: '#F2F2F2E5',
+    fontSize: hp(2),
+    backgroundColor: '#E8E8E8',
   },
   dropdown1: {
     height: 50,
-
     borderRadius: 8,
     paddingHorizontal: 8,
     marginTop: hp(1),
+    fontSize: hp(2),
     width: wp(95),
     backgroundColor: '#F2F2F2E5',
   },
   placeholderStyle: {
-    fontSize: 16,
+    fontSize: hp(2),
     color: '#8E8E8E',
   },
   selectedTextStyle: {
-    fontSize: 16,
+    fontSize: hp(2),
     color: '#8E8E8E',
   },
   iconStyle: {
     width: 20,
     height: 20,
+    fontSize: hp(2),
   },
   inputSearchStyle: {
     height: 40,
-    fontSize: 16,
+    fontSize: hp(2),
     color: '#8E8E8E',
   },
 });
