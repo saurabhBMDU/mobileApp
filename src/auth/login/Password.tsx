@@ -67,8 +67,6 @@ const Password = (props: any) => {
   };
 
 
-
-
   const ProceedToLogin = async () => {
     try {
       if (password == '') {
