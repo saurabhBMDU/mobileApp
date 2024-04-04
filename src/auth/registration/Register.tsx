@@ -140,9 +140,8 @@ const Register = () => {
         width: width,
         alignItems: 'center',
         justifyContent: 'center',
-        // maxHeight: height,
         backgroundColor: 'white',
-        height: 1100,
+        flex:1
       }}>
       <ImageBackground
         source={require('../../../assets/images/feverNewLogo.png')}
@@ -171,7 +170,6 @@ const Register = () => {
               style={{
                 fontSize: hp(3),
                 color: '#1263AC',
-                marginTop: hp(6),
                 marginLeft: wp(2.9),
                 fontFamily: mainFont,
                 fontWeight: 'bold',
@@ -304,7 +302,7 @@ const Register = () => {
                   value={password}
                   style={styles.all_input_BOx_ctyl}
                 />
-                <Pressable onPress={() => setHide2(!hide2)} style={{ padding: 12 }}>
+                <Pressable onPress={() => setHide2(!hide2)} style={{ padding: wp(2) }}>
                   <Openeye_closeEye
                     name={hide2 ? "eye-off" : "eye"}
                     style={{
@@ -324,7 +322,7 @@ const Register = () => {
                   secureTextEntry={hide}
                   style={styles.all_input_BOx_ctyl}
                 />
-                <Pressable onPress={() => setHide(!hide)} style={{ padding: 12 }}>
+                <Pressable onPress={() => setHide(!hide)}  style={{ padding: wp(2) }}>
                   <Openeye_closeEye
                     name={hide ? "eye-off" : "eye"}
                     style={{

@@ -108,7 +108,7 @@ const Password = (props: any) => {
   return (
     <View style={{ flex: 1, width: width }}>
       <ImageBackground
-        source={require('../../../assets/images/feverNewLogo.png')}
+        source={require('../../../assets/images/final1.png')}
         resizeMode="stretch"
         style={{ flex: 1, width: wp(100), height: hp(100), alignItems: 'center', justifyContent: 'center' }}>
 

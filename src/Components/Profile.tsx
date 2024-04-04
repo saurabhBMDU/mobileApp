@@ -42,7 +42,7 @@ import Right_Icons from 'react-native-vector-icons/AntDesign';
 import Contacts from 'react-native-vector-icons/AntDesign';
 import Mail_icons from 'react-native-vector-icons/Entypo';
 import Polocy_Icons from 'react-native-vector-icons/MaterialIcons';
-import Tandcondition_icons from 'react-native-vector-icons/Ionicons';
+import List_faq from 'react-native-vector-icons/Feather';
 import Money_Icons from 'react-native-vector-icons/FontAwesome';
 
 const { height, width } = Dimensions.get('window');
@@ -60,17 +60,18 @@ const Profile = () => {
   const [count, setCount] = useState(0);
   const [paymentModal, setPaymentModal] = useState(false);
   const [amount, setAmount] = useState('');
+  console.log("thi is sis sis sis ", userObj)
 
 
 
   //to check user is loggged in or not 
 
-  
+
   const handleLogout2 = async () => {
     try {
-      if(isAuthorized){
-      await deleteJwt();
-      setIsAuthorized(false);
+      if (isAuthorized) {
+        await deleteJwt();
+        setIsAuthorized(false);
       }
     } catch (err) {
       // toastError(err);
@@ -80,22 +81,22 @@ const Profile = () => {
 
   useEffect(() => {
     CheckIsUserLoggedIn();
-  },[])
+  }, [])
 
 
 
   const CheckIsUserLoggedIn = async () => {
     try {
       let token = await getJwt();
-      if(token){
-      const {data: res}: any = await isUserLoggedIn();
-      console.log('response from backend vikram',res)
-      if (res.status == false) {
-        handleLogout2()
-        console.log('response from backend',res)
-        // throw new Error(res.error);
+      if (token) {
+        const { data: res }: any = await isUserLoggedIn();
+        console.log('response from backend vikram', res)
+        if (res.status == false) {
+          handleLogout2()
+          console.log('response from backend', res)
+          // throw new Error(res.error);
+        }
       }
-    }
     } catch (err) {
       // toastError(err);
     }
@@ -103,9 +104,9 @@ const Profile = () => {
 
   const handleLogout = async () => {
     try {
-      if(isAuthorized){
-      await deleteJwt();
-      setIsAuthorized(false);
+      if (isAuthorized) {
+        await deleteJwt();
+        setIsAuthorized(false);
       }
     } catch (err) {
       // toastError(err);
@@ -115,7 +116,7 @@ const Profile = () => {
   const handleGetAndSetUser = async () => {
     let userData = await getUser();
     if (userData) {
-      console.log('user data in profile section',userData)
+      console.log('user data in profile section', userData)
       setUserObj(userData);
     }
   };
@@ -222,21 +223,14 @@ const Profile = () => {
             )}
           </View>
           <View style={{ height: wp(20), marginLeft: wp(3) }}>
-         
-            
-                    
+
+
+
             <View style={{ flexDirection: 'row' }}>
               <Text style={{ fontSize: hp(1.9), fontFamily: mainFontBold }}>
                 {userObj?.name}
               </Text>
-              {/* <TouchableOpacity
-                onPress={() => navigation.navigate('EditiProfile')}
-                style={{ marginLeft: wp(30) }}>
-                <Edit_Phone_icons
-                  name="edit-3"
-                  style={[styles.allIconsStyle, { fontSize: hp(2.5) }]}
-                />
-              </TouchableOpacity> */}
+
             </View>
             <View style={{ flexDirection: 'row', marginTop: hp(0.5) }}>
               <Mail_icons name="mail" style={styles.profileIcons} />
@@ -264,58 +258,58 @@ const Profile = () => {
             </View>
 
             {userObj && userObj.role === 'FRANCHISE' && (
-  <>
-    {userObj.address && (
-      <View style={{ flexDirection: 'row', marginTop: hp(0.5), width: 300 }}>
-        <Icon name="map-pin" style={styles.profileIcons} />
-        <Text
-          style={{
-            color: '#4A4D64',
-            fontSize: hp(1.5),
-            fontFamily: mainFontmedium,
-            marginLeft: wp(2),
-          }}>
-          {userObj.address}
-        </Text>
-      </View>
-    )}
+              <>
+                {userObj.address && (
+                  <View style={{ flexDirection: 'row', marginTop: hp(0.5), width: 300 }}>
+                    <Icon name="map-pin" style={styles.profileIcons} />
+                    <Text
+                      style={{
+                        color: '#4A4D64',
+                        fontSize: hp(1.5),
+                        fontFamily: mainFontmedium,
+                        marginLeft: wp(2),
+                      }}>
+                      {userObj.address}
+                    </Text>
+                  </View>
+                )}
 
-    {userObj.createdAt && (
-      <View style={{ flexDirection: 'row', marginTop: hp(0.5), width: 300 }}>
-        <Icon name="calendar" style={styles.profileIcons} />
-        <Text
-          style={{
-            color: '#4A4D64',
-            fontSize: hp(1.5),
-            fontFamily: mainFontmedium,
-            marginLeft: wp(2),
-          }}>
-          {userObj.createdAt.match(/^\d{4}-\d{2}-\d{2}/)[0]}
-        </Text>
-      </View>
-    )}
+                {userObj.createdAt && (
+                  <View style={{ flexDirection: 'row', marginTop: hp(0.5), width: 300 }}>
+                    <Icon name="calendar" style={styles.profileIcons} />
+                    <Text
+                      style={{
+                        color: '#4A4D64',
+                        fontSize: hp(1.5),
+                        fontFamily: mainFontmedium,
+                        marginLeft: wp(2),
+                      }}>
+                      {userObj.createdAt.match(/^\d{4}-\d{2}-\d{2}/)[0]}
+                    </Text>
+                  </View>
+                )}
 
-    {userObj.refrelCode && (
-      <View style={{ flexDirection: 'row', marginTop: hp(0.5), width: 300 }}>
-        <Icon name="hash" style={styles.profileIcons} />
-        <Text
-          style={{
-            color: '#4A4D64',
-            fontSize: hp(1.5),
-            fontFamily: mainFontmedium,
-            marginLeft: wp(2),
-          }}>
-          {userObj.refrelCode}
-        </Text>
-      </View>
-    )}
-  </>
-)}
+                {userObj.franchiseCode && (
+                  <View style={{ flexDirection: 'row', marginTop: hp(0.5), width: 300 }}>
+                    <Icon name="hash" style={styles.profileIcons} />
+                    <Text
+                      style={{
+                        color: '#4A4D64',
+                        fontSize: hp(1.5),
+                        fontFamily: mainFontmedium,
+                        marginLeft: wp(2),
+                      }}>
+                      {userObj.franchiseCode}
+                    </Text>
+                  </View>
+                )}
+              </>
+            )}
 
 
             {/* refrelCode */}
 
-      
+
 
 
             {userObj.role == Roles.DOCTOR && (
@@ -581,66 +575,9 @@ const Profile = () => {
               </Modal>
             </>
           )}
-
-          {/* <TouchableOpacity
-            onPress={() => navigation.navigate('TAC')}
-            style={styles.clickbleLines}>
-            <View
-              style={{
-                flexDirection: 'row',
-                height: wp(8),
-                alignItems: 'center',
-              }}>
-              <Tandcondition_icons
-                name="receipt-outline"
-                style={styles.allIconsStyle}
-              />
-              <Text
-                style={{
-                  fontSize: hp(1.8),
-                  color: '#4A4D64',
-                  fontFamily: mainFont,
-                  marginLeft: wp(2),
-                }}>
-                Terms & Conditions
-              </Text>
-            </View>
-            <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
-          </TouchableOpacity> */}
-
-          {/* <TouchableOpacity
-            // onPress={() => navigation.navigate('ReturnandRefundPolicy')}
-            onPress={() => navigation.navigate('faq')}
-            
-            style={styles.clickbleLines}>
-            <View
-              style={{
-                flexDirection: 'row',
-                height: wp(8),
-                alignItems: 'center',
-              }}>
-              <CashRefund_History_LogOut
-                name="cash-refund"
-                style={styles.allIconsStyle}
-              />
-              <Text
-                style={{
-                  fontSize: hp(1.8),
-                  color: '#4A4D64',
-                  fontFamily: mainFont,
-                  marginLeft: wp(2),
-                }}>
-                Cancellation & Refund Policy
-              </Text>
-            </View>
-            <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
-          </TouchableOpacity> */}
-
           <TouchableOpacity
-            // onPress={() => navigation.navigate('PAC')}
-            // onPress={() => navigation.navigate('ProfileTemrs')}
             onPress={() => navigation.navigate('SMART PRESCRIPTION')}
-            
+
             //ProfileTemrs
             style={styles.clickbleLines}>
             <View
@@ -665,10 +602,8 @@ const Profile = () => {
 
 
           <TouchableOpacity
-            // onPress={() => navigation.navigate('PAC')}
-            // onPress={() => navigation.navigate('ProfileTemrs')}
             onPress={() => navigation.navigate('About Fever99')}
-            
+
             //ProfileTemrs
             style={styles.clickbleLines}>
             <View
@@ -677,7 +612,7 @@ const Profile = () => {
                 height: wp(8),
                 alignItems: 'center',
               }}>
-              <Polocy_Icons name="policy" style={styles.allIconsStyle} />
+              <List_faq name="list" style={styles.allIconsStyle} />
               <Text
                 style={{
                   fontSize: hp(1.8),

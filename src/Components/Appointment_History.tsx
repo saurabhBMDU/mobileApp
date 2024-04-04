@@ -33,7 +33,7 @@ const Appointment_History = (props: any) => {
     const navigation: any = useNavigation()
 
 
-    //check user logged in or not
+ //check user logged in or not
 
     
   const handleLogout = async () => {
@@ -609,7 +609,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#F2F2F2E5',
         borderRadius: 5,
         borderColor: "gray",
-        borderWidth: .7
+        borderWidth: .7,
+        fontSize:hp(2)
     },
     dropdown: {
         height: 50,

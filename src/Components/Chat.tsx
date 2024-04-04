@@ -795,13 +795,6 @@ export default function Chat(props: any) {
     }
   };
 
-
-
-
-
-
-
-
   // const flatListRef = useRef<FlatList>(null);
   const [keyboardOffset, setKeyboardOffset] = useState<number>(0);
 

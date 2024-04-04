@@ -260,7 +260,7 @@ const Write_Prescription = (props: any) => {
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(95) }}>
                                 <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Symptoms:</Text>
-                                <TextInput onChangeText={(e) => setSymptoms(e)} value={symptoms} placeholderTextColor="#8E8E8E" placeholder='Symptoms' style={styles.inputBoxStyl} />
+                                <TextInput multiline onChangeText={(e) => setSymptoms(e)} value={symptoms} placeholderTextColor="#8E8E8E" placeholder='Symptoms' style={styles.inputBoxStyl} />
                             </View>
                         </View>
 

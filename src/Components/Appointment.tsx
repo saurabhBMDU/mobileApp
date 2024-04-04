@@ -51,10 +51,12 @@ import { useNetInfo } from '@react-native-community/netinfo'; // <--- internet c
 import InterNetError from '../noInterNet/InterNetError';
 import Reschedule from '../allModals/Reschedule';
 import CompleteFollowupModal from '../allModals/CompleteFollowupModal';
+import axios from '../Services/axios.service';
 const { height, width } = Dimensions.get('window');
 const mainFontBold = 'Montserrat-Bold';
 
 const Appointment = () => {
+  const serverUrl = url;
   // checking internet connection
 
 
@@ -65,7 +67,7 @@ const Appointment = () => {
     try {
       await deleteJwt();
     } catch (err) {
-    //   toastError(err);
+      //   toastError(err);
     }
   };
 
@@ -78,21 +80,21 @@ const Appointment = () => {
 
   const CheckIsUserLoggedIn = async () => {
     try {
-        let token = await getJwt();
-        if(token){
-      const { data: res }: any = await isUserLoggedIn();
-      console.log('response from backend vikram', res)
-      if (res.status == false) {
-        handleLogout()
-        console.log('response from backend', res)
-      } 
-    }
+      let token = await getJwt();
+      if (token) {
+        const { data: res }: any = await isUserLoggedIn();
+        console.log('response from backend vikram', res)
+        if (res.status == false) {
+          handleLogout()
+          console.log('response from backend', res)
+        }
+      }
       else {
         navigation.navigate("BookAppt")
       }
-    
+
     } catch (err) {
-    //   toastError(err);
+      //   toastError(err);
     }
   };
 
@@ -277,7 +279,7 @@ const Appointment = () => {
       let { data: res } = await updateAppointmentCallStatus(id, obj);
       if (res) {
         setPage(1);
-        setAppointmentsArr([]);
+        setAppointmentsArr([]);  // remove this line of code this make list as empty when dr  make the call
         if (callProgress) {
           let { data: notificationRes } = await SendNotification({
             appointmentId: id,
@@ -404,11 +406,47 @@ const Appointment = () => {
     setSoupdateModals(false)
   }
 
+  // clacling pai
+  const handleCancelApi = async (_id: string) => {
+    try {
+      const response = await axios.put(`${serverUrl}/appointment/canceled/${_id}`);
+      if (response.status === 200) {
+        toastSuccess('Appointment successfully canceled!');
+      } else {
+        toastError('Failed to cancel appointment. Please try again later.');
+      }
+    } catch (error) {
+      // toastError('An error occurred while canceling appointment. Please try again later.');
+      toastError(error);
+    }
+  }
+
+  const handleCancleApt = (itms: Item) => {
+    Alert.alert(
+      'Cancel!',
+      'Are you sure you want to cancel the appointment?',
+      [
+        {
+          text: 'Cancel Appointment',
+          onPress: () => handleCancelApi(itms?._id),
+        },
+        {
+          text: 'Not Now',
+          onPress: () => console.log("heee"),
+          style: 'cancel'
+        },
+      ],
+      { cancelable: false }
+    );
+  }
+
+
+
   if (isConnected === false) {
     return <InterNetError labels={'Appointment'} />;
   } else {
     return (
-      <View style={{ height: height, width: width, backgroundColor: '#eee' }}>
+      <View style={{ flex: 1, width: width, backgroundColor: '#eee' }}>
         {/* sending the header */}
         <Headerr
           secndheader={true}
@@ -439,7 +477,7 @@ const Appointment = () => {
               alignSelf: 'center',
               marginTop: hp(1),
               flexDirection: 'row',
-              marginBottom: hp(1),
+              // marginBottom: hp(1),
               justifyContent: 'space-between',
             }}>
             <TouchableOpacity
@@ -803,7 +841,8 @@ const Appointment = () => {
                         {item.status === 'pending' ? (
                           <View
                             style={{
-                              backgroundColor: '#cb9608',
+                              backgroundColor: '#eee',
+
                               height: hp(4),
                               borderRadius: 5,
                               marginTop: hp(3),
@@ -813,8 +852,8 @@ const Appointment = () => {
                             }}>
                             <Text
                               style={{
-                                color: '#fff',
-                                fontFamily: mainFont,
+                                color: '#cb9608',
+                                fontFamily: mainFontBold,
                                 textTransform: 'capitalize',
                                 fontSize: hp(1.7),
                               }}>
@@ -854,7 +893,7 @@ const Appointment = () => {
                             style={{
                               backgroundColor:
                                 item.status === 'rejected'
-                                  ? '#fa9b42'
+                                  ? '#eee'
                                   : 'rgba(11, 116, 46, 0.7)',
                               height: hp(4),
                               borderRadius: 5,
@@ -867,8 +906,8 @@ const Appointment = () => {
                               style={{
                                 fontSize: hp(1.7),
                                 color:
-                                  item.status === 'rejected' ? '#fff' : '#fff',
-                                fontFamily: mainFont,
+                                  item.status === 'rejected' ? 'red' : '#fff',
+                                fontFamily: item.status === 'rejected' ? 'mainFontBold' : 'mainFont',
                                 textTransform: 'capitalize',
                               }}>
                               {item?.status}
@@ -900,7 +939,9 @@ const Appointment = () => {
                         <Text style={{ fontSize: hp(2) }}>Patient Name:</Text>
                       </View>
                       <Text
-                        style={{ color: 'gray', textTransform: 'capitalize' }}>
+                        style={{
+                          color: '#8A8988', textTransform: 'capitalize', fontSize: hp(1.8),
+                        }}>
                         {item?.patientName}
                       </Text>
                     </View>
@@ -920,7 +961,7 @@ const Appointment = () => {
                       </View>
                       <View style={styles.common_displayFlex}>
                         <Text
-                          style={{ color: 'gray', textTransform: 'capitalize' }}>
+                          style={{ color: 'gray', textTransform: 'capitalize', fontSize: hp(1.8), }}>
                           {item.mode == 'Offline'
                             ? 'Clinic visit'
                             : 'Video Call'}
@@ -932,6 +973,7 @@ const Appointment = () => {
                               color:
                                 item.status === 'canceled' ? 'red' : 'green',
                               marginLeft: 7,
+
                               fontSize: wp(4),
                             }}
                           />
@@ -958,7 +1000,7 @@ const Appointment = () => {
                         <Text style={{ fontSize: hp(2) }}>Age:</Text>
                       </View>
                       <Text
-                        style={{ color: 'gray', textTransform: 'capitalize' }}>
+                        style={{ color: 'gray', textTransform: 'capitalize', fontSize: hp(1.8), }}>
                         {item?.age}
                       </Text>
                     </View>
@@ -974,7 +1016,7 @@ const Appointment = () => {
                         <Text style={{ fontSize: hp(2) }}>Price:</Text>
                       </View>
                       <Text
-                        style={{ color: 'gray', textTransform: 'capitalize' }}>
+                        style={{ color: 'gray', textTransform: 'capitalize', fontSize: hp(1.8), }}>
                         {item?.appointmentCharge}
                       </Text>
                     </View>
@@ -995,6 +1037,7 @@ const Appointment = () => {
                       <Text
                         style={{
                           color: dateText == 'Today' ? 'Green' : 'gray',
+                          fontSize: hp(1.8),
                           fontFamily:
                             dateText == 'Today' ? 'mainFontBold' : 'mainFont',
                         }}>
@@ -1015,7 +1058,9 @@ const Appointment = () => {
                         <Text style={{ fontSize: hp(2) }}>Payment Status:</Text>
                       </View>
                       <Text
-                        style={{ color: 'gray', textTransform: 'capitalize' }}>
+                        style={{
+                          color: 'gray', textTransform: 'capitalize', fontSize: hp(1.8),
+                        }}>
                         {item.paymentStatus}
                       </Text>
                     </View>
@@ -1033,7 +1078,7 @@ const Appointment = () => {
                               name="money-bill-transfer"
                               style={styles.iconsStyls}
                             />
-                           <Text style={{fontSize:hp(2)}}>Status:</Text>
+                            <Text style={{ fontSize: hp(2) }}>Status:</Text>
                           </View>
                           <Text
                             style={{
@@ -1364,6 +1409,38 @@ const Appointment = () => {
                           </Text>
                         </TouchableOpacity>
                       )}
+                    {/* cancling  by patent*/}
+
+
+                    {userObj?.role == Roles.PATIENT &&
+                      item.status == appointmentStatus.PENDING && (
+                        <TouchableOpacity
+                          onPress={() => handleCancleApt(item)}
+                          style={{
+                            flex: 1,
+                            minWidth: wp(41),
+                            marginRight: 10,
+                            marginTop: 15,
+                            alignSelf: 'center',
+                            height: hp(5),
+                            backgroundColor: '#eee',
+                            borderColor: "#1263AC",
+                            borderWidth: .8,
+                            borderRadius: 5,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}>
+                          <Text
+                            style={{
+                              color: '#1263AC',
+                              fontFamily: mainFont,
+                              fontSize: hp(1.8),
+                            }}>
+                            Candle
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+
                     {item.status == appointmentStatus.PENDING &&
                       (userObj?.role == Roles.FRANCHISE ||
                         userObj?.role == Roles.PATIENT) && (

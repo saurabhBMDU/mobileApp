@@ -163,7 +163,7 @@ const Home = () => {
         }
       }
     } catch (err) {
-      console.log('err in home page line 164',err)
+      console.log('err in home page line 164', err)
       // toastError(err);
     }
   };
@@ -192,17 +192,17 @@ const Home = () => {
   const CheckIsUserLoggedIn = async () => {
     try {
       let token = await getJwt();
-      if(token){
-      const { data: res }: any = await isUserLoggedIn();
-      console.log('response from backend vikram', res)
-      if (res.status == false) {
-        handleLogout()
-        console.log('response from backend', res)
-        throw new Error(res.error);
+      if (token) {
+        const { data: res }: any = await isUserLoggedIn();
+        console.log('response from backend vikram', res)
+        if (res.status == false) {
+          handleLogout()
+          console.log('response from backend', res)
+          throw new Error(res.error);
+        }
       }
-    }
     } catch (err) {
-      console.log('line 199 in hoe page',err)
+      console.log('line 199 in hoe page', err)
       // alert('this is errr')
       // toastError(err);
     }
@@ -273,7 +273,7 @@ const Home = () => {
         setDocData([...tempDocData]);
       }
     } catch (err) {
-      console.log('err in line 270 in home page',err)
+      console.log('err in line 270 in home page', err)
       // toastError(err);
     }
   };
@@ -482,7 +482,7 @@ const Home = () => {
         ]);
       }
     } catch (err) {
-      console.log('err in line 479',err)
+      console.log('err in line 479', err)
       // toastError(err);
     }
   };
@@ -509,7 +509,7 @@ const Home = () => {
         );
       }
     } catch (err) {
-      console.log('err in line 506',err)
+      console.log('err in line 506', err)
       // toastError(err);
     }
   };
@@ -543,7 +543,7 @@ const Home = () => {
         setLastPageReached(true);
       }
     } catch (err) {
-      console.log('err in line 540 in hoe page',err)
+      console.log('err in line 540 in hoe page', err)
       // toastError(err);
     }
   };
@@ -862,56 +862,7 @@ const Home = () => {
             <View
               style={{ width: wp(95), paddingTop: hp(2), paddingBottom: hp(2) }}>
 
-              {/* <FlatList
-              data={[
-                ...docData.filter((el: any) =>
-                  el.roleArr.some((ele: string) => ele == userObj?.role),
-                ),
-              ]}
-              numColumns={2}
-              renderItem={({item, index}) => {
-                return (
-                  <Pressable
-                    onPress={() => navigation.navigate(item.url)}
-                    style={{
-                      width: wp(46),
-                      height: hp(15),
-                      backgroundColor: 'white',
-                      marginRight: wp(3),
-                      marginBottom: hp(2),
-                      elevation: 1,
-                      borderRadius: 5,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Image
-                      source={item.img}
-                      style={{height: wp(9), width: wp(9)}}
-                    />
-                    <Text
-                      style={{
-                        color: 'black',
-                        fontFamily: mainFont,
-                        fontSize: hp(1.6),
-                        marginTop: hp(1),
-                      }}>
-                      {item?.title}
-                    </Text>
-                    <Text
-                      style={{
-                        color: 'black',
-                        fontFamily: mainFont,
-                        fontSize: hp(1.6),
-                        marginTop: hp(1),
-                      }}>
-                      {item?.data} {item?.title == 'Total Earning' ? '₹' : null}
-                    </Text>
-                  </Pressable>
-                );
-              }}
-            /> */}
-
-              <View style={{ flexDirection: 'row',justifyContent: 'space-between',flexWrap:"wrap"}}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', flexWrap: "wrap" }}>
                 {[...docData.filter((el: any) => el.roleArr.some((ele: string) => ele == userObj?.role))].map((item, index) => (
                   <Pressable
                     key={index}
@@ -947,7 +898,7 @@ const Home = () => {
                         fontSize: hp(1.6),
                         marginTop: hp(1),
                       }}>
-                      {item?.data} {item?.title == 'Total Earning' ? '₹' : null}
+                      {item?.title === 'Total Earning' ? '₹' : null} {item?.title === 'Wallet Amount' ? '₹' : null} {item?.data}
                     </Text>
                   </Pressable>
                 ))}

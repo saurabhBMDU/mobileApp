@@ -14,15 +14,6 @@ axiosAuth.interceptors.request.use(
 
   },
   async function (error) {
-<<<<<<< HEAD
-    // if (error.response.status === 401) {
-    //   // trigger logout or refresh token
-    //   // localStorage.removeItem(AUTH_TOKEN)
-    //   // await deleteJwt()
-    //   // window.location.href = '/'
-    // }
-    // return Promise.reject(error);
-=======
     if (error.response.status === 401) {
       // trigger logout or refresh token
       // localStorage.removeItem(AUTH_TOKEN)
@@ -30,26 +21,10 @@ axiosAuth.interceptors.request.use(
       // window.location.href = '/'
     }
     return Promise.reject(error);
->>>>>>> ca29d5332fcd17e86ff03ba7c016d4b7b78b9a4c
   },
 );
 
 axiosAuth.interceptors.response.use(
-<<<<<<< HEAD
-  // response => {
-  //   return response;
-  // },
-  // async error => {
-  //   if (error.response && error.response.status === 401) {
-  //     // trigger logout  or refresh token
-  //     // console.error("LOGOUT", error.response)
-  //     // localStorage.removeItem(AUTH_TOKEN)
-  //     await deleteJwt()
-  //     // window.location.href = '/'
-  //   }
-  //   return Promise.reject(error);
-  // },
-=======
   response => {
     return response;
   },
@@ -63,7 +38,6 @@ axiosAuth.interceptors.response.use(
     }
     return Promise.reject(error);
   },
->>>>>>> ca29d5332fcd17e86ff03ba7c016d4b7b78b9a4c
 );
 
 export default axiosAuth;

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,8 +7,8 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import {Calendar} from 'react-native-calendars';
-import {Dropdown} from 'react-native-element-dropdown';
+import { Calendar } from 'react-native-calendars';
+import { Dropdown } from 'react-native-element-dropdown';
 // import axios from '../Services/axios.service';
 import axios from '../Services/axios.service';
 import {
@@ -20,7 +20,7 @@ import CloseBtnIcon from 'react-native-vector-icons/Entypo';
 const mainFont = 'Montserrat-Regular';
 const url = 'https://api.fever99.com/api/';
 
-const Reschedule = ({cartID, closeModal, drrIdes, modeOf}) => {
+const Reschedule = ({ cartID, closeModal, drrIdes, modeOf }) => {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
   const [isFocus, setIsFocus] = useState(false);
@@ -34,7 +34,7 @@ const Reschedule = ({cartID, closeModal, drrIdes, modeOf}) => {
     const response = await axios.get(`${url}time-slot/${drrIdes}`);
     console.log('resopnse for time slot', response.data.data.timeSlotOnline);
     if (modeOf == 'Video') {
-      setTimeSlot(response.data.data.extractedOnlineTimes); 
+      setTimeSlot(response.data.data.extractedOnlineTimes);
     } else {
       setTimeSlot(response.data.data.extractedOfflineTime);
     }
@@ -89,7 +89,6 @@ const Reschedule = ({cartID, closeModal, drrIdes, modeOf}) => {
       if (error.response) {
         console.error('API Error:', error.response);
         seterrors(error.response.data.message);
-        // offModal();
       } else if (error.request) {
         seterrors('No response received from the server.');
       } else {
@@ -108,8 +107,8 @@ const Reschedule = ({cartID, closeModal, drrIdes, modeOf}) => {
             <CloseBtnIcon name="cross" style={styles.closeIcon} />
           </TouchableOpacity>
         </View>
-        <View style={{width: wp(95), marginTop: 0}}>
-          <Text style={{color: 'red', fontSize: hp(1.5)}}>{errors}</Text>
+        <View style={{ width: wp(95), marginTop: 0 }}>
+          <Text style={{ color: 'red', fontSize: hp(1.5) }}>{errors}</Text>
         </View>
         <View style={styles.formContainer}>
           <TouchableOpacity onPress={openCalendar}>
@@ -146,7 +145,7 @@ const Reschedule = ({cartID, closeModal, drrIdes, modeOf}) => {
                 <Dropdown
                   style={[
                     styles.inputField,
-                    isFocus && {borderWidth: 0.5},
+                    isFocus && { borderWidth: 0.5 },
                     !selectedTimeSlot && styles.errorBorder,
                   ]}
                   placeholderStyle={styles.placeholderStyle}
@@ -224,7 +223,7 @@ const styles = StyleSheet.create({
     borderRadius: wp(40),
   },
   label: {
-    fontSize: hp(1.8),
+    fontSize: hp(1.9),
     fontFamily: mainFont,
     color: 'black',
     marginTop: hp(1),
@@ -232,6 +231,7 @@ const styles = StyleSheet.create({
   inputField: {
     height: hp(6),
     width: wp(95),
+    fontSize: hp(2),
     backgroundColor: '#F2F2F2E5',
     marginTop: hp(0.5),
     borderRadius: 5,
@@ -251,16 +251,20 @@ const styles = StyleSheet.create({
   },
   placeholderStyle: {
     fontSize: 14,
+    fontSize: hp(2),
     color: 'gray',
   },
   selectedTextStyle: {
-    fontSize: 16,
+    fontSize: hp(2),
     color: '#8E8E8E',
   },
   inputSearchStyle: {
     height: 40,
-    fontSize: 16,
-    color: '#8E8E8E',
+    fontSize: hp(2),
+     color: '#8E8E8E',
+  },
+  iconStyle:{
+    fontSize:hp(2),
   },
   submitButton: {
     width: wp(95),

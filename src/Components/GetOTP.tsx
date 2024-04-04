@@ -62,7 +62,7 @@ const GetOTP = (props: any) => {
     return (
         <View style={{ width: width }}>
             <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
-                <ImageBackground source={require('../../assets/images/background_img.png')} resizeMode='contain' style={{ height: height, width: width, backgroundColor: "#1263AC" }} >
+                <ImageBackground source={require('../../assets/images/final1.png')} resizeMode='contain' style={{ height: height, width: width, backgroundColor: "#1263AC" }} >
                     <View style={{ backgroundColor: 'rgba(0,0,0,.75)', height: height, width: width, justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={{ fontSize: hp(3), color: 'white', alignSelf: 'center', marginTop: hp(7), fontFamily: mainFont }}>OTP Verification</Text>
                         <View style={{ width: wp(90), alignSelf: 'center', marginTop: hp(2) }}>
@@ -80,7 +80,7 @@ const GetOTP = (props: any) => {
                                     onChangeText={(e) => setPassword(e)}
                                     value={password}
                                     style={{ marginLeft: 5, width: wp(70), fontSize: hp(2) }} />
-                                <Pressable onPress={() => setHide(!hide)} style={{ padding: 12 }}>
+                                <Pressable onPress={() => setHide(!hide)} style={{ padding: wp(2) }}>
                                     <Openeye_closeEye
                                         name={hide ? "eye-off" : "eye"}
                                         style={{
@@ -99,7 +99,7 @@ const GetOTP = (props: any) => {
                                     value={rePassword}
                                     secureTextEntry={hide2}
                                     style={{ marginLeft: 5, width: wp(70), fontSize: hp(2) }} />
-                                <Pressable onPress={() => setHide2(!hide2)} style={{ padding: 12 }}>
+                                <Pressable onPress={() => setHide2(!hide2)} style={{ padding: wp(2) }}>
                                     <Openeye_closeEye
                                         name={hide2 ? "eye-off" : "eye"}
                                         style={{
