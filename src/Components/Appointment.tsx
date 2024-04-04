@@ -85,7 +85,9 @@ const Appointment = () => {
       if (res.status == false) {
         handleLogout()
         console.log('response from backend', res)
-      } 
+      }   else {
+        navigation.navigate("BookAppt")
+      }
     }
       else {
         navigation.navigate("BookAppt")
@@ -975,7 +977,7 @@ const Appointment = () => {
                       </View>
                       <Text
                         style={{ color: 'gray', textTransform: 'capitalize' }}>
-                        {item?.appointmentCharge}
+                         ₹ {item?.appointmentCharge}
                       </Text>
                     </View>
 

@@ -295,7 +295,7 @@ const Profile = () => {
       </View>
     )}
 
-    {userObj.refrelCode && (
+    {userObj.franchiseCode && (
       <View style={{ flexDirection: 'row', marginTop: hp(0.5), width: 300 }}>
         <Icon name="hash" style={styles.profileIcons} />
         <Text
@@ -305,7 +305,7 @@ const Profile = () => {
             fontFamily: mainFontmedium,
             marginLeft: wp(2),
           }}>
-          {userObj.refrelCode}
+          {userObj.franchiseCode}
         </Text>
       </View>
     )}
