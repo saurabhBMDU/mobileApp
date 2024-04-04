@@ -161,7 +161,7 @@ const Login = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
-                <Text style={{fontSize: hp(1.9)}}>Don't have an account</Text>
+                <Text style={{fontSize: hp(1.9)}}>Don't have an account ?</Text>
                 <TouchableOpacity
                   onPress={() => navigation.navigate('Register')}>
                   <Text

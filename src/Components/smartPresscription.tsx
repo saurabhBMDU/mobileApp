@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import Headerr from '../ReuseableComp/Headerr';
+import AddMedicineModal from './smartPrescriptionAddMedicine';
 
 interface Medicine {
   id: number;
@@ -92,6 +93,27 @@ const SmartPrescriptionPage: React.FC = () => {
     setTests(tests.filter(test => test.id !== id));
   };
 
+
+
+
+
+  const [showAddMedicineModal, setShowAddMedicineModal] = useState(false);
+  const [showAddMedicine2Modal, setShowAddMedicine2Modal] = useState(false);
+  const [showAddMedicine3Modal, setShowAddMedicine3Modal] = useState(false);
+
+  const handleAddMedicine = () => {
+    // Logic to add medicine
+  };
+
+  const handleAddMedicine2 = () => {
+    // Logic to add medicine 2
+  };
+
+  const handleAddMedicine3 = () => {
+    // Logic to add medicine 3
+  };
+
+
   return (
     <View style={styles.container}>
         {/* <Headerr user={true} height={true} /> */}
@@ -141,7 +163,7 @@ const SmartPrescriptionPage: React.FC = () => {
                   <Icon name="plus" size={24} color="white" />
                 </View>
               </View>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() =>
                   addMedicine(
                     'New Medicine this is awesome medicne i nlakdnlkfdslakf jlka klja   lad fljalf',
@@ -149,7 +171,17 @@ const SmartPrescriptionPage: React.FC = () => {
                 }
                 style={styles.addButton1}>
                 <Text style={styles.addButtonText1}>Add Medicine</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
+
+    <TouchableOpacity onPress={() => setShowAddMedicineModal(true)}>
+    <Text style={styles.addButtonText1}>Add Medicine</Text>
+          </TouchableOpacity>
+      <AddMedicineModal
+        visible={showAddMedicineModal}
+        onClose={() => setShowAddMedicineModal(false)}
+        onAdd={handleAddMedicine}
+      />
+
             </View>
           </TouchableOpacity>
         </View>

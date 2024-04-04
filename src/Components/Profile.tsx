@@ -103,10 +103,10 @@ const Profile = () => {
 
   const handleLogout = async () => {
     try {
-      if(isAuthorized){
+      // if(isAuthorized){
       await deleteJwt();
       setIsAuthorized(false);
-      }
+      // }
     } catch (err) {
       // toastError(err);
     }
@@ -204,7 +204,7 @@ const Profile = () => {
                 width: imageSize,
                 resizeMode: 'center', // Use 'cover' to ensure the image fills the container
                 borderRadius: imageSize / 2, // Set the borderRadius dynamically
-                backgroundColor: 'red',
+                backgroundColor: 'grey',
               }}
             />
             {userObj.role == Roles.DOCTOR && (
