@@ -244,7 +244,7 @@ const Write_Prescription = (props: any) => {
                             <View style={{ width: wp(45) }}>
                                 <View style={{ flexDirection: 'row', marginTop: hp(1), paddingLeft: wp(3) }}><Text style={{ fontSize: hp(1.7), fontFamily: mainFont }}>Name       :  <Text style={{ color: '#757474' }}>{appointMentObj?.patientName}</Text></Text></View>
                                 <View style={{ flexDirection: 'row', marginTop: hp(1), paddingLeft: wp(3) }}><Text style={{ fontSize: hp(1.7), fontFamily: mainFont }}>BP             :  <Text style={{ color: '#757474' }}>{appointMentObj?.bp}</Text></Text></View>
-                                <View style={{ flexDirection: 'row', marginTop: hp(1), paddingLeft: wp(3) }}><Text style={{ fontSize: hp(1.7), fontFamily: mainFont }}>Oxygen    :  <Text style={{ color: '#757474' }}>{appointMentObj?.oxigne}</Text></Text></View>
+                                <View style={{ flexDirection: 'row', marginTop: hp(1), paddingLeft: wp(3) }}><Text style={{ fontSize: hp(1.7), fontFamily: mainFont }}>Sp02    :  <Text style={{ color: '#757474' }}>{appointMentObj?.oxigne}</Text></Text></View>
                                 <View style={{ flexDirection: 'row', marginTop: hp(1), paddingLeft: wp(3) }}><Text style={{ fontSize: hp(1.7), fontFamily: mainFont }}>Sugar       :  <Text style={{ color: '#757474' }}>{appointMentObj?.suger3}</Text></Text></View>
                                 <View style={{ flexDirection: 'row', marginTop: hp(1), paddingLeft: wp(3) }}><Text style={{ fontSize: hp(1.7), fontFamily: mainFont }}>RR             :  <Text style={{ color: '#757474' }}>{appointMentObj?.respiratoryRate}</Text></Text></View>
                             </View>

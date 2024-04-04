@@ -53,7 +53,8 @@ const BookVideo = (props: any) => {
     ]
 
 
-    const [age, setAge] = useState("");
+    const [age, setAge] = useState(0);
+    const [months, setMonths] = useState(0);
     const [dateTime, setDateTime] = useState("");
     const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
     const [gender, setGender] = useState("");
@@ -99,6 +100,27 @@ const BookVideo = (props: any) => {
         }
     }
 
+
+
+
+
+
+
+
+
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedValue, setSelectedValue] = useState('ft');
+    const data = ['ft', 'cm'];
+  
+    const chunkSize = 3;
+    const chunkedData = Array.from({ length: Math.ceil(data.length / chunkSize) }, (_, index) =>
+      data.slice(index * chunkSize, index * chunkSize + chunkSize)
+    );
+
+
+
+
+
     const handleCreateBooking = async () => {
         try {
             if (gender == "") {
@@ -113,16 +135,31 @@ const BookVideo = (props: any) => {
                 toastError("Date is mandatory !!!");
                 return;
             }
-            if (age == "") {
+            // alert(months)
+            // months = months.trim(); 
+
+            if (age == 0 && months == 0) {
                 setMeetingConfirmation(false)
                 setPage(1)
-                toastError("Age is mandatory !!!");
+                toastError("Age or Months are mandatory !!!");
                 return;
             }
             if (age > 120) {
                 setMeetingConfirmation(false)
                 setPage(1)
                 toastError("Please enter a valid age (1-120).");
+                return;
+            }
+            if (months > 12) {
+                setMeetingConfirmation(false)
+                setPage(1)
+                toastError("Please enter a valid Months (1-12).");
+                return;
+            }
+            if (months < 0) {
+                setMeetingConfirmation(false)
+                setPage(1)
+                toastError("Please enter a valid Months (1-12).");
                 return;
             }
             if (selectedTimeSlot == "") {
@@ -142,6 +179,7 @@ const BookVideo = (props: any) => {
                 age,
                 bodyTemperature,
                 bp,
+                months,
                 dateTime,
                 doctorId: doctorObj?._id,
                 expertId: userData._id,
@@ -333,10 +371,15 @@ const BookVideo = (props: any) => {
                         </View>
 
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
-                            <View style={{ width: wp(45) }}>
+                            <View style={{ width: wp(20) }}>
                                 <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Patient Age:</Text>
                                 <TextInput onChangeText={(e) => setAge(e)} value={age} keyboardType='number-pad' placeholderTextColor="#8E8E8E" placeholder='Patient Age' style={{ height: hp(7.1), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
                             </View>
+                            <View style={{ width: wp(20) }}>
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Months:</Text>
+                                <TextInput onChangeText={(e) => setMonths(e)} value={months} keyboardType='number-pad' placeholderTextColor="#8E8E8E" placeholder='months' style={{ height: hp(7.1), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
+                            </View>
+
                             <View style={{ width: wp(45) }}>
                                 <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>State:</Text>
                                 <Dropdown
@@ -453,10 +496,36 @@ const BookVideo = (props: any) => {
                         </View>
                         {/* new added component */}
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
+                           
                             <View style={{ width: wp(45) }}>
                                 <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Height (ft)</Text>
                                 <TextInput keyboardType='numeric' placeholderTextColor="#8E8E8E" placeholder='ft' style={{ height: hp(7.1), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
+                            
+                                <Dropdown
+                                    style={[styles.dropdown, isGenderFocused && { borderWidth: 0.5, }]}
+                                    placeholderStyle={styles.placeholderStyle}
+                                    selectedTextStyle={styles.selectedTextStyle}
+                                    inputSearchStyle={styles.inputSearchStyle}
+                                    iconStyle={styles.iconStyle}
+                                    data={Dropdwndata}
+                                    // search
+                                    maxHeight={300}
+                                    labelField="label"
+                                    valueField="value"
+                                    placeholder='Select Gender'
+                                    value={gender}
+                                    onFocus={() => setIsGenderFocused(true)}
+                                    onBlur={() => setIsGenderFocused(false)}
+                                    onChange={item => {
+                                        setGender(item.value);
+                                        setIsGenderFocused(false);
+                                    }}
+
+                                />
+                            
                             </View>
+
+
 
                             <View style={{ width: wp(45) }}>
                                 <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Weight (kg)</Text>
@@ -465,7 +534,7 @@ const BookVideo = (props: any) => {
                         </View>
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(95) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Average</Text>
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>BMI</Text>
                                 <TextInput keyboardType='numeric' placeholderTextColor="#8E8E8E" placeholder='avg' style={{ height: hp(7.1), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
                             </View>
                         </View>
@@ -606,6 +675,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#8E8E8E'
     },
+   
+
+
+   
+
 });
 
 export default BookVideo;

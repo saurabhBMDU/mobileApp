@@ -80,15 +80,17 @@ const Appointment = () => {
 
   const CheckIsUserLoggedIn = async () => {
     try {
-      let token = await getJwt();
-      if (token) {
-        const { data: res }: any = await isUserLoggedIn();
-        console.log('response from backend vikram', res)
-        if (res.status == false) {
-          handleLogout()
-          console.log('response from backend', res)
-        }
+        let token = await getJwt();
+        if(token){
+      const { data: res }: any = await isUserLoggedIn();
+      console.log('response from backend vikram', res)
+      if (res.status == false) {
+        handleLogout()
+        console.log('response from backend', res)
+      }   else {
+        navigation.navigate("BookAppt")
       }
+    }
       else {
         navigation.navigate("BookAppt")
       }
@@ -1016,8 +1018,8 @@ const Appointment = () => {
                         <Text style={{ fontSize: hp(2) }}>Price:</Text>
                       </View>
                       <Text
-                        style={{ color: 'gray', textTransform: 'capitalize', fontSize: hp(1.8), }}>
-                        {item?.appointmentCharge}
+                        style={{ color: 'gray', textTransform: 'capitalize' }}>
+                         ₹ {item?.appointmentCharge}
                       </Text>
                     </View>
 

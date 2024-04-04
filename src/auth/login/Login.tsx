@@ -11,6 +11,10 @@ import {
   Keyboard,
   StyleSheet,
 } from 'react-native';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 import { useNavigation } from '@react-navigation/native';
 import { LoginContext } from '../../../App';
 import { toastError } from '../../utils/toast.utils';
@@ -153,6 +157,39 @@ const Login = () => {
                     fontWeight: 'bold',
                   }}> SIGN UP</Text>
               </TouchableOpacity>
+              {/* Or Section >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */}
+              <Text
+                style={{
+                  fontSize: hp(2),
+                  fontWeight: '600',
+                  color: '#1263AC',
+                  fontFamily: 'AvenirNextLTPro-Regular',
+                  alignSelf: 'center',
+                  padding: 10,
+                }}>
+                Or
+              </Text>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text style={{fontSize: hp(1.9)}}>Don't have an account ?</Text>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Register')}>
+                  <Text
+                    style={{
+                      color: '#1263AC',
+                      fontSize: 20,
+                      fontWeight: 'bold',
+                      marginLeft: 10,
+                    }}>
+                    SIGN UP
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
           <View></View>

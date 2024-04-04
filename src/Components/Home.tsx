@@ -417,7 +417,7 @@ const Home = () => {
                 fontFamily: mainFont,
                 marginLeft: wp(1),
               }}>
-              Fee : ₹{item?.serviceCharge}/-{' '}
+              Fee : {item?.serviceCharge}/-{' '}
             </Text>
           </View>
         </View>
