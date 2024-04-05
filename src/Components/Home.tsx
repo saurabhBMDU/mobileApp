@@ -2,6 +2,7 @@ import messaging from '@react-native-firebase/messaging';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import {
+  Alert,
   Dimensions,
   FlatList,
   Image,
@@ -33,11 +34,12 @@ import { getDashboard } from '../Services/dashboard.service';
 import { getDoctors } from '../Services/doctor.service';
 import { getServicesPaginated } from '../Services/services.service';
 import { getstateAndCities } from '../Services/stateCity.service';
-import { generateFilePath } from '../Services/url.service';
+import url, { generateFilePath } from '../Services/url.service';
 import { deleteJwt, getJwt, getUser, isUserLoggedIn, saveTokenToDatabase } from '../Services/user.service';
 import { getWallet } from '../Services/wallet.service';
 import { Roles } from '../utils/constant';
 import { toastError } from '../utils/toast.utils';
+import axios from '../Services/axios.service';
 
 const { height, width } = Dimensions.get('window');
 
@@ -86,6 +88,7 @@ const Home = () => {
 
   const [query, setQuery] = useState('');
   const [doctorsArr, setDoctorsArr] = useState<any[]>([]);
+  const [wolletAmount, setWolletAmount] = useState('0');
 
   async function registerAppWithFCM() {
     await messaging().registerDeviceForRemoteMessages();
@@ -97,6 +100,25 @@ const Home = () => {
         return saveTokenToDatabase(token);
       });
     registerAppWithFCM();
+  }, []);
+
+  const getWalletAmount = async () => {
+    try {
+      const response = await axios.get(`${url}/franchise-total-income`);
+      console.log(response.data);
+      if (response.data.message = "Wallet not create") {
+        setWolletAmount(response.data.message);
+      }
+      else {
+        setWolletAmount(response.data.Incomewallet);
+      }
+    } catch (error) {
+      console.error("Error in getting wallet amount:", error);
+    }
+  };
+
+  useEffect(() => {
+    getWalletAmount();
   }, []);
 
   const chartConfig = {
@@ -146,10 +168,18 @@ const Home = () => {
       url: 'Transaction',
       roleArr: [Roles.FRANCHISE],
     },
+    {
+      img: require('../../assets/images/icn10.png'),
+      title: 'Total Earning',
+      data: wolletAmount,
+      url: 'Appointment',
+      roleArr: [Roles.FRANCHISE],
+    },
   ]);
 
-  const focused = useIsFocused();
 
+
+  const focused = useIsFocused();
   const handleGetServices = async () => {
     try {
       let { data: res }: any = await getServicesPaginated('page=1&size=120');
@@ -163,7 +193,7 @@ const Home = () => {
         }
       }
     } catch (err) {
-      console.log('err in home page line 164', err)
+      // console.log('err in home page line 164', err)
       // toastError(err);
     }
   };
@@ -177,7 +207,6 @@ const Home = () => {
         setIsAuthorized(false);
       }
     } catch (err) {
-      console.log('here error is ')
       // toastError(err);
     }
   };
@@ -194,15 +223,13 @@ const Home = () => {
       let token = await getJwt();
       if (token) {
         const { data: res }: any = await isUserLoggedIn();
-        console.log('response from backend vikram', res)
         if (res.status == false) {
           handleLogout()
-          console.log('response from backend', res)
           throw new Error(res.error);
         }
       }
     } catch (err) {
-      console.log('line 199 in hoe page', err)
+      // console.log('line 199 in hoe page', err)
       // alert('this is errr')
       // toastError(err);
     }
@@ -213,7 +240,6 @@ const Home = () => {
       let { data: res }: any = await getDashboard();
       if (res) {
         setDashboardData(res?.data);
-        console.log(JSON.stringify(res, null, 2), 'dashbpard');
         let tempDocData: any = docData;
         // console.log("before total appointment")
         if (res?.data?.totalAppointmentMonthly) {
@@ -240,7 +266,6 @@ const Home = () => {
         let totalEarning = tempDocData.findIndex(
           (el: any) => el.title == 'Total Earning',
         );
-        console.log(totalConsultation, 'totalConsultation');
         tempDocData[totalConsultation].data = res?.data?.totalApointment
           ? res?.data?.totalApointment
           : 0;
@@ -256,8 +281,6 @@ const Home = () => {
         setDocData([...tempDocData]);
       }
     } catch (err) {
-      // toastError(err)
-      // alert('error in home page ')
     }
   };
   const handleGetWallet = async () => {
@@ -482,7 +505,6 @@ const Home = () => {
         ]);
       }
     } catch (err) {
-      console.log('err in line 479', err)
       // toastError(err);
     }
   };
@@ -499,8 +521,6 @@ const Home = () => {
         queryString = `${queryString}&city=${city}`;
       }
 
-      console.log(isAuthorized, 'asdasd');
-
       let { data: res } = await getDoctors(queryString);
       if (res.data && res.data.length > 0) {
         setDoctorsArr(res?.data);
@@ -509,7 +529,7 @@ const Home = () => {
         );
       }
     } catch (err) {
-      console.log('err in line 506', err)
+      // console.log('err in line 506', err)
       // toastError(err);
     }
   };
@@ -543,7 +563,7 @@ const Home = () => {
         setLastPageReached(true);
       }
     } catch (err) {
-      console.log('err in line 540 in hoe page', err)
+      // console.log('err in line 540 in hoe page', err)
       // toastError(err);
     }
   };
@@ -758,58 +778,7 @@ const Home = () => {
               </Text>
               <View style={{ width: wp(95), marginTop: hp(2) }}>
 
-                {/* <FlatList
-                data={servicesArr}
-                numColumns={2}
-                columnWrapperStyle={{justifyContent: 'space-between'}}
-                showsHorizontalScrollIndicator={false}
-                renderItem={({item, index}: any) => {
-                  return (
-                    <Pressable
-                      onPress={() =>
-                        navigation.navigate('CategoryStack', {
-                          screen: 'CategoryDetail',
-                          params: {data: item._id},
-                        })
-                      }
-                      style={{
-                        width: wp(46),
-                        minHeight: hp(18),
-                        backgroundColor: 'white',
-                        elevation: 2,
-                        marginTop: hp(1),
-                        borderRadius: 5,
-                        marginBottom: hp(1),
-                        alignItems: 'center',
-                        paddingVertical: 25,
-                      }}>
-                      <FastImage
-                        source={{
-                          uri: generateFilePath(item.image),
-                          priority: FastImage.priority.normal,
-                        }}
-                        style={{height: hp(15), width: wp(30)}}
-                        resizeMode={FastImage.resizeMode.cover}
-                      />
-                      <Text
-                        style={{
-                          fontSize: hp(1.8),
-                          width: wp(35),
-                          alignSelf: 'center',
-                          textAlign: 'center',
-                          color: 'black',
-                          fontFamily: mainFont,
-                          marginTop: hp(0.5),
-                        }}>
-                        {item.name}
-                      </Text>
-                    </Pressable>
-                  );
-                }}
-              /> */}
-
-
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', }}>
                   {servicesArr && servicesArr.length > 0 && servicesArr.map((item, index) => (
                     <Pressable
                       key={index}
@@ -822,7 +791,7 @@ const Home = () => {
                       style={{
                         width: wp(46),
                         minHeight: hp(18),
-                        backgroundColor: 'white',
+                        // backgroundColor: 'white',
                         elevation: 2,
                         marginTop: hp(1),
                         borderRadius: 5,
@@ -852,6 +821,9 @@ const Home = () => {
                       </Text>
                     </Pressable>
                   ))}
+                  <View style={{ height: 20, width: 20, backgroundColor: "red" }}>
+
+                  </View>
                 </View>
 
               </View>

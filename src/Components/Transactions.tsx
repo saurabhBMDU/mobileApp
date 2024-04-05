@@ -19,12 +19,10 @@ export default function Transactions() {
     const navigation: any = useNavigation()
     const mainFont = 'Montserrat-Regular'
     const mainFontBold = 'Montserrat-Bold'
-    const maincolor = '#1263AC'
     const [userObj, setUserObj] = useState<any>({});
     const [balance, setBalance] = useState(0);
     const [wallet, setWallet] = useState([]);
     const [loading, setLoading] = useState(true);
-
 
     const focused = useIsFocused();
 
@@ -32,7 +30,7 @@ export default function Transactions() {
         try {
             let { data: res }: any = await getWallet()
             if (res) {
-                setWallet(res.transactions);
+                setWallet(res.transactions.reverse());
                 setBalance(res?.balance);
             }
             setLoading(false)
@@ -66,7 +64,7 @@ export default function Transactions() {
                                     <Loding_service />
                                 </View>
                                 : <View style={{ display: "flex", height: height, justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text>No appointments found </Text>
+                                    <Text>No Transactions found </Text>
                                     <Text style={{ color: "#fff", fontSize: wp(3.5), marginTop: hp(2), backgroundColor: '#1263AC', borderRadius: 5, padding: wp(1.5) }} onPress={() => navigation.navigate("BookAppt")}>Book Appointments</Text>
                                 </View>
                         }
@@ -75,17 +73,21 @@ export default function Transactions() {
                 removeClippedSubviews={true}
                 contentContainerStyle={{ paddingBottom: hp(10) }}
                 renderItem={({ item, index }: any) => {
+                    const timestamp = new Date(item.timestamp);
+
+                    const formattedDate = `${('0' + (timestamp.getMonth() + 1)).slice(-2)}-${('0' + timestamp.getDate()).slice(-2)}-${timestamp.getFullYear()}`;
+
                     return (
-                        <View style={{ width: width, paddingTop: hp(1.2), paddingBottom: hp(2), backgroundColor: 'white', elevation: 3, marginBottom: hp(2), }}>
+                        <View style={{ width: width, paddingTop: hp(.75), paddingBottom: hp(2), backgroundColor: item.type == "debit" ? "#F3ECEF" : "#E9F5F3", elevation: 3, marginBottom: hp(2), }}>
                             <View style={{ width: width, flexDirection: 'row' }}>
-                                <View style={{ width: wp(100), paddingLeft: wp(3), paddingTop: hp(2) }}>
+                                <View style={{ width: wp(100), paddingLeft: wp(3), paddingTop: hp(1) }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={styles.flexSTYLES}>
                                             <Profiles_setting_icons name='profile' style={styles.iconsStyls} />
                                             <Text style={{ marginLeft: wp(2), fontSize: hp(1.8), color: 'black', fontFamily: mainFontBold }}>S.no:</Text>
                                         </View>
                                         <View>
-                                            <Text style={{ color: 'gray' }}>{index + 1}</Text>
+                                            <Text style={{ color: 'gray', fontSize: hp(2) }}>{index + 1}</Text>
                                         </View>
                                     </View>
                                     <View style={{ flexDirection: 'row' }}>
@@ -94,8 +96,8 @@ export default function Transactions() {
                                             <Text style={{ marginLeft: wp(2), fontSize: hp(1.8), color: 'black', fontFamily: mainFontBold }}>Date and Time:</Text>
                                         </View>
                                         <View>
-                                            <Text style={{ color: 'gray' }}>{moment(item?.timeStamp).format("DD/MM/YYYY h:mm:ss a")}</Text>
-
+                                            <Text style={{ color: 'gray', fontSize: hp(2) }}>{formattedDate}</Text>
+                                            {/* <Text style={{ color: 'gray', fontSize: hp(2) }}>{moment(item?.timeStamp).format("DD/MM/YYYY h:mm:ss a")}</Text> */}
                                         </View>
                                     </View>
                                     <View style={{ flexDirection: 'row', }}>
@@ -104,7 +106,7 @@ export default function Transactions() {
                                             <Text style={{ marginLeft: wp(2), fontSize: hp(1.8), color: 'black', fontFamily: mainFontBold }}>Types:</Text>
                                         </View>
                                         <View>
-                                            <Text style={{ color: 'gray', textTransform: "capitalize" }}>{item?.type}</Text>
+                                            <Text style={{ color: 'gray', textTransform: "capitalize", fontSize: hp(2) }}>{item?.type}</Text>
                                         </View>
                                     </View>
                                     <View style={{ flexDirection: 'row', }}>
@@ -113,7 +115,7 @@ export default function Transactions() {
                                             <Text style={{ marginLeft: wp(2), fontSize: hp(1.8), color: 'black', fontFamily: mainFontBold }}>Amount:</Text>
                                         </View>
                                         <View>
-                                            <Text style={{ color: 'gray' }}>{item?.amount}</Text>
+                                            <Text style={{ color: 'gray', fontSize: hp(2) }}>{item?.amount}</Text>
                                         </View>
                                     </View>
                                     <View style={{ flexDirection: 'row', }}>
@@ -122,7 +124,7 @@ export default function Transactions() {
                                             <Text style={{ marginLeft: wp(2), fontSize: hp(1.8), color: 'black', fontFamily: mainFontBold }}>Description:</Text>
                                         </View>
                                         <View style={{ width: wp(50) }}>
-                                            <Text style={{ color: 'gray' }}>{item?.message}</Text>
+                                            <Text style={{ color: 'gray', fontSize: hp(2) }}>{item?.message}</Text>
                                         </View>
                                     </View>
                                 </View>

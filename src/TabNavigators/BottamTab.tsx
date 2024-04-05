@@ -135,7 +135,7 @@ const BottamTab = () => {
                     )
                 }}
             />
-            {
+            {/* {
                 userObj?.role == Roles.FRANCHISE &&
                 <Botmtab.Screen name='Referal' component={Referal}
                     options={{
@@ -157,7 +157,7 @@ const BottamTab = () => {
                         )
                     }}
                 />
-            }
+            } */}
             {
                 userObj?.role == Roles.FRANCHISE &&
                 <Botmtab.Screen name='Transaction' component={Transactions}

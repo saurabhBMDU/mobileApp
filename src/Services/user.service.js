@@ -177,7 +177,6 @@ export const deleteJwt = async () => {
 export const isUserLoggedIn = async () => {
   console.log('isndie is uer lgged in ',url)
   let response= await axios.get(`${url}/is-user-loggedIn`);
-  // console.log('is user logged in check ',response);
   return response
 };
 
@@ -185,6 +184,5 @@ export const isUserLoggedIn = async () => {
 
 export const AppVersioinCheck = async () => {
   let response= await axios.get(`${url}/version`);
-  // console.log('is user logged in check ',response);
   return response
 };

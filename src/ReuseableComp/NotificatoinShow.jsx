@@ -17,7 +17,7 @@ const NotificationShow = () => {
   const markAsRead = async (id) => {
     try {
       const { data: res } = await isReadNotification(id);
-      console.log('isReadNotifications', res)
+      // console.log('isReadNotifications', res)
       if (res.status === true) {
         getAllNotifications();
       } else {
@@ -109,23 +109,22 @@ const NotificationShow = () => {
 
   const preprocessedData = preProcessData(notifications);
 
-  const renderItem = ({ item, index }) => {
-
+  const renderItem = ({ items, index }) => {
+      console.log("hhhhhhhhhhhhhhahahahahahaahahaahahahaahahahahahahhahaahah",items)
 
     let showRelativeTime = false;
-
     // Check if the current item is not the first one and if its timestamp is the same as the previous one
 
-    if (index > 0 && notifications[index - 1].timestamp === item.timestamp) {
-      showRelativeTime = false;
-    } else {
-      showRelativeTime = true;
-    }
+    // if (index > 0 && notifications[index - 1].timestamp === items.timestamp) {
+    //   showRelativeTime = false;
+    // } else {
+    //   showRelativeTime = true;
+    // }
     let iconName;
     let iconColor;
 
     // Set icon based on notification type
-    switch (item.title) {
+    switch (items.title) {
       case 'Appointment rescheduled':
         iconName = 'calendar';
         iconColor = '#fff'; // Example color, adjust as needed
@@ -154,11 +153,9 @@ const NotificationShow = () => {
 
     return (
       <TouchableOpacity
-        style={[styles.notificationItem, { backgroundColor: item.read ? '#EEE' : '#FFF' }]}
-        onPress={() => markAsRead(item._id)}
-      >
+        style={[styles.notificationItem, { backgroundColor: items.read ? '#EEE' : '#FFF' }]}
+        onPress={() => markAsRead(item._id)}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View
               style={{
@@ -176,22 +173,22 @@ const NotificationShow = () => {
               style={{
                 marginLeft: 10,
                 width: '80%'
-              }}> 
+              }}>
               <View
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                   alignItems: 'center'
-                }}> 
-                
-                <Text style={styles.title}>{item.title}</Text>
-                <Text style={styles.timestamp}>{convertToIndianTime(item.timestamp)}</Text>
-              </View>
-              {item.showRelativeTime && (
-                <Text style={styles.message}>{convertToIndianTimeAndRelative(item.timestamp)}</Text>
-              )}
+                }}>
 
-              <Text style={styles.message}>{item.message}</Text>
+                <Text style={styles.title}>{items.title}</Text>
+                {/* <Text style={styles.timestamp}>{item.timestamp}</Text> */}
+              </View>
+              {/* {item.showRelativeTime && ( */}
+                {/* <Text style={styles.message}>{convertToIndianTimeAndRelative(item.timestamp)}</Text> */}
+              {/* )} */}
+
+              <Text style={styles.message}>{items.message}</Text>
             </View>
           </View>
 
@@ -210,13 +207,25 @@ const NotificationShow = () => {
           </View>
           :
           <FlatList
-            data={preprocessedData}
-            ListEmptyComponent={<View style={styles.loadingContainer}>
-              <Text styles={{ fontSize: hp(2) }}>OOp's No Notification Found</Text>
-            </View>}
-            renderItem={renderItem}
-            // keyExtractor={(item) => item.notifications._id.toString()}
+            data={notifications}
+            ListEmptyComponent={
+              <View style={styles.loadingContainer}>
+                <Text style={{ fontSize: hp(2) }}>Oops! No Notifications Found</Text>
+              </View>
+            }
+            renderItem={({ item }) => {
+              return (
+                <View>
+                  <Text style={styles.dateH1}>{item.date}</Text>
+                  {item.notifications.map((items, index) => (
+                    renderItem({ items, index })
+                  ))}
+                </View>
+              );
+            }}
           />
+
+
       }
     </View>
   );
@@ -247,6 +256,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  dateH1: {
+    fontSize: hp(2.5),
+    textAlign:"center",
+    marginTop:15,
+    marginBottom:15
+
+  }
 });
 
 export default NotificationShow;

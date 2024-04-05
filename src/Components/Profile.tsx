@@ -18,9 +18,11 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import { AuthContext } from '../../App';
-
+import url from '../Services/url.service';
+import axios from '../Services/axios.service';
 import Headerr from '../ReuseableComp/Headerr';
 import { generateFilePath } from '../Services/url.service';
+import CloseBtnIcon from 'react-native-vector-icons/Entypo';
 import {
   deleteJwt,
   getJwt,
@@ -30,7 +32,7 @@ import {
   updateUserStatus,
 } from '../Services/user.service';
 import { Roles } from '../utils/constant';
-import { toastError, toastSuccess } from '../utils/toast.utils';
+import { alertError, toastError, toastSuccess } from '../utils/toast.utils';
 import { ScrollView } from 'react-native';
 // all  icons import form ---> Edit_Phone_icons meen that there is two type  of  icons is there one is Edit and other is Phone icons
 import Setting_Sharealt from 'react-native-vector-icons/AntDesign';
@@ -43,15 +45,18 @@ import Contacts from 'react-native-vector-icons/AntDesign';
 import Mail_icons from 'react-native-vector-icons/Entypo';
 import Polocy_Icons from 'react-native-vector-icons/MaterialIcons';
 import List_faq from 'react-native-vector-icons/Feather';
-import Money_Icons from 'react-native-vector-icons/FontAwesome';
+import Money_Icons from 'react-native-vector-icons/MaterialIcons';
+import Account_icons from "react-native-vector-icons/MaterialIcons"
 
 const { height, width } = Dimensions.get('window');
 
+const mainFont = 'Montserrat-Regular';
+const mainFontBold = 'Montserrat-Bold';
+const mainFontmedium = 'Montserrat-Medium';
+const maincolor = '#1263AC';
+
 const Profile = () => {
-  const mainFont = 'Montserrat-Regular';
-  const mainFontBold = 'Montserrat-Bold';
-  const mainFontmedium = 'Montserrat-Medium';
-  const maincolor = '#1263AC';
+
   const navigation: any = useNavigation();
   const [bookmodal, setBookmodal] = useState(false);
   const [isAuthorized, setIsAuthorized] = useContext<any>(AuthContext);
@@ -60,11 +65,15 @@ const Profile = () => {
   const [count, setCount] = useState(0);
   const [paymentModal, setPaymentModal] = useState(false);
   const [amount, setAmount] = useState('');
-  console.log("thi is sis sis sis ", userObj)
-
-
-
+  const [withdraModal, setWithdrawModal] = useState(false);
+  const [withdrawAmounr, setWithdrawAmounr] = useState('');
+  const [errorso, setErrorO] = useState("");
+  const [getEarning, setGetearning] = useState('');
+  const [errorWithdrow, setwodraw] = useState("")
+  // console.log("thi is sis sis sis ", userObj
   //to check user is loggged in or not 
+
+  let baseURL = userObj.role == Roles.DOCTOR ? `${url}/doctor-total-income` : `${url}/franchise-total-income`
 
 
   const handleLogout2 = async () => {
@@ -77,7 +86,6 @@ const Profile = () => {
       // toastError(err);
     }
   };
-
 
   useEffect(() => {
     CheckIsUserLoggedIn();
@@ -160,17 +168,66 @@ const Profile = () => {
   };
 
   const HandleAddAmountToWallet = async () => {
+    let tempAmount = parseInt(`${amount}`) || 0;
+    if (!tempAmount) {
+      setErrorO("Please enter amount")
+      toastError('Amount should be more than 10 rupees !!!');
+      return;
+    }
+    if (tempAmount < 10) {
+      setErrorO("The amount should exceed 10.");
+      return;
+    }
     try {
-      let tempAmount = parseInt(`${amount}`) || 0;
-      if (tempAmount && tempAmount < 1) {
-        toastError('Amount should be more than 10 rupees !!!');
-        return;
-      }
       setPaymentModal(false);
       navigation.navigate('PayementScreen', { amount: tempAmount });
     } catch (error) {
       toastError(error);
     }
+  }
+  //  get income amount 
+  const getIncomeAmount = async () => {
+    try {
+      const response = await axios.get(baseURL);
+      console.log(response.data);
+      if (response.data.message = "Wallet not create") {
+        setErrorO(response.data.message);
+      }
+      else {
+        setGetearning(response.data.Incomewallet);
+      }
+    } catch (error) {
+      console.error("Error in getting wallet amount:", error);
+    }
+  };
+
+  useEffect(() => {
+    getIncomeAmount();
+  }, []);
+
+  const HandleWithdrawAmount = async () => {
+    if (withdrawAmounr < 500) {
+      setwodraw("Amount must be greater than 500");
+      return;
+    }
+    if (getEarning < withdrawAmounr) {
+      try {
+        const response = await axios.post(`${url}/withdraw`);
+        console.log("respons",response);
+        if (response.status === 200) {
+          setWithdrawModal(false);
+          toastSuccess("Your money will be credited within 3-5 working days.")
+        }
+        else {
+          setWithdrawModal(false);
+          toastError("Please try again later")
+        }
+      } catch (error) {
+        console.error('Error occurred while making withdrawal:', error);
+        setErrorO("Failed to withdraw amount");
+      }
+    }
+
   };
   const imageSize = Math.min(hp(27), wp(17));
 
@@ -306,11 +363,7 @@ const Profile = () => {
               </>
             )}
 
-
             {/* refrelCode */}
-
-
-
 
             {userObj.role == Roles.DOCTOR && (
               <Pressable
@@ -404,7 +457,6 @@ const Profile = () => {
                   fontFamily: mainFont,
                   marginLeft: wp(2),
                 }}>
-                {' '}
                 Appointment History
               </Text>
             </View>
@@ -479,9 +531,77 @@ const Profile = () => {
           </TouchableOpacity>
 
           {userObj.role == Roles.FRANCHISE && (
-            <>
+            <View>
+              <View>
+                <TouchableOpacity
+                  onPress={() => setPaymentModal(true)}
+                  style={styles.clickbleLines}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      height: wp(8),
+                      alignItems: 'center',
+                    }}>
+                    <Money_Icons name="account-balance-wallet" style={styles.allIconsStyle} />
+                    <Text
+                      style={{
+                        fontSize: hp(1.8),
+                        color: '#4A4D64',
+                        fontFamily: mainFont,
+                        marginLeft: wp(2),
+                      }}>
+                      Recharge Wallet
+                    </Text>
+                  </View>
+                  <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
+                </TouchableOpacity>
+
+                <Modal
+                  isVisible={paymentModal}
+                  animationIn={'bounceIn'}
+                  animationOut={'slideOutDown'}
+                  onBackButtonPress={() => { setPaymentModal(false), setErrorO('') }}
+                  style={{ marginLeft: 0, marginRight: 0 }}>
+                  <View style={styles.modalView}>
+
+                    <View style={styles.textAndClose}>
+                      <Text style={styles.modalhi}>
+                        Recharge Amount
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() => { setPaymentModal(false), setErrorO('') }}>
+                        <Image
+                          source={require('../../assets/images/close.png')}
+                          style={{ tintColor: '#FA6C23', height: wp(4), width: wp(4) }}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    <TextInput
+                      placeholder="Amount"
+                      keyboardType="number-pad"
+                      style={styles.modalInputfilde}
+                      onChangeText={(e: any) => setAmount(e)}
+                      value={`${amount}`}
+                      placeholderTextColor="gray"
+                    />
+                    <Text style={{ color: "red" }}>{errorso} {errorWithdrow} </Text>
+                    <TouchableOpacity
+                      onPress={() => HandleAddAmountToWallet()}
+                      style={styles.modalBtn}>
+                      <Text style={styles.modlaSubmittext}>
+                        Recharge
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </Modal>
+              </View>
+              {/* ---------------------------------------- this is a button brfore moda open ------------------------------------- */}
+            </View>
+          )}
+          {(userObj.role == Roles.FRANCHISE || userObj.role == Roles.DOCTOR) &&
+            <View>
               <TouchableOpacity
-                onPress={() => setPaymentModal(true)}
+                onPress={() => { setWithdrawModal(true), getIncomeAmount() }}
                 style={styles.clickbleLines}>
                 <View
                   style={{
@@ -489,92 +609,63 @@ const Profile = () => {
                     height: wp(8),
                     alignItems: 'center',
                   }}>
-                  <Money_Icons name="money" style={styles.allIconsStyle} />
-                  <Text
-                    style={{
-                      fontSize: hp(1.8),
-                      color: '#4A4D64',
-                      fontFamily: mainFont,
-                      marginLeft: wp(2),
-                    }}>
-                    Recharge Wallet
+                  <Money_Icons name="account-balance" style={styles.allIconsStyle} />
+                  <Text style={{
+                    fontSize: hp(1.8),
+                    color: '#4A4D64',
+                    fontFamily: mainFont,
+                    marginLeft: wp(2),
+                  }}>
+                    Withdraw Money
                   </Text>
                 </View>
                 <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
               </TouchableOpacity>
-
+              {/* -------------------------------------------------end ----------------------------- */}
               <Modal
-                isVisible={paymentModal}
+                isVisible={withdraModal}
                 animationIn={'bounceIn'}
                 animationOut={'slideOutDown'}
-                onBackButtonPress={() => setPaymentModal(false)}
+                onBackButtonPress={() => { setWithdrawModal(false), setErrorO('') }}
                 style={{ marginLeft: 0, marginRight: 0 }}>
-                <View
-                  style={{
-                    width: wp(85),
-                    paddingTop: hp(3),
-                    paddingBottom: hp(3),
-                    backgroundColor: 'white',
-                    alignSelf: 'center',
-                    borderRadius: 5,
-                    paddingLeft: wp(4),
-                    paddingRight: wp(4),
-                  }}>
-                  <TouchableOpacity
-                    onPress={() => setPaymentModal(false)}
-                    style={{ alignSelf: 'flex-end' }}>
-                    <Image
-                      source={require('../../assets/images/close.png')}
-                      style={{ tintColor: 'black', height: wp(5), width: wp(5) }}
-                    />
-                  </TouchableOpacity>
-                  <Text
-                    style={{
-                      fontSize: 20,
-                      color: 'black',
-                      fontFamily: mainFont,
-                      fontWeight: 'bold',
-                    }}>
-                    Add Wallet Amount
-                  </Text>
+                <View style={styles.modalView}>
+                  <View style={styles.textAndClose}>
 
-                  <TextInput
-                    placeholder="Amount"
-                    keyboardType="number-pad"
-                    style={{
-                      marginTop: 15,
-                      color: 'gray',
-                      backgroundColor: '#e6edf7',
-                    }}
-                    onChangeText={(e: any) => setAmount(e)}
-                    value={`${amount}`}
-                    placeholderTextColor="gray"
-                  />
-                  <TouchableOpacity
-                    onPress={() => HandleAddAmountToWallet()}
-                    style={{
-                      minWidth: wp(80),
-                      height: 42,
-                      marginTop: 15,
-                      alignSelf: 'center',
-                      backgroundColor: '#1263AC',
-                      borderRadius: 5,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Text
-                      style={{
-                        color: 'white',
-                        fontFamily: mainFont,
-                        fontSize: hp(1.8),
-                      }}>
-                      Add now
-                    </Text>
-                  </TouchableOpacity>
+                    <Text style={styles.modalhi}> {errorso === 'Wallet not create' ? null : "Withdraw Amount"} </Text>
+                    <TouchableOpacity
+                      onPress={() => { setWithdrawModal(false), setErrorO('') }}>
+                      <Image
+                        source={require('../../assets/images/close.png')}
+                        style={{ tintColor: '#FA6C23', height: wp(4), width: wp(4) }}
+                      />
+                    </TouchableOpacity>
+                  </View>
+
+                  {errorso === 'Wallet not create' ? <Text style={{ fontSize: hp(2.2), textAlign: "center" }}>Your Income Wollet Not created</Text> :
+                    <>
+                      <TextInput
+                        placeholder="Amount"
+                        keyboardType="number-pad"
+                        style={styles.modalInputfilde}
+                        onChangeText={(e: any) => setWithdrawAmounr(e)}
+                        value={`${withdrawAmounr}`}
+                        placeholderTextColor="gray"
+                      />
+                      <Text style={{ color: "red" }}>{errorso}</Text>
+
+                      <TouchableOpacity
+                        onPress={() => HandleWithdrawAmount()}
+                        style={styles.modalBtn}>
+                        <Text style={styles.modlaSubmittext}>
+                          Withdraw
+                        </Text>
+                      </TouchableOpacity>
+                    </>
+                  }
                 </View>
               </Modal>
-            </>
-          )}
+            </View>
+          }
           <TouchableOpacity
             onPress={() => navigation.navigate('SMART PRESCRIPTION')}
 
@@ -599,8 +690,6 @@ const Profile = () => {
             </View>
             <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
           </TouchableOpacity>
-
-
           <TouchableOpacity
             onPress={() => navigation.navigate('About Fever99')}
 
@@ -652,8 +741,8 @@ const Profile = () => {
             </View>
             <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
           </TouchableOpacity>
-        </View>
-      </ScrollView>
+        </View >
+      </ScrollView >
 
       <Modal
         isVisible={bookmodal}
@@ -755,7 +844,7 @@ const Profile = () => {
           </View>
         </View>
       </Modal>
-    </View>
+    </View >
   );
 };
 
@@ -780,4 +869,53 @@ const styles = StyleSheet.create({
   profileIcons: {
     fontSize: hp(1.75),
   },
+  modalView: {
+    width: wp(85),
+    paddingTop: hp(3),
+    paddingBottom: hp(3),
+    backgroundColor: 'white',
+    alignSelf: 'center',
+    borderRadius: 5,
+    paddingLeft: wp(4),
+    paddingRight: wp(4),
+  },
+  modalhi: {
+    fontSize: hp(2),
+    color: 'black',
+    fontFamily: mainFont,
+    fontWeight: 'bold',
+  },
+  modalInputfilde: {
+    marginTop: 15,
+    color: 'gray',
+    backgroundColor: '#e6edf7',
+    fontSize: hp(2)
+  },
+  modalBtn: {
+    height: hp(5),
+    width: wp(77),
+    maxWidth: hp(80),
+    alignSelf: 'center',
+    marginTop: hp(1),
+    backgroundColor: '#1263AC',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modlaSubmittext: {
+    color: 'white',
+    fontFamily: mainFont,
+    fontSize: hp(1.8),
+  },
+  closeIcon: {
+    fontSize: hp(5),
+    padding: 3,
+    backgroundColor: '#dfeefc',
+    color: '#1263AC',
+    borderRadius: wp(40),
+  },
+  textAndClose: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  }
 });
