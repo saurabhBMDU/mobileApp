@@ -26,6 +26,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { getUser } from '../Services/user.service';
 import { Roles } from '../utils/constant';
 import LoadingService from '../All_Loding_page/Loding_service';
+import DR_icons from "react-native-vector-icons/FontAwesome6"
 
 const { height, width } = Dimensions.get('window');
 const Book_Appointment = () => {
@@ -125,7 +126,6 @@ const Book_Appointment = () => {
       if (sortType && sortType != '') {
         queryString = `${queryString}&pricesort=${sortType}`;
       }
-      console.log(queryString, 'queryString', city);
       let { data: res } = await getDoctors(queryString);
       if (res.data) {
         setDoctorsArr([...res.data]);
@@ -800,11 +800,11 @@ const Book_Appointment = () => {
                 )}
               </>
             }
+
             onEndReached={() => {
               handleOnEndReached();
             }}
             renderItem={({ item, index }) => {
-             
               return (
                 <View
                   style={{
@@ -816,9 +816,8 @@ const Book_Appointment = () => {
                     borderRadius: 5,
                     alignItems: 'center',
                     justifyContent: 'space-between',
-
                   }}>
-                 
+
                   <TouchableOpacity
                     onPress={() =>
                       navigation.navigate('About Doctor', { doctorId: item })
@@ -840,6 +839,10 @@ const Book_Appointment = () => {
                             minHeight: wp(18),
                             justifyContent: 'center',
                           }}>
+                          <View style={{flexDirection:"row"}}>
+                            <DR_icons name='user-doctor' style={{fontSize:hp(1.5)}} />
+                            <Text style={{ fontSize: hp(1.5),paddingLeft:wp(.75) }}>{item.specialization}</Text>
+                          </View>
                           <View
                             style={{
                               display: 'flex',
@@ -866,6 +869,7 @@ const Book_Appointment = () => {
                             {item?.userExtraDetails?.totalExperience} years of
                             experience
                           </Text>
+
                           <Text
                             style={{
                               color: '#7E7B7B',
@@ -960,7 +964,7 @@ const Book_Appointment = () => {
                         style={{
                           color: 'white',
                           fontFamily: mainFont,
-                          fontSize: 13,
+                          fontSize: hp(1.7),
                         }}>
                         Book Video Consult
                       </Text>
@@ -983,7 +987,7 @@ const Book_Appointment = () => {
                           style={{
                             color: 'white',
                             fontFamily: mainFont,
-                            fontSize: 13,
+                            fontSize: hp(1.7),
                           }}>
                           Book Clinic Visit
                         </Text>

@@ -71,9 +71,8 @@ const ForgotPassword = () => {
               fontSize: hp(3),
               color: '#1263AC',
               fontWeight: 'bold',
-              alignSelf: 'center',
               fontFamily: mainFont,
-              marginBottom: 30,
+              marginBottom: hp(2),
             }}>
             Forgot Password
           </Text>

@@ -56,7 +56,7 @@ const Home = () => {
   const [servicesArr, setServicesArr] = useState([]);
   const [userObj, setUserObj] = useState<any>('');
   const [doctorSearchModal, setDoctorSearchModal] = useState(false);
-  const [wallet, setWallet] = useState({});
+  const [wallet, setWallet] = useState(0);
 
   const [monthlyIncomeData, setMonthlyIncomeData] = useState<any[]>([]);
   const [appointmentData, setAppointmentData] = useState<any[]>([]);
@@ -105,7 +105,6 @@ const Home = () => {
   const getWalletAmount = async () => {
     try {
       const response = await axios.get(`${url}/franchise-total-income`);
-      console.log(response.data);
       if (response.data.message = "Wallet not create") {
         setWolletAmount(response.data.message);
       }
@@ -158,13 +157,13 @@ const Home = () => {
       img: require('../../assets/images/icn10.png'),
       title: 'Total Earning',
       data: '0',
-      url: 'Appointment',
+      url: 'Income',
       roleArr: [Roles.DOCTOR],
     },
     {
       img: require('../../assets/images/icn10.png'),
       title: 'Wallet Amount',
-      data: '0',
+      data: wallet,
       url: 'Transaction',
       roleArr: [Roles.FRANCHISE],
     },
@@ -172,7 +171,7 @@ const Home = () => {
       img: require('../../assets/images/icn10.png'),
       title: 'Total Earning',
       data: wolletAmount,
-      url: 'Appointment',
+      url: 'Income',
       roleArr: [Roles.FRANCHISE],
     },
   ]);
@@ -287,12 +286,12 @@ const Home = () => {
     try {
       let { data: res }: any = await getWallet();
       if (res) {
-        setWallet(res?.balance);
+        setWallet(res?.data?.balance);
         let tempDocData = docData;
         let walletAmount = tempDocData.findIndex(
           el => el.title == 'Wallet Amount',
         );
-        tempDocData[walletAmount].data = res?.balance;
+        tempDocData[walletAmount].data = res?.data?.balance;
         setDocData([...tempDocData]);
       }
     } catch (err) {
@@ -821,9 +820,6 @@ const Home = () => {
                       </Text>
                     </Pressable>
                   ))}
-                  <View style={{ height: 20, width: 20, backgroundColor: "red" }}>
-
-                  </View>
                 </View>
 
               </View>
@@ -1563,7 +1559,7 @@ const Home = () => {
               data={doctorsArr}
               keyExtractor={(itemX, indexX) => `${indexX}`}
               renderItem={renderDoctor}
-              ListEmptyComponent={<Text>No data at the moment</Text>}
+              ListEmptyComponent={<Text style={{textAlign:"center",fontSize:hp(2)}}>Loding...</Text>}
             />
           </View>
         </Modal>

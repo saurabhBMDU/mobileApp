@@ -12,6 +12,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Modal,
+  ScrollView
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -82,7 +83,7 @@ const Password = (props: any) => {
         console.log('response from backend', res)
         throw new Error(res.error);
       }
-    
+
       if (res.token) {
         closeModal();
         await setJwt(res?.token, res?.user);
@@ -90,7 +91,7 @@ const Password = (props: any) => {
         setUserData(JSON.stringify(res?.user));
         setIsAuthorized(true);
       }
-    // }
+      // }
     } catch (err) {
       toastError(err);
     }
@@ -106,11 +107,15 @@ const Password = (props: any) => {
   };
 
   return (
-    <View style={{ flex: 1, width: width }}>
-      <ImageBackground
-        source={require('../../../assets/images/final1.png')}
-        resizeMode="stretch"
-        style={{ flex: 1, width: wp(100), height: hp(100), alignItems: 'center', justifyContent: 'center' }}>
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={{ flex: 1 }}>
+        <View>
+          <Image
+            source={require('../../../assets/images/final1.png')}
+            resizeMode="stretch"
+            style={{ width: wp(100), height: hp(33),}}
+          />
+        </View>
 
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View
@@ -122,7 +127,7 @@ const Password = (props: any) => {
               style={{
                 fontSize: hp(3),
                 color: '#1263AC',
-                marginTop: hp(7),
+                marginLeft:wp(5),
                 fontFamily: mainFont,
                 fontWeight: 'bold',
               }}>
@@ -157,7 +162,7 @@ const Password = (props: any) => {
                   secureTextEntry={hide}
                   onChangeText={e => setPassword(e)}
                   value={password}
-                  style={{ marginLeft: 5, width: wp(70), fontSize: hp(2) }}
+                  style={{ width: wp(70), fontSize: hp(2) }}
                 />
                 <Pressable onPress={() => setHide(!hide)} style={{ padding: wp(2) }}>
                   <Openeye_closeEye
@@ -195,34 +200,30 @@ const Password = (props: any) => {
             <View></View>
           </View>
         </TouchableWithoutFeedback>
-
-      </ImageBackground>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showModal}
-        onRequestClose={() => closeModal()}
-      >
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-          <View style={{ backgroundColor: '#ececec', padding: 20, borderRadius: 10, width: '80%' }}>
-            <Lock name="lock" style={{ height: wp(5.5), width: wp(5.5), color: 'grey', fontSize: hp(2.8), alignSelf: "center", marginBottom: 10 }} />
-            <Text style={{ fontSize: 18, fontWeight: 'normal', textAlign: 'center', marginBottom: 20 }}>Are you sure you want to log out from another device and log in here?</Text>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <TouchableOpacity onPress={() => closeModal()} style={{ flex: 1, marginRight: 10, backgroundColor: '#fa1640', borderRadius: 5, padding: 10 }}>
-                <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center' }}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => { closeModal(); ProceedToLogin(); }} style={{ flex: 1, marginLeft: 10, backgroundColor: '#1263AC', borderRadius: 5, padding: 10 }}>
-                <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center' }}>Proceed</Text>
-              </TouchableOpacity>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={showModal}
+          onRequestClose={() => closeModal()}
+        >
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+            <View style={{ backgroundColor: '#ececec', padding: 20, borderRadius: 10, width: '80%' }}>
+              <Lock name="lock" style={{ height: wp(5.5), width: wp(5.5), color: 'grey', fontSize: hp(2.8), alignSelf: "center", marginBottom: 10 }} />
+              <Text style={{ fontSize: 18, fontWeight: 'normal', textAlign: 'center', marginBottom: 20 }}>Are you sure you want to log out from another device and log in here?</Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <TouchableOpacity onPress={() => closeModal()} style={{ flex: 1, marginRight: 10, backgroundColor: '#fa1640', borderRadius: 5, padding: 10 }}>
+                  <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center' }}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => { closeModal(); ProceedToLogin(); }} style={{ flex: 1, marginLeft: 10, backgroundColor: '#1263AC', borderRadius: 5, padding: 10 }}>
+                  <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center' }}>Proceed</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
-
-
-    </View>
+        </Modal>
+      </View>
+    </ScrollView>
   );
 };
 

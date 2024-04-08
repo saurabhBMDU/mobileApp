@@ -94,7 +94,6 @@ const NotificationShow = () => {
     } else {
       relativeTime = `${diffDays} days ago`;
     }
-
     return `${relativeTime}`;
   }
 
@@ -110,12 +109,10 @@ const NotificationShow = () => {
   const preprocessedData = preProcessData(notifications);
 
   const renderItem = ({ items, index }) => {
-      console.log("hhhhhhhhhhhhhhahahahahahaahahaahahahaahahahahahahhahaahah",items)
-
     let showRelativeTime = false;
     // Check if the current item is not the first one and if its timestamp is the same as the previous one
 
-    // if (index > 0 && notifications[index - 1].timestamp === items.timestamp) {
+    // if (index > 0 && items[index - 1].timestamp === timestamp) {
     //   showRelativeTime = false;
     // } else {
     //   showRelativeTime = true;
@@ -150,11 +147,13 @@ const NotificationShow = () => {
         iconColor = 'black'; // Default color
         break;
     }
+    const timestamp = new Date(items.timestamp);
 
+    const formattedDate = `${('0' + (timestamp.getMonth() + 1)).slice(-2)}-${('0' + timestamp.getDate()).slice(-2)}-${timestamp.getFullYear()}`;
     return (
       <TouchableOpacity
         style={[styles.notificationItem, { backgroundColor: items.read ? '#EEE' : '#FFF' }]}
-        onPress={() => markAsRead(item._id)}>
+        onPress={() => markAsRead(items._id)}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View
@@ -182,12 +181,8 @@ const NotificationShow = () => {
                 }}>
 
                 <Text style={styles.title}>{items.title}</Text>
-                {/* <Text style={styles.timestamp}>{item.timestamp}</Text> */}
+                <Text style={styles.timestamp}>{formattedDate}</Text>
               </View>
-              {/* {item.showRelativeTime && ( */}
-                {/* <Text style={styles.message}>{convertToIndianTimeAndRelative(item.timestamp)}</Text> */}
-              {/* )} */}
-
               <Text style={styles.message}>{items.message}</Text>
             </View>
           </View>
@@ -240,12 +235,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize:hp(1.8),
     marginBottom: 5,
   },
   message: {
-    fontSize: 14,
     marginBottom: 3,
+    fontSize:hp(1.5)
   },
   timestamp: {
     fontSize: 12,
@@ -258,9 +253,9 @@ const styles = StyleSheet.create({
   },
   dateH1: {
     fontSize: hp(2.5),
-    textAlign:"center",
-    marginTop:15,
-    marginBottom:15
+    textAlign: "center",
+    marginTop: 10,
+    marginBottom: 10
 
   }
 });

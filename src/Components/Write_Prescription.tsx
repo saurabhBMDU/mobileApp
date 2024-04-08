@@ -190,46 +190,46 @@ const Write_Prescription = (props: any) => {
     }
 
     const handleAddPrescription = async () => {
-        if (drugAllergy == "") {
-            toastError("Drug Allergy is Required")
-            return;
-        }
-        if (pastHistory == "") {
-            toastError("Past History Is Required")
-            return;
-        }
-        try {
-            let obj: any = {
-                appointmentId: appointMentObj?._id,
-                drugAllergy,
-                diagnosis,
-                investigation,
-                notes,
-                pastHistory,
-                personalHistory,
-                surgicalHistory,
-                symptoms,
-                medicine
-            }
-            if (isEditModeOn) {
-            }
-            else {
-                obj.patientId = appointMentObj?.expert?._id
-            }
-            let res: any
-            if (isEditModeOn) {
-                res = await editPrescription(prescriptionId, obj);
-            }
-            else {
-                res = await addPrescription(obj);
-            }
-            if (res.data) {
-                toastSuccess(res.data.message);
-                navigation.goBack();
-            }
-        } catch (err) {
-            toastError(err)
-        }
+        // if (drugAllergy == "") {
+        //     toastError("Drug Allergy is Required")
+        //     return;
+        // }
+        // if (pastHistory == "") {
+        //     toastError("Past History Is Required")
+        //     return;
+        // }
+        // try {
+        //     let obj: any = {
+        //         appointmentId: appointMentObj?._id,
+        //         drugAllergy,
+        //         diagnosis,
+        //         investigation,
+        //         notes,
+        //         pastHistory,
+        //         personalHistory,
+        //         surgicalHistory,
+        //         symptoms,
+        //         medicine
+        //     }
+        //     if (isEditModeOn) {
+        //     }
+        //     else {
+        //         obj.patientId = appointMentObj?.expert?._id
+        //     }
+        //     let res: any
+        //     if (isEditModeOn) {
+        //         res = await editPrescription(prescriptionId, obj);
+        //     }
+        //     else {
+        //         res = await addPrescription(obj);
+        //     }
+        //     if (res.data) {
+        //         toastSuccess(res.data.message);
+        //         navigation.goBack();
+        //     }
+        // } catch (err) {
+        //     toastError(err)
+        // }
     }
 
     return (
@@ -259,49 +259,49 @@ const Write_Prescription = (props: any) => {
 
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(95) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Symptoms:</Text>
-                                <TextInput multiline onChangeText={(e) => setSymptoms(e)} value={symptoms} placeholderTextColor="#8E8E8E" placeholder='Symptoms' style={styles.inputBoxStyl} />
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Symptoms:</Text>
+                                <TextInput multiline onChangeText={(e) => setSymptoms(e)} value={symptoms} placeholderTextColor="#8E8E8E" placeholder='Symptoms' style={[styles.inputBoxStyl, { height: "auto" }]} />
                             </View>
                         </View>
 
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(95) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Diagnosis:</Text>
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Diagnosis:</Text>
                                 <TextInput onChangeText={(e) => setDiagnosis(e)} value={diagnosis} placeholderTextColor="#8E8E8E" placeholder='Diagnosis' style={styles.inputBoxStyl} />
                             </View>
                         </View>
 
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(95) }}>
-                                <Text style={{ fontSize: hp(1.7), fontFamily: mainFont, color: 'black' }}>Prescription Date:</Text>
+                                <Text style={{ fontSize: hp(1.7), fontFamily: mainFontBold, color: 'black' }}>Prescription Date:</Text>
                                 <TextInput editable={false} value={moment(new Date()).format("YYYY-MM-DD")} placeholderTextColor="#8E8E8E" placeholder='Prescription' style={styles.inputBoxStyl} />
                             </View>
                         </View>
 
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(95) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Drug Allergy:</Text>
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Drug Allergy:</Text>
                                 <TextInput onChangeText={(e) => setDrugAllergy(e)} value={drugAllergy} placeholderTextColor="#8E8E8E" placeholder='Drug Allergy' style={styles.inputBoxStyl} />
                             </View>
                         </View>
 
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(95) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Past History:</Text>
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Past History:</Text>
                                 <TextInput onChangeText={(e) => setPastHistory(e)} value={pastHistory} placeholderTextColor="#8E8E8E" placeholder='Past History' style={styles.inputBoxStyl} />
                             </View>
                         </View>
 
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(95) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Personal History:</Text>
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Personal History:</Text>
                                 <TextInput onChangeText={(e) => setPersonalHistory(e)} value={personalHistory} placeholderTextColor="#8E8E8E" placeholder='Personal History' style={styles.inputBoxStyl} />
                             </View>
                         </View>
 
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(95) }}>
-                                <Text style={{ fontSize: hp(1.7), fontFamily: mainFont, color: 'black' }}>Surgical History:</Text>
+                                <Text style={{ fontSize: hp(1.7), fontFamily: mainFontBold, color: 'black' }}>Surgical History:</Text>
                                 <TextInput onChangeText={(e) => setSurgicalHistory(e)} value={surgicalHistory} placeholderTextColor="#8E8E8E" placeholder='Surgical History' style={styles.inputBoxStyl} />
                             </View>
                         </View>
@@ -325,7 +325,7 @@ const Write_Prescription = (props: any) => {
                                 return (
                                     <View key={index} style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between', flexWrap: "wrap", borderWidth: 1, borderColor: "gray", borderRadius: 10, padding: 10 }}>
                                         <View style={{ width: wp(40) }} >
-                                            <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Medicine Name:</Text>
+                                            <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Medicine Name:</Text>
                                             <Dropdown
                                                 style={[styles.dropdown]}
                                                 placeholderStyle={styles.placeholderStyle}
@@ -349,7 +349,7 @@ const Write_Prescription = (props: any) => {
                                             />
                                         </View>
                                         <View style={{ width: wp(40) }} >
-                                            <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Dose Form:</Text>
+                                            <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Dose Form:</Text>
                                             <Dropdown
                                                 style={[styles.dropdown]}
                                                 placeholderStyle={styles.placeholderStyle}
@@ -372,7 +372,7 @@ const Write_Prescription = (props: any) => {
                                             />
                                         </View>
                                         <View style={{ width: wp(40) }} >
-                                            <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Frequency:</Text>
+                                            <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Frequency:</Text>
                                             <Dropdown
                                                 style={[styles.dropdown]}
                                                 placeholderStyle={styles.placeholderStyle}
@@ -395,7 +395,7 @@ const Write_Prescription = (props: any) => {
                                             />
                                         </View>
                                         <View style={{ width: wp(40) }}>
-                                            <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>ROA:</Text>
+                                            <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>ROA:</Text>
                                             <Dropdown
                                                 style={[styles.dropdown]}
                                                 placeholderStyle={styles.placeholderStyle}
@@ -420,7 +420,7 @@ const Write_Prescription = (props: any) => {
 
 
                                         <View style={{ width: wp(40) }} >
-                                            <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Duration:</Text>
+                                            <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Duration:</Text>
                                             <Dropdown
                                                 style={[styles.dropdown]}
                                                 placeholderStyle={styles.placeholderStyle}
@@ -444,7 +444,7 @@ const Write_Prescription = (props: any) => {
                                         </View>
 
                                         <View style={{ width: wp(40) }} >
-                                            <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Time:</Text>
+                                            <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Time:</Text>
                                             <Dropdown
                                                 style={[styles.dropdown]}
                                                 placeholderStyle={styles.placeholderStyle}
@@ -470,11 +470,11 @@ const Write_Prescription = (props: any) => {
                                         {/* <View style={{ width: wp(40) }}>
                                             </View> */}
                                         <View style={{ width: wp(40) }}>
-                                            <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Duration Count:</Text>
+                                            <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Duration Count:</Text>
                                             <TextInput onChangeText={(e) => handleUpdateContentForMedicine(e, "duration_count", index)} value={el.duration_count} placeholderTextColor="#8E8E8E" placeholder='Dose' style={styles.inputBoxStyl} />
                                         </View>
                                         <View style={{ width: wp(40) }}>
-                                            <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Dose:</Text>
+                                            <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Dose:</Text>
                                             <TextInput onChangeText={(e) => handleUpdateContentForMedicine(e, "note", index)} value={el.note} placeholderTextColor="#8E8E8E" placeholder='Dose' style={styles.inputBoxStyl} />
                                         </View>
 
@@ -496,7 +496,7 @@ const Write_Prescription = (props: any) => {
                         </View>
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(95) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Investigation:</Text>
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Investigation:</Text>
                                 <TextInput onChangeText={(e) => setInvestigation(e)} value={investigation} placeholderTextColor="#8E8E8E" placeholder='Investigation' style={styles.inputBoxStyl} />
                             </View>
                         </View>
@@ -504,7 +504,7 @@ const Write_Prescription = (props: any) => {
 
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(95) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Notes:</Text>
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Notes:</Text>
                                 <TextInput onChangeText={(e) => setNotes(e)} value={notes} placeholderTextColor="#8E8E8E" placeholder='Notes' style={styles.inputBoxStyl} />
                             </View>
                         </View>
@@ -559,13 +559,14 @@ const styles = StyleSheet.create({
         padding: 16,
     },
     dropdown: {
-        height: 50,
+        height: hp(6),
         borderColor: 'gray',
         borderWidth: 0.7,
         borderRadius: 5,
         paddingHorizontal: 8,
         marginBottom: hp(1.1),
         width: wp(40),
+        fontSize: hp(1.8),
         backgroundColor: '#F2F2F2E5',
     },
     inputBoxStyl: {
@@ -574,6 +575,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         borderColor: 'gray',
         borderWidth: 0.7,
+        fontSize: hp(1.8),
     },
     icon: {
         marginRight: 5,
@@ -584,11 +586,11 @@ const styles = StyleSheet.create({
         fontSize: hp(1.7),
     },
     placeholderStyle: {
-        fontSize: 16,
+        fontSize: hp(1.7),
         color: '#8E8E8E',
     },
     selectedTextStyle: {
-        fontSize: 16,
+        fontSize: hp(1.8),
         color: '#8E8E8E'
     },
     iconStyle: {
@@ -597,7 +599,7 @@ const styles = StyleSheet.create({
     },
     inputSearchStyle: {
         height: 40,
-        fontSize: 16,
+        fontSize: hp(1.8),
         color: '#8E8E8E'
     },
 });

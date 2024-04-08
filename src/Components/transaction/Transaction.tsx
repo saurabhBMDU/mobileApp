@@ -2,17 +2,16 @@ import { View, Text, FlatList, Dimensions, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { toastError } from '../utils/toast.utils';
-import Headerr from '../ReuseableComp/Headerr';
-import { getWallet } from '../Services/wallet.service';
-import moment from 'moment';
+import { toastError } from '../../utils/toast.utils';
+import Headerr from '../../ReuseableComp/Headerr';
+import { getWallet } from '../../Services/wallet.service';
 
 import Profiles_setting_icons from "react-native-vector-icons/AntDesign"
 import Money_icons from "react-native-vector-icons/FontAwesome";
 import Calendar_icons from 'react-native-vector-icons/FontAwesome5';
 import Descriptyin_icosn from "react-native-vector-icons/MaterialIcons";
 import Credit_icosn from "react-native-vector-icons/SimpleLineIcons"
-import Loding_service from '../All_Loding_page/Loding_service';
+import Loding_service from '../../All_Loding_page/Loding_service';
 
 const { height, width } = Dimensions.get('window')
 export default function Transactions() {
@@ -28,9 +27,11 @@ export default function Transactions() {
 
     const handleGetWallet = async () => {
         try {
-            let { data: res }: any = await getWallet()
+            let { data: res }: any = await getWallet();
+            console.log("this is my respons",res)
+
             if (res) {
-                setWallet(res.transactions.reverse());
+                setWallet(res.data.transactions.reverse());
                 setBalance(res?.balance);
             }
             setLoading(false)
@@ -49,8 +50,7 @@ export default function Transactions() {
 
     return (
         <View>
-            <Headerr secndheader={true} secondText={`Wallet balance : ${balance}`} label='Transactions' btn={false} />
-
+            <Headerr secndheader={true} secondText={`      Wallet balance : ${balance}`} label='Transactions' btn={false} />
             <FlatList
                 showsVerticalScrollIndicator={false}
                 data={wallet}
@@ -64,8 +64,7 @@ export default function Transactions() {
                                     <Loding_service />
                                 </View>
                                 : <View style={{ display: "flex", height: height, justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text>No Transactions found </Text>
-                                    <Text style={{ color: "#fff", fontSize: wp(3.5), marginTop: hp(2), backgroundColor: '#1263AC', borderRadius: 5, padding: wp(1.5) }} onPress={() => navigation.navigate("BookAppt")}>Book Appointments</Text>
+                                    <Text style={{ fontSize: hp(2), }}>No Transactions found </Text>
                                 </View>
                         }
                     </>
@@ -115,7 +114,7 @@ export default function Transactions() {
                                             <Text style={{ marginLeft: wp(2), fontSize: hp(1.8), color: 'black', fontFamily: mainFontBold }}>Amount:</Text>
                                         </View>
                                         <View>
-                                            <Text style={{ color: 'gray', fontSize: hp(2) }}>{item?.amount}</Text>
+                                            <Text style={{ color: 'gray', fontSize: hp(2) }}>₹ {item?.amount}</Text>
                                         </View>
                                     </View>
                                     <View style={{ flexDirection: 'row', }}>

@@ -38,6 +38,7 @@ import FAQ from '../Components/FAQ';
 import AboutFeverMainPage from '../Components/AboutFeverMainPage';
 import NotificationShow from '../ReuseableComp/NotificatoinShow';
 import SmartPrescriptionPage from '../Components/smartPresscription';
+import Income from '../Components/transaction/Income';
 
 const Stack = createNativeStackNavigator();
 
@@ -146,6 +147,7 @@ export default function Root() {
             <Stack.Screen name='PaymentFail' component={PaymentFail} />
             <Stack.Screen name='Meeting' component={Meeting} />
             <Stack.Screen name='Settings' component={Settings} />
+            <Stack.Screen name='Income' component={Income} />
           </>
           :
           <>

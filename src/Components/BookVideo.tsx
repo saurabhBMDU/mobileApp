@@ -1,4 +1,4 @@
-import { View, Text, Dimensions, FlatList, Image, TouchableOpacity, TextInput, Animated, StyleSheet, Pressable, ScrollView, TouchableWithoutFeedback } from 'react-native'
+import { View, Text, Dimensions, FlatList, Image, TouchableOpacity, TextInput, Animated, StyleSheet, Pressable, ScrollView, TouchableWithoutFeedback, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Headerr from '../ReuseableComp/Headerr'
@@ -51,6 +51,14 @@ const BookVideo = (props: any) => {
             label: 'Other', value: 'Other'
         },
     ]
+    const Unit = [
+        {
+            label: 'cm', value: 'cm'
+        },
+        {
+            label: 'ft', value: 'ft'
+        },
+    ]
 
 
     const [age, setAge] = useState(0);
@@ -60,7 +68,6 @@ const BookVideo = (props: any) => {
     const [gender, setGender] = useState("");
     const [mode, setMode] = useState("");
     const [patientName, setPatientName] = useState("");
-    const [paymentMode, setPaymentMode] = useState("");
     const [doctorObj, setDoctorObj] = useState(props?.route?.params?.doctor);
 
     const [bodyTemperature, setBodyTemperature] = useState("");
@@ -71,9 +78,14 @@ const BookVideo = (props: any) => {
     const [suger1, setSuger1] = useState("");
     const [suger2, setSuger2] = useState("");
     const [suger3, setSuger3] = useState("");
+    const [heights, setHeight] = useState(0);
+    const [unit, setUnit] = useState('ft');
+    const [weight, setWeight] = useState(0);
+    const [bmi, setBmi] = useState('');
     const [cityIsFocused, setCityIsFocused] = useState(false);
     const [balance, setBalance] = useState(0);
     const [wallet, setWallet] = useState([]);
+
 
     const [timeSlot, setTimeSlot] = useState(props?.route?.params?.doctor.timeSlot);
     const [timeSlotoffline, setTimeSlotoffline] = useState(props?.route?.params?.doctor.timeSlotoffline);
@@ -89,35 +101,26 @@ const BookVideo = (props: any) => {
     }
 
 
-    const handleCreateBookin = () => {
-
-        console.log("mishra ju testing", userObj?.role, balance)
-        if (userObj?.role == "FRANCHISE" && tempanount <= balance) {
-            console.log("hii")
-        }
-        else {
-            console.log("hola");
-        }
-    }
-
-
-
-
-
-
-
-
-
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedValue, setSelectedValue] = useState('ft');
     const data = ['ft', 'cm'];
-  
+
     const chunkSize = 3;
     const chunkedData = Array.from({ length: Math.ceil(data.length / chunkSize) }, (_, index) =>
-      data.slice(index * chunkSize, index * chunkSize + chunkSize)
+        data.slice(index * chunkSize, index * chunkSize + chunkSize)
     );
 
 
+    const calculateBMI = () => {
+        if (heights && weight) {
+            const heightInMeters = unit === 'cm' ? heights / 100 : heights * 0.3048;
+            const bmiValue = (weight / (heightInMeters * heightInMeters)).toFixed(2);
+            setBmi(bmiValue);
+        }
+    };
+    useEffect(() => {
+        calculateBMI();
+    }, [unit, heights, weight, bmi])
 
 
 
@@ -135,9 +138,18 @@ const BookVideo = (props: any) => {
                 toastError("Date is mandatory !!!");
                 return;
             }
-            // alert(months)
-            // months = months.trim(); 
-
+            if (heights && !weight) {
+                setMeetingConfirmation(false)
+                setPage(2)
+                toastError("heights or Weight are mandatory !!!");
+                return;
+            }
+            if (!heights && weight) {
+                setMeetingConfirmation(false)
+                setPage(2)
+                toastError("heights or Weight are mandatory !!!");
+                return;
+            }
             if (age == 0 && months == 0) {
                 setMeetingConfirmation(false)
                 setPage(1)
@@ -185,6 +197,9 @@ const BookVideo = (props: any) => {
                 expertId: userData._id,
                 files,
                 gender,
+                heights,
+                weight,
+                bmi,
                 city,
                 state,
                 mode: "Video",
@@ -199,16 +214,12 @@ const BookVideo = (props: any) => {
                 timeSlot,
                 timeSlotoffline,
             }
-            // console.log(obj)
-            // navigation.navigate("PaymentFail")
             let { data: res } = await addAppointments(obj);
-            console.log("here 2", JSON.stringify(res, null, 2))
             if (res.appointment.status == "pending") {
-                console.log(JSON.stringify(res, null, 2), "res");
                 setMeetingConfirmation(false);
                 if (!res.status) {
                     setMeetingConfirmation(false)
-                    toastError(res.message)
+                    toastError(res.data.message)
                     return;
                 }
                 if (userObj?.role == "FRANCHISE" && res.appointment.appointmentCharge <= balance) {
@@ -228,10 +239,11 @@ const BookVideo = (props: any) => {
 
     const handleGetWallet = async () => {
         try {
-            let { data: res }: any = await getWallet()
+            let { data: res }: any = await getWallet();
+            console.log("this is iss is s",res?.data?.balance)
             if (res) {
                 setWallet(res.transactions);
-                setBalance(res?.balance);
+                setBalance(res?.data?.balance);
             }
         }
         catch (err) {
@@ -305,16 +317,16 @@ const BookVideo = (props: any) => {
                     <>
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(45) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Date:</Text>
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Date:</Text>
                                 <Pressable onPress={() => setDateModal(true)}>
                                     <TextInput placeholder='Select Date' editable={false} onChangeText={(e) => setDateTime(e)} value={dateTime} style={{
-                                        height: hp(6.7), backgroundColor: '#F2F2F2E5', marginVertical: hp(1), borderRadius: wp(1.2), borderColor: 'gray',
+                                        height: hp(6.7), backgroundColor: '#F2F2F2E5', marginVertical: hp(1), borderRadius: wp(1.2), borderColor: 'gray', fontSize: hp(2),
                                         borderWidth: 0.5,
                                     }} />
                                 </Pressable>
                             </View>
                             <View style={{ width: wp(45), }} >
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Select Slot:</Text>
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Select Slot:</Text>
                                 <Dropdown
                                     style={[styles.dropdown, isFocus && { borderWidth: 0.5, }]}
                                     placeholderStyle={styles.placeholderStyle}
@@ -341,11 +353,11 @@ const BookVideo = (props: any) => {
 
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(45) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Patient Name:</Text>
-                                <TextInput onChangeText={(e) => setPatientName(e)} value={patientName} placeholderTextColor="#8E8E8E" placeholder='Patient Name' style={{ height: hp(7.1), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Patient Name:</Text>
+                                <TextInput onChangeText={(e) => setPatientName(e)} value={patientName} placeholderTextColor="#8E8E8E" placeholder='Patient Name' style={{ height: hp(7.1), fontSize: hp(2), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
                             </View>
                             <View style={{ width: wp(45) }} >
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Patient Gender:</Text>
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Patient Gender:</Text>
                                 <Dropdown
                                     style={[styles.dropdown, isGenderFocused && { borderWidth: 0.5, }]}
                                     placeholderStyle={styles.placeholderStyle}
@@ -370,18 +382,23 @@ const BookVideo = (props: any) => {
                             </View>
                         </View>
 
-                        <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
-                            <View style={{ width: wp(20) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Patient Age:</Text>
-                                <TextInput onChangeText={(e) => setAge(e)} value={age} keyboardType='number-pad' placeholderTextColor="#8E8E8E" placeholder='Patient Age' style={{ height: hp(7.1), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
-                            </View>
-                            <View style={{ width: wp(20) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Months:</Text>
-                                <TextInput onChangeText={(e) => setMonths(e)} value={months} keyboardType='number-pad' placeholderTextColor="#8E8E8E" placeholder='months' style={{ height: hp(7.1), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
+                        <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between', }}>
+                            <View style={{ flexDirection: "rew", }}>
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Patient Age:</Text>
+                                <View style={{ flexDirection: "row", justifyContent: "space-between", width: wp(45) }}>
+                                    <View style={{ width: wp(21) }}>
+                                        <TextInput onChangeText={(e) => setAge(e)} value={age} keyboardType='number-pad' placeholderTextColor="#8E8E8E" placeholder='Years' style={{ height: hp(7.1), fontSize: hp(2), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), paddingLeft: 3, borderColor: 'gray', borderWidth: .5 }} />
+                                    </View>
+                                    <View style={{ width: wp(21) }}>
+                                        <TextInput onChangeText={(e) => setMonths(e)} value={months} keyboardType='number-pad' placeholderTextColor="#8E8E8E" placeholder='Months' style={{ height: hp(7.1), fontSize: hp(2), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), paddingLeft: 3, borderColor: 'gray', borderWidth: .5 }} />
+                                    </View>
+                                </View>
                             </View>
 
+
+
                             <View style={{ width: wp(45) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>State:</Text>
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>State:</Text>
                                 <Dropdown
                                     style={[styles.dropdown]}
                                     placeholderStyle={styles.placeholderStyle}
@@ -408,7 +425,7 @@ const BookVideo = (props: any) => {
                         {
                             cityArr && cityArr.length > 0 &&
                             <>
-                                <Text style={{ fontSize: hp(1.8), marginTop: wp(1.8), fontFamily: mainFont, color: 'black' }}>City:</Text>
+                                <Text style={{ fontSize: hp(1.8), marginTop: wp(1.8), fontFamily: mainFontBold, color: 'black' }}>City:</Text>
 
                                 <Dropdown
                                     style={[styles.dropdown, { width: wp(95) }, cityIsFocused && { borderWidth: 0.5, }]}
@@ -454,88 +471,102 @@ const BookVideo = (props: any) => {
 
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(45) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>BP <Text style={{ color: "black" }}>mm of Hg</Text></Text>
-                                <TextInput onChangeText={(e) => setBp(e)} value={bp} placeholderTextColor="#8E8E8E" placeholder='Enter BP' style={{ height: hp(7.1), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>BP <Text style={{ color: "black" }}>mm of Hg</Text></Text>
+                                <TextInput onChangeText={(e) => setBp(e)} value={bp} placeholderTextColor="#8E8E8E" placeholder='Enter BP' style={{ height: hp(7.1), fontSize: hp(2), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
                             </View>
 
                             <View style={{ width: wp(45) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Pulse  <Text style={{ color: "black" }}>Per minute</Text></Text>
-                                <TextInput keyboardType='numeric' onChangeText={(e) => setPulse(e)} value={pulse} placeholderTextColor="#8E8E8E" placeholder='Enter Pulse' style={{ height: hp(7.1), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
-                            </View>
-                        </View>
-
-                        <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
-                            <View style={{ width: wp(45) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Body Temperature <Text style={{ color: "black" }}>°F</Text></Text>
-                                <TextInput keyboardType='numeric' onChangeText={(e) => setBodyTemperature(e)} value={bodyTemperature} placeholderTextColor="#8E8E8E" placeholder='Enter Temperature' style={{ height: hp(7.1), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
-                            </View>
-
-                            <View style={{ width: wp(45) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>SpO2 %</Text>
-                                <TextInput keyboardType='numeric' onChangeText={(e) => setOxigne(e)} value={oxigne} placeholderTextColor="#8E8E8E" placeholder='Enter SpO2' style={{ height: hp(7.1), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Pulse  <Text style={{ color: "black" }}>Per minute</Text></Text>
+                                <TextInput keyboardType='numeric' onChangeText={(e) => setPulse(e)} value={pulse} placeholderTextColor="#8E8E8E" placeholder='Enter Pulse' style={{ height: hp(7.1), fontSize: hp(2), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
                             </View>
                         </View>
 
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(45) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Fasting Blood Sugar (FBS)<Text style={{ color: "black" }}> mg/dL</Text></Text>
-                                <TextInput keyboardType='numeric' onChangeText={(e) => setSuger1(e)} value={suger1} placeholderTextColor="#8E8E8E" placeholder='Fasting Blood Sugar (FBS)' style={{ height: hp(7.1), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Body Temperature <Text style={{ color: "black" }}>°F</Text></Text>
+                                <TextInput keyboardType='numeric' onChangeText={(e) => setBodyTemperature(e)} value={bodyTemperature} placeholderTextColor="#8E8E8E" placeholder='Enter Temperature' style={{ height: hp(7.1), fontSize: hp(2), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
                             </View>
 
                             <View style={{ width: wp(45) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Postprandial Blood Sugar (PPBS)<Text style={{ color: "black" }}> mg/dL</Text></Text>
-                                <TextInput keyboardType='numeric' onChangeText={(e) => setSuger2(e)} value={suger2} placeholderTextColor="#8E8E8E" placeholder='Postprandial (PPBS)' style={{ height: hp(7.1), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>SpO2 %</Text>
+                                <TextInput keyboardType='numeric' onChangeText={(e) => setOxigne(e)} value={oxigne} placeholderTextColor="#8E8E8E" placeholder='Enter SpO2' style={{ height: hp(7.1), fontSize: hp(2), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
+                            </View>
+                        </View>
+
+                        <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
+                            <View style={{ width: wp(45) }}>
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Fasting Blood Sugar (FBS)</Text><Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}> mg/dL</Text>
+                                <TextInput keyboardType='numeric' onChangeText={(e) => setSuger1(e)} value={suger1} placeholderTextColor="#8E8E8E" placeholder='Fasting Blood Sugar (FBS)' style={{ height: hp(7.1), fontSize: hp(2), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
+                            </View>
+
+                            <View style={{ width: wp(45) }}>
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Postprandial Blood Sugar (PPBS)<Text style={{ color: "black" }}> mg/dL</Text></Text>
+                                <TextInput keyboardType='numeric' onChangeText={(e) => setSuger2(e)} value={suger2} placeholderTextColor="#8E8E8E" placeholder='Postprandial (PPBS)' style={{ height: hp(7.1), fontSize: hp(2), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
                             </View>
                         </View>
 
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(95) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Random Blood Sugar (RBS)<Text style={{ color: "black" }}> mg/dL</Text></Text>
-                                <TextInput keyboardType='numeric' onChangeText={(e) => setSuger3(e)} value={suger3} placeholderTextColor="#8E8E8E" placeholder='Random Blood Sugar' style={{ height: hp(7.1), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Random Blood Sugar (RBS)<Text style={{ color: "black" }}> mg/dL</Text></Text>
+                                <TextInput keyboardType='numeric' onChangeText={(e) => setSuger3(e)} value={suger3} placeholderTextColor="#8E8E8E" placeholder='Random Blood Sugar' style={{ height: hp(7.1), fontSize: hp(2), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
                             </View>
                         </View>
                         {/* new added component */}
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
-                           
-                            <View style={{ width: wp(45) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Height (ft)</Text>
-                                <TextInput keyboardType='numeric' placeholderTextColor="#8E8E8E" placeholder='ft' style={{ height: hp(7.1), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
-                            
-                                <Dropdown
-                                    style={[styles.dropdown, isGenderFocused && { borderWidth: 0.5, }]}
-                                    placeholderStyle={styles.placeholderStyle}
-                                    selectedTextStyle={styles.selectedTextStyle}
-                                    inputSearchStyle={styles.inputSearchStyle}
-                                    iconStyle={styles.iconStyle}
-                                    data={Dropdwndata}
-                                    // search
-                                    maxHeight={300}
-                                    labelField="label"
-                                    valueField="value"
-                                    placeholder='Select Gender'
-                                    value={gender}
-                                    onFocus={() => setIsGenderFocused(true)}
-                                    onBlur={() => setIsGenderFocused(false)}
-                                    onChange={item => {
-                                        setGender(item.value);
-                                        setIsGenderFocused(false);
-                                    }}
 
-                                />
-                            
+                            <View style={{ width: wp(45) }}>
+                                <View>
+                                    <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Height (ft)</Text>
+                                    <View style={{ width: wp(45), flexDirection: "row" }}>
+                                        <TextInput keyboardType='numeric' value={heights} onChangeText={(e) => setHeight(e)} placeholderTextColor="#8E8E8E" placeholder='height' style={{
+                                            height: hp(7.1),
+                                            width: wp(29),
+                                            backgroundColor: '#F2F2F2E5',
+                                            marginTop: hp(1),
+                                            borderRadius: wp(1.2),
+                                            fontSize: hp(2),
+                                            borderColor: 'gray',
+                                            borderTopWidth: 0.5, // Top border width
+                                            borderBottomWidth: 0.5, // Bottom border width
+                                            borderLeftWidth: 0.5, // Left border width
+                                            borderRightWidth: 0, // Right border width set to 0 to remove
+                                        }}
+                                        />
+                                        <Dropdown
+                                            style={[styles.uint, isGenderFocused && { borderWidth: 0.5, }]}
+                                            placeholderStyle={styles.placeholderStyle}
+                                            selectedTextStyle={styles.selectedTextStyle}
+                                            inputSearchStyle={styles.inputSearchStyle}
+                                            iconStyle={styles.iconStyle}
+                                            data={Unit}
+                                            maxHeight={300}
+                                            labelField="label"
+                                            valueField="value"
+                                            placeholder='unit'
+                                            value={unit}
+                                            onFocus={() => setIsGenderFocused(true)}
+                                            onBlur={() => setIsGenderFocused(false)}
+                                            onChange={item => {
+                                                setUnit(item.value);
+                                                setIsGenderFocused(false);
+                                            }}
+
+                                        />
+                                    </View>
+                                </View>
+
                             </View>
-
-
-
                             <View style={{ width: wp(45) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>Weight (kg)</Text>
-                                <TextInput keyboardType='numeric' placeholderTextColor="#8E8E8E" placeholder='kg' style={{ height: hp(7.1), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Weight (kg)</Text>
+                                <TextInput keyboardType='numeric' value={weight}
+                                    onChangeText={(e) => setWeight(e)} placeholderTextColor="#8E8E8E" placeholder='kg' style={{ height: hp(7.1), fontSize: hp(2), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
                             </View>
                         </View>
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(95) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>BMI</Text>
-                                <TextInput keyboardType='numeric' placeholderTextColor="#8E8E8E" placeholder='avg' style={{ height: hp(7.1), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>BMI</Text>
+                                <TextInput keyboardType='numeric' value={bmi}
+                                    placeholderTextColor="#8E8E8E" placeholder='BMI' style={{ height: hp(7.1), fontSize: hp(2), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
                             </View>
                         </View>
                     </>
@@ -632,13 +663,30 @@ const styles = StyleSheet.create({
         padding: 16,
     },
     dropdown: {
-        height: 50,
+        height: hp(6.6),
         borderColor: 'gray',
         borderWidth: 0.5,
         borderRadius: wp(1.2),
         paddingHorizontal: 8,
         marginTop: hp(1),
         width: wp(45),
+        fontSize: hp(2),
+        backgroundColor: '#F2F2F2E5',
+    },
+    uint: {
+        height: hp(7.1),
+        borderTopWidth: 0.5, // Top border width
+        borderBottomWidth: 0.5, // Bottom border width
+        borderLeftWidth: 0, // Left border width set to 0 to remove
+        borderRightWidth: 0.5, // Right border width
+        borderTopColor: 'gray', // Top border color
+        borderBottomColor: 'gray', // Bottom border color
+        borderRightColor: 'gray', // Right border color
+        borderRadius: wp(1.2),
+        paddingHorizontal: 8,
+        marginTop: hp(1),
+        width: wp(17),
+        fontSize: hp(2),
         backgroundColor: '#F2F2F2E5',
     },
     icon: {
@@ -650,11 +698,11 @@ const styles = StyleSheet.create({
         fontSize: hp(1.7),
     },
     placeholderStyle: {
-        fontSize: 14,
         color: 'gray',
+        fontSize: hp(2)
     },
     selectedTextStyle: {
-        fontSize: 16,
+        fontSize: hp(2),
         color: '#8E8E8E'
     },
     dropdown1: {
@@ -672,13 +720,13 @@ const styles = StyleSheet.create({
     },
     inputSearchStyle: {
         height: 40,
-        fontSize: 16,
+        fontSize: hp(2),
         color: '#8E8E8E'
     },
-   
 
 
-   
+
+
 
 });
 

@@ -16,7 +16,7 @@ import Icon from 'react-native-vector-icons/Feather';
 const { height, width } = Dimensions.get('window')
 
 const Headerr = (props: any) => {
-    console.log('props in header in data ',props)
+    console.log('props in header in data ', props)
     const mainFont = 'Montserrat-Regular'
     const mainFontBold = 'Montserrat-Bold'
     const navigation: any = useNavigation();
@@ -88,47 +88,47 @@ const Headerr = (props: any) => {
 
     const [notificationClicked, setNotificationClicked] = useState(false);
 
-  const handleNotificationPress = () => {
+    const handleNotificationPress = () => {
 
-    // Notifications
-    navigation.navigate('Notifications')
+        // Notifications
+        navigation.navigate('Notifications')
 
-    setNotificationClicked(!notificationClicked);
-    // You can add additional logic here related to notification handling
-  };
-
-
+        setNotificationClicked(!notificationClicked);
+        // You can add additional logic here related to notification handling
+    };
 
 
-  
-  const [notificationCount,setNotifications] = useState(0)
-
-  const getAllNotifications = async () => {
-    try {
-      const {data: res} = await getNotifications();
-      // console.log('notificaoitn',res)
-      if (res.status == true) {
-        console.log('getting all notifications in Notifiiton show page  backend',res)
-        setNotifications(res.data.length);
-        throw new Error(res.error);
-      }
-    } catch (err) {
-        // console.log('err in nofiticaion for inside header',err.message)
-    //   toastError(err);
-    }
-  };
 
 
-  useEffect(() =>{
-    getAllNotifications();
-  },[])
+
+    const [notificationCount, setNotifications] = useState(0)
+
+    const getAllNotifications = async () => {
+        try {
+            const { data: res } = await getNotifications();
+            console.log('notificaoitn',res.data.notifications)
+            if (res.status == true) {
+                console.log('getting all notifications in Notifiiton show page  backend', res)
+                setNotifications(res.data.length);
+                throw new Error(res.error);
+            }
+        } catch (err) {
+            // console.log('err in nofiticaion for inside header',err.message)
+            //   toastError(err);
+        }
+    };
+
+
+    useEffect(() => {
+        getAllNotifications();
+    }, [])
 
     return (
         <View style={{ width: width, backgroundColor: '#1263AC', alignItems: 'center', }}>
             <StatusBar backgroundColor="#1263AC" />
 
             {props.user && props.height &&
-                <View style={{ width: '100%', flexDirection: 'row', paddingLeft: wp(2), paddingRight: wp(3), alignItems: 'center', marginVertical:hp(1), justifyContent: 'space-between' }}>
+                <View style={{ width: '100%', flexDirection: 'row', paddingLeft: wp(2), paddingRight: wp(3), alignItems: 'center', marginVertical: hp(1), justifyContent: 'space-between' }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Pressable onPress={() => navigation.navigate("Profile")}>
                             <Image
@@ -143,19 +143,22 @@ const Headerr = (props: any) => {
 
                     </View>
 
-                  
 
-                     {/* Notification icon */}
-<Pressable onPress={handleNotificationPress} style={styles.container}>
-      <View style={styles.iconContainer}>
-        <Icon name="bell" size={30} color="white" style={styles.bellIcon} />
-        {notificationCount > 0 && (
-          <View style={styles.countContainer}>
-            <Text style={styles.countText}>{notificationCount}</Text>
-          </View>
-        )}
-      </View>
-    </Pressable>
+
+                    {/* Notification icon */}
+                    <Pressable onPress={handleNotificationPress} style={styles.container}>
+                        <View style={styles.iconContainer}>
+                            <Icon name="bell" color="white" style={styles.bellIcon} />
+                            {notificationCount > 0 && (
+                                <View style={styles.countContainer}>
+                                    {
+                                        notificationCount < 10 ? <Text style={styles.countText}>{notificationCount}</Text> : <Text style={styles.countText}>+9</Text>
+                                    }
+                                    {/*  */}
+                                </View>
+                            )}
+                        </View>
+                    </Pressable>
 
                 </View>
             }
@@ -237,28 +240,31 @@ export default Headerr
 
 const styles = StyleSheet.create({
     container: {
-      position: 'relative',
-    marginRight:20
+        position: 'relative',
+        marginRight: wp(5)
+
     },
     iconContainer: {
-      position: 'relative',
+        position: 'relative',
     },
     bellIcon: {
-      marginTop:-1, // Adjust the margin to crop the top of the icon
+        marginTop: -1, // Adjust the margin to crop the top of the icon
+        fontSize: hp(4)
     },
     countContainer: {
-      position: 'absolute',
-      top: -5, // Adjust the position of the count above the bell icon
-      right: -15, // Adjust the position of the count on the right side of the bell icon
-      backgroundColor: 'white',
-      borderRadius: 10, 
-      borderWidth:2,
-      borderColor:"white"
- 
-    //   paddingHorizontal: 5,
+        position: 'absolute',
+        top: -13, // Adjust the position of the count above the bell icon
+        right: -10, // Adjust the position of the count on the right side of the bell icon
+
+        //   paddingHorizontal: 5,
     },
     countText: {
-      color: 'black',
-      fontWeight:'bold'
+        color: 'black',
+        fontWeight: 'bold',
+        backgroundColor: 'white',
+        borderRadius: hp(40),
+        fontSize: hp(1.85),
+        textAlign: "center",
+        padding: wp(.25),
     },
-  });
+});

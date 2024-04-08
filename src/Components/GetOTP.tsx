@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Dimensions, TextInput, TouchableOpacity, ImageBackground, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { View, Text, Pressable, Dimensions, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation } from '@react-navigation/native';
@@ -60,19 +60,22 @@ const GetOTP = (props: any) => {
         }
     }
     return (
-        <View style={{ width: width }}>
-            <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
-                <ImageBackground source={require('../../assets/images/final1.png')} resizeMode='contain' style={{ height: height, width: width, backgroundColor: "#1263AC" }} >
-                    <View style={{ backgroundColor: 'rgba(0,0,0,.75)', height: height, width: width, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontSize: hp(3), color: 'white', alignSelf: 'center', marginTop: hp(7), fontFamily: mainFont }}>OTP Verification</Text>
+        <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={{ width: width }}>
+                <View>
+                    <View>
+                        <Image source={require('../../assets/images/final1.png')} resizeMode='stretch' style={{ height: hp(30), width: wp(100) }} />
+                    </View>
+                    <View style={{}}>
+                        <Text style={{ fontSize: hp(3), marginLeft: wp(5), fontFamily: mainFont, color: '#1263AC', fontWeight: 'bold' }}>OTP Verification</Text>
                         <View style={{ width: wp(90), alignSelf: 'center', marginTop: hp(2) }}>
                             {/* OTP section >>>>>>>>>>>>>>>>>>>>>*/}
-                            <Text style={{ color: 'white', fontSize: hp(1.8) }}>OTP</Text>
+                            <Text style={{ color: '#1263AC', fontWeight: 'bold', fontSize: hp(1.8) }}>OTP</Text>
                             <View style={{ width: '100%', height: hp(5.5), backgroundColor: '#E8E8E8', marginTop: hp(1), borderRadius: 5, alignItems: 'center', paddingLeft: wp(1.5), flexDirection: 'row' }}>
                                 <TextInput placeholder='Enter OTP' onChangeText={(e) => setOtp(e)} value={otp} placeholderTextColor="gray"
                                     style={{ marginLeft: 5, width: wp(70), fontSize: hp(2) }} />
                             </View>
-                            <Text style={{ color: 'white', marginTop: 15, fontSize: hp(1.8) }}>Password</Text>
+                            <Text style={{ marginTop: hp(2), color: '#1263AC', fontWeight: 'bold', fontSize: hp(1.8) }}>Password</Text>
                             <View style={{ width: '100%', height: hp(5.5), backgroundColor: '#E8E8E8', marginTop: hp(1), borderRadius: 5, alignItems: 'center', paddingLeft: wp(1.5), flexDirection: 'row', justifyContent: "space-between" }}>
                                 <TextInput placeholder='Enter Password'
                                     placeholderTextColor="gray"
@@ -91,7 +94,7 @@ const GetOTP = (props: any) => {
                                 </Pressable>
 
                             </View>
-                            <Text style={{ color: 'white', marginTop: 15, fontSize: hp(1.8) }}>Confirm password</Text>
+                            <Text style={{ marginTop: hp(2), color: '#1263AC', fontWeight: 'bold', fontSize: hp(1.8) }}>Confirm password</Text>
                             <View style={{ width: '100%', height: hp(5.5), backgroundColor: '#E8E8E8', marginTop: hp(1), borderRadius: 5, alignItems: 'center', paddingLeft: wp(1.5), flexDirection: 'row', justifyContent: "space-between" }}>
                                 <TextInput placeholder='Enter Confirm Password'
                                     placeholderTextColor="gray"
@@ -122,9 +125,10 @@ const GetOTP = (props: any) => {
 
                         </View>
                     </View>
-                </ImageBackground>
-            </TouchableWithoutFeedback>
-        </View>
+                </View>
+            </View>
+        </ScrollView>
+
     )
 }
 

@@ -46,7 +46,6 @@ import Mail_icons from 'react-native-vector-icons/Entypo';
 import Polocy_Icons from 'react-native-vector-icons/MaterialIcons';
 import List_faq from 'react-native-vector-icons/Feather';
 import Money_Icons from 'react-native-vector-icons/MaterialIcons';
-import Account_icons from "react-native-vector-icons/MaterialIcons"
 
 const { height, width } = Dimensions.get('window');
 
@@ -70,8 +69,8 @@ const Profile = () => {
   const [errorso, setErrorO] = useState("");
   const [getEarning, setGetearning] = useState('');
   const [errorWithdrow, setwodraw] = useState("")
-  // console.log("thi is sis sis sis ", userObj
-  //to check user is loggged in or not 
+  const [rechargeAmounterr, setRechargeAmounterr] = useState('')
+  const [withdrawError, setWithdrawArr] = useState('');
 
   let baseURL = userObj.role == Roles.DOCTOR ? `${url}/doctor-total-income` : `${url}/franchise-total-income`
 
@@ -102,7 +101,6 @@ const Profile = () => {
         if (res.status == false) {
           handleLogout2()
           console.log('response from backend', res)
-          // throw new Error(res.error);
         }
       }
     } catch (err) {
@@ -161,26 +159,26 @@ const Profile = () => {
   // share this app clicking
   const shareContent = async () => {
     const result = await Share.share({
-      message: 'Download fever99 app ',
-      url: 'https://play.google.com/store/apps/details?id=com.fever99',
       title: 'fever99',
+      message: 'Discover expert medical advice at your fingertips with fever99! Download now to connect with knowledgeable doctors for accurate prescriptions and reliable health guidance., Link :https://play.google.com/store/apps/details?id=com.fever99',
+      url: 'https://play.google.com/store/apps/details?id=com.fever99'
+
     });
   };
 
   const HandleAddAmountToWallet = async () => {
     let tempAmount = parseInt(`${amount}`) || 0;
     if (!tempAmount) {
-      setErrorO("Please enter amount")
-      toastError('Amount should be more than 10 rupees !!!');
+      setRechargeAmounterr("Please enter amount")
       return;
     }
     if (tempAmount < 10) {
-      setErrorO("The amount should exceed 10.");
+      setRechargeAmounterr("The amount should exceed 10.");
       return;
     }
     try {
       setPaymentModal(false);
-      navigation.navigate('PayementScreen', { amount: tempAmount });
+      navigation.navigate('PayementScreen', { amount: tempAmount, });
     } catch (error) {
       toastError(error);
     }
@@ -189,7 +187,6 @@ const Profile = () => {
   const getIncomeAmount = async () => {
     try {
       const response = await axios.get(baseURL);
-      console.log(response.data);
       if (response.data.message = "Wallet not create") {
         setErrorO(response.data.message);
       }
@@ -213,7 +210,7 @@ const Profile = () => {
     if (getEarning < withdrawAmounr) {
       try {
         const response = await axios.post(`${url}/withdraw`);
-        console.log("respons",response);
+        console.log("respons", response);
         if (response.status === 200) {
           setWithdrawModal(false);
           toastSuccess("Your money will be credited within 3-5 working days.")
@@ -224,7 +221,7 @@ const Profile = () => {
         }
       } catch (error) {
         console.error('Error occurred while making withdrawal:', error);
-        setErrorO("Failed to withdraw amount");
+        setWithdrawArr("Failed to withdraw amount");
       }
     }
 
@@ -560,7 +557,7 @@ const Profile = () => {
                   isVisible={paymentModal}
                   animationIn={'bounceIn'}
                   animationOut={'slideOutDown'}
-                  onBackButtonPress={() => { setPaymentModal(false), setErrorO('') }}
+                  onBackButtonPress={() => { setPaymentModal(false), setRechargeAmounterr('') }}
                   style={{ marginLeft: 0, marginRight: 0 }}>
                   <View style={styles.modalView}>
 
@@ -569,7 +566,7 @@ const Profile = () => {
                         Recharge Amount
                       </Text>
                       <TouchableOpacity
-                        onPress={() => { setPaymentModal(false), setErrorO('') }}>
+                        onPress={() => { setPaymentModal(false), setRechargeAmounterr('') }}>
                         <Image
                           source={require('../../assets/images/close.png')}
                           style={{ tintColor: '#FA6C23', height: wp(4), width: wp(4) }}
@@ -584,7 +581,7 @@ const Profile = () => {
                       value={`${amount}`}
                       placeholderTextColor="gray"
                     />
-                    <Text style={{ color: "red" }}>{errorso} {errorWithdrow} </Text>
+                    <Text style={{ color: "red" }}>{rechargeAmounterr}</Text>
                     <TouchableOpacity
                       onPress={() => HandleAddAmountToWallet()}
                       style={styles.modalBtn}>
@@ -595,10 +592,9 @@ const Profile = () => {
                   </View>
                 </Modal>
               </View>
-              {/* ---------------------------------------- this is a button brfore moda open ------------------------------------- */}
             </View>
           )}
-          {(userObj.role == Roles.FRANCHISE || userObj.role == Roles.DOCTOR) &&
+          {/* {(userObj.role == Roles.FRANCHISE || userObj.role == Roles.DOCTOR) &&
             <View>
               <TouchableOpacity
                 onPress={() => { setWithdrawModal(true), getIncomeAmount() }}
@@ -621,7 +617,6 @@ const Profile = () => {
                 </View>
                 <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
               </TouchableOpacity>
-              {/* -------------------------------------------------end ----------------------------- */}
               <Modal
                 isVisible={withdraModal}
                 animationIn={'bounceIn'}
@@ -631,7 +626,7 @@ const Profile = () => {
                 <View style={styles.modalView}>
                   <View style={styles.textAndClose}>
 
-                    <Text style={styles.modalhi}> {errorso === 'Wallet not create' ? null : "Withdraw Amount"} </Text>
+                    <Text style={styles.modalhi}>Withdraw Amount</Text>
                     <TouchableOpacity
                       onPress={() => { setWithdrawModal(false), setErrorO('') }}>
                       <Image
@@ -640,56 +635,53 @@ const Profile = () => {
                       />
                     </TouchableOpacity>
                   </View>
-
-                  {errorso === 'Wallet not create' ? <Text style={{ fontSize: hp(2.2), textAlign: "center" }}>Your Income Wollet Not created</Text> :
-                    <>
-                      <TextInput
-                        placeholder="Amount"
-                        keyboardType="number-pad"
-                        style={styles.modalInputfilde}
-                        onChangeText={(e: any) => setWithdrawAmounr(e)}
-                        value={`${withdrawAmounr}`}
-                        placeholderTextColor="gray"
-                      />
-                      <Text style={{ color: "red" }}>{errorso}</Text>
-
-                      <TouchableOpacity
-                        onPress={() => HandleWithdrawAmount()}
-                        style={styles.modalBtn}>
-                        <Text style={styles.modlaSubmittext}>
-                          Withdraw
-                        </Text>
-                      </TouchableOpacity>
-                    </>
-                  }
+                  <TextInput
+                    placeholder="Amount"
+                    keyboardType="number-pad"
+                    style={styles.modalInputfilde}
+                    onChangeText={(e: any) => setWithdrawAmounr(e)}
+                    value={`${withdrawAmounr}`}
+                    placeholderTextColor="gray"
+                  />
+                  <Text style={{ color: "red" }}>{withdrawError}</Text>
+                  <TouchableOpacity
+                    onPress={() => HandleWithdrawAmount()}
+                    style={styles.modalBtn}>
+                    <Text style={styles.modlaSubmittext}>
+                      Withdraw
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               </Modal>
             </View>
-          }
-          <TouchableOpacity
-            onPress={() => navigation.navigate('SMART PRESCRIPTION')}
-
-            //ProfileTemrs
-            style={styles.clickbleLines}>
-            <View
-              style={{
-                flexDirection: 'row',
-                height: wp(8),
-                alignItems: 'center',
-              }}>
-              <Polocy_Icons name="policy" style={styles.allIconsStyle} />
-              <Text
+          } */}
+          {
+            userObj.role == Roles.DOCTOR &&
+            <TouchableOpacity
+              onPress={() => navigation.navigate('SMART PRESCRIPTION')}
+              //ProfileTemrs
+              style={styles.clickbleLines}>
+              <View
                 style={{
-                  fontSize: hp(1.8),
-                  color: '#4A4D64',
-                  fontFamily: mainFont,
-                  marginLeft: wp(2),
+                  flexDirection: 'row',
+                  height: wp(8),
+                  alignItems: 'center',
                 }}>
-                Smart Prescription
-              </Text>
-            </View>
-            <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
-          </TouchableOpacity>
+                <Polocy_Icons name="policy" style={styles.allIconsStyle} />
+                <Text
+                  style={{
+                    fontSize: hp(1.8),
+                    color: '#4A4D64',
+                    fontFamily: mainFont,
+                    marginLeft: wp(2),
+                  }}>
+                  Smart Prescription
+                </Text>
+              </View>
+              <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
+            </TouchableOpacity>
+          }
+
           <TouchableOpacity
             onPress={() => navigation.navigate('About Fever99')}
 

@@ -11,15 +11,16 @@ import CategoryStack from '../Stacks/CategoryStack';
 import { getUser } from '../Services/user.service';
 import { useIsFocused } from '@react-navigation/native';
 import Referal from '../Components/Referal';
+import Income from '../Components/transaction/Income';
 import { Roles } from '../utils/constant';
-import Transactions from '../Components/Transactions';
+import Transactions from '../Components/transaction/Transaction';
 
 import HisTory_icon from "react-native-vector-icons/MaterialCommunityIcons"; // history 
 import Services_icons from "react-native-vector-icons/MaterialIcons"; // medical-services
 import Uesr_icons from "react-native-vector-icons/FontAwesome" // medical-services
 import Home_icons from 'react-native-vector-icons/Entypo'; // 
 import Transfer_icons from "react-native-vector-icons/FontAwesome6" // arrow-right-arrow-left 
-import Refral_icons from "react-native-vector-icons/FontAwesome6" // share-from-square
+import Income_icons from "react-native-vector-icons/FontAwesome6" // share-from-square
 
 import Appointement_icons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -135,29 +136,28 @@ const BottamTab = () => {
                     )
                 }}
             />
-            {/* {
-                userObj?.role == Roles.FRANCHISE &&
-                <Botmtab.Screen name='Referal' component={Referal}
+            {
+                (userObj?.role == Roles.FRANCHISE || userObj?.role == Roles.DOCTOR) &&
+                <Botmtab.Screen name='Income' component={Income}
                     options={{
                         tabBarIcon: ({ focused }) => (
                             <View style={styles.optionMainView}>
-
                                 <View style={[styles.focusedDiv, {
                                     backgroundColor: focused ? '#1263AC' : "",
                                 }]}></View>
-                                <Refral_icons
-                                    name="share-from-square"
+                                <Income_icons
+                                    name="money-bill-trend-up"
                                     color={focused ? '#1263AC' : 'grey'}
                                     style={styles.iconsStyle}
                                 />
                                 <Text style={[styles.textStyling, { color: focused ? '#1263AC' : 'grey', }]}>
-                                    Referal
+                                    Income
                                 </Text>
                             </View>
                         )
                     }}
                 />
-            } */}
+            }
             {
                 userObj?.role == Roles.FRANCHISE &&
                 <Botmtab.Screen name='Transaction' component={Transactions}

@@ -10,8 +10,17 @@ export const getWallet = async () => {
             "Access-control-Allow-Origin": "*"
         }
     }
-    return await axios.get(`${serverUrl}`, config);
+    return await axios.get(`${url}/get/Wallet`, config);
 };
+export const getIncomeTransction = async () => {
+    let config = {
+        headers: {
+            'Content-type': "application/json",
+            "Access-control-Allow-Origin": "*"
+        }
+    }
+    return await axios.get(`${url}/franchise-income`, config);
+}
 
 // export const addAmountToWallet = async (obj) => {
 //     let config = {

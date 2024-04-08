@@ -33,42 +33,49 @@ const Appointment_History = (props: any) => {
     const navigation: any = useNavigation()
 
 
- //check user logged in or not
-
-    
-  const handleLogout = async () => {
-    try {
-      await deleteJwt();
-    } catch (err) {
-    //   toastError(err);
-    }
-  };
+    //check user logged in or not
 
 
-  useEffect(() => {
-    CheckIsUserLoggedIn();
-  },[])
+    const handleLogout = async () => {
+        try {
+            await deleteJwt();
+        } catch (err) {
+            //   toastError(err);
+        }
+    };
+
+
+    useEffect(() => {
+        CheckIsUserLoggedIn();
+    }, [])
 
 
 
-  const CheckIsUserLoggedIn = async () => {
-    try {
-        let token = await getJwt();
-      if(token){
-      const {data: res}: any = await isUserLoggedIn();
-      console.log('response from backend vikram',res)
-      if (res.status == false) {
-        handleLogout()
-        console.log('response from backend',res)
-        // throw new Error(res.error);
-      }
-    }
-    } catch (err) {
-    //   toastError(err);
-    }
-  };
+    const CheckIsUserLoggedIn = async () => {
+        try {
+            let token = await getJwt();
+            if (token) {
+                const { data: res }: any = await isUserLoggedIn();
+                console.log('response from backend vikram', res)
+                if (res.status == false) {
+                    handleLogout()
+                    console.log('response from backend', res)
+                    // throw new Error(res.error);
+                }
+            }
+        } catch (err) {
+            //   toastError(err);
+        }
+    };
 
-
+    const Unit = [
+        {
+            label: 'cm', value: 'cm'
+        },
+        {
+            label: 'ft', value: 'ft'
+        },
+    ]
     const [rr, setrr] = useState("");
     const [meetingConfirmation, setMeetingConfirmation] = useState(false);
     const [userObj, setUserObj] = useState<any>("");
@@ -84,6 +91,11 @@ const Appointment_History = (props: any) => {
     const [suger1, setSuger1] = useState("");
     const [suger2, setSuger2] = useState("");
     const [suger3, setSuger3] = useState("");
+    const [isGenderFocused, setIsGenderFocused] = useState(false);
+    const [heights, setHeight] = useState();
+    const [unit, setUnit] = useState('ft');
+    const [weight, setWeight] = useState();
+    const [bmi, setBmi] = useState('0');
 
     const [doctorName, setDoctorName] = useState('')
     const [patientName, setPatientName] = useState('')
@@ -155,19 +167,13 @@ const Appointment_History = (props: any) => {
         if (focused && userObj && userObj._id) {
             socket = io(fileurl);
             if (socket) {
-
-                // console.log(socket, "socket")
                 setSocket(socket)
                 socket.emit("join", userObj._id);
-                // console.log(socket, "socket")
-
                 socket.on("message", (data: any) => {
-                    // console.log("messsages Data", data.length)
                     setMsgArr((prevData) => [...prevData, data]);
                 });
             }
         }
-
         else {
             socket?.disconnect()
         }
@@ -223,6 +229,16 @@ const Appointment_History = (props: any) => {
     }
 
 
+    const calculateBMI = () => {
+        if (heights && weight) {
+            const heightInMeters = unit === 'cm' ? heights / 100 : heights * 0.3048;
+            const bmiValue = (weight / (heightInMeters * heightInMeters)).toFixed(2);
+            setBmi(bmiValue);
+        }
+    };
+    useEffect(() => {
+        calculateBMI();
+    }, [unit, heights, weight, bmi])
 
 
     const handleDocumentPicker = async () => {
@@ -261,6 +277,7 @@ const Appointment_History = (props: any) => {
         try {
             setIsLoading(true); // Start loading
             let { data: res } = await getAppointmentById(props?.route?.params?.data._id)
+            console.log("this is my res", res);
             if (res.data) {
                 setBp(res?.data?.bp)
                 setBodyTemperature(res?.data?.bodyTemperature)
@@ -274,9 +291,12 @@ const Appointment_History = (props: any) => {
                 setDoctorName(res?.data?.doctor?.name)
                 setPatientName(res?.data?.patientName)
                 setrr(res?.data?.respiratoryRate)
-                // console.log("GET APPOINTMENT", res.data)
                 setMsgArr(res?.data?.history)
                 setAppointmentData(res.data)
+                setHeight(res?.data?.heights)
+                setBmi(res?.data?.bmi)
+                setWeight(res?.data?.weight)
+
             }
             console.log(JSON.stringify(res, null, 2), "appointments")
         }
@@ -299,6 +319,16 @@ const Appointment_History = (props: any) => {
 
 
     const handlechangeAppointmentStatus = async () => {
+        if (heights && !weight) {
+            setMeetingConfirmation(false)
+            toastError("heights or Weight are mandatory !!!");
+            return;
+        }
+        if (!heights && weight) {
+            setMeetingConfirmation(false)
+            toastError("heights or Weight are mandatory !!!");
+            return;
+        }
         try {
             let obj = {
                 bp,
@@ -393,59 +423,103 @@ const Appointment_History = (props: any) => {
                     <View style={{ width: wp(95) }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: hp(.5) }}>
                             <View style={{ width: wp(45) }}>
-                                <Text style={{ color: 'black', fontFamily: mainFontmedium, fontSize: hp(1.8) }}>BP</Text>
+                                <Text style={{ color: 'black', fontFamily: mainFontBold, fontSize: hp(1.8) }}>BP</Text>
                                 <TextInput onChangeText={(e) => setBp(e)} value={bp} style={[styles.inputFildsstyls, { width: wp(45), }]} placeholder={isLoading ? 'Loading...' : 'Enter BP'} />
                             </View>
                             <View style={{ width: wp(45) }}>
-                                <Text style={{ color: 'black', fontFamily: mainFontmedium, fontSize: hp(1.8) }}>Pulse Rate</Text>
+                                <Text style={{ color: 'black', fontFamily: mainFontBold, fontSize: hp(1.8) }}>Pulse Rate</Text>
                                 <TextInput onChangeText={(e) => setPulse(e)} value={pulse} style={[styles.inputFildsstyls, { width: wp(45), }]} placeholder={isLoading ? 'Loading...' : 'Pulse'} />
                             </View>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: hp(1) }}>
                             <View style={{ width: wp(45) }}>
-                                <Text style={{ color: 'black', fontFamily: mainFontmedium, fontSize: hp(1.8) }}>Body Temperature</Text>
+                                <Text style={{ color: 'black', fontFamily: mainFontBold, fontSize: hp(1.8) }}>Body Temperature</Text>
                                 <TextInput onChangeText={(e) => setBodyTemperature(e)} value={bodyTemperature} style={[styles.inputFildsstyls, { width: wp(45), }]} placeholder={isLoading ? 'Loading...' : "Body Temperature"} />
                             </View>
                             <View style={{ width: wp(45) }}>
-                                <Text style={{ color: 'black', fontFamily: mainFontmedium, fontSize: hp(1.8) }}>SpO2</Text>
+                                <Text style={{ color: 'black', fontFamily: mainFontBold, fontSize: hp(1.8) }}>SpO2</Text>
                                 <TextInput onChangeText={(e) => setOxigne(e)} value={oxigne} style={[styles.inputFildsstyls, { width: wp(45), }]} placeholder={isLoading ? 'Loading...' : "SpO2"} />
                             </View>
                         </View>
 
                         <View style={{ justifyContent: 'space-between', marginTop: hp(1) }}>
                             <View style={{ width: wp(95) }}>
-                                <Text style={{ color: 'black', fontFamily: mainFontmedium, fontSize: hp(1.8) }}>Postprandial Sugar(PPBS) mg/dl</Text>
+                                <Text style={{ color: 'black', fontFamily: mainFontBold, fontSize: hp(1.8) }}>Postprandial Sugar(PPBS) mg/dl</Text>
                                 <TextInput onChangeText={(e) => setSuger1(e)} value={suger1} style={[styles.inputFildsstyls, { width: wp(95), }]} placeholder={isLoading ? 'Loading...' : 'Postprandial Sugar (PPBS)'} />
                             </View>
 
                         </View>
                         <View style={{ width: wp(95), marginTop: hp(1) }}>
-                            <Text style={{ color: 'black', fontFamily: mainFontmedium, fontSize: hp(1.8) }}>Random Blood Sugar(RBS) mg/dl</Text>
+                            <Text style={{ color: 'black', fontFamily: mainFontBold, fontSize: hp(1.8) }}>Random Blood Sugar(RBS) mg/dl</Text>
                             <TextInput onChangeText={(e) => setSuger3(e)} value={suger3} style={[styles.inputFildsstyls, { width: wp(95), }]} placeholder={isLoading ? 'Loading...' : 'Random Blood Sugar(RBS)'} />
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: hp(1) }}>
                             <View style={{ width: wp(45) }}>
-                                <Text style={{ color: 'black', fontFamily: mainFontmedium, fontSize: hp(1.8) }}>Fasting Sugar(FBS) mg/dl</Text>
+                                <Text style={{ color: 'black', fontFamily: mainFontBold, fontSize: hp(1.8) }}>Fasting Sugar(FBS) mg/dl</Text>
                                 <TextInput onChangeText={(e) => setSuger2(e)} value={suger2} style={[styles.inputFildsstyls, { width: wp(45), }]} placeholder={isLoading ? 'Loading...' : 'Fasting Sugar (FBS)'} />
                             </View>
                             <View style={{ width: wp(45) }}>
-                                <Text style={{ color: 'black', fontFamily: mainFontmedium, fontSize: hp(1.8) }}>Respiratory Rate(RR)</Text>
+                                <Text style={{ color: 'black', fontFamily: mainFontBold, fontSize: hp(1.8) }}>Respiratory Rate(RR)</Text>
                                 <TextInput onChangeText={(e) => setrr(e)} value={rr} style={[styles.inputFildsstyls, { width: wp(45), }]} placeholder={isLoading ? 'Loading...' : 'RR'} />
                             </View>
 
                         </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: hp(1), flexWrap: "wrap" }}>
+                        <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
+
                             <View style={{ width: wp(45) }}>
-                                <Text style={{ color: 'black', fontFamily: mainFontmedium, fontSize: hp(1.8) }}>Height (ft)</Text>
-                                <TextInput style={[styles.inputFildsstyls, { width: wp(45), }]} placeholder={isLoading ? 'Loading...' : 'ft'} />
+                                <View>
+                                    <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Height (ft)</Text>
+                                    <View style={{ width: wp(45), flexDirection: "row" }}>
+                                        <TextInput keyboardType='numeric' value={heights} onChangeText={(e) => setHeight(e)} placeholderTextColor="#8E8E8E" placeholder='height' style={{
+                                            height: hp(6.1),
+                                            width: wp(29),
+                                            backgroundColor: '#F2F2F2E5',
+                                            marginTop: hp(1),
+                                            borderRadius: wp(1.2),
+                                            fontSize: hp(2),
+                                            borderColor: 'gray',
+                                            borderTopWidth: 0.5, // Top border width
+                                            borderBottomWidth: 0.5, // Bottom border width
+                                            borderLeftWidth: 0.5, // Left border width
+                                            borderRightWidth: 0, // Right border width set to 0 to remove
+                                        }}
+                                        />
+                                        <Dropdown
+                                            style={[styles.uint, isGenderFocused && { borderWidth: 0.5, }]}
+                                            placeholderStyle={styles.placeholderStyle}
+                                            selectedTextStyle={styles.selectedTextStyle}
+                                            inputSearchStyle={styles.inputSearchStyle}
+                                            iconStyle={styles.iconStyle}
+                                            data={Unit}
+                                            maxHeight={300}
+                                            labelField="label"
+                                            valueField="value"
+                                            placeholder='unit'
+                                            value={unit}
+                                            onFocus={() => setIsGenderFocused(true)}
+                                            onBlur={() => setIsGenderFocused(false)}
+                                            onChange={item => {
+                                                setUnit(item.value);
+                                                setIsGenderFocused(false);
+                                            }}
+
+                                        />
+                                    </View>
+                                </View>
+
+
                             </View>
                             <View style={{ width: wp(45) }}>
-                                <Text style={{ color: 'black', fontFamily: mainFontmedium, fontSize: hp(1.8) }}>Weight (kg)</Text>
-                                <TextInput style={[styles.inputFildsstyls, { width: wp(45), }]} placeholder={isLoading ? 'Loading...' : 'kg'} />
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Weight (kg)</Text>
+                                <TextInput keyboardType='numeric' value={weight}
+                                    onChangeText={(e) => setWeight(e)} placeholderTextColor="#8E8E8E" placeholder='kg' style={{ height: hp(6.1), fontSize: hp(2), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
                             </View>
-                            <View style={{ width: wp(45), marginTop: hp(1) }}>
-                                <Text style={{ color: 'black', fontFamily: mainFontmedium, fontSize: hp(1.8) }}>Average</Text>
-                                <TextInput style={[styles.inputFildsstyls, { width: wp(45), }]} placeholder={isLoading ? 'Loading...' : 'avg'} />
+                        </View>
+                        <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
+                            <View style={{ width: wp(95) }}>
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>BMI</Text>
+                                <TextInput keyboardType='numeric' value={bmi}
+                                 placeholderTextColor="#8E8E8E" placeholder='BMI' style={{ height: hp(6.1), fontSize: hp(2), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
                             </View>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: hp(2), width: wp(95) }}>
@@ -473,12 +547,6 @@ const Appointment_History = (props: any) => {
                                     </View>
                                 </View>
                             }
-
-                            {/* <View style={{ minWidth: wp(30), flex: 1, marginTop: hp(0.4) }}>
-                                <TouchableOpacity onPress={() => handlechangeAppointmentStatus()} style={{ minWidth: wp(30), flex: 1, height: hp(5.5), alignItems: 'center', justifyContent: 'center', marginTop: hp(2.8), backgroundColor: maincolor, borderRadius: 5 }}>
-                                    <Text style={{ color: 'white', fontFamily: mainFontmedium, fontSize: hp(1.8) }}>Update</Text>
-                                </TouchableOpacity>
-                            </View> */}
 
                         </View>
 
@@ -604,21 +672,38 @@ const styles = StyleSheet.create({
         padding: 16,
     },
     inputFildsstyls: {
-        height: hp(5.5),
+        height: hp(6.1),
+        borderTopWidth: 0.5,
         marginTop: hp(.5),
         backgroundColor: '#F2F2F2E5',
         borderRadius: 5,
         borderColor: "gray",
         borderWidth: .7,
-        fontSize:hp(2)
+        fontSize: hp(2)
     },
     dropdown: {
-        height: 50,
+        height: hp(5.5),
         borderRadius: 8,
         paddingHorizontal: 8,
         marginTop: hp(1),
         width: wp(75),
         backgroundColor: '#F2F2F2E5',
+    },
+    uint: {
+        height: hp(6.1),
+        borderTopWidth: 0.5, // Top border width
+        borderBottomWidth: 0.5, // Bottom border width
+        borderLeftWidth: 0, // Left border width set to 0 to remove
+        borderRightWidth: 0.5, // Right border width
+        borderTopColor: 'gray', // Top border color
+        borderBottomColor: 'gray', // Bottom border color
+        borderRightColor: 'gray', // Right border color
+        borderRadius: wp(1.2),
+        paddingHorizontal: 8,
+        marginTop: hp(1),
+        width: wp(17),
+        fontSize: hp(2),
+        backgroundColor: '#F2F2F2E5'
     },
     icon: {
         marginRight: 5,
@@ -629,11 +714,11 @@ const styles = StyleSheet.create({
         fontSize: hp(1.7),
     },
     placeholderStyle: {
-        fontSize: 16,
         color: '#8E8E8E',
+        fontSize: hp(2),
     },
     selectedTextStyle: {
-        fontSize: 16,
+        fontSize: hp(2),
         color: '#8E8E8E'
     },
     dropdown1: {

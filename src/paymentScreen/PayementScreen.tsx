@@ -8,6 +8,7 @@ import url from '../Services/url.service';
 import { getUser } from '../Services/user.service';
 
 export default function PayementScreen(props: any) {
+    console.log("ldkfjsdflkjh lkdfjgl dfjflkjg flgjk fgbjkgf lkjnglkbgjh ;lh gflkhghlo jk",props)
     const focused = useIsFocused()
     const navigation: any = useNavigation();
     const [userObj, setUserObj] = useState<any>({});
@@ -37,8 +38,9 @@ export default function PayementScreen(props: any) {
         }
     }, [focused]);
 
-    console.log("this wala", userObj?._id)
-    console.log("this wala", props?.route?.params?.amount);
+    // console.log("this wala", userObj?._id)
+    // console.log()
+    // console.log("this wala", props?.route?.params?.amount);
 
 
     return (

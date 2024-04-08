@@ -71,26 +71,17 @@ const Appointment = () => {
     }
   };
 
-
-  useEffect(() => {
-    CheckIsUserLoggedIn();
-  }, [])
-
-
-
   const CheckIsUserLoggedIn = async () => {
     try {
-        let token = await getJwt();
-        if(token){
-      const { data: res }: any = await isUserLoggedIn();
-      console.log('response from backend vikram', res)
-      if (res.status == false) {
-        handleLogout()
-        console.log('response from backend', res)
-      }   else {
-        navigation.navigate("BookAppt")
+      let token = await getJwt();
+      if (token) {
+        const { data: res }: any = await isUserLoggedIn();
+        if (res.status == false) {
+          handleLogout()
+        } else {
+          navigation.navigate("BookAppt")
+        }
       }
-    }
       else {
         navigation.navigate("BookAppt")
       }
@@ -410,15 +401,17 @@ const Appointment = () => {
 
   // clacling pai
   const handleCancelApi = async (_id: string) => {
+    console.log(`${serverUrl}/appointment/canceled/${_id}`);
     try {
       const response = await axios.put(`${serverUrl}/appointment/canceled/${_id}`);
-      if (response.status === 200) {
-        toastSuccess('Appointment successfully canceled!');
+      console.log("respons datat ius ", response)
+      if (response.data.message === "Cancel appointment not allowed") {
+        toastError(response.data.message);
       } else {
-        toastError('Failed to cancel appointment. Please try again later.');
+        toastSuccess(response.data.message);
+        HandleGetAppointmentsWithFilterPaginated();
       }
     } catch (error) {
-      // toastError('An error occurred while canceling appointment. Please try again later.');
       toastError(error);
     }
   }
@@ -427,22 +420,16 @@ const Appointment = () => {
     Alert.alert(
       'Cancel!',
       'Are you sure you want to cancel the appointment?',
-      [
-        {
-          text: 'Cancel Appointment',
-          onPress: () => handleCancelApi(itms?._id),
-        },
-        {
-          text: 'Not Now',
-          onPress: () => console.log("heee"),
-          style: 'cancel'
-        },
-      ],
+      [{
+        text: 'Cancel Appointment',
+        onPress: () => handleCancelApi(itms?._id),
+      }, {
+        text: 'Not Now',
+        style: 'cancel'
+      }],
       { cancelable: false }
     );
   }
-
-
 
   if (isConnected === false) {
     return <InterNetError labels={'Appointment'} />;
@@ -963,33 +950,31 @@ const Appointment = () => {
                       </View>
                       <View style={styles.common_displayFlex}>
                         <Text
-                          style={{ color: 'gray', textTransform: 'capitalize', fontSize: hp(1.8), }}>
-                          {item.mode == 'Offline'
-                            ? 'Clinic visit'
-                            : 'Video Call'}
+                          style={{
+                            color: 'gray',
+                            textTransform: 'capitalize',
+                            fontSize: hp(2),
+                          }}>
+                          {item.mode === 'Offline' ? 'Clinic visit' : 'Video Call'}
                         </Text>
-                        {item.mode == 'Offline' ? (
-                          <Walkink_Video_icons
-                            name="walking"
-                            style={{
-                              color:
-                                item.status === 'canceled' ? 'red' : 'green',
-                              marginLeft: 7,
+                        <Walkink_Video_icons
+                          name={item.mode === 'Offline' ? 'walking' : 'video'}
+                          style={{
+                            color:
+                              item.status === 'canceled'
+                                ? item.mode === 'Offline'
+                                  ? 'red'
+                                  : 'blue'
+                                : item.mode === 'Offline'
+                                  ? 'green'
+                                  : 'blue',
+                            marginLeft: 7,
 
-                              fontSize: wp(4),
-                            }}
-                          />
-                        ) : (
-                          <Walkink_Video_icons
-                            name="video"
-                            style={{
-                              color:
-                                item.status === 'canceled' ? 'red' : 'blue',
-                              marginLeft: 7,
-                            }}
-                          />
-                        )}
+                            fontSize: item.mode === 'Offline' ? hp(3) : hp(2),
+                          }}
+                        />
                       </View>
+
                     </View>
                     <View
                       style={[
@@ -1018,8 +1003,8 @@ const Appointment = () => {
                         <Text style={{ fontSize: hp(2) }}>Price:</Text>
                       </View>
                       <Text
-                        style={{ color: 'gray', textTransform: 'capitalize' }}>
-                         ₹ {item?.appointmentCharge}
+                        style={{ color: 'gray', textTransform: 'capitalize', fontSize: hp(1.8), }}>
+                        ₹ {item?.appointmentCharge}
                       </Text>
                     </View>
 
@@ -1176,7 +1161,7 @@ const Appointment = () => {
                           </Text>
                         </TouchableOpacity>
                       )}
-                    {userObj?.role == Roles.PATIENT &&
+                    {(userObj?.role == Roles.PATIENT || userObj?.role == Roles.FRANCHISE) &&
                       item.status === 'prescription-ready' &&
                       item.mode == consultationMode.ONLINE && (
                         <TouchableOpacity
@@ -1414,7 +1399,7 @@ const Appointment = () => {
                     {/* cancling  by patent*/}
 
 
-                    {userObj?.role == Roles.PATIENT &&
+                    {(userObj?.role == Roles.PATIENT || userObj?.role == Roles.FRANCHISE) &&
                       item.status == appointmentStatus.PENDING && (
                         <TouchableOpacity
                           onPress={() => handleCancleApt(item)}

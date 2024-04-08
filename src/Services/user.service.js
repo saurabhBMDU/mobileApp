@@ -143,6 +143,7 @@ export const getUser = async () => {
   if (userData) {
     return JSON.parse(userData);
   } else {
+    
     return null;
   }
 };
