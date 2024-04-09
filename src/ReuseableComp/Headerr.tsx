@@ -152,7 +152,7 @@ const Headerr = (props: any) => {
                             {notificationCount > 0 && (
                                 <View style={styles.countContainer}>
                                     {
-                                        notificationCount < 10 ? <Text style={styles.countText}>{notificationCount}</Text> : <Text style={styles.countText}>+9</Text>
+                                        notificationCount < 10 ? <Text style={styles.countText}>{notificationCount}</Text> : <Text style={styles.countText}>9+</Text>
                                     }
                                     {/*  */}
                                 </View>

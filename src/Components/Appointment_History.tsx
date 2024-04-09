@@ -34,8 +34,6 @@ const Appointment_History = (props: any) => {
 
 
     //check user logged in or not
-
-
     const handleLogout = async () => {
         try {
             await deleteJwt();
@@ -378,36 +376,36 @@ const Appointment_History = (props: any) => {
 
 
     const handleDownloadPrescription = async (id: string) => {
-        try {
-            if (Platform.OS == 'android') {
-                const android = RNFetchBlob.android;
-                RNFetchBlob.config({
-                    fileCache: true,
-                    addAndroidDownloads: {
-                        useDownloadManager: true,
-                        notification: true,
-                        path: RNFetchBlob.fs.dirs.DownloadDir + '/Prescription' + '.pdf',
-                        mime: 'application/pdf',
-                        description: 'File downloaded by download manager.',
-                    },
-                })
-                    .fetch('GET', `${url}/prescription-by-id/${id}`, {
-                        responseType: "blob",
-                    })
-                    .then(res => {
-                        android.actionViewIntent(res.path(), 'application/pdf');
-                        toastSuccess("Prescription Downloaded")
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
-            } else {
-                toastError('Not Configured');
-            }
+        // try {
+        //     if (Platform.OS == 'android') {
+        //         const android = RNFetchBlob.android;
+        //         RNFetchBlob.config({
+        //             fileCache: true,
+        //             addAndroidDownloads: {
+        //                 useDownloadManager: true,
+        //                 notification: true,
+        //                 path: RNFetchBlob.fs.dirs.DownloadDir + '/Prescription' + '.pdf',
+        //                 mime: 'application/pdf',
+        //                 description: 'File downloaded by download manager.',
+        //             },
+        //         })
+        //             .fetch('GET', `${url}/prescription-by-id/${id}`, {
+        //                 responseType: "blob",
+        //             })
+        //             .then(res => {
+        //                 android.actionViewIntent(res.path(), 'application/pdf');
+        //                 toastSuccess("Prescription Downloaded")
+        //             })
+        //             .catch(err => {
+        //                 console.log(err);
+        //             });
+        //     } else {
+        //         toastError('Not Configured');
+        //     }
 
-        } catch (error) {
-            toastError(error)
-        }
+        // } catch (error) {
+        //     toastError(error)
+        // }
     }
 
 
@@ -459,7 +457,7 @@ const Appointment_History = (props: any) => {
                                 <TextInput onChangeText={(e) => setSuger2(e)} value={suger2} style={[styles.inputFildsstyls, { width: wp(45), }]} placeholder={isLoading ? 'Loading...' : 'Fasting Sugar (FBS)'} />
                             </View>
                             <View style={{ width: wp(45) }}>
-                                <Text style={{ color: 'black', fontFamily: mainFontBold, fontSize: hp(1.8) }}>Respiratory Rate(RR)</Text>
+                                <Text style={{ color: 'black', fontFamily: mainFontBold, fontSize: hp(1.8) }}>Respiratory Rate(RR)</Text><Text></Text>
                                 <TextInput onChangeText={(e) => setrr(e)} value={rr} style={[styles.inputFildsstyls, { width: wp(45), }]} placeholder={isLoading ? 'Loading...' : 'RR'} />
                             </View>
 
@@ -519,7 +517,7 @@ const Appointment_History = (props: any) => {
                             <View style={{ width: wp(95) }}>
                                 <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>BMI</Text>
                                 <TextInput keyboardType='numeric' value={bmi}
-                                 placeholderTextColor="#8E8E8E" placeholder='BMI' style={{ height: hp(6.1), fontSize: hp(2), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
+                                    placeholderTextColor="#8E8E8E" placeholder='BMI' style={{ height: hp(6.1), fontSize: hp(2), backgroundColor: '#F2F2F2E5', marginTop: hp(1), borderRadius: wp(1.2), borderColor: 'gray', borderWidth: .5 }} />
                             </View>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: hp(2), width: wp(95) }}>
@@ -558,14 +556,17 @@ const Appointment_History = (props: any) => {
                                         <View>
                                             {isLoading ? <Text style={{ textAlign: "center", marginTop: 25 }}>Loding....</Text> :
                                                 <View style={{ display: "flex", flexDirection: "row" }}>
-                                                    <TouchableOpacity onPress={() => handleDownloadPrescription(item._id)} style={{ backgroundColor: maincolor, width: userObj?.role == Roles.DOCTOR ? wp(80) : wp(95), borderTopRightRadius: userObj?.role == Roles.DOCTOR ? 0 : 10, borderBottomRightRadius: userObj?.role == Roles.DOCTOR ? 0 : 10, borderBottomLeftRadius: 5, borderTopLeftRadius: 5, marginVertical: 10, padding: 10 }}>
-                                                        <Text style={{ color: "white" }}>Prescription {moment(item.createdAt).format("DD/MM/YYYY h:mm:ss a")}</Text>
-                                                    </TouchableOpacity>
                                                     {
                                                         userObj?.role == Roles.DOCTOR &&
-                                                        <TouchableOpacity onPress={() => navigation.navigate('Write_P', { data: props?.route?.params?.data, prescriptionObj: item, editModeOn: true })} style={{ backgroundColor: "#E59F03", width: "auto", marginVertical: 10, padding: 10, borderBottomRightRadius: 5, borderTopRightRadius: 5 }}>
-                                                            <Text style={{ color: 'white', fontFamily: mainFontBold, fontSize: hp(1.8) }}>Edit</Text>
-                                                        </TouchableOpacity>
+                                                        <>
+                                                            <TouchableOpacity onPress={() => handleDownloadPrescription(item._id)} style={{ backgroundColor: maincolor, width: userObj?.role == Roles.DOCTOR ? wp(80) : wp(95), borderTopRightRadius: userObj?.role == Roles.DOCTOR ? 0 : 10, borderBottomRightRadius: userObj?.role == Roles.DOCTOR ? 0 : 10, borderBottomLeftRadius: 5, borderTopLeftRadius: 5, marginVertical: 10, padding: 10 }}>
+                                                                <Text style={{ color: "white", fontSize: hp(2) }}>Prescription {moment(item.createdAt).format("DD/MM/YYYY h:mm:ss a")}</Text>
+                                                            </TouchableOpacity>
+                                                            <TouchableOpacity onPress={() => navigation.navigate('Write_P', { data: props?.route?.params?.data, prescriptionObj: item, editModeOn: true })} style={{ backgroundColor: "#E59F03", width: "auto", marginVertical: 10, padding: 10, borderBottomRightRadius: 5, borderTopRightRadius: 5 }}>
+                                                                <Text style={{ color: 'white', fontFamily: mainFontBold, fontSize: hp(1.8) }}>Send</Text>
+                                                            </TouchableOpacity>
+                                                        </>
+
                                                     }
                                                 </View>
                                             }
@@ -591,7 +592,7 @@ const Appointment_History = (props: any) => {
                 <TouchableOpacity
                     onPress={() => { userObj?.role == Roles.DOCTOR ? handlechangeAppointmentStatus() : setBookmodal(true) }}
                     style={{ width: wp(45), height: hp(5), backgroundColor: '#50B148', borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ color: 'white', fontFamily: mainFont, fontSize: hp(1.8) }}>{userObj?.role == Roles.DOCTOR ? 'Update' : `Schedule Follow Up`}</Text>
+                    <Text style={{ color: 'white', fontFamily: mainFont, fontSize: hp(1.8) }}>{userObj?.role == Roles.DOCTOR ? 'Update' : `Follow Up`}</Text>
                 </TouchableOpacity>
             </View>
             <Modal

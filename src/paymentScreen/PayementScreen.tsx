@@ -8,7 +8,7 @@ import url from '../Services/url.service';
 import { getUser } from '../Services/user.service';
 
 export default function PayementScreen(props: any) {
-    console.log("ldkfjsdflkjh lkdfjgl dfjflkjg flgjk fgbjkgf lkjnglkbgjh ;lh gflkhghlo jk",props)
+    console.log("ldkfjsdflkjh lkdfjgl dfjflkjg flgjk fgbjkgf lkjnglkbgjh ;lh gflkhghlo jk", props)
     const focused = useIsFocused()
     const navigation: any = useNavigation();
     const [userObj, setUserObj] = useState<any>({});
@@ -27,7 +27,7 @@ export default function PayementScreen(props: any) {
         if (`${e?.url}`.includes("https://www.fever99.com/")) {
             console.log("thi is my e value\n", e);
             console.log("this is all value getting \n\n\t", `${e?.url}`.includes("https://www.fever99.com/"));
-            navigation.navigate("PayementSuccess")
+            navigation.navigate("PayementSuccess");
             SendNotificationForMeetingCreation({ appointment: props?.route?.params?.appointmentId })
         }
     }
@@ -38,9 +38,6 @@ export default function PayementScreen(props: any) {
         }
     }, [focused]);
 
-    // console.log("this wala", userObj?._id)
-    // console.log()
-    // console.log("this wala", props?.route?.params?.amount);
 
 
     return (
@@ -52,7 +49,7 @@ export default function PayementScreen(props: any) {
                     userObj?._id &&
                     <WebView
                         source={{
-                            uri: `${url}/initiateWalletRecharge/?amount=${props?.route?.params?.amount}&appointmentId=${props?.route?.params?.appointmentId}&userId=${userObj?._id}`,
+                            uri: `${url}/initiateWalletRecharge/?amount=${props?.route?.params?.amount}&appointmentId=${props?.route?.params?.appointmentId}&userId=${userObj?._id}&name=${userObj?.name}&email=${userObj?.email}&mobile=${userObj?.mobile}&address=${userObj?.address}`,
                         }}
                         onMessage={(event) => {
                             // Handle messages from the WebView, if needed

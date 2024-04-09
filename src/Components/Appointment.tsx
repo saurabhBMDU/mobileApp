@@ -242,10 +242,7 @@ const Appointment = () => {
     }
   }, []);
 
-  const handlechangeAppointmentStatus = async (
-    id: string,
-    statusString: string,
-  ) => {
+  const handlechangeAppointmentStatus = async (id: string, statusString: string) => {
     try {
       let obj = {
         status: statusString,
@@ -255,7 +252,7 @@ const Appointment = () => {
         setPage(1);
         setFromDate('');
         settoDate('');
-        setAppointmentsArr([]);
+        // setAppointmentsArr([]);
         HandleGetAppointmentsWithFilterPaginated();
         toastSuccess(res.message);
       }
@@ -351,6 +348,21 @@ const Appointment = () => {
       toastError(err);
     }
   };
+  // *****//// reject Option
+  const handleReject = (id: string,) => {
+    Alert.alert(
+      'Reject!',
+      'Are you sure you want to reject the appointment?',
+      [{
+        text: 'Reject Appointment',
+        onPress: () => handlechangeAppointmentStatus(id, appointmentStatus.REJECTED),
+      }, {
+        text: 'Not Now',
+        style: 'cancel'
+      }],
+      { cancelable: false }
+    );
+  }
   // ***********feedback function
   const [modalVisible, setModalVisible1] = useState(false);
   const [provideId, setProvideId] = useState('');
@@ -401,10 +413,8 @@ const Appointment = () => {
 
   // clacling pai
   const handleCancelApi = async (_id: string) => {
-    console.log(`${serverUrl}/appointment/canceled/${_id}`);
     try {
       const response = await axios.put(`${serverUrl}/appointment/canceled/${_id}`);
-      console.log("respons datat ius ", response)
       if (response.data.message === "Cancel appointment not allowed") {
         toastError(response.data.message);
       } else {
@@ -733,6 +743,7 @@ const Appointment = () => {
           onEndReachedThreshold={0.5}
           initialNumToRender={limit}
           renderItem={({ item, index }) => {
+            console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", item.isPrescription)
 
             const apiDate = moment(item?.dateTime).format('YYYY-MM-DD'); // real date time
             const currentDate = moment().format('YYYY-MM-DD'); // current date time
@@ -988,7 +999,7 @@ const Appointment = () => {
                       </View>
                       <Text
                         style={{ color: 'gray', textTransform: 'capitalize', fontSize: hp(1.8), }}>
-                        {item?.age}
+                        {item?.age}{item?.months ? `.${item?.months} Month` : ''}
                       </Text>
                     </View>
 
@@ -1097,45 +1108,34 @@ const Appointment = () => {
                       flexDirection: 'row',
                       justifyContent: 'space-between',
                     }}>
-                    {(userObj?.role == Roles.DOCTOR ||
-                      (userObj?.role == Roles.PATIENT &&
-                        item.status !== appointmentStatus.PENDING) ||
-                      userObj?.role == Roles.FRANCHISE ||
-                      item.status !== appointmentStatus.PENDING) &&
-                      item.mode == consultationMode.ONLINE &&
-                      item.status === appointmentStatus.CONFIRMED && (
-                        <TouchableOpacity
-                          onPress={() =>
-                            navigation.navigate('AppointHistory', { data: item })
-                          }
+                    {(userObj?.role == Roles.DOCTOR || userObj?.role == Roles.FRANCHISE || userObj?.role == Roles.PATIENT) && item.mode === consultationMode.ONLINE && (item.status === appointmentStatus.CONFIRMED || item.status === appointmentStatus.FOLLOWUP) && (
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate('AppointHistory', { data: item })
+                        }
+                        style={{
+                          flex: 1,
+                          minWidth: wp(41),
+                          marginRight: 10,
+                          marginTop: 15,
+                          height: hp(5),
+                          backgroundColor: '#1263AC',
+                          borderRadius: 5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                        <Text
                           style={{
-                            flex: 1,
-                            minWidth: wp(41),
-                            marginRight: 10,
-                            marginTop: 15,
-                            height: hp(5),
-                            backgroundColor: '#1263AC',
-                            borderRadius: 5,
-                            justifyContent: 'center',
-                            alignItems: 'center',
+                            color: 'white',
+                            fontFamily: mainFont,
+                            fontSize: hp(1.8),
                           }}>
-                          <Text
-                            style={{
-                              color: 'white',
-                              fontFamily: mainFont,
-                              fontSize: hp(1.8),
-                            }}>
-                            History
-                          </Text>
-                        </TouchableOpacity>
-                      )}
-                    {(userObj?.role == Roles.DOCTOR ||
-                      (userObj?.role == Roles.PATIENT &&
-                        item.status !== appointmentStatus.PENDING) ||
-                      userObj?.role == Roles.FRANCHISE ||
-                      item.status !== appointmentStatus.PENDING) &&
-                      item.mode == consultationMode.ONLINE &&
-                      item.status === appointmentStatus.CONFIRMED && (
+                          History
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                    {
+                      (userObj?.role == Roles.DOCTOR || userObj?.role == Roles.FRANCHISE || userObj?.role == Roles.PATIENT) && (item.status === appointmentStatus.CONFIRMED || item.status === appointmentStatus.FOLLOWUP) && (
                         <TouchableOpacity
                           onPress={() =>
                             navigation.navigate('Chat', { data: item })
@@ -1161,8 +1161,9 @@ const Appointment = () => {
                           </Text>
                         </TouchableOpacity>
                       )}
-                    {(userObj?.role == Roles.PATIENT || userObj?.role == Roles.FRANCHISE) &&
-                      item.status === 'prescription-ready' &&
+                    {
+                      (userObj?.role == Roles.PATIENT || userObj?.role == Roles.FRANCHISE) &&
+                      item.isPrescription !== 'not-ready' &&
                       item.mode == consultationMode.ONLINE && (
                         <TouchableOpacity
                           onPress={() => handleDownloadPrescription(item._id)}
@@ -1187,15 +1188,11 @@ const Appointment = () => {
                           </Text>
                         </TouchableOpacity>
                       )}
-                    {userObj?.role == Roles.DOCTOR &&
-                      item.status == appointmentStatus.PENDING && (
+                    {userObj?.role == Roles.DOCTOR && item.status === appointmentStatus.PENDING &&
+                      (
                         <TouchableOpacity
                           onPress={() =>
-                            handlechangeAppointmentStatus(
-                              item._id,
-                              appointmentStatus.REJECTED,
-                            )
-                          }
+                            handleReject(item._id)}
                           style={{
                             flex: 1,
                             minWidth: wp(41),
@@ -1218,8 +1215,8 @@ const Appointment = () => {
                           </Text>
                         </TouchableOpacity>
                       )}
-                    {userObj?.role == Roles.DOCTOR &&
-                      item.status == appointmentStatus.PENDING && (
+                    {
+                      userObj?.role == Roles.DOCTOR && item.status === appointmentStatus.PENDING && (
                         <TouchableOpacity
                           onPress={() =>
                             handlechangeAppointmentStatus(
@@ -1250,7 +1247,8 @@ const Appointment = () => {
                         </TouchableOpacity>
                       )}
 
-                    {userObj?.role === Roles.PATIENT &&
+                    {
+                      (userObj?.role === Roles.PATIENT || userObj?.role === Roles.FRANCHISE) &&
                       item.mode === consultationMode.ONLINE &&
                       item.callInprogress && (
                         <TouchableOpacity
@@ -1280,10 +1278,8 @@ const Appointment = () => {
                           </Text>
                         </TouchableOpacity>
                       )}
-                    {userObj?.role === Roles.DOCTOR &&
-                      (item.status === appointmentStatus.CONFIRMED ||
-                        item.status === appointmentStatus.FOLLOWUP) &&
-                      item.mode === consultationMode.ONLINE && (
+                    {
+                      userObj?.role === Roles.DOCTOR && item.mode === consultationMode.ONLINE && item.status === appointmentStatus.CONFIRMED && (
                         <TouchableOpacity
                           onPress={() => {
                             setSelectedMeeting(item);
@@ -1312,66 +1308,62 @@ const Appointment = () => {
                         </TouchableOpacity>
                       )}
 
-                    {userObj?.role == Roles.DOCTOR &&
-                      (item.status == appointmentStatus.CONFIRMED ||
-                        item.status == appointmentStatus.FOLLOWUP) && (
-                        <TouchableOpacity
-                          onPress={() => onPressUpdateStatus(item)}
+                    {(item.status == appointmentStatus.CONFIRMED || item.status == appointmentStatus.FOLLOWUP) && userObj?.role == Roles.DOCTOR && (
+                      <TouchableOpacity
+                        onPress={() => onPressUpdateStatus(item)}
+                        style={{
+                          flex: 1,
+                          minWidth: wp(41),
+                          marginRight: 10,
+                          marginTop: 15,
+                          alignSelf: 'center',
+                          height: hp(5),
+                          backgroundColor: '#1263AC',
+                          borderRadius: 5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                        <Text
                           style={{
-                            flex: 1,
-                            minWidth: wp(41),
-                            marginRight: 10,
-                            marginTop: 15,
-                            alignSelf: 'center',
-                            height: hp(5),
-                            backgroundColor: '#1263AC',
-                            borderRadius: 5,
-                            justifyContent: 'center',
-                            alignItems: 'center',
+                            color: 'white',
+                            fontFamily: mainFont,
+                            fontSize: hp(1.8),
                           }}>
-                          <Text
-                            style={{
-                              color: 'white',
-                              fontFamily: mainFont,
-                              fontSize: hp(1.8),
-                            }}>
-                            Update Status
-                          </Text>
-                        </TouchableOpacity>
-                      )}
-                    {userObj?.role == Roles.PATIENT &&
-                      item.status == appointmentStatus.COMPLETED &&
-                      item.mode == consultationMode.ONLINE && (
-                        <TouchableOpacity
-                          onPress={() => {
-                            setComplaintModal(true);
-                            setSelectedAppointmentId(item?._id);
-                          }}
+                          Update Status
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                    {(userObj?.role == Roles.FRANCHISE || userObj?.role == Roles.PATIENT) && item.status === appointmentStatus.COMPLETED && (
+                      <TouchableOpacity
+                        onPress={() => {
+                          setComplaintModal(true);
+                          setSelectedAppointmentId(item?._id);
+                        }}
+                        style={{
+                          flex: 1,
+                          minWidth: wp(41),
+                          marginRight: 10,
+                          marginTop: 15,
+                          alignSelf: 'center',
+                          height: hp(5),
+                          backgroundColor: 'red',
+                          borderRadius: 5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                        <Text
                           style={{
-                            flex: 1,
-                            minWidth: wp(41),
-                            marginRight: 10,
-                            marginTop: 15,
-                            alignSelf: 'center',
-                            height: hp(5),
-                            backgroundColor: 'red',
-                            borderRadius: 5,
-                            justifyContent: 'center',
-                            alignItems: 'center',
+                            color: 'white',
+                            fontFamily: mainFont,
+                            fontSize: hp(1.8),
                           }}>
-                          <Text
-                            style={{
-                              color: 'white',
-                              fontFamily: mainFont,
-                              fontSize: hp(1.8),
-                            }}>
-                            Raise Issue
-                          </Text>
-                        </TouchableOpacity>
-                      )}
+                          Raise Issue
+                        </Text>
+                      </TouchableOpacity>
+                    )}
                     {/* reascudle */}
-                    {userObj?.role == Roles.DOCTOR &&
-                      item.status == appointmentStatus.CONFIRMED && (
+                    {
+                      (userObj?.role == Roles.FRANCHISE || userObj?.role == Roles.PATIENT || userObj?.role == Roles.DOCTOR) && item.status === appointmentStatus.CONFIRMED && (
                         <TouchableOpacity
                           onPress={() => onPressReschedule(item)}
                           style={{
@@ -1399,8 +1391,8 @@ const Appointment = () => {
                     {/* cancling  by patent*/}
 
 
-                    {(userObj?.role == Roles.PATIENT || userObj?.role == Roles.FRANCHISE) &&
-                      item.status == appointmentStatus.PENDING && (
+                    {(userObj?.role == Roles.FRANCHISE || userObj?.role == Roles.PATIENT) && item.status === appointmentStatus.PENDING &&
+                      (
                         <TouchableOpacity
                           onPress={() => handleCancleApt(item)}
                           style={{
@@ -1423,35 +1415,7 @@ const Appointment = () => {
                               fontFamily: mainFont,
                               fontSize: hp(1.8),
                             }}>
-                            Candle
-                          </Text>
-                        </TouchableOpacity>
-                      )}
-
-                    {item.status == appointmentStatus.PENDING &&
-                      (userObj?.role == Roles.FRANCHISE ||
-                        userObj?.role == Roles.PATIENT) && (
-                        <TouchableOpacity
-                          onPress={() => onPressReschedule(item)}
-                          style={{
-                            flex: 1,
-                            minWidth: wp(41),
-                            marginRight: 10,
-                            marginTop: 15,
-                            alignSelf: 'center',
-                            height: hp(5),
-                            backgroundColor: '#1263AC',
-                            borderRadius: 5,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                          }}>
-                          <Text
-                            style={{
-                              color: 'white',
-                              fontFamily: mainFont,
-                              fontSize: hp(1.8),
-                            }}>
-                            Reschedule
+                            Cancel
                           </Text>
                         </TouchableOpacity>
                       )}

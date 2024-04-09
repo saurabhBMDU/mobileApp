@@ -190,46 +190,46 @@ const Write_Prescription = (props: any) => {
     }
 
     const handleAddPrescription = async () => {
-        // if (drugAllergy == "") {
-        //     toastError("Drug Allergy is Required")
-        //     return;
-        // }
-        // if (pastHistory == "") {
-        //     toastError("Past History Is Required")
-        //     return;
-        // }
-        // try {
-        //     let obj: any = {
-        //         appointmentId: appointMentObj?._id,
-        //         drugAllergy,
-        //         diagnosis,
-        //         investigation,
-        //         notes,
-        //         pastHistory,
-        //         personalHistory,
-        //         surgicalHistory,
-        //         symptoms,
-        //         medicine
-        //     }
-        //     if (isEditModeOn) {
-        //     }
-        //     else {
-        //         obj.patientId = appointMentObj?.expert?._id
-        //     }
-        //     let res: any
-        //     if (isEditModeOn) {
-        //         res = await editPrescription(prescriptionId, obj);
-        //     }
-        //     else {
-        //         res = await addPrescription(obj);
-        //     }
-        //     if (res.data) {
-        //         toastSuccess(res.data.message);
-        //         navigation.goBack();
-        //     }
-        // } catch (err) {
-        //     toastError(err)
-        // }
+        if (drugAllergy == "") {
+            toastError("Drug Allergy is Required")
+            return;
+        }
+        if (pastHistory == "") {
+            toastError("Past History Is Required")
+            return;
+        }
+        try {
+            let obj: any = {
+                appointmentId: appointMentObj?._id,
+                drugAllergy,
+                diagnosis,
+                investigation,
+                notes,
+                pastHistory,
+                personalHistory,
+                surgicalHistory,
+                symptoms,
+                medicine
+            }
+            if (isEditModeOn) {
+            }
+            else {
+                obj.patientId = appointMentObj?.expert?._id
+            }
+            let res: any
+            if (isEditModeOn) {
+                res = await editPrescription(prescriptionId, obj);
+            }
+            else {
+                res = await addPrescription(obj);
+            }
+            if (res.data) {
+                toastSuccess(res.data.message);
+                navigation.goBack();
+            }
+        } catch (err) {
+            toastError(err)
+        }
     }
 
     return (
@@ -260,7 +260,7 @@ const Write_Prescription = (props: any) => {
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(95) }}>
                                 <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Symptoms:</Text>
-                                <TextInput multiline onChangeText={(e) => setSymptoms(e)} value={symptoms} placeholderTextColor="#8E8E8E" placeholder='Symptoms' style={[styles.inputBoxStyl, { height: "auto" }]} />
+                                <TextInput multiline onChangeText={(e) => setSymptoms(e)} value={symptoms} placeholderTextColor="#8E8E8E" placeholder='Symptoms' style={[styles.inputBoxStyl, { height: "auto", minHeight: hp(6.1), maxHeight: hp(20) }]} />
                             </View>
                         </View>
 
@@ -280,14 +280,14 @@ const Write_Prescription = (props: any) => {
 
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(95) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Drug Allergy:</Text>
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>*Drug Allergy:</Text>
                                 <TextInput onChangeText={(e) => setDrugAllergy(e)} value={drugAllergy} placeholderTextColor="#8E8E8E" placeholder='Drug Allergy' style={styles.inputBoxStyl} />
                             </View>
                         </View>
 
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(95) }}>
-                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Past History:</Text>
+                                <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>*Past History:</Text>
                                 <TextInput onChangeText={(e) => setPastHistory(e)} value={pastHistory} placeholderTextColor="#8E8E8E" placeholder='Past History' style={styles.inputBoxStyl} />
                             </View>
                         </View>
@@ -482,6 +482,7 @@ const Write_Prescription = (props: any) => {
                                 )
                             })
                         }
+
                         {/* justifyContent:"flex-end", */}
                         <View style={{ flexDirection: 'row', marginTop: hp(2), alignSelf: 'center', paddingTop: hp(1), paddingBottom: hp(1), width: wp(95), }}>
                             <TouchableOpacity
@@ -494,6 +495,27 @@ const Write_Prescription = (props: any) => {
                                 <Text style={{ fontSize: hp(1.8), color: 'white', fontFamily: mainFontmedium }}>+</Text>
                             </TouchableOpacity>
                         </View>
+
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                            <View style={{ width: wp(44), borderColor: "gray", borderWidth: 2 }}></View>
+                            <Text style={{ fontSize: hp(2), fontFamily: mainFontmedium }}>OR</Text>
+                            <View style={{ width: wp(43), borderColor: "gray", borderWidth: 2 }}></View>
+                        </View>
+                        <TouchableOpacity style={{
+                            width: wp(95),
+                            marginRight: 10,
+                            marginTop: 15,
+                            alignSelf: 'center',
+                            height: hp(5),
+                            backgroundColor: '#eee',
+                            borderColor: "#1263AC",
+                            borderWidth: .8,
+                            borderRadius: 5,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}>
+                            <Text style={{ textAlign: "center", fontSize: hp(2) }}>Upload Prescription</Text>
+                        </TouchableOpacity>
                         <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between' }}>
                             <View style={{ width: wp(95) }}>
                                 <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, color: 'black' }}>Investigation:</Text>
