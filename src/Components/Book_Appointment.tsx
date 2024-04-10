@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,27 +8,27 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
-  Animated,
   ScrollView,
-  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import Headerr from '../ReuseableComp/Headerr';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { toastError } from '../utils/toast.utils';
-import { getDoctors } from '../Services/doctor.service';
-import { generateFilePath } from '../Services/url.service';
-import { getstateAndCities } from '../Services/stateCity.service';
-import { Dropdown } from 'react-native-element-dropdown';
-import { getUser } from '../Services/user.service';
-import { Roles } from '../utils/constant';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {toastError} from '../utils/toast.utils';
+import {getDoctors} from '../Services/doctor.service';
+import {generateFilePath} from '../Services/url.service';
+import {getstateAndCities} from '../Services/stateCity.service';
+import {Dropdown} from 'react-native-element-dropdown';
+import {getUser} from '../Services/user.service';
+import {Roles} from '../utils/constant';
 import LoadingService from '../All_Loding_page/Loding_service';
-import DR_icons from "react-native-vector-icons/FontAwesome6"
+import DR_icons from 'react-native-vector-icons/FontAwesome6';
+import Minus_icon from 'react-native-vector-icons/AntDesign';
 
-const { height, width } = Dimensions.get('window');
+const {height, width} = Dimensions.get('window');
 const Book_Appointment = () => {
   const mainFont = 'Montserrat-Regular';
   const mainFontBold = 'Montserrat-Bold';
@@ -55,9 +55,10 @@ const Book_Appointment = () => {
   const [gender, setGender] = useState('');
 
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(6);
+  const [limit, setLimit] = useState(10);
   const [query, setQuery] = useState('');
   const [city, setCity] = useState('');
+  const [showDrname, setSoDrname] = useState(false);
 
   const [statesArr, setStatesArr] = useState<any[]>([]);
   const [cityArr, setCityArr] = useState<any[]>([]);
@@ -65,7 +66,7 @@ const Book_Appointment = () => {
 
   const HandleGetStatesAndCities = async () => {
     try {
-      let { data: res } = await getstateAndCities();
+      let {data: res} = await getstateAndCities();
       if (res.data && res.data.length > 0) {
         setStatesArr([
           ...res.data.map((el: any) => ({
@@ -85,16 +86,16 @@ const Book_Appointment = () => {
       let queryString = `page=${pageValue}&limit=${limit}`;
       if (query && query != '') {
         queryString = `${queryString}&query=${query}`;
+        setSoDrname(true);
       }
       if (city && city != '') {
         queryString = `${queryString}&city=${city}`;
       }
-
-      let { data: res } = await getDoctors(queryString);
+      let {data: res} = await getDoctors(queryString);
       if (res.data && res.data.length > 0) {
         setDoctorsArr((prev: any) => [...prev, ...res.data]);
         setSpecialisationArr(
-          res.spacility.map((el: any) => ({ label: el, value: el })),
+          res.spacility.map((el: any) => ({label: el, value: el})),
         );
       } else {
         setLastPageReached(true);
@@ -110,6 +111,7 @@ const Book_Appointment = () => {
       let queryString = `page=${1}&limit=${limit}`;
       if (query && query != '') {
         queryString = `${queryString}&query=${query}`;
+        setSoDrname(true);
       }
       if (city && city != '') {
         queryString = `${queryString}&city=${city}`;
@@ -126,7 +128,7 @@ const Book_Appointment = () => {
       if (sortType && sortType != '') {
         queryString = `${queryString}&pricesort=${sortType}`;
       }
-      let { data: res } = await getDoctors(queryString);
+      let {data: res} = await getDoctors(queryString);
       if (res.data) {
         setDoctorsArr([...res.data]);
       } else {
@@ -136,6 +138,9 @@ const Book_Appointment = () => {
       toastError(err);
     }
   };
+  useEffect(() => {
+    handleSearch();
+  }, [city, specialization, gender, sortType, query, price]);
 
   const handleGetAndSetUser = async () => {
     let userData = await getUser();
@@ -179,9 +184,9 @@ const Book_Appointment = () => {
   };
 
   return (
-    <View style={{ width: width, backgroundColor: '#F1F8FF', flex: 1 }}>
+    <View style={{width: width, backgroundColor: '#F1F8FF', flex: 1}}>
       <Headerr secndheader={true} label="Book Appointment" />
-      <View style={{ width: wp(95), alignSelf: 'center', marginTop: hp(1) }}>
+      <View style={{width: wp(95), alignSelf: 'center', marginTop: hp(1)}}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -261,28 +266,6 @@ const Book_Appointment = () => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => setSlctdsec('gender')}
-            style={{
-              height: hp(5),
-              marginRight: 10,
-              paddingLeft: wp(3),
-              paddingRight: wp(3),
-              backgroundColor: slctdsec == 'gender' ? maincolor : '#F1F8FF',
-              justifyContent: 'center',
-              borderRadius: 5,
-              borderColor: maincolor,
-              borderWidth: slctdsec == 'gender' ? 0 : 0.8,
-            }}>
-            <Text
-              style={{
-                color: slctdsec == 'gender' ? 'white' : maincolor,
-                fontFamily: mainFont,
-                fontSize: hp(1.8),
-              }}>
-              Gender
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
             onPress={() => setSlctdsec('loc')}
             style={{
               height: hp(5),
@@ -304,6 +287,29 @@ const Book_Appointment = () => {
               Location
             </Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setSlctdsec('gender')}
+            style={{
+              height: hp(5),
+              marginRight: 10,
+              paddingLeft: wp(3),
+              paddingRight: wp(3),
+              backgroundColor: slctdsec == 'gender' ? maincolor : '#F1F8FF',
+              justifyContent: 'center',
+              borderRadius: 5,
+              borderColor: maincolor,
+              borderWidth: slctdsec == 'gender' ? 0 : 0.8,
+            }}>
+            <Text
+              style={{
+                color: slctdsec == 'gender' ? 'white' : maincolor,
+                fontFamily: mainFont,
+                fontSize: hp(1.8),
+              }}>
+              Gender
+            </Text>
+          </TouchableOpacity>
+
           <TouchableOpacity
             onPress={() => setSlctdsec('price')}
             style={{
@@ -357,7 +363,7 @@ const Book_Appointment = () => {
               flexDirection: 'row',
               borderColor: 'gray',
               borderWidth: 1,
-              borderRadius: 10,
+              borderRadius: 7,
               justifyContent: 'space-between',
               paddingHorizontal: 5,
               alignItems: 'center',
@@ -366,7 +372,12 @@ const Book_Appointment = () => {
               placeholder={`Please search Doctor Name`}
               value={query}
               onChangeText={e => setQuery(e)}
-              style={{ flex: 1, paddingLeft: 10 }}
+              style={{
+                flex: 1,
+                paddingLeft: 10,
+                height: hp(6.4),
+                fontSize: hp(2),
+              }}
             />
             <TouchableOpacity
               onPress={() => handleSearch()}
@@ -396,7 +407,7 @@ const Book_Appointment = () => {
               flexDirection: 'row',
               borderColor: 'gray',
               borderWidth: 1,
-              borderRadius: 10,
+              borderRadius: 7,
               justifyContent: 'space-between',
               paddingHorizontal: 5,
               alignItems: 'center',
@@ -405,28 +416,14 @@ const Book_Appointment = () => {
               placeholder={`Please search price`}
               value={price}
               onChangeText={e => setPrice(e)}
-              style={{ flex: 1, paddingLeft: 10 }}
+              style={{
+                flex: 1,
+                paddingLeft: 10,
+                fontSize: hp(2),
+                height: hp(6.4),
+              }}
               keyboardType="number-pad"
             />
-            <TouchableOpacity
-              onPress={() => handleSearch()}
-              style={{
-                paddingHorizontal: 15,
-                height: hp(5),
-                backgroundColor: '#50B148',
-                borderRadius: 5,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  color: 'white',
-                  fontFamily: mainFont,
-                  fontSize: hp(1.8),
-                }}>
-                Search
-              </Text>
-            </TouchableOpacity>
           </View>
         )}
 
@@ -443,7 +440,7 @@ const Book_Appointment = () => {
               alignItems: 'center',
             }}>
             <Dropdown
-              style={[styles.dropdown, { width: wp(69) }]}
+              style={[styles.dropdown, {width: wp(93)}]}
               placeholderStyle={styles.placeholderStyle}
               selectedTextStyle={styles.selectedTextStyle}
               inputSearchStyle={styles.inputSearchStyle}
@@ -458,25 +455,6 @@ const Book_Appointment = () => {
                 setSpecialisation(item.value);
               }}
             />
-            <TouchableOpacity
-              onPress={() => handleSearch()}
-              style={{
-                paddingHorizontal: 15,
-                height: hp(5),
-                backgroundColor: '#50B148',
-                borderRadius: 5,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  color: 'white',
-                  fontFamily: mainFont,
-                  fontSize: hp(1.8),
-                }}>
-                Search
-              </Text>
-            </TouchableOpacity>
           </View>
         )}
 
@@ -493,45 +471,23 @@ const Book_Appointment = () => {
               alignItems: 'center',
             }}>
             <Dropdown
-              style={[styles.dropdown, { width: wp(69) }]}
+              style={[styles.dropdown, {width: wp(93)}]}
               placeholderStyle={styles.placeholderStyle}
               selectedTextStyle={styles.selectedTextStyle}
               inputSearchStyle={styles.inputSearchStyle}
               iconStyle={styles.iconStyle}
               data={[
-                { label: 'Male', value: 'Male' },
-                { label: 'Female', value: 'Female' },
+                {label: 'Male', value: 'Male'},
+                {label: 'Female', value: 'Female'},
               ]}
-              // search
-              maxHeight={300}
               labelField="label"
               valueField="value"
               placeholder="Select gender"
-              // searchPlaceholder="Search..."
               value={gender}
               onChange={(item: any) => {
                 setGender(item.value);
               }}
             />
-            <TouchableOpacity
-              onPress={() => handleSearch()}
-              style={{
-                paddingHorizontal: 15,
-                height: hp(5),
-                backgroundColor: '#50B148',
-                borderRadius: 5,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  color: 'white',
-                  fontFamily: mainFont,
-                  fontSize: hp(1.8),
-                }}>
-                Search
-              </Text>
-            </TouchableOpacity>
           </View>
         )}
         {slctdsec == 'sort' && (
@@ -541,20 +497,22 @@ const Book_Appointment = () => {
               flexDirection: 'row',
               borderColor: 'gray',
               borderWidth: 1,
-              borderRadius: 10,
-              paddingVertical: 10,
+              borderRadius: 7,
+              paddingVertical: hp(1.1),
               justifyContent: 'space-between',
               paddingHorizontal: 5,
               alignItems: 'center',
             }}>
-            <View>
-              <Text style={{ paddingHorizontal: 10, marginBottom: 5 }}>
-                Price
-              </Text>
+            <Text style={{fontSize: hp(2), fontWeight: 'bold'}}>
+              Price &#8645;
+            </Text>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-around'}}>
               <View
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
+                  justifyContent: 'space-between',
                   paddingHorizontal: 5,
                   alignItems: 'center',
                 }}>
@@ -564,7 +522,7 @@ const Book_Appointment = () => {
                   }}
                   style={{
                     paddingHorizontal: 15,
-                    paddingVertical: 5,
+                    paddingVertical: hp(1),
                     backgroundColor: sortType == 'ASC' ? '#50B148' : 'gray',
                     borderRadius: 5,
                     justifyContent: 'center',
@@ -574,7 +532,7 @@ const Book_Appointment = () => {
                     style={{
                       color: 'white',
                       fontFamily: mainFont,
-                      fontSize: hp(1.8),
+                      fontSize: hp(2),
                     }}>
                     Ascending
                   </Text>
@@ -585,7 +543,7 @@ const Book_Appointment = () => {
                   }}
                   style={{
                     paddingHorizontal: 15,
-                    paddingVertical: 5,
+                    paddingVertical: hp(1),
                     marginLeft: 10,
                     backgroundColor: sortType == 'DESC' ? '#50B148' : 'gray',
                     borderRadius: 5,
@@ -596,34 +554,13 @@ const Book_Appointment = () => {
                     style={{
                       color: 'white',
                       fontFamily: mainFont,
-                      fontSize: hp(1.8),
+                      fontSize: hp(2),
                     }}>
                     Descending
                   </Text>
                 </TouchableOpacity>
               </View>
             </View>
-            <TouchableOpacity
-              onPress={() => {
-                handleSearch();
-              }}
-              style={{
-                paddingHorizontal: 15,
-                height: hp(5),
-                backgroundColor: '#50B148',
-                borderRadius: 5,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  color: 'white',
-                  fontFamily: mainFont,
-                  fontSize: hp(1.8),
-                }}>
-                Search
-              </Text>
-            </TouchableOpacity>
           </View>
         )}
         {slctdsec == 'status' && (
@@ -665,62 +602,60 @@ const Book_Appointment = () => {
             style={{
               borderColor: 'gray',
               borderWidth: 1,
-              borderRadius: 10,
-              paddingVertical: 10,
+              borderRadius: 7,
             }}>
             <View
               style={{
-                display: 'flex',
                 flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginBottom: 10,
+                flexWrap: 'wrap',
                 paddingHorizontal: 5,
                 alignItems: 'center',
               }}>
-              <Dropdown
-                style={[
-                  styles.dropdown,
-                  isFocus && { borderColor: 'blue', borderWidth: 0.5 },
-                ]}
-                placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={styles.selectedTextStyle}
-                inputSearchStyle={styles.inputSearchStyle}
-                iconStyle={styles.iconStyle}
-                data={statesArr}
-                // search
-                maxHeight={300}
-                labelField="label"
-                valueField="value"
-                placeholder="Select One"
-                // searchPlaceholder="Search..."
-                value={city}
-                onFocus={() => setIsFocus(true)}
-                onBlur={() => setIsFocus(false)}
-                onChange={(item: any) => {
-                  setCityArr([
-                    ...item.cities.map((el: any) => ({ label: el, value: el })),
-                  ]);
-                  setIsFocus(false);
-                }}
-              />
+              {statesArr ? (
+                <Dropdown
+                  style={[
+                    styles.dropdown,
+                    {marginBottom: hp(2), width: wp(93)},
+                    isFocus && {borderColor: 'blue', borderWidth: 0.5},
+                  ]}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  data={statesArr}
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder="Select One"
+
+                  value={city}
+                  onFocus={() => setIsFocus(true)}
+                  onBlur={() => setIsFocus(false)}
+                  onChange={(item: any) => {
+                    setCityArr([
+                      ...item.cities.map((el: any) => ({label: el, value: el})),
+                    ]);
+                    setIsFocus(false);
+                  }}
+                />
+              ) : null}
 
               {cityArr && cityArr.length > 0 && (
                 <Dropdown
                   style={[
                     styles.dropdown,
-                    cityIsFocused && { borderColor: 'blue', borderWidth: 0.5 },
+                    {width: wp(93)},
+                    cityIsFocused && {borderColor: 'blue', borderWidth: 0.5},
                   ]}
                   placeholderStyle={styles.placeholderStyle}
                   selectedTextStyle={styles.selectedTextStyle}
                   inputSearchStyle={styles.inputSearchStyle}
                   iconStyle={styles.iconStyle}
                   data={cityArr}
-                  // search
                   maxHeight={300}
                   labelField="label"
                   valueField="value"
                   placeholder="Select One"
-                  // searchPlaceholder="Search..."
                   value={city}
                   onFocus={() => setCityIsFocused(true)}
                   onBlur={() => setCityIsFocused(false)}
@@ -739,53 +674,132 @@ const Book_Appointment = () => {
                 justifyContent: 'space-between',
                 paddingHorizontal: 5,
                 alignItems: 'center',
-              }}>
-              <TouchableOpacity
-                onPress={() => setCity('')}
-                style={{
-                  marginHorizontal: 15,
-                  flex: 1,
-                  height: hp(5),
-                  backgroundColor: 'gray',
-                  borderRadius: 5,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text
-                  style={{
-                    color: 'white',
-                    fontFamily: mainFont,
-                    fontSize: hp(1.8),
-                  }}>
-                  Clear
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => handleSearch()}
-                style={{
-                  marginHorizontal: 15,
-                  flex: 1,
-                  height: hp(5),
-                  backgroundColor: '#50B148',
-                  borderRadius: 5,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text
-                  style={{
-                    color: 'white',
-                    fontFamily: mainFont,
-                    fontSize: hp(1.8),
-                  }}>
-                  Search
-                </Text>
-              </TouchableOpacity>
-            </View>
+              }}></View>
           </View>
         )}
-
         <View
-          style={{ width: wp(95), marginTop: hp(1), height: height - hp(10) }}>
+          style={{
+            flexDirection: 'row',
+            // justifyContent: 'space-between',
+            flexWrap: 'wrap',
+          }}>
+          {showDrname ? (
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              {query ? (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginRight: wp(3),
+                  }}>
+                  <Text style={{fontSize: hp(2)}}>{query}</Text>
+                  <Minus_icon
+                    name="minus"
+                    style={{
+                      backgroundColor: 'red',
+                      color: '#fff',
+                      fontSize: hp(2),
+                      borderRadius: hp(40),
+                      marginLeft: wp(1),
+                    }}
+                    onPress={() => setQuery('')}
+                  />
+                </View>
+              ) : (
+                <Text> </Text>
+              )}
+            </View>
+          ) : <Text></Text>}
+
+          <View>
+            {specialization ? (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginRight: wp(3),
+                }}>
+                <Text style={{fontSize: hp(2)}}>{specialization}</Text>
+                <Minus_icon
+                  name="minus"
+                  style={{
+                    backgroundColor: 'red',
+                    color: '#fff',
+                    fontSize: hp(2),
+                    borderRadius: hp(40),
+                    marginLeft: wp(1),
+                  }}
+                  onPress={() => setSpecialisation('')}
+                />
+              </View>
+            ) : (
+              <Text> </Text>
+            )}
+          </View>
+          <View>
+            {city ? (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginRight: wp(3),
+                }}>
+                <Text style={{fontSize: hp(2)}}>{city}</Text>
+                <Minus_icon
+                  name="minus"
+                  style={{
+                    backgroundColor: 'red',
+                    color: '#fff',
+                    fontSize: hp(2),
+                    borderRadius: hp(40),
+                    marginLeft: wp(1),
+                  }}
+                  onPress={() => {
+                    setCity('');
+                    setCityArr([]);
+                  }}
+                />
+              </View>
+            ) : (
+              <Text> </Text>
+            )}
+          </View>
+          <View>
+            {gender ? (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text style={{fontSize: hp(2)}}>{gender}</Text>
+                <Minus_icon
+                  name="minus"
+                  style={{
+                    backgroundColor: 'red',
+                    color: '#fff',
+                    fontSize: hp(2),
+                    borderRadius: hp(40),
+                    marginLeft: wp(1),
+                  }}
+                  onPress={() => setGender('')}
+                />
+              </View>
+            ) : (
+              <Text> </Text>
+            )}
+          </View>
+        </View>
+        <View
+          style={{width: wp(95), marginTop: hp(1), height: height - hp(10)}}>
           <FlatList
             data={doctorsArr}
             showsVerticalScrollIndicator={false}
@@ -795,16 +809,14 @@ const Book_Appointment = () => {
                   <View>
                     <LoadingService />
                     <LoadingService />
-                    <LoadingService />
                   </View>
                 )}
               </>
             }
-
             onEndReached={() => {
               handleOnEndReached();
             }}
-            renderItem={({ item, index }) => {
+            renderItem={({item, index}) => {
               return (
                 <View
                   style={{
@@ -817,10 +829,9 @@ const Book_Appointment = () => {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                   }}>
-
                   <TouchableOpacity
                     onPress={() =>
-                      navigation.navigate('About Doctor', { doctorId: item })
+                      navigation.navigate('About Doctor', {doctorId: item})
                     }>
                     <View
                       style={{
@@ -828,10 +839,10 @@ const Book_Appointment = () => {
                         justifyContent: 'space-between',
                         width: '89%',
                       }}>
-                      <TouchableOpacity style={{ flexDirection: 'row' }}>
+                      <TouchableOpacity style={{flexDirection: 'row'}}>
                         <Image
-                          source={{ uri: generateFilePath(item.image) }}
-                          style={{ height: wp(18), width: wp(18) }}
+                          source={{uri: generateFilePath(item.image)}}
+                          style={{height: wp(18), width: wp(18)}}
                         />
                         <View
                           style={{
@@ -839,9 +850,18 @@ const Book_Appointment = () => {
                             minHeight: wp(18),
                             justifyContent: 'center',
                           }}>
-                          <View style={{flexDirection:"row"}}>
-                            <DR_icons name='user-doctor' style={{fontSize:hp(1.5)}} />
-                            <Text style={{ fontSize: hp(1.5),paddingLeft:wp(.75) }}>{item.specialization}</Text>
+                          <View style={{flexDirection: 'row'}}>
+                            <DR_icons
+                              name="user-doctor"
+                              style={{fontSize: hp(1.5)}}
+                            />
+                            <Text
+                              style={{
+                                fontSize: hp(1.5),
+                                paddingLeft: wp(0.75),
+                              }}>
+                              {item.specialization}
+                            </Text>
                           </View>
                           <View
                             style={{
@@ -890,10 +910,10 @@ const Book_Appointment = () => {
                           alignItems: 'flex-end',
                           justifyContent: 'space-between',
                         }}>
-                        <View style={{ flexDirection: 'row', maxWidth: wp(35) }}>
+                        <View style={{flexDirection: 'row', maxWidth: wp(35)}}>
                           <Image
                             source={require('../../assets/images/location.png')}
-                            style={{ height: wp(4), width: wp(4) }}
+                            style={{height: wp(4), width: wp(4)}}
                           />
                           <Text
                             style={{
@@ -920,7 +940,7 @@ const Book_Appointment = () => {
                               backgroundColor:
                                 item?.userStatus == 'online' ? 'green' : 'red',
                             }}></Text>
-                          <Text style={{ marginLeft: 5 }}>
+                          <Text style={{marginLeft: 5}}>
                             {item?.userStatus == 'online'
                               ? 'Available'
                               : 'Not available'}
@@ -949,7 +969,7 @@ const Book_Appointment = () => {
                     }}>
                     <TouchableOpacity
                       onPress={() =>
-                        navigation.navigate('BookVdo', { doctor: item })
+                        navigation.navigate('BookVdo', {doctor: item})
                       }
                       style={{
                         flex: 1,
@@ -972,7 +992,7 @@ const Book_Appointment = () => {
                     {userObj?.role !== Roles.FRANCHISE && (
                       <TouchableOpacity
                         onPress={() =>
-                          navigation.navigate('BookClient', { doctor: item })
+                          navigation.navigate('BookClient', {doctor: item})
                         }
                         style={{
                           flex: 1,
@@ -1005,32 +1025,29 @@ const Book_Appointment = () => {
 };
 const styles = StyleSheet.create({
   dropdown: {
-    height: 50,
-    // borderColor: 'gray',
-    // borderWidth: 0.5,
+    height: hp(6.4),
     borderRadius: 8,
-    paddingHorizontal: 8,
-    marginTop: hp(1),
-    width: wp(45),
-    backgroundColor: '#F2F2F2E5',
+    // paddingHorizontal: 8,
+    // marginTop: hp(1),
+    width: wp(93),
+    backgroundColor: '#fff',
+    color: '#000',
   },
   dropdown1: {
-    height: 50,
-    // borderColor: 'gray',
-    // borderWidth: 0.5,
+    height: hp(6.4),
     borderRadius: 8,
     paddingHorizontal: 8,
     marginTop: hp(1),
     width: wp(95),
-    backgroundColor: '#F2F2F2E5',
+    backgroundColor: 'red',
   },
   placeholderStyle: {
-    fontSize: 16,
-    color: '#8E8E8E',
+    fontSize: hp(2),
+    color: '#000',
   },
   selectedTextStyle: {
-    fontSize: 16,
-    color: '#8E8E8E',
+    fontSize: hp(2),
+    color: '#000',
   },
   iconStyle: {
     width: 20,
@@ -1038,8 +1055,8 @@ const styles = StyleSheet.create({
   },
   inputSearchStyle: {
     height: 40,
-    fontSize: 16,
-    color: '#8E8E8E',
+    fontSize: hp(2),
+    color: '#000',
   },
 });
 export default Book_Appointment;

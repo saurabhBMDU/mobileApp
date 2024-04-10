@@ -454,7 +454,7 @@ const Appointment = () => {
             userObj?.role == Roles.PATIENT || userObj?.role == Roles.FRANCHISE
               ? true
               : false
-          }
+            }
           btnlbl="Book Appointment"
         />
         {/* this is feedback  */}
@@ -743,8 +743,6 @@ const Appointment = () => {
           onEndReachedThreshold={0.5}
           initialNumToRender={limit}
           renderItem={({ item, index }) => {
-            console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", item.isPrescription)
-
             const apiDate = moment(item?.dateTime).format('YYYY-MM-DD'); // real date time
             const currentDate = moment().format('YYYY-MM-DD'); // current date time
             const gapInDays = moment(apiDate).diff(moment(currentDate), 'days'); // diffrent

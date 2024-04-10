@@ -15,6 +15,7 @@ const serverUrl = url + '/doctor';
 
 
 export const getDoctors = async (query) => {
+    console.log(query)
     let config = {
         headers: {
             'Content-type': "*",
