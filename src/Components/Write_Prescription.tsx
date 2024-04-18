@@ -13,13 +13,17 @@ import {
   Keyboard,
   Alert,
 } from 'react-native';
-import {Dropdown} from 'react-native-element-dropdown';
-import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
+// import RNFetchBlob from 'react-native-fetch-blob';
 
+import {Dropdown} from 'react-native-element-dropdown';
+import {PermissionsAndroid} from 'react-native';
+import Remmove_icons from 'react-native-vector-icons/AntDesign';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import RNFS from 'react-native-fs';
+
 import Headerr from '../ReuseableComp/Headerr';
 import {getUser} from '../Services/user.service';
 import {addMedicine, getMedicines} from '../Services/MedicinesList.service';
@@ -31,6 +35,7 @@ import {
   launchCamera,
   ImagePickerResponse,
   ImagePickerOptions,
+  requestCameraPermission,
 } from 'react-native-image-picker';
 
 import moment from 'moment';
@@ -44,6 +49,7 @@ import {
   doseFormArr,
   doses,
 } from '../allArrayData/DrArrayDatta';
+import PreView from '../allModals/PreView';
 
 const {height, width} = Dimensions.get('window');
 
@@ -60,9 +66,8 @@ const Write_Prescription = (props: any) => {
 
   const [appointMentObj, setAppointMentObj] = useState<any>({});
   const [soModalreschedule, setSoModalreschedule] = useState<boolean>(false);
-
+  const [preView, setPreview] = useState<boolean>(false);
   const focused = useIsFocused();
-
   const [drugAllergy, setDrugAllergy] = useState('');
   const [diagnosis, setDiagnosis] = useState('');
   const [investigation, setInvestigation] = useState('');
@@ -79,7 +84,11 @@ const Write_Prescription = (props: any) => {
 
   const [isEditModeOn, setIsEditModeOn] = useState(false);
   const [prescriptionId, setPrescriptionId] = useState('');
-
+  const [sendData, setSendData] = useState({});
+  const [page, setPage] = useState(1);
+  const [limit, steLimit] = useState(1000);
+  const [filter, setFilter] = useState('');
+  const [loding, setloding] = useState(false);
   const [medicinesArr, setMedicinesArr] = useState([]);
   const handleGetAndSetUser = async () => {
     let userData = await getUser();
@@ -101,12 +110,20 @@ const Write_Prescription = (props: any) => {
       duration_count: '',
     },
   ]);
+  console.log(" dfgs  gfh        ",appointMentObj)
 
   const handleGetMedicines = async () => {
+    setloding(true);
     try {
-      let query = 'page=1&limit=11500';
+      let query;
+      if (filter) {
+        query = `page=${page}&limit=${limit}&filter=${filter}`;
+      } else {
+        query = `page=${page}&limit=${limit}`;
+      }
       let {data: res} = await getMedicines(query);
       if (res.data) {
+        setloding(false);
         setMedicinesArr(
           res.data.map((el: any) => ({label: el.name, value: el.name})),
         );
@@ -170,6 +187,15 @@ const Write_Prescription = (props: any) => {
       }
     }
   }, [focused, props?.route?.params?.data]);
+  // debouncing implementation
+  let delay = 700;
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      handleGetMedicines();
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [filter, delay]);
+
   const handleAddMedicine = () => {
     let tempArr = medicine;
     tempArr.push({
@@ -204,52 +230,46 @@ const Write_Prescription = (props: any) => {
 
     setMedicine([...tempArr]);
   };
-
+  const clodeModal = () => {
+    setPreview(false);
+  };
   const handleAddPrescription = async () => {
-    if (drugAllergy == '') {
+    if (drugAllergy === '') {
       toastError('Drug Allergy is Required');
       return;
     }
-    if (pastHistory == '') {
+    if (pastHistory === '') {
       toastError('Past History Is Required');
       return;
     }
     try {
       let obj: any = {
         appointmentId: appointMentObj?._id,
-        drugAllergy,
-        diagnosis,
-        investigation,
-        notes,
-        pastHistory,
-        personalHistory,
-        surgicalHistory,
+        doctorId: appointMentObj.doctor._id,
+        patientId: appointMentObj.expert._id,
         symptoms,
+        diagnosis,
         medicine,
+        investigation,
+        pastHistory,
+        surgicalHistory,
+        drugAllergy,
+        notes,
+        personalHistory,
       };
-      if (isEditModeOn) {
-      } else {
-        obj.patientId = appointMentObj?.expert?._id;
+
+      if (selectedImage) {
+        const base64Image = await RNFS.readFile(selectedImage, 'base64');
+        obj.image = base64Image;
       }
-      //   let res: any;
-      if (isEditModeOn) {
-        console.log(obj);
-        // res = await editPrescription(prescriptionId, obj);
-      } else {
-        console.log(obj);
-        // res = await addPrescription(obj);
-      }
-      //   if (res.data) {
-      //     toastSuccess(res.data.message);
-      //     navigation.goBack();
-      //   }
+      setSendData(obj);
+      setPreview(true);
     } catch (err) {
       toastError(err);
     }
   };
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
   const openImagePicker = () => {
     const options: ImagePickerOptions = {
       mediaType: 'photo',
@@ -261,30 +281,52 @@ const Write_Prescription = (props: any) => {
     launchImageLibrary(options, handleResponse);
   };
 
-  const handleCameraLaunch = () => {
+  const handleCameraLaunch = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'App Camera Permission',
+          message: 'App needs access to your camera',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        launchCameraAfterPermission();
+      } else {
+        toastError('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  const launchCameraAfterPermission = () => {
     const options: ImagePickerOptions = {
       mediaType: 'photo',
       includeBase64: false,
       maxHeight: 2000,
       maxWidth: 2000,
     };
-
     launchCamera(options, handleResponse);
   };
 
   const handleResponse = (response: ImagePickerResponse) => {
     if (response.didCancel) {
-      console.log('User cancelled image picker');
-    } else if (response.error) {
-      console.log('Image picker error: ', response.error);
+    } else if (response.errorMessage) {
     } else {
-      let imageUri =
-        response.uri || (response.assets && response.assets[0].uri);
+      let imageUri;
+      if (response.assets && response.assets.length > 0) {
+        imageUri = response.assets[0]?.uri;
+      } else {
+        imageUri = response.uri;
+      }
       setSelectedImage(imageUri);
       setSoModalreschedule(false);
     }
   };
-
   return (
     <View style={{width: width, flex: 1, backgroundColor: 'white'}}>
       <Headerr secndheader={true} label="Prescription" />
@@ -335,6 +377,7 @@ const Write_Prescription = (props: any) => {
                     BP :
                     <Text style={{color: '#757474'}}>{appointMentObj?.bp}</Text>
                   </Text>
+                  
                 </View>
                 <View
                   style={{
@@ -376,6 +419,7 @@ const Write_Prescription = (props: any) => {
                   </Text>
                 </View>
               </View>
+              
 
               <View style={{width: wp(45)}}>
                 <View
@@ -430,7 +474,21 @@ const Write_Prescription = (props: any) => {
                     </Text>
                   </Text>
                 </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(1),
+                    paddingLeft: wp(3),
+                  }}>
+                  <Text style={{fontSize: hp(1.7), fontFamily: mainFont}}>
+                    BMI :
+                    <Text style={{color: '#757474'}}>
+                      {appointMentObj?.bmi}
+                    </Text>
+                  </Text>
+                </View>
               </View>
+              
             </View>
 
             <View
@@ -586,7 +644,6 @@ const Write_Prescription = (props: any) => {
                 />
               </View>
             </View>
-
             <View
               style={{
                 flexDirection: 'row',
@@ -673,11 +730,14 @@ const Write_Prescription = (props: any) => {
                       selectedTextStyle={styles.selectedTextStyle}
                       inputSearchStyle={styles.inputSearchStyle}
                       iconStyle={styles.iconStyle}
-                      data={medicinesArr}
-                      // search
-                      maxHeight={300}
+                      data={
+                        loding
+                          ? [{label: 'Loading...', value: null}]
+                          : medicinesArr
+                      }
                       search
                       searchPlaceholder="Search..."
+                      maxHeight={300}
                       labelField="label"
                       valueField="value"
                       placeholder="Select Medicine"
@@ -691,6 +751,16 @@ const Write_Prescription = (props: any) => {
                           index,
                         );
                       }}
+                      renderInputSearch={(onSearch: (text: string) => void) => (
+                        <TextInput
+                          style={styles.inputBoxStyl}
+                          onChangeText={text => {
+                            setFilter(text); // Log the typed text to console
+                            onSearch(text); // Trigger the search with the typed text
+                          }}
+                          placeholder="Search..."
+                        />
+                      )}
                     />
                   </View>
                   <View
@@ -718,7 +788,7 @@ const Write_Prescription = (props: any) => {
                         maxHeight={300}
                         labelField="label"
                         valueField="value"
-                        placeholder="Dose"
+                        placeholder="Unit"
                         value={el.duration_count}
                         onFocus={() => setIsFocus(true)}
                         onBlur={() => setIsFocus(false)}
@@ -894,7 +964,7 @@ const Write_Prescription = (props: any) => {
                         maxHeight={300}
                         labelField="label"
                         valueField="value"
-                        placeholder="count"
+                        placeholder="Unit"
                         value={el.note}
                         onFocus={() => setIsFocus(true)}
                         onBlur={() => setIsFocus(false)}
@@ -1090,26 +1160,32 @@ const Write_Prescription = (props: any) => {
                         borderRadius: 5,
                       }}
                       onPress={openImagePicker}
-
                     />
                   </View>
                 </View>
               </TouchableWithoutFeedback>
             </Modal>
 
-            {selectedImage &&  (
-              
-              <View>
-                <Text
-                  style={{fontSize: hp(2),textAlign:"right"}}
-                  onPress={() => setSelectedImage('')}>
-                  X
-                </Text>
+            {selectedImage && (
+              <View style={{flexDirection: 'row'}}>
                 <Image
                   source={{uri: selectedImage}}
                   style={{height: hp(30), width: wp(50)}}
                   resizeMode="contain"
                 />
+                <View>
+                  <Remmove_icons
+                    name="closecircle"
+                    style={{
+                      fontSize: hp(4),
+                      textAlign: 'right',
+                      backgroundColor: '#fff',
+                      color: 'red',
+                      borderRadius: wp(40),
+                    }}
+                    onPress={() => setSelectedImage('')}
+                  />
+                </View>
               </View>
             )}
             <View
@@ -1191,6 +1267,20 @@ const Write_Prescription = (props: any) => {
             Close
           </Text>
         </TouchableOpacity>
+        <Modal
+          isVisible={preView}
+          animationIn={'bounceIn'}
+          animationOut={'slideOutDown'}
+          onBackButtonPress={() => setPreview(false)}
+          style={{marginLeft: 0, marginRight: 0}}>
+          <TouchableWithoutFeedback onPress={() => setPreview(false)}>
+            <PreView
+              objectData={sendData}
+              clodeBtn={clodeModal}
+              images={selectedImage}
+            />
+          </TouchableWithoutFeedback>
+        </Modal>
 
         <TouchableOpacity
           onPress={() => handleAddPrescription()}

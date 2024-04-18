@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,8 +12,8 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {Calendar} from 'react-native-calendars';
-import {Dropdown} from 'react-native-element-dropdown';
+import { Calendar } from 'react-native-calendars';
+import { Dropdown } from 'react-native-element-dropdown';
 import RemoveIcon from 'react-native-vector-icons/MaterialIcons';
 import Close_Icons from 'react-native-vector-icons/AntDesign';
 
@@ -22,7 +22,7 @@ const mainColor = '#1263AC';
 const mainFontBold = 'Montserrat-Bold';
 const mainFontMedium = 'Montserrat-Medium';
 
-const CompleteFollowupModal = ({cartID, closeModal, drrIdes, modeOf}) => {
+const CompleteFollowupModal = ({ cartID, closeModal, drrIdes, modeOf }) => {
   const url = 'https://api.fever99.com/api/';
   const [soInputField, setSoInputField] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
@@ -77,15 +77,19 @@ const CompleteFollowupModal = ({cartID, closeModal, drrIdes, modeOf}) => {
     }
     Alert.alert('Submitted');
   };
+ const completedStatus=async()=>{
+  const response= await axios.put(`${url}/appointments/${cartID}`)
+  
+ }
 
   const handleFinalSubmit = () => {
     Alert.alert(
       'Completed!',
       'Appointment completed successfully.',
       [
-        { 
-          text: 'Completed', 
-          onPress: () => closeModal(), 
+        {
+          text: 'Completed',
+          onPress: () => closeModal(),
           // style: 'default', // or 'cancel' for iOS
           color: 'blue', // text color
           backgroundColor: 'lightblue' // background color
@@ -98,7 +102,7 @@ const CompleteFollowupModal = ({cartID, closeModal, drrIdes, modeOf}) => {
       ],
       { cancelable: false }
     );
-    
+
   };
 
   return (
@@ -121,9 +125,9 @@ const CompleteFollowupModal = ({cartID, closeModal, drrIdes, modeOf}) => {
       )}
       <View style={styles.subView}>
         {!soInputField ? (
-          <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
             <TouchableOpacity
-              style={[styles.bothButton, {borderColor: mainColor}]}
+              style={[styles.bothButton, { borderColor: mainColor }]}
               onPress={() => setSoInputField(true)}>
               <Text
                 style={{
@@ -136,9 +140,9 @@ const CompleteFollowupModal = ({cartID, closeModal, drrIdes, modeOf}) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => handleFinalSubmit()}
-              style={[styles.bothButton, {backgroundColor: mainColor}]}>
+              style={[styles.bothButton, { backgroundColor: mainColor }]}>
               <Text
-                style={{color: 'white', fontFamily: mainFont, fontSize: hp(2)}}>
+                style={{ color: 'white', fontFamily: mainFont, fontSize: hp(2) }}>
                 Completed
               </Text>
             </TouchableOpacity>
@@ -151,8 +155,8 @@ const CompleteFollowupModal = ({cartID, closeModal, drrIdes, modeOf}) => {
                 <RemoveIcon name="remove" style={styles.minusIcons} />
               </TouchableOpacity>
             </View>
-            <Text style={{color: 'red', fontFamily: mainFont}}>{errorss}</Text>
-            <View style={{alignItems: 'center'}}>
+            <Text style={{ color: 'red', fontFamily: mainFont }}>{errorss}</Text>
+            <View style={{ alignItems: 'center' }}>
               <TouchableOpacity onPress={openCalendar}>
                 <Text style={styles.label}>Select Date:</Text>
                 <TextInput
@@ -166,7 +170,7 @@ const CompleteFollowupModal = ({cartID, closeModal, drrIdes, modeOf}) => {
                   ]}
                 />
               </TouchableOpacity>
-              <View style={{width: wp(100), maxWidth: 700}}>
+              <View style={{ width: wp(100), maxWidth: 700 }}>
                 {showCalendar && (
                   <Calendar
                     onDayPress={day => {
@@ -187,7 +191,7 @@ const CompleteFollowupModal = ({cartID, closeModal, drrIdes, modeOf}) => {
                     <Dropdown
                       style={[
                         styles.inputField,
-                        isFocus && {borderWidth: 0.5},
+                        isFocus && { borderWidth: 0.5 },
                         !selectedTimeSlot && isSlotEmpty && styles.errorBorder,
                       ]}
                       placeholderStyle={styles.placeholderStyle}

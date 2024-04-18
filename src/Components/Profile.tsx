@@ -97,7 +97,6 @@ const Profile = () => {
       let token = await getJwt();
       if (token) {
         const { data: res }: any = await isUserLoggedIn();
-        console.log('response from backend vikram', res)
         if (res.status == false) {
           handleLogout2()
           console.log('response from backend', res)

@@ -185,6 +185,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.25,
     borderColor: 'gray',
     width: wp(95),
+
   },
   submitButton: {
     width: wp(95),
@@ -213,6 +214,8 @@ const styles = StyleSheet.create({
   invalidInput: {
     borderColor: 'red',
     borderWidth: 0.5,
+    fontSize:hp(2),
+
   },
 });
 

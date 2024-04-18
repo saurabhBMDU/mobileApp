@@ -17,7 +17,6 @@ const NotificationShow = () => {
   const markAsRead = async (id) => {
     try {
       const { data: res } = await isReadNotification(id);
-      // console.log('isReadNotifications', res)
       if (res.status === true) {
         getAllNotifications();
       } else {
@@ -48,54 +47,9 @@ const NotificationShow = () => {
     }
   };
 
-
-
   useEffect(() => {
     getAllNotifications();
   }, []);
-
-  function convertToIndianTime(timestamp) {
-    const date = new Date(timestamp);
-
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-
-    let hours12 = hours % 12;
-    hours12 = hours12 === 0 ? 12 : hours12; // Convert 0 to 12
-
-    const period = hours < 12 ? 'AM' : 'PM';
-
-    const timeInIndianFormat = `${hours12}:${minutes < 10 ? '0' : ''}${minutes} ${period}`;
-
-    return timeInIndianFormat;
-  }
-
-  function convertToIndianTimeAndRelative(timestamp) {
-    const date = new Date(timestamp);
-    const currentDate = new Date();
-
-    // Convert to Indian time
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    let hours12 = hours % 12;
-    hours12 = hours12 === 0 ? 12 : hours12;
-    const period = hours < 12 ? 'AM' : 'PM';
-    const timeInIndianFormat = `${hours12}:${minutes < 10 ? '0' : ''}${minutes} ${period}`;
-
-    // Calculate relative time
-    const diffTime = currentDate - date;
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-    let relativeTime;
-    if (diffDays === 0) {
-      relativeTime = 'Today';
-    } else if (diffDays === 1) {
-      relativeTime = 'Yesterday';
-    } else {
-      relativeTime = `${diffDays} days ago`;
-    }
-    return `${relativeTime}`;
-  }
 
   const preProcessData = (data) => {
     return data.map((item, index) => {
@@ -167,7 +121,6 @@ const NotificationShow = () => {
               }}>
               <Icon name={iconName} size={40} color={iconColor} style={{}} />
             </View>
-
             <View
               style={{
                 marginLeft: 10,
@@ -208,7 +161,7 @@ const NotificationShow = () => {
                 <Text style={{ fontSize: hp(2) }}>Oops! No Notifications Found</Text>
               </View>
             }
-            renderItem={({ item }) => {
+            renderItem={({ item,index }) => {
               return (
                 <View>
                   <Text style={styles.dateH1}>{item.date}</Text>

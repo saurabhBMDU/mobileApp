@@ -1,6 +1,6 @@
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import moment from 'moment';
-import React, { useContext, useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   Dimensions,
   FlatList,
@@ -17,26 +17,31 @@ import {
   View,
   Alert,
 } from 'react-native';
-import { Calendar } from 'react-native-calendars';
+import {Calendar} from 'react-native-calendars';
 import Modal from 'react-native-modal';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import RNFetchBlob from 'rn-fetch-blob';
-import { LoginContext } from '../../App';
+import {LoginContext} from '../../App';
 import Headerr from '../ReuseableComp/Headerr';
 import {
   getAppointments,
   updateAppointmentCallStatus,
   updateAppointments,
 } from '../Services/appointments.service';
-import { SendNotification } from '../Services/notificationSevice';
-import { addSupportComplaint } from '../Services/support.service';
-import url, { generateFilePath } from '../Services/url.service';
-import { deleteJwt, getJwt, getUser, isUserLoggedIn } from '../Services/user.service';
-import { Roles, appointmentStatus, consultationMode } from '../utils/constant';
-import { toastError, toastSuccess } from '../utils/toast.utils';
+import {SendNotification} from '../Services/notificationSevice';
+import {addSupportComplaint} from '../Services/support.service';
+import url, {generateFilePath} from '../Services/url.service';
+import {
+  deleteJwt,
+  getJwt,
+  getUser,
+  isUserLoggedIn,
+} from '../Services/user.service';
+import {Roles, appointmentStatus, consultationMode} from '../utils/constant';
+import {toastError, toastSuccess} from '../utils/toast.utils';
 import isEqual from 'lodash/isEqual';
 
 import Profiles_setting_icons from 'react-native-vector-icons/AntDesign';
@@ -47,22 +52,16 @@ import Calendar_icons from 'react-native-vector-icons/FontAwesome5';
 import Walkink_Video_icons from 'react-native-vector-icons/FontAwesome5';
 import FeedBack from '../allModals/FeedBack';
 
-import { useNetInfo } from '@react-native-community/netinfo'; // <--- internet connection
+import {useNetInfo} from '@react-native-community/netinfo'; // <--- internet connection
 import InterNetError from '../noInterNet/InterNetError';
 import Reschedule from '../allModals/Reschedule';
 import CompleteFollowupModal from '../allModals/CompleteFollowupModal';
 import axios from '../Services/axios.service';
-const { height, width } = Dimensions.get('window');
+const {height, width} = Dimensions.get('window');
 const mainFontBold = 'Montserrat-Bold';
 
 const Appointment = () => {
   const serverUrl = url;
-  // checking internet connection
-
-
-  //cheking login info
-
-
   const handleLogout = async () => {
     try {
       await deleteJwt();
@@ -70,28 +69,23 @@ const Appointment = () => {
       //   toastError(err);
     }
   };
-
   const CheckIsUserLoggedIn = async () => {
     try {
       let token = await getJwt();
       if (token) {
-        const { data: res }: any = await isUserLoggedIn();
+        const {data: res}: any = await isUserLoggedIn();
         if (res.status == false) {
-          handleLogout()
+          handleLogout();
         } else {
-          navigation.navigate("BookAppt")
+          navigation.navigate('BookAppt');
         }
+      } else {
+        navigation.navigate('BookAppt');
       }
-      else {
-        navigation.navigate("BookAppt")
-      }
-
     } catch (err) {
       //   toastError(err);
     }
   };
-
-
 
   const netInfo = useNetInfo();
   const isConnected = netInfo.isConnected;
@@ -115,6 +109,10 @@ const Appointment = () => {
   const [appointmentsArr, setAppointmentsArr] = useState<any[]>([]);
   const [completID, setComtedID] = useState(null);
   const [id, setid] = useState(null);
+  const [lastPageReached, setLastPageReached] = useState(false);
+  const [prevLimit, setPrevLimit] = useState(10);
+
+
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -160,18 +158,22 @@ const Appointment = () => {
       if (toDate && toDate != '') {
         queryString = `${queryString}&toDate=${toDate}`;
       }
-      let { data: res } = await getAppointments(queryString);
+      let {data: res} = await getAppointments(queryString);
 
       if (res.data) {
         if (pageValue == 1) {
           setAppointmentsArr([...res.data]);
         } else {
           setAppointmentsArr((prev: any) => [...prev, ...res.data]);
+          setLastPageReached(true);
+
         }
       }
       setLoading(false);
     } catch (err) {
       setLoading(false);
+      setLastPageReached(true);
+
       toastError(err);
     }
   };
@@ -188,7 +190,7 @@ const Appointment = () => {
         queryString = `${queryString}&toDate=${toDate}`;
       }
 
-      let { data: res } = await getAppointments(queryString);
+      let {data: res} = await getAppointments(queryString);
 
       if (res.data) {
         if (!isEqual(res.data, appointmentsArr)) {
@@ -242,12 +244,15 @@ const Appointment = () => {
     }
   }, []);
 
-  const handlechangeAppointmentStatus = async (id: string, statusString: string) => {
+  const handlechangeAppointmentStatus = async (
+    id: string,
+    statusString: string,
+  ) => {
     try {
       let obj = {
         status: statusString,
       };
-      let { data: res } = await updateAppointments(id, obj);
+      let {data: res} = await updateAppointments(id, obj);
       if (res) {
         setPage(1);
         setFromDate('');
@@ -266,18 +271,18 @@ const Appointment = () => {
       let obj = {
         callInprogress: callProgress,
       };
-      let { data: res } = await updateAppointmentCallStatus(id, obj);
+      let {data: res} = await updateAppointmentCallStatus(id, obj);
       if (res) {
         setPage(1);
-        setAppointmentsArr([]);  // remove this line of code this make list as empty when dr  make the call
+        setAppointmentsArr([]); // remove this line of code this make list as empty when dr  make the call
         if (callProgress) {
-          let { data: notificationRes } = await SendNotification({
+          let {data: notificationRes} = await SendNotification({
             appointmentId: id,
             userId: userObj?._id,
           });
           if (notificationRes) {
             setMeetingConfirmation(false);
-            navigation.navigate('Meeting', { data: id });
+            navigation.navigate('Meeting', {data: id});
           }
         } else {
           handlechangeAppointmentStatus(id, appointmentStatus.COMPLETED);
@@ -288,7 +293,7 @@ const Appointment = () => {
     }
   };
 
-  const handleDownloadPrescription = async (id: string) => {
+  const handleDownloadPrescription = async (_id: string) => {
     try {
       if (Platform.OS == 'android') {
         const android = RNFetchBlob.android;
@@ -339,7 +344,8 @@ const Appointment = () => {
         details,
         appointmentId: selectedAppointmentId,
       };
-      let { data: res } = await addSupportComplaint(obj);
+      let {data: res} = await addSupportComplaint(obj);
+
       if (res.message) {
         toastSuccess(res.message);
         setComplaintModal(false);
@@ -348,21 +354,6 @@ const Appointment = () => {
       toastError(err);
     }
   };
-  // *****//// reject Option
-  const handleReject = (id: string,) => {
-    Alert.alert(
-      'Reject!',
-      'Are you sure you want to reject the appointment?',
-      [{
-        text: 'Reject Appointment',
-        onPress: () => handlechangeAppointmentStatus(id, appointmentStatus.REJECTED),
-      }, {
-        text: 'Not Now',
-        style: 'cancel'
-      }],
-      { cancelable: false }
-    );
-  }
   // ***********feedback function
   const [modalVisible, setModalVisible1] = useState(false);
   const [provideId, setProvideId] = useState('');
@@ -389,7 +380,7 @@ const Appointment = () => {
   const [pacentID, setpacentID] = useState<string>('');
   const [soModalreschedule, setSoModalreschedule] = useState<boolean>(false);
   const [drIds, setDrisd] = useState<string>('');
-  const [modeOftreetement, setModeoftreetment] = useState<string>('')
+  const [modeOftreetement, setModeoftreetment] = useState<string>('');
   const onPressReschedule = (item: Item) => {
     setpacentID(item._id);
     setSoModalreschedule(true);
@@ -400,22 +391,24 @@ const Appointment = () => {
     setSoModalreschedule(false);
   };
   //  this code for upodate status botton
-  const [soUpdateModals, setSoupdateModals] = useState<boolean>(false)
+  const [soUpdateModals, setSoupdateModals] = useState<boolean>(false);
   const onPressUpdateStatus = (item: Item) => {
     setpacentID(item._id);
     setDrisd(item.doctor._id);
     setModeoftreetment(item.mode);
-    setSoupdateModals(true)
-  }
+    setSoupdateModals(true);
+  };
   const closeUpdateStatusModal = () => {
-    setSoupdateModals(false)
-  }
+    setSoupdateModals(false);
+  };
 
   // clacling pai
   const handleCancelApi = async (_id: string) => {
     try {
-      const response = await axios.put(`${serverUrl}/appointment/canceled/${_id}`);
-      if (response.data.message === "Cancel appointment not allowed") {
+      const response = await axios.put(
+        `${serverUrl}/appointment/canceled/${_id}`,
+      );
+      if (response.data.message === 'Cancel appointment not allowed') {
         toastError(response.data.message);
       } else {
         toastSuccess(response.data.message);
@@ -424,28 +417,75 @@ const Appointment = () => {
     } catch (error) {
       toastError(error);
     }
-  }
-
+  };
   const handleCancleApt = (itms: Item) => {
     Alert.alert(
       'Cancel!',
       'Are you sure you want to cancel the appointment?',
-      [{
-        text: 'Cancel Appointment',
-        onPress: () => handleCancelApi(itms?._id),
-      }, {
-        text: 'Not Now',
-        style: 'cancel'
-      }],
-      { cancelable: false }
+      [
+        {
+          text: 'Cancel Appointment',
+          onPress: () => handleCancelApi(itms?._id),
+        },
+        {
+          text: 'Not Now',
+          style: 'cancel',
+        },
+      ],
+      {cancelable: false},
     );
-  }
+  };
+  //  reject api
+  const handleRejectAlert = async (_id: String) => {
+    try {
+      const response = await axios.put(
+        `${serverUrl}/appointment-rejected/${_id}`,
+      );
+      if (response.status == 200) {
+        toastSuccess('Appointment Rejected');
+        HandleGetAppointmentsWithFilterPaginated();
+      } else {
+        toastError('Unable to Reject');
+      }
+    } catch (error) {
+      toastError(error);
+    }
+  };
+
+  // reject Alert
+  const handleReject = (item: Item) => {
+    Alert.alert(
+      'Reject!',
+      'Are you sure you want to reject the appointment?',
+      [
+        {
+          text: 'Reject Appointment',
+          onPress: () => handleRejectAlert(item?._id),
+        },
+        {
+          text: 'Not Now',
+          style: 'cancel',
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+  const handleOnEndReached = () => {
+    if (!lastPageReached) {
+      // Check if the loading state is false and the last page has not been reached
+      if (limit !== prevLimit) {
+        // Check if the current limit is different from the previous limit
+        setPrevLimit(limit); // Update the previous limit
+        setLimit(limit + 10); // Increase the limit
+      }
+    }
+  };
 
   if (isConnected === false) {
     return <InterNetError labels={'Appointment'} />;
   } else {
     return (
-      <View style={{ flex: 1, width: width, backgroundColor: '#eee' }}>
+      <View style={{flex: 1, width: width, backgroundColor: '#eee'}}>
         {/* sending the header */}
         <Headerr
           secndheader={true}
@@ -454,7 +494,7 @@ const Appointment = () => {
             userObj?.role == Roles.PATIENT || userObj?.role == Roles.FRANCHISE
               ? true
               : false
-            }
+          }
           btnlbl="Book Appointment"
         />
         {/* this is feedback  */}
@@ -463,7 +503,7 @@ const Appointment = () => {
           animationIn={'bounceIn'}
           animationOut={'slideOutDown'}
           onBackButtonPress={() => setModalVisible1(false)}
-          style={{ marginLeft: 0, marginRight: 0 }}>
+          style={{marginLeft: 0, marginRight: 0}}>
           <TouchableWithoutFeedback onPress={() => setModalVisible1(false)}>
             <FeedBack cartId={provideId} onCloseModal={closeModal} />
           </TouchableWithoutFeedback>
@@ -481,7 +521,7 @@ const Appointment = () => {
             }}>
             <TouchableOpacity
               onPress={() => setDateModal(true)}
-              style={{ width: wp(35) }}>
+              style={{width: wp(35)}}>
               <Text
                 style={{
                   color: 'black',
@@ -508,7 +548,7 @@ const Appointment = () => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setDateToModal(true)}
-              style={{ width: wp(35) }}>
+              style={{width: wp(35)}}>
               <Text
                 style={{
                   color: 'black',
@@ -564,7 +604,7 @@ const Appointment = () => {
           animationIn={'bounceIn'}
           animationOut={'bounceOut'}
           onBackButtonPress={() => setBookmodal(false)}
-          style={{ marginLeft: 0, marginRight: 0 }}>
+          style={{marginLeft: 0, marginRight: 0}}>
           <View
             style={{
               width: wp(85),
@@ -578,10 +618,10 @@ const Appointment = () => {
             }}>
             <TouchableOpacity
               onPress={() => setBookmodal(false)}
-              style={{ alignSelf: 'flex-end' }}>
+              style={{alignSelf: 'flex-end'}}>
               <Image
                 source={require('../../assets/images/close.png')}
-                style={{ tintColor: 'black', height: wp(5), width: wp(5) }}
+                style={{tintColor: 'black', height: wp(5), width: wp(5)}}
               />
             </TouchableOpacity>
             <View
@@ -664,29 +704,6 @@ const Appointment = () => {
           data={appointmentsArr}
           ListEmptyComponent={
             <>
-              {
-                loading ?
-                  <View style={styles.mainView}>
-                    <Pressable style={{ display: "flex", height: hp(80), justifyContent: 'center', alignItems: 'center' }}>
-                      <Animated.Image
-                        source={require('../../assets/images/Logo.png')}
-                        style={{
-                          resizeMode: "contain",
-                          height: wp(10),
-                          width: wp(30),
-                          transform: [{ scale: animation }],
-                        }}
-                      />
-                    </Pressable>
-                  </View>
-
-                  : <View style={{ display: "flex", height: height, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text>No appointments found  </Text>
-                    {userObj?.role == Roles.PATIENT &&
-                      <Text style={{ color: "#fff", fontSize: wp(3.5), marginTop: hp(2), backgroundColor: '#1263AC', borderRadius: 5, padding: wp(1.5) }} onPress={() => CheckIsUserLoggedIn()}>Book Your Appointments</Text>
-                    }
-                  </View>
-              }
               {loading ? (
                 <View style={styles.mainView}>
                   <Pressable
@@ -702,7 +719,52 @@ const Appointment = () => {
                         resizeMode: 'contain',
                         height: wp(10),
                         width: wp(30),
-                        transform: [{ scale: animation }],
+                        transform: [{scale: animation}],
+                      }}
+                    />
+                  </Pressable>
+                </View>
+              ) : (
+                <View
+                  style={{
+                    display: 'flex',
+                    height: height,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text>No appointments found </Text>
+                  {userObj?.role == Roles.PATIENT && (
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontSize: wp(3.5),
+                        marginTop: hp(2),
+                        backgroundColor: '#1263AC',
+                        borderRadius: 5,
+                        padding: wp(1.5),
+                      }}
+                      onPress={() => CheckIsUserLoggedIn()}>
+                      Book Your Appointments
+                    </Text>
+                  )}
+                </View>
+              )}
+              {loading ? (
+                <View style={styles.mainView}>
+                  <Pressable
+                    style={{
+                      display: 'flex',
+                      height: hp(80),
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Animated.Image
+                      source={require('../../assets/images/Logo.png')}
+                      style={{
+                        resizeMode: 'contain',
+                        height: wp(10),
+                        width: wp(30),
+                        transform: [{scale: animation}],
                       }}
                     />
                   </Pressable>
@@ -715,7 +777,7 @@ const Appointment = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                  <Text style={{ fontSize: hp(2) }}>No appointments found </Text>
+                  <Text style={{fontSize: hp(2)}}>No appointments found </Text>
                   {userObj?.role == Roles.PATIENT && (
                     <Text
                       style={{
@@ -735,14 +797,14 @@ const Appointment = () => {
             </>
           }
           removeClippedSubviews={true}
-          contentContainerStyle={{ paddingBottom: hp(10) }}
+          contentContainerStyle={{paddingBottom: hp(10)}}
           onEndReached={() => {
             setPage(page + 1);
             HandleGetAppointmentsPaginated(page + 1);
           }}
           onEndReachedThreshold={0.5}
           initialNumToRender={limit}
-          renderItem={({ item, index }) => {
+          renderItem={({item, index}) => {
             const apiDate = moment(item?.dateTime).format('YYYY-MM-DD'); // real date time
             const currentDate = moment().format('YYYY-MM-DD'); // current date time
             const gapInDays = moment(apiDate).diff(moment(currentDate), 'days'); // diffrent
@@ -792,10 +854,10 @@ const Appointment = () => {
                         justifyContent: 'space-between',
                         alignItems: 'center',
                       }}>
-                      <View style={{ flexDirection: 'row' }}>
+                      <View style={{flexDirection: 'row'}}>
                         <Image
-                          source={{ uri: generateFilePath(item?.doctor?.image) }}
-                          style={{ height: wp(15), width: wp(15) }}
+                          source={{uri: generateFilePath(item?.doctor?.image)}}
+                          style={{height: wp(15), width: wp(15)}}
                         />
                         <View
                           style={{
@@ -905,7 +967,10 @@ const Appointment = () => {
                                 fontSize: hp(1.7),
                                 color:
                                   item.status === 'rejected' ? 'red' : '#fff',
-                                fontFamily: item.status === 'rejected' ? 'mainFontBold' : 'mainFont',
+                                fontFamily:
+                                  item.status === 'rejected'
+                                    ? 'mainFontBold'
+                                    : 'mainFont',
                                 textTransform: 'capitalize',
                               }}>
                               {item?.status}
@@ -916,7 +981,7 @@ const Appointment = () => {
                     </View>
                   )}
 
-                <View style={{ width: width, flexDirection: 'row' }}>
+                <View style={{width: width, flexDirection: 'row'}}>
                   <View
                     style={{
                       width: wp(45),
@@ -926,19 +991,21 @@ const Appointment = () => {
                     <View
                       style={[
                         styles.common_displayFlex,
-                        { justifyContent: 'space-between' },
+                        {justifyContent: 'space-between'},
                       ]}>
                       <View
-                        style={[styles.common_displayFlex, { width: wp(40) }]}>
+                        style={[styles.common_displayFlex, {width: wp(40)}]}>
                         <Profiles_setting_icons
                           name="profile"
                           style={styles.iconsStyls}
                         />
-                        <Text style={{ fontSize: hp(2) }}>Patient Name:</Text>
+                        <Text style={{fontSize: hp(2)}}>Patient Name:</Text>
                       </View>
                       <Text
                         style={{
-                          color: '#8A8988', textTransform: 'capitalize', fontSize: hp(1.8),
+                          color: '#8A8988',
+                          textTransform: 'capitalize',
+                          fontSize: hp(2),
                         }}>
                         {item?.patientName}
                       </Text>
@@ -947,15 +1014,15 @@ const Appointment = () => {
                     <View
                       style={[
                         styles.common_displayFlex,
-                        { justifyContent: 'space-between' },
+                        {justifyContent: 'space-between'},
                       ]}>
                       <View
-                        style={[styles.common_displayFlex, { width: wp(40) }]}>
+                        style={[styles.common_displayFlex, {width: wp(40)}]}>
                         <Profiles_setting_icons
                           name="setting"
                           style={styles.iconsStyls}
                         />
-                        <Text style={{ fontSize: hp(2) }}>Service Booked:</Text>
+                        <Text style={{fontSize: hp(2)}}>Service Booked:</Text>
                       </View>
                       <View style={styles.common_displayFlex}>
                         <Text
@@ -964,7 +1031,9 @@ const Appointment = () => {
                             textTransform: 'capitalize',
                             fontSize: hp(2),
                           }}>
-                          {item.mode === 'Offline' ? 'Clinic visit' : 'Video Call'}
+                          {item.mode === 'Offline'
+                            ? 'Clinic visit'
+                            : 'Video Call'}
                         </Text>
                         <Walkink_Video_icons
                           name={item.mode === 'Offline' ? 'walking' : 'video'}
@@ -975,44 +1044,57 @@ const Appointment = () => {
                                   ? 'red'
                                   : 'blue'
                                 : item.mode === 'Offline'
-                                  ? 'green'
-                                  : 'blue',
+                                ? 'green'
+                                : 'blue',
                             marginLeft: 7,
 
                             fontSize: item.mode === 'Offline' ? hp(3) : hp(2),
                           }}
                         />
                       </View>
-
                     </View>
                     <View
                       style={[
                         styles.common_displayFlex,
-                        { justifyContent: 'space-between' },
+                        {justifyContent: 'space-between'},
                       ]}>
                       <View
-                        style={[styles.common_displayFlex, { width: wp(40) }]}>
+                        style={[styles.common_displayFlex, {width: wp(40)}]}>
                         <Mans_icons name="man" style={styles.iconsStyls} />
-                        <Text style={{ fontSize: hp(2) }}>Age:</Text>
+                        <Text style={{fontSize: hp(2)}}>Age:</Text>
                       </View>
                       <Text
-                        style={{ color: 'gray', textTransform: 'capitalize', fontSize: hp(1.8), }}>
-                        {item?.age}{item?.months ? `.${item?.months} Month` : ''}
+                        style={{
+                          color: 'gray',
+                          fontSize: hp(1.8),
+                        }}>
+                        {item?.age === 0 || item?.age === undefined
+                          ? ''
+                          : `${item?.age} Year `}
+                        {item?.months == 0 || item?.months === undefined
+                          ? ''
+                          : item?.age > 0 || item?.months > 0
+                          ? ` ${item?.months} Month`
+                          : ''} 
                       </Text>
                     </View>
 
                     <View
                       style={[
                         styles.common_displayFlex,
-                        { justifyContent: 'space-between' },
+                        {justifyContent: 'space-between'},
                       ]}>
                       <View
-                        style={[styles.common_displayFlex, { width: wp(40) }]}>
+                        style={[styles.common_displayFlex, {width: wp(40)}]}>
                         <Money_icons name="money" style={styles.iconsStyls} />
-                        <Text style={{ fontSize: hp(2) }}>Price:</Text>
+                        <Text style={{fontSize: hp(2)}}>Price:</Text>
                       </View>
                       <Text
-                        style={{ color: 'gray', textTransform: 'capitalize', fontSize: hp(1.8), }}>
+                        style={{
+                          color: 'gray',
+                          textTransform: 'capitalize',
+                          fontSize: hp(2),
+                        }}>
                         ₹ {item?.appointmentCharge}
                       </Text>
                     </View>
@@ -1020,15 +1102,15 @@ const Appointment = () => {
                     <View
                       style={[
                         styles.common_displayFlex,
-                        { justifyContent: 'space-between' },
+                        {justifyContent: 'space-between'},
                       ]}>
                       <View
-                        style={[styles.common_displayFlex, { width: wp(40) }]}>
+                        style={[styles.common_displayFlex, {width: wp(40)}]}>
                         <Calendar_icons
                           name="calendar-day"
                           style={styles.iconsStyls}
                         />
-                        <Text style={{ fontSize: hp(2) }}>Request Date:</Text>
+                        <Text style={{fontSize: hp(2)}}>Request Date:</Text>
                       </View>
                       <Text
                         style={{
@@ -1043,55 +1125,55 @@ const Appointment = () => {
                     <View
                       style={[
                         styles.common_displayFlex,
-                        { justifyContent: 'space-between' },
+                        {justifyContent: 'space-between'},
                       ]}>
                       <View
-                        style={[styles.common_displayFlex, { width: wp(40) }]}>
+                        style={[styles.common_displayFlex, {width: wp(40)}]}>
                         <Status_icons
                           name="money-bill"
                           style={styles.iconsStyls}
                         />
-                        <Text style={{ fontSize: hp(2) }}>Payment Status:</Text>
+                        <Text style={{fontSize: hp(2)}}>Payment Status:</Text>
                       </View>
                       <Text
                         style={{
-                          color: 'gray', textTransform: 'capitalize', fontSize: hp(1.8),
+                          color: 'gray',
+                          textTransform: 'capitalize',
+                          fontSize: hp(2),
                         }}>
                         {item.paymentStatus}
                       </Text>
                     </View>
-                    {(item.status === 'canceled' ||
-                      item.status === 'rejected' ||
-                      item.status === 'completed') && (
-                        <View
-                          style={[
-                            styles.common_displayFlex,
-                            { justifyContent: 'space-between' },
-                          ]}>
-                          <View
-                            style={[styles.common_displayFlex, { width: wp(40) }]}>
-                            <Status_icons
-                              name="money-bill-transfer"
-                              style={styles.iconsStyls}
-                            />
-                            <Text style={{ fontSize: hp(2) }}>Status:</Text>
-                          </View>
-                          <Text
-                            style={{
-                              fontSize: hp(2),
-                              color:
-                                item.status === 'rejected'
-                                  ? 'red'
-                                  : item.status === 'completed'
-                                    ? 'green'
-                                    : 'yellow',
-                              fontFamily: mainFont,
-                              textTransform: 'capitalize',
-                            }}>
-                            {item.status}
-                          </Text>
-                        </View>
-                      )}
+                    <View
+                      style={[
+                        styles.common_displayFlex,
+                        {justifyContent: 'space-between'},
+                      ]}>
+                      <View
+                        style={[styles.common_displayFlex, {width: wp(40)}]}>
+                        <Status_icons
+                          name="money-bill-transfer"
+                          style={styles.iconsStyls}
+                        />
+                        <Text style={{fontSize: hp(2)}}>Status:</Text>
+                      </View>
+                      <Text
+                        style={{
+                          fontSize: hp(2),
+                          color:
+                            item.status === 'rejected'
+                              ? 'red'
+                              : item.status === 'completed'
+                              ? 'green'
+                              : item.status === 'cancelled'
+                              ? '#98980c'
+                              : '#0c1599',
+                          fontFamily: mainFontBold,
+                          textTransform: 'capitalize',
+                        }}>
+                        {item.status}
+                      </Text>
+                    </View>
                   </View>
                 </View>
 
@@ -1106,37 +1188,47 @@ const Appointment = () => {
                       flexDirection: 'row',
                       justifyContent: 'space-between',
                     }}>
-                    {(userObj?.role == Roles.DOCTOR || userObj?.role == Roles.FRANCHISE || userObj?.role == Roles.PATIENT) && item.mode === consultationMode.ONLINE && (item.status === appointmentStatus.CONFIRMED || item.status === appointmentStatus.FOLLOWUP) && (
-                      <TouchableOpacity
-                        onPress={() =>
-                          navigation.navigate('AppointHistory', { data: item })
-                        }
-                        style={{
-                          flex: 1,
-                          minWidth: wp(41),
-                          marginRight: 10,
-                          marginTop: 15,
-                          height: hp(5),
-                          backgroundColor: '#1263AC',
-                          borderRadius: 5,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}>
-                        <Text
-                          style={{
-                            color: 'white',
-                            fontFamily: mainFont,
-                            fontSize: hp(1.8),
-                          }}>
-                          History
-                        </Text>
-                      </TouchableOpacity>
-                    )}
-                    {
-                      (userObj?.role == Roles.DOCTOR || userObj?.role == Roles.FRANCHISE || userObj?.role == Roles.PATIENT) && (item.status === appointmentStatus.CONFIRMED || item.status === appointmentStatus.FOLLOWUP) && (
+                    {(userObj?.role == Roles.DOCTOR ||
+                      userObj?.role == Roles.FRANCHISE ||
+                      userObj?.role == Roles.PATIENT) &&
+                      item.mode === consultationMode.ONLINE &&
+                      (item.status === appointmentStatus.CONFIRMED || item.status === appointmentStatus.COMPLETED ||
+                        item.status === appointmentStatus.RESCHEDULE ||
+                        item.status === appointmentStatus.FOLLOWUP) && (
                         <TouchableOpacity
                           onPress={() =>
-                            navigation.navigate('Chat', { data: item })
+                            navigation.navigate('AppointHistory', {data: item})
+                          }
+                          style={{
+                            flex: 1,
+                            minWidth: wp(41),
+                            marginRight: 10,
+                            marginTop: 15,
+                            height: hp(5),
+                            backgroundColor: '#1263AC',
+                            borderRadius: 5,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}>
+                          <Text
+                            style={{
+                              color: 'white',
+                              fontFamily: mainFont,
+                              fontSize: hp(1.8),
+                            }}>
+                            History
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                    {(userObj?.role == Roles.DOCTOR ||
+                      userObj?.role == Roles.FRANCHISE ||
+                      userObj?.role == Roles.PATIENT) &&
+                      (item.status === appointmentStatus.CONFIRMED || item.status === appointmentStatus.COMPLETED ||
+                        item.status === appointmentStatus.RESCHEDULE ||
+                        item.status === appointmentStatus.FOLLOWUP) && (
+                        <TouchableOpacity
+                          onPress={() =>
+                            navigation.navigate('Chat', {data: item})
                           }
                           style={{
                             flex: 1,
@@ -1159,9 +1251,9 @@ const Appointment = () => {
                           </Text>
                         </TouchableOpacity>
                       )}
-                    {
-                      (userObj?.role == Roles.PATIENT || userObj?.role == Roles.FRANCHISE) &&
-                      item.isPrescription !== 'not-ready' &&
+                    {(userObj?.role == Roles.PATIENT ||
+                      userObj?.role == Roles.FRANCHISE) &&
+                      item.isPrescription === 'ready' &&
                       item.mode == consultationMode.ONLINE && (
                         <TouchableOpacity
                           onPress={() => handleDownloadPrescription(item._id)}
@@ -1186,11 +1278,10 @@ const Appointment = () => {
                           </Text>
                         </TouchableOpacity>
                       )}
-                    {userObj?.role == Roles.DOCTOR && item.status === appointmentStatus.PENDING &&
-                      (
+                    {userObj?.role == Roles.DOCTOR &&
+                      item.status === appointmentStatus.PENDING && (
                         <TouchableOpacity
-                          onPress={() =>
-                            handleReject(item._id)}
+                          onPress={() => handleReject(item)}
                           style={{
                             flex: 1,
                             minWidth: wp(41),
@@ -1213,8 +1304,8 @@ const Appointment = () => {
                           </Text>
                         </TouchableOpacity>
                       )}
-                    {
-                      userObj?.role == Roles.DOCTOR && item.status === appointmentStatus.PENDING && (
+                    {userObj?.role == Roles.DOCTOR &&
+                      (item.status === appointmentStatus.PENDING || item.status === appointmentStatus.RESCHEDULE) && (
                         <TouchableOpacity
                           onPress={() =>
                             handlechangeAppointmentStatus(
@@ -1245,8 +1336,8 @@ const Appointment = () => {
                         </TouchableOpacity>
                       )}
 
-                    {
-                      (userObj?.role === Roles.PATIENT || userObj?.role === Roles.FRANCHISE) &&
+                    {(userObj?.role === Roles.PATIENT ||
+                      userObj?.role === Roles.FRANCHISE) &&  (item.status === appointmentStatus.CONFIRMED || item.status === appointmentStatus.COMPLETED ) && 
                       item.mode === consultationMode.ONLINE &&
                       item.callInprogress && (
                         <TouchableOpacity
@@ -1276,8 +1367,9 @@ const Appointment = () => {
                           </Text>
                         </TouchableOpacity>
                       )}
-                    {
-                      userObj?.role === Roles.DOCTOR && item.mode === consultationMode.ONLINE && item.status === appointmentStatus.CONFIRMED && (
+                    {userObj?.role === Roles.DOCTOR &&
+                      item.mode === consultationMode.ONLINE &&
+                      (item.status === appointmentStatus.CONFIRMED || item.status === appointmentStatus.COMPLETED) && (
                         <TouchableOpacity
                           onPress={() => {
                             setSelectedMeeting(item);
@@ -1306,62 +1398,70 @@ const Appointment = () => {
                         </TouchableOpacity>
                       )}
 
-                    {(item.status == appointmentStatus.CONFIRMED || item.status == appointmentStatus.FOLLOWUP) && userObj?.role == Roles.DOCTOR && (
-                      <TouchableOpacity
-                        onPress={() => onPressUpdateStatus(item)}
-                        style={{
-                          flex: 1,
-                          minWidth: wp(41),
-                          marginRight: 10,
-                          marginTop: 15,
-                          alignSelf: 'center',
-                          height: hp(5),
-                          backgroundColor: '#1263AC',
-                          borderRadius: 5,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}>
-                        <Text
+                    {(item.status == appointmentStatus.CONFIRMED ||
+                      item.status == appointmentStatus.FOLLOWUP) &&
+                      userObj?.role == Roles.DOCTOR && (
+                        <TouchableOpacity
+                          onPress={() => onPressUpdateStatus(item)}
                           style={{
-                            color: 'white',
-                            fontFamily: mainFont,
-                            fontSize: hp(1.8),
+                            flex: 1,
+                            minWidth: wp(41),
+                            marginRight: 10,
+                            marginTop: 15,
+                            alignSelf: 'center',
+                            height: hp(5),
+                            backgroundColor: '#1263AC',
+                            borderRadius: 5,
+                            justifyContent: 'center',
+                            alignItems: 'center',
                           }}>
-                          Update Status
-                        </Text>
-                      </TouchableOpacity>
-                    )}
-                    {(userObj?.role == Roles.FRANCHISE || userObj?.role == Roles.PATIENT) && item.status === appointmentStatus.COMPLETED && (
-                      <TouchableOpacity
-                        onPress={() => {
-                          setComplaintModal(true);
-                          setSelectedAppointmentId(item?._id);
-                        }}
-                        style={{
-                          flex: 1,
-                          minWidth: wp(41),
-                          marginRight: 10,
-                          marginTop: 15,
-                          alignSelf: 'center',
-                          height: hp(5),
-                          backgroundColor: 'red',
-                          borderRadius: 5,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}>
-                        <Text
+                          <Text
+                            style={{
+                              color: 'white',
+                              fontFamily: mainFont,
+                              fontSize: hp(1.8),
+                            }}>
+                            Update Status
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                    {(userObj?.role == Roles.FRANCHISE ||
+                      userObj?.role == Roles.PATIENT) &&
+                      item.status === appointmentStatus.COMPLETED && (
+                        <TouchableOpacity
+                          onPress={() => {
+                            setComplaintModal(true);
+                            setSelectedAppointmentId(item?._id);
+                          }}
                           style={{
-                            color: 'white',
-                            fontFamily: mainFont,
-                            fontSize: hp(1.8),
+                            flex: 1,
+                            minWidth: wp(41),
+                            marginRight: 10,
+                            marginTop: 15,
+                            alignSelf: 'center',
+                            height: hp(5),
+                            backgroundColor: 'red',
+                            borderRadius: 5,
+                            justifyContent: 'center',
+                            alignItems: 'center',
                           }}>
-                          Raise Issue
-                        </Text>
-                      </TouchableOpacity>
-                    )}
+                          <Text
+                            style={{
+                              color: 'white',
+                              fontFamily: mainFont,
+                              fontSize: hp(1.8),
+                            }}>
+                            Raise Issue
+                          </Text>
+                        </TouchableOpacity>
+                      )}
                     {/* reascudle */}
-                    {
-                      (userObj?.role == Roles.FRANCHISE || userObj?.role == Roles.PATIENT || userObj?.role == Roles.DOCTOR) && item.status === appointmentStatus.CONFIRMED && (
+                    {(userObj?.role == Roles.FRANCHISE ||
+                      userObj?.role == Roles.PATIENT ||
+                      userObj?.role == Roles.DOCTOR) &&
+                      (item.status === appointmentStatus.CONFIRMED ||
+                        item.status === appointmentStatus.RESCHEDULE ||
+                        item.status === appointmentStatus.PENDING) && (
                         <TouchableOpacity
                           onPress={() => onPressReschedule(item)}
                           style={{
@@ -1388,9 +1488,9 @@ const Appointment = () => {
                       )}
                     {/* cancling  by patent*/}
 
-
-                    {(userObj?.role == Roles.FRANCHISE || userObj?.role == Roles.PATIENT) && item.status === appointmentStatus.PENDING &&
-                      (
+                    {(userObj?.role == Roles.FRANCHISE ||
+                      userObj?.role == Roles.PATIENT) &&
+                      item.status === appointmentStatus.PENDING && (
                         <TouchableOpacity
                           onPress={() => handleCancleApt(item)}
                           style={{
@@ -1401,8 +1501,8 @@ const Appointment = () => {
                             alignSelf: 'center',
                             height: hp(5),
                             backgroundColor: '#eee',
-                            borderColor: "#1263AC",
-                            borderWidth: .8,
+                            borderColor: '#1263AC',
+                            borderWidth: 0.8,
                             borderRadius: 5,
                             justifyContent: 'center',
                             alignItems: 'center',
@@ -1429,13 +1529,14 @@ const Appointment = () => {
           animationIn={'bounceIn'}
           animationOut={'slideOutDown'}
           onBackButtonPress={() => setSoModalreschedule(false)}
-          style={{ marginLeft: 0, marginRight: 0 }}>
+          style={{marginLeft: 0, marginRight: 0}}>
           <TouchableWithoutFeedback onPress={() => setSoModalreschedule(false)}>
             <Reschedule
               cartID={pacentID}
               closeModal={closeRescheduleModal}
               drrIdes={drIds}
               modeOf={modeOftreetement}
+              // reRenderFun={HandleGetAppointmentsPaginate(1)}
             />
           </TouchableWithoutFeedback>
         </Modal>
@@ -1446,13 +1547,14 @@ const Appointment = () => {
           animationIn={'bounceIn'}
           animationOut={'bounceOut'}
           onBackButtonPress={() => setSoupdateModals(false)}
-          style={{ marginLeft: 0, marginRight: 0 }}>
+          style={{marginLeft: 0, marginRight: 0}}>
           <View>
             <CompleteFollowupModal
               cartID={pacentID}
               closeModal={closeUpdateStatusModal}
               drrIdes={drIds}
-              modeOf={modeOftreetement} />
+              modeOf={modeOftreetement}
+            />
           </View>
         </Modal>
 
@@ -1461,7 +1563,7 @@ const Appointment = () => {
           animationIn={'bounceIn'}
           animationOut={'bounceOut'}
           onBackButtonPress={() => setDateModal(false)}
-          style={{ marginLeft: 0, marginRight: 0 }}>
+          style={{marginLeft: 0, marginRight: 0}}>
           <View
             style={{
               width: wp(85),
@@ -1475,10 +1577,10 @@ const Appointment = () => {
             }}>
             <TouchableOpacity
               onPress={() => setDateModal(false)}
-              style={{ alignSelf: 'flex-end' }}>
+              style={{alignSelf: 'flex-end'}}>
               <Image
                 source={require('../../assets/images/close.png')}
-                style={{ tintColor: 'black', height: wp(5), width: wp(5) }}
+                style={{tintColor: 'black', height: wp(5), width: wp(5)}}
               />
             </TouchableOpacity>
             <Calendar
@@ -1486,7 +1588,7 @@ const Appointment = () => {
                 setFromDate(day.dateString);
                 setDateModal(false);
               }}
-            // minDate={`${new Date()}`}
+              // minDate={`${new Date()}`}
             />
           </View>
         </Modal>
@@ -1496,7 +1598,7 @@ const Appointment = () => {
           animationIn={'bounceIn'}
           animationOut={'bounceOut'}
           onBackButtonPress={() => setDateToModal(false)}
-          style={{ marginLeft: 0, marginRight: 0 }}>
+          style={{marginLeft: 0, marginRight: 0}}>
           <View
             style={{
               width: wp(85),
@@ -1510,10 +1612,10 @@ const Appointment = () => {
             }}>
             <TouchableOpacity
               onPress={() => setDateToModal(false)}
-              style={{ alignSelf: 'flex-end' }}>
+              style={{alignSelf: 'flex-end'}}>
               <Image
                 source={require('../../assets/images/close.png')}
-                style={{ tintColor: 'black', height: wp(5), width: wp(5) }}
+                style={{tintColor: 'black', height: wp(5), width: wp(5)}}
               />
             </TouchableOpacity>
             <Calendar
@@ -1535,7 +1637,7 @@ const Appointment = () => {
           animationIn={'bounceIn'}
           animationOut={'slideOutDown'}
           onBackButtonPress={() => setComplaintModal(false)}
-          style={{ marginLeft: 0, marginRight: 0 }}>
+          style={{marginLeft: 0, marginRight: 0}}>
           <View
             style={{
               width: wp(85),
@@ -1549,10 +1651,10 @@ const Appointment = () => {
             }}>
             <TouchableOpacity
               onPress={() => setComplaintModal(false)}
-              style={{ alignSelf: 'flex-end' }}>
+              style={{alignSelf: 'flex-end'}}>
               <Image
                 source={require('../../assets/images/close.png')}
-                style={{ tintColor: 'black', height: wp(5), width: wp(5) }}
+                style={{tintColor: 'black', height: wp(5), width: wp(5)}}
               />
             </TouchableOpacity>
             <Text
@@ -1567,7 +1669,7 @@ const Appointment = () => {
 
             <TextInput
               placeholder="Title"
-              style={{ marginTop: 15, color: 'gray', backgroundColor: '#e6edf7' }}
+              style={{marginTop: 15, color: 'gray', backgroundColor: '#e6edf7'}}
               onChangeText={e => setTitle(e)}
               value={title}
               placeholderTextColor="gray"
@@ -1613,7 +1715,7 @@ const Appointment = () => {
           animationIn={'zoomIn'}
           animationOut={'zoomOut'}
           onBackButtonPress={() => setMeetingConfirmation(false)}
-          style={{ marginLeft: 0, marginRight: 0 }}>
+          style={{marginLeft: 0, marginRight: 0}}>
           <View
             style={{
               width: wp(85),
@@ -1633,10 +1735,10 @@ const Appointment = () => {
                 justifyContent: 'center',
                 paddingLeft: wp(5),
               }}>
-              <Text style={{ color: 'white', fontSize: hp(1.8) }}>
+              <Text style={{color: 'white', fontSize: hp(1.8)}}>
                 CONSENT FORM FOR TELECOMMUNICATION{' '}
               </Text>
-              <Text style={{ color: 'white', fontSize: hp(1.8) }}>
+              <Text style={{color: 'white', fontSize: hp(1.8)}}>
                 दूरसंचार के लिए सहमति{' '}
               </Text>
             </View>
@@ -1648,7 +1750,7 @@ const Appointment = () => {
                 paddingBottom: 25,
               }}>
               <Text
-                style={{ color: 'black', fontSize: hp(1.8), marginBottom: 10 }}>
+                style={{color: 'black', fontSize: hp(1.8), marginBottom: 10}}>
                 - जांच कराने के लिए दूर-दराज के ओपीडी डॉक्टर के पास जाने के लिए
                 विकल्प नहीं है। इस ओपीडी के पीछे मुख्य विचार दूर-दराज के इलाकों
                 में जहां डॉक्टर की उपलब्धता कम है, मरीज़ों को योग्य डॉक्टरों की
@@ -1656,44 +1758,44 @@ const Appointment = () => {
                 न करें और गंभीर बीमारियों की चपेट में जल्दी आ जाएं।
               </Text>
               <Text
-                style={{ color: 'black', fontSize: hp(1.8), marginBottom: 10 }}>
+                style={{color: 'black', fontSize: hp(1.8), marginBottom: 10}}>
                 - ⁠सभी परामर्श एमसीआई में पंजीकृत डाक्टरों द्वारा ही दिये
                 जाएँगे। रोगी की बीमारी के कारण किसी भी अप्रिय घटना के लिए फीवर
                 99 जिम्मेदार नहीं होगा।
               </Text>
               <Text
-                style={{ color: 'black', fontSize: hp(1.8), marginBottom: 10 }}>
+                style={{color: 'black', fontSize: hp(1.8), marginBottom: 10}}>
                 - ⁠दूर रहने वाले और चलने-फिरने में असमर्थ मरीज़ भी एक ओपीडी के
                 माध्यम से अपना फ़ॉलोअप या रिपोर्ट जाँच करा सकते हैं।
               </Text>
               <Text
-                style={{ color: 'black', fontSize: hp(1.8), marginBottom: 10 }}>
+                style={{color: 'black', fontSize: hp(1.8), marginBottom: 10}}>
                 - ⁠स्वास्थ्य कार्यकर्ता या आर.एम.पी की उपस्थिति में ही विशेषज्ञ
                 और सुपर विशेषज्ञ परामर्श दिया जाएगा।
               </Text>
               <Text
-                style={{ color: 'black', fontSize: hp(1.8), marginBottom: 10 }}>
+                style={{color: 'black', fontSize: hp(1.8), marginBottom: 10}}>
                 - ⁠यदि परामर्श के बाद भी स्वास्थ्य एवं रोग में कोई सुधार न हो तो
                 तुरंत नज़दीकी अस्पताल में जाकर चिकित्सा की सलाह लें।
               </Text>
               <Text
-                style={{ color: 'black', fontSize: hp(1.8), marginBottom: 10 }}>
+                style={{color: 'black', fontSize: hp(1.8), marginBottom: 10}}>
                 - डॉक्टर अपनी समझ या बताई गई समस्याओं के अनुसार आपको सलाह देगा,
                 लेकिन कई लक्षण बिना आत्म-जांच के छूट सकते हैं, ऐसी स्थिति में
                 सुझाव देने वाले डॉक्टर को दोषी नहीं ठहराया जा सकता है।
               </Text>
               <Text
-                style={{ color: 'black', fontSize: hp(1.8), marginBottom: 10 }}>
+                style={{color: 'black', fontSize: hp(1.8), marginBottom: 10}}>
                 - काउंटर पर मिलने वाली दवाओं के लिये ही प्रिसक्रिप्शन दिया
                 जाएगा।
               </Text>
               <Text
-                style={{ color: 'black', fontSize: hp(1.8), marginBottom: 10 }}>
+                style={{color: 'black', fontSize: hp(1.8), marginBottom: 10}}>
                 - ⁠यह सलाह किसी भी चिकित्सकीय क़ानूनी अद्देश्यों के लिए मान्य
                 नहीं है।
               </Text>
               <Text
-                style={{ color: 'black', fontSize: hp(1.8), marginBottom: 10 }}>
+                style={{color: 'black', fontSize: hp(1.8), marginBottom: 10}}>
                 - यह सुविधा आपातकालीन स्थितियों के लिए नहीं है, किसी भी
                 आपातकालीन सेवा के लिए तुरंत नज़दीकी डॉक्टर से संपर्क करें !!
               </Text>
@@ -1713,7 +1815,7 @@ const Appointment = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  <Text style={{ fontSize: hp(1.8), color: 'white' }}>Close</Text>
+                  <Text style={{fontSize: hp(1.8), color: 'white'}}>Close</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -1727,7 +1829,7 @@ const Appointment = () => {
                     justifyContent: 'center',
                     marginLeft: wp(5),
                   }}>
-                  <Text style={{ fontSize: hp(1.8), color: 'white' }}>
+                  <Text style={{fontSize: hp(1.8), color: 'white'}}>
                     I Agree
                   </Text>
                 </TouchableOpacity>

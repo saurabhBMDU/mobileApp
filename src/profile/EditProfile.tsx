@@ -87,7 +87,7 @@ const EditProfile = () => {
     }
   };
 
-  useEffect(() => {
+  useEffect(() => { 
     if (focused) {
       handleGetAndSetUser();
     }

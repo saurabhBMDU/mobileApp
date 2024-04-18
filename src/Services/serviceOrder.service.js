@@ -32,6 +32,5 @@ export const getServiceBookings = async () => {
             "Access-control-Allow-Origin": "*"
         }
     }
-    console.log("..................................................................calling")
     return await axios.get(`${serverUrl}`, config);
 };

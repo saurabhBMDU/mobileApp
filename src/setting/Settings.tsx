@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
+
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -127,8 +128,6 @@ export default function Settings() {
           value: el,
         }));
       }
-      console.log(obj, "obj");
-
       let { data: res }: any = await updateSlot(obj);
       if (res) {
         await setUser(res.data);
@@ -224,7 +223,7 @@ export default function Settings() {
               </Text>
               <TextInput
                 placeholderTextColor="#8E8E8E"
-                placeholder="Patient Name"
+                placeholder="Name"
                 onChangeText={e => setName(e)}
                 value={name}
                 style={styles.inputfildeStyle}

@@ -40,13 +40,13 @@ export const updateAppointmentCallStatus= async (id,obj) => {
 
 
 export const getAppointments = async (query) => {
+    console.log(`${serverUrl}?${query}`);
     let config = {
         headers:{
             'Content-type':"*",
             "Access-control-Allow-Origin":"*"
         }
     }
-    console.log("this this is is sos oi skjdsnfdslkjf  ...............................//....................///./...../",query)
   return await axios.get(`${serverUrl}?${query}` , config);
 };
 export const getAppointmentById = async (id) => {

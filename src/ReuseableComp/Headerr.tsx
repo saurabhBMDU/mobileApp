@@ -16,7 +16,6 @@ import Icon from 'react-native-vector-icons/Feather';
 const { height, width } = Dimensions.get('window')
 
 const Headerr = (props: any) => {
-    console.log('props in header in data ', props)
     const mainFont = 'Montserrat-Regular'
     const mainFontBold = 'Montserrat-Bold'
     const navigation: any = useNavigation();
@@ -106,9 +105,7 @@ const Headerr = (props: any) => {
     const getAllNotifications = async () => {
         try {
             const { data: res } = await getNotifications();
-            console.log('notificaoitn',res.data.notifications)
             if (res.status == true) {
-                console.log('getting all notifications in Notifiiton show page  backend', res)
                 setNotifications(res.data.length);
                 throw new Error(res.error);
             }
@@ -152,7 +149,7 @@ const Headerr = (props: any) => {
                             {notificationCount > 0 && (
                                 <View style={styles.countContainer}>
                                     {
-                                        notificationCount < 10 ? <Text style={styles.countText}>{notificationCount}</Text> : <Text style={styles.countText}>9+</Text>
+                                        notificationCount < 10 ? <Text style={styles.countText}>  {notificationCount}  </Text> : <Text style={styles.countText}> 9+ </Text>
                                     }
                                     {/*  */}
                                 </View>

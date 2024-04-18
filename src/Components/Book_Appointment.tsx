@@ -21,12 +21,13 @@ import {toastError} from '../utils/toast.utils';
 import {getDoctors} from '../Services/doctor.service';
 import {generateFilePath} from '../Services/url.service';
 import {getstateAndCities} from '../Services/stateCity.service';
-import {Dropdown} from 'react-native-element-dropdown';
+import {Dropdown, MultiSelect} from 'react-native-element-dropdown';
 import {getUser} from '../Services/user.service';
 import {Roles} from '../utils/constant';
 import LoadingService from '../All_Loding_page/Loding_service';
 import DR_icons from 'react-native-vector-icons/FontAwesome6';
 import Minus_icon from 'react-native-vector-icons/AntDesign';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const {height, width} = Dimensions.get('window');
 const Book_Appointment = () => {
@@ -46,7 +47,7 @@ const Book_Appointment = () => {
 
   const [specialisationArr, setSpecialisationArr] = useState([]);
 
-  const [specialization, setSpecialisation] = useState('');
+  const [specialization, setSpecialisation] = useState([]);
 
   const [isFocus, setIsFocus] = useState(false);
   const [cityIsFocused, setCityIsFocused] = useState(false);
@@ -56,6 +57,8 @@ const Book_Appointment = () => {
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  const [prevLimit, setPrevLimit] = useState(10);
+
   const [query, setQuery] = useState('');
   const [city, setCity] = useState('');
   const [showDrname, setSoDrname] = useState(false);
@@ -63,6 +66,7 @@ const Book_Appointment = () => {
   const [statesArr, setStatesArr] = useState<any[]>([]);
   const [cityArr, setCityArr] = useState<any[]>([]);
   const [price, setPrice] = useState('');
+  const [loding, setLoding] = useState(false);
 
   const HandleGetStatesAndCities = async () => {
     try {
@@ -82,18 +86,19 @@ const Book_Appointment = () => {
   };
 
   const HandleGetDoctorsPaginated = async (pageValue: number) => {
+    setSoDrname(true);
     try {
-      let queryString = `page=${pageValue}&limit=${limit}`;
+      let queryString;
       if (query && query != '') {
-        queryString = `${queryString}&query=${query}`;
-        setSoDrname(true);
+        // queryString = `${queryString}&query=${query}`;
       }
       if (city && city != '') {
-        queryString = `${queryString}&city=${city}`;
+        // queryString = `${queryString}&city=${city}`;
       }
       let {data: res} = await getDoctors(queryString);
       if (res.data && res.data.length > 0) {
         setDoctorsArr((prev: any) => [...prev, ...res.data]);
+        setLoding(false);
         setSpecialisationArr(
           res.spacility.map((el: any) => ({label: el, value: el})),
         );
@@ -102,13 +107,14 @@ const Book_Appointment = () => {
       }
     } catch (err) {
       toastError(err);
+      setLoding(false);
     }
   };
 
   const handleSearch = async () => {
     try {
       setPage(1);
-      let queryString = `page=${1}&limit=${limit}`;
+      let queryString;
       if (query && query != '') {
         queryString = `${queryString}&query=${query}`;
         setSoDrname(true);
@@ -116,8 +122,8 @@ const Book_Appointment = () => {
       if (city && city != '') {
         queryString = `${queryString}&city=${city}`;
       }
-      if (specialization && specialization != '') {
-        queryString = `${queryString}&specialization=${specialization}`;
+      if (specialization && specialization.length > 0) {
+        queryString = `page=${page}&specialization=${specialization.join(',')}`;
       }
       if (price && price != '') {
         queryString = `${queryString}&price=${price}`;
@@ -130,7 +136,9 @@ const Book_Appointment = () => {
       }
       let {data: res} = await getDoctors(queryString);
       if (res.data) {
-        setDoctorsArr([...res.data]);
+        console.log(res.data);
+        console.log(res.data.length);
+        setDoctorsArr(res.data);
       } else {
         setLastPageReached(true);
       }
@@ -140,7 +148,15 @@ const Book_Appointment = () => {
   };
   useEffect(() => {
     handleSearch();
-  }, [city, specialization, gender, sortType, query, price]);
+  }, [city, specialization, gender, sortType, price, limit]);
+
+  let delay = 900;
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      handleSearch();
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [query, price]);
 
   const handleGetAndSetUser = async () => {
     let userData = await getUser();
@@ -172,16 +188,22 @@ const Book_Appointment = () => {
     setQuery('');
     setPrice('');
     setGender('');
-    setSpecialisation('');
+    setSpecialisation([]);
     setDoctorsArr([]);
     HandleGetDoctorsPaginated(1);
   };
   const handleOnEndReached = () => {
-    if (lastPageReached == false) {
-      setPage(prev => prev + 1);
-      HandleGetDoctorsPaginated(page + 1);
+    if (!lastPageReached) {
+      // Check if the loading state is false and the last page has not been reached
+      if (limit !== prevLimit) {
+        // Check if the current limit is different from the previous limit
+        setPrevLimit(limit); // Update the previous limit
+        setLimit(limit + 10); // Increase the limit
+      }
     }
   };
+
+  console.log(';lkjd;gjsdflghslfghflskghflghs', limit);
 
   return (
     <View style={{width: width, backgroundColor: '#F1F8FF', flex: 1}}>
@@ -430,30 +452,31 @@ const Book_Appointment = () => {
         {slctdsec == 'spc' && (
           <View
             style={{
-              display: 'flex',
-              flexDirection: 'row',
               borderColor: 'gray',
               borderWidth: 1,
               borderRadius: 10,
               justifyContent: 'space-between',
               paddingHorizontal: 5,
-              alignItems: 'center',
+              flexDirection: 'column-reverse',
             }}>
-            <Dropdown
-              style={[styles.dropdown, {width: wp(93)}]}
+            <MultiSelect
+              style={[styles.dropdown11, {width: wp(93)}]}
               placeholderStyle={styles.placeholderStyle}
               selectedTextStyle={styles.selectedTextStyle}
               inputSearchStyle={styles.inputSearchStyle}
               iconStyle={styles.iconStyle}
               data={specialisationArr}
-              maxHeight={300}
               labelField="label"
               valueField="value"
-              placeholder="Select One"
+              placeholder="Select Specialization"
               value={specialization}
               onChange={(item: any) => {
-                setSpecialisation(item.value);
+                setSpecialisation(item);
               }}
+              renderLeftIcon={() => (
+                <AntDesign style={styles.icon} name="Safety" size={20} />
+              )}
+              selectedStyle={styles.selectedStyle}
             />
           </View>
         )}
@@ -627,7 +650,6 @@ const Book_Appointment = () => {
                   labelField="label"
                   valueField="value"
                   placeholder="Select One"
-
                   value={city}
                   onFocus={() => setIsFocus(true)}
                   onBlur={() => setIsFocus(false)}
@@ -680,69 +702,8 @@ const Book_Appointment = () => {
         <View
           style={{
             flexDirection: 'row',
-            // justifyContent: 'space-between',
             flexWrap: 'wrap',
           }}>
-          {showDrname ? (
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              {query ? (
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginRight: wp(3),
-                  }}>
-                  <Text style={{fontSize: hp(2)}}>{query}</Text>
-                  <Minus_icon
-                    name="minus"
-                    style={{
-                      backgroundColor: 'red',
-                      color: '#fff',
-                      fontSize: hp(2),
-                      borderRadius: hp(40),
-                      marginLeft: wp(1),
-                    }}
-                    onPress={() => setQuery('')}
-                  />
-                </View>
-              ) : (
-                <Text> </Text>
-              )}
-            </View>
-          ) : <Text></Text>}
-
-          <View>
-            {specialization ? (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: wp(3),
-                }}>
-                <Text style={{fontSize: hp(2)}}>{specialization}</Text>
-                <Minus_icon
-                  name="minus"
-                  style={{
-                    backgroundColor: 'red',
-                    color: '#fff',
-                    fontSize: hp(2),
-                    borderRadius: hp(40),
-                    marginLeft: wp(1),
-                  }}
-                  onPress={() => setSpecialisation('')}
-                />
-              </View>
-            ) : (
-              <Text> </Text>
-            )}
-          </View>
           <View>
             {city ? (
               <View
@@ -799,23 +760,37 @@ const Book_Appointment = () => {
           </View>
         </View>
         <View
-          style={{width: wp(95), marginTop: hp(1), height: height - hp(10)}}>
+          style={{width: wp(95), marginTop: hp(1), height: height - hp(7),marginBottom:hp(2)}}>
           <FlatList
             data={doctorsArr}
             showsVerticalScrollIndicator={false}
-            ListFooterComponent={
-              <>
-                {lastPageReached == false && (
-                  <View>
-                    <LoadingService />
-                    <LoadingService />
-                  </View>
-                )}
-              </>
-            }
+            // ListFooterComponent={
+            //   <>
+            //     {lastPageReached == false && (
+            //       <View>
+            //         <LoadingService />
+            //         <LoadingService />
+            //       </View>
+            //     )}
+            //   </>
+            // }
             onEndReached={() => {
               handleOnEndReached();
             }}
+            ListEmptyComponent={
+              loding ? (
+                <>
+                  <LoadingService />
+                  <LoadingService />
+                  <LoadingService />
+                </>
+              ) : (
+                <View style={{height: hp(100), width: wp(100)}}>
+                  <LoadingService />
+                  <LoadingService />
+                </View>
+              )
+            }
             renderItem={({item, index}) => {
               return (
                 <View
@@ -1027,19 +1002,16 @@ const styles = StyleSheet.create({
   dropdown: {
     height: hp(6.4),
     borderRadius: 8,
-    // paddingHorizontal: 8,
-    // marginTop: hp(1),
     width: wp(93),
     backgroundColor: '#fff',
     color: '#000',
   },
-  dropdown1: {
+  dropdown11: {
     height: hp(6.4),
     borderRadius: 8,
     paddingHorizontal: 8,
     marginTop: hp(1),
     width: wp(95),
-    backgroundColor: 'red',
   },
   placeholderStyle: {
     fontSize: hp(2),
@@ -1057,6 +1029,14 @@ const styles = StyleSheet.create({
     height: 40,
     fontSize: hp(2),
     color: '#000',
+  },
+  icon: {
+    marginRight: wp(1),
+    fontSize: hp(2.5),
+  },
+  selectedStyle: {
+    borderRadius: 12,
+    // backgroundColor:"red",
   },
 });
 export default Book_Appointment;

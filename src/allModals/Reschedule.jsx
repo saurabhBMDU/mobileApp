@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { Dropdown } from 'react-native-element-dropdown';
-// import axios from '../Services/axios.service';
 import axios from '../Services/axios.service';
 import {
   heightPercentageToDP as hp,
@@ -21,78 +20,90 @@ const mainFont = 'Montserrat-Regular';
 const url = 'https://api.fever99.com/api/';
 
 const Reschedule = ({ cartID, closeModal, drrIdes, modeOf }) => {
-  const [selectedDate, setSelectedDate] = useState('');
+  const [dateTime, setDatetime] = useState('');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
   const [isFocus, setIsFocus] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
-  const [errors, seterrors] = useState();
+  const [errors, setErrors] = useState('');
   const [timeSlotss, setTimeSlot] = useState([]);
 
-  const fetchTimeSlot = async () => {
-    console.log('calling function');
-    const response = await axios.get(`${url}time-slot/${drrIdes}`);
-    console.log('resopnse for time slot', response.data.data.timeSlotOnline);
-    if (modeOf == 'Video') {
-      setTimeSlot(response.data.data.extractedOnlineTimes);
-    } else {
-      setTimeSlot(response.data.data.extractedOfflineTime);
-    }
-  };
-
-  useEffect(() => {
-    fetchTimeSlot();
-    console.log('calling effect');
-  }, [drrIdes]);
-
-  console.log(timeSlotss);
-
-  // Function to handle opening the calendar
 
   const openCalendar = () => {
     const currentDate = new Date();
     const day = String(currentDate.getDate()).padStart(2, '0');
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 because month index starts from 0
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
     const year = currentDate.getFullYear();
     const formattedDate = `${day}-${month}-${year}`;
-
-    setSelectedDate(formattedDate);
+    setDatetime(formattedDate);
     setShowCalendar(!showCalendar);
   };
-  // Function to close the modal
+
   const offModal = () => {
+    setTimeSlot([]);
     closeModal();
   };
-  // Function to handle form submission
+
+  const handleDateChange = async (selectedDate) => {
+    try {
+      setTimeSlot([]);
+      const response = await fetch(`${url}time-slot/${drrIdes}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ dateTime: selectedDate }),
+      });
+      if (!response.ok) {
+        throw new Error(`Server Error: ${response.statusText}`);
+      }
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error(`Unexpected response type: ${contentType}`);
+      }
+      const responseData = await response.json();
+      console.log("Response:", responseData);
+      const timeSlotsArray = responseData[modeOf === "Video" ? "extractedOnlineTimes" : "extractedOfflineTimes"].map(time => ({
+        label: time,
+        value: time
+      }));
+      setTimeSlot(timeSlotsArray);
+    } catch (error) {
+      console.error('Error fetching time slots:', error.message);
+    }
+  };
+
+  useEffect(() => {
+    setTimeSlot([]);
+    handleDateChange(dateTime);
+  }, [dateTime]);
+
+
   const handleSubmit = async () => {
-    if (!selectedDate || !selectedTimeSlot) {
-      seterrors('Both fields are required');
+    if (!dateTime || !selectedTimeSlot) {
+      setErrors('Both fields are required');
       return;
     }
-
-    const requestData = {
-      date: selectedDate,
-      timeSlot: selectedTimeSlot,
-    };
-
+    const requestData = { dateTime: dateTime, selectedTimeSlot: selectedTimeSlot, };
     try {
-      const response = await axios.put(
-        `${url}appointment/reschedule/${cartID}`,
-        requestData,
-      );
-      console.log('API Response:', response);
-      // Reset errors and isLoading
-      seterrors(null);
-      setIsLoading(false);
-      closeModal();
+      const response = await axios.put(`${url}appointment/reschedule/${cartID}`, requestData,);
+      if (response.status == 200) {
+        setIsLoading(false);
+        closeModal();
+        reRenderFun();
+      }
+      if(response.data.status===false){
+        setErrors(response.message);
+      }
+      
     } catch (error) {
       if (error.response) {
         console.error('API Error:', error.response);
-        seterrors(error.response.data.message);
+        setErrors(error.response.data.message);
       } else if (error.request) {
-        seterrors('No response received from the server.');
+        setErrors('No response received from the server.');
       } else {
-        seterrors('Error in setting up the request.');
+        setErrors('Error in setting up the request.');
       }
       setIsLoading(false);
     }
@@ -103,22 +114,22 @@ const Reschedule = ({ cartID, closeModal, drrIdes, modeOf }) => {
       <View style={styles.modalContent}>
         <View style={styles.d_Flex}>
           <Text style={styles.modalTitle}>Reschedule</Text>
-          <TouchableOpacity onPress={offModal}>
+          <TouchableOpacity onPress={offModal} style={{ paddingLeft: wp(7) }}>
             <CloseBtnIcon name="cross" style={styles.closeIcon} />
           </TouchableOpacity>
         </View>
         <View style={{ width: wp(95), marginTop: 0 }}>
-          <Text style={{ color: 'red', fontSize: hp(1.5) }}>{errors}</Text>
+          {errors ? <Text style={{ color: 'red', fontSize: hp(1.8) }}>{errors}</Text> : null}
         </View>
         <View style={styles.formContainer}>
           <TouchableOpacity onPress={openCalendar}>
             <Text style={styles.label}>Select Date:</Text>
             <TextInput
-              value={selectedDate ? selectedDate.toString() : ''}
+              value={dateTime ? dateTime.toString() : ''}
               editable={false}
               placeholder="DD-MM-YYYY"
               placeholderTextColor={'gray'}
-              style={[styles.inputField, !selectedDate && styles.errorBorder]}
+              style={[styles.inputField, !dateTime && styles.errorBorder]}
             />
           </TouchableOpacity>
           {showCalendar && (
@@ -127,14 +138,13 @@ const Reschedule = ({ cartID, closeModal, drrIdes, modeOf }) => {
                 const selectedDay = day.dateString;
                 const [year, month, date] = selectedDay.split('-');
                 const formattedDate = `${date}-${month}-${year}`;
-                setSelectedDate(formattedDate);
+                setDatetime(formattedDate);
                 setShowCalendar(false);
               }}
               minDate={new Date()}
             />
           )}
-
-          {showCalendar ? null : (
+          {!showCalendar && (
             <>
               <View style={styles.dropdownContainer}>
                 <Text
@@ -243,14 +253,7 @@ const styles = StyleSheet.create({
     width: wp(95),
     marginTop: hp(1),
   },
-  dropdown: {
-    marginTop: hp(1),
-    borderRadius: 5,
-    borderColor: 'gray',
-    borderWidth: 0.7,
-  },
   placeholderStyle: {
-    fontSize: 14,
     fontSize: hp(2),
     color: 'gray',
   },
@@ -261,10 +264,10 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: hp(2),
-     color: '#8E8E8E',
+    color: '#8E8E8E',
   },
-  iconStyle:{
-    fontSize:hp(2),
+  iconStyle: {
+    fontSize: hp(2),
   },
   submitButton: {
     width: wp(95),
