@@ -261,7 +261,7 @@ export default function Settings() {
             <View style={{ width: wp(95) }}>
               <Text
                 style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>
-                Patient Gender:
+                Gender:
               </Text>
               <Dropdown
                 style={[

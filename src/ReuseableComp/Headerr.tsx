@@ -107,6 +107,7 @@ const Headerr = (props: any) => {
             const { data: res } = await getNotifications();
             if (res.status == true) {
                 setNotifications(res.data.length);
+                
                 throw new Error(res.error);
             }
         } catch (err) {

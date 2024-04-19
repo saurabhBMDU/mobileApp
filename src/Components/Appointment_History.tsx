@@ -247,7 +247,8 @@ const Appointment_History = (props: any) => {
 
   const calculateBMI = () => {
     if (height && weight) {
-      const heightInMeters = heightUnit === 'cm' ? height / 100 : height * 0.3048;
+      const heightInMeters =
+        heightUnit === 'cm' ? height / 100 : height * 0.3048;
       const bmiValue = (weight / (heightInMeters * heightInMeters)).toFixed(2);
       setBmi(bmiValue);
     }
@@ -297,7 +298,7 @@ const Appointment_History = (props: any) => {
         props?.route?.params?.data._id,
       );
       // console.log("soo bmioiiiiiiiiiiiiiiiiiiiiiiiiii",res?.data?.height);
-      console.log("hh",height);
+      console.log('hh', height);
       // Alert.alert(res?.data?.height);
       if (res.data) {
         setBp(res?.data?.bp);
@@ -315,7 +316,7 @@ const Appointment_History = (props: any) => {
         setMsgArr(res?.data?.history);
         setAppointmentData(res.data);
         setHeight(res?.data?.height);
-        setUnit(res?.data?.heightUnit)
+        setUnit(res?.data?.heightUnit);
         setBmi(res?.data?.bmi);
         setWeight(res?.data?.weight);
       }
@@ -434,7 +435,7 @@ const Appointment_History = (props: any) => {
   const handleDownloadPrescription = async (id: string, index: number) => {
     setDownloding(true);
     setDownlodingIndex(index);
-  
+
     try {
       if (Platform.OS === 'android') {
         const android = RNFetchBlob.android;
@@ -468,7 +469,6 @@ const Appointment_History = (props: any) => {
       setDownloding(false);
     }
   };
-  
 
   return (
     <View
@@ -489,7 +489,7 @@ const Appointment_History = (props: any) => {
           <>
             <View style={{width: wp(95)}}>
               <View
-                   style={{
+                style={{
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                   marginTop: hp(0.5),
@@ -637,8 +637,8 @@ const Appointment_History = (props: any) => {
                       fontSize: hp(1.8),
                     }}>
                     Respiratory Rate(RR)
+                    <Text>(bpm)</Text>
                   </Text>
-                  <Text></Text>
                   <TextInput
                     onChangeText={e => setrr(e)}
                     value={rr}
@@ -890,7 +890,7 @@ const Appointment_History = (props: any) => {
                             }
                             style={{
                               backgroundColor: maincolor,
-                              width:wp(95),
+                              width: wp(95),
                               borderTopRightRadius:
                                 userObj?.role == Roles.DOCTOR ? 0 : 10,
                               borderBottomRightRadius:

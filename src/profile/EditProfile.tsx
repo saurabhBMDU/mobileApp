@@ -17,7 +17,7 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import Headerr from '../ReuseableComp/Headerr';
-// import Modal from "react-native-modal";
+import Openeye_closeEye from 'react-native-vector-icons/Ionicons';
 import DocumentPicker from 'react-native-document-picker';
 import {generateFilePath} from '../Services/url.service';
 import {
@@ -61,6 +61,9 @@ const EditProfile = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [oldPassword, setOldPassword] = useState('');
+  const [viewOldpasswd, setViewOldPasswd] = useState(true);
+  const [viewPasswd, setViewPasswd] = useState(true);
+  const [preView, setPreviewPasswd] = useState(true);
 
   const handleGetAndSetUser = async () => {
     setisLodings(true);
@@ -87,7 +90,7 @@ const EditProfile = () => {
     }
   };
 
-  useEffect(() => { 
+  useEffect(() => {
     if (focused) {
       handleGetAndSetUser();
     }
@@ -395,6 +398,18 @@ const EditProfile = () => {
                   placeholderTextColor={'gray'}
                   style={styles.inputfildeStyle}
                 />
+              </View>
+            )}
+            {(userObj.role == Roles.DOCTOR || userObj.role == Roles.FRANCHISE ) && (
+              <View style={{width: wp(95), marginTop: hp(2)}}>
+                <Text
+                  style={{
+                    color: 'black',
+                    fontSize: hp(1.7),
+                    fontFamily: mainFontmedium,
+                  }}>  
+                  Uplode Document
+                </Text>
               </View>
             )}
             <View style={{marginTop: hp(2), width: wp(95)}}>

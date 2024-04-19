@@ -30,6 +30,7 @@ const FeedBack = ({cartId, onCloseModal}) => {
     if (!name || !email || !subject || !description) {
       setHasError(true);
       return;
+      
     }
 
     try {

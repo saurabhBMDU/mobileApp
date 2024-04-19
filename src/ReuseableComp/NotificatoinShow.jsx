@@ -77,24 +77,28 @@ const NotificationShow = () => {
     // Set icon based on notification type
     switch (items.title) {
       case 'Appointment rescheduled':
-        iconName = 'calendar';
-        iconColor = '#fff'; // Example color, adjust as needed
+        iconName = 'clock';
+        iconColor = '#d0bb76'; // Example color, adjust as needed
         break;
       case 'Appointment Scheduled':
         iconName = 'calendar';
-        iconColor = '#fff'; // Example color, adjust as needed
+        iconColor = 'green'; // Example color, adjust as needed
         break;
       case 'Appointment Created':
         iconName = 'plus-circle';
-        iconColor = '#fff'; // Example color, adjust as needed
+        iconColor = '#000'; // Example color, adjust as needed
         break;
-      case 'Appointment canceled':
+      case 'Appointment cancelled':
+        iconName = 'alert-circle';
+        iconColor = 'orange'; // Example color, adjust as needed
+        break;
+      case 'Appointment Rejected':
         iconName = 'x-circle';
         iconColor = 'red'; // Example color, adjust as needed
         break;
-      case 'Appointment Rejected':
-        iconName = 'slash';
-        iconColor = 'orange'; // Example color, adjust as needed
+      case 'Income Notification':
+        iconName = 'trending-up';
+        iconColor = '#5566e1'; // Example color, adjust as needed
         break;
       default:
         iconName = 'bell';
@@ -112,19 +116,19 @@ const NotificationShow = () => {
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View
               style={{
-                backgroundColor: '#048f91',
-                height: 60,
-                width: 60,
+                backgroundColor: iconColor,
+                height: 40,
+                width: 40,
                 borderRadius: 50,
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-              <Icon name={iconName} size={40} color={iconColor} style={{}} />
+              <Icon name={iconName} size={23} color={"#fff"} />
             </View>
             <View
               style={{
                 marginLeft: 10,
-                width: '80%'
+                width: '87%'
               }}>
               <View
                 style={{
@@ -161,7 +165,7 @@ const NotificationShow = () => {
                 <Text style={{ fontSize: hp(2) }}>Oops! No Notifications Found</Text>
               </View>
             }
-            renderItem={({ item,index }) => {
+            renderItem={({ item, index }) => {
               return (
                 <View>
                   <Text style={styles.dateH1}>{item.date}</Text>
@@ -172,8 +176,6 @@ const NotificationShow = () => {
               );
             }}
           />
-
-
       }
     </View>
   );
@@ -182,21 +184,24 @@ const NotificationShow = () => {
 
 const styles = StyleSheet.create({
   notificationItem: {
-    padding: 10,
+    padding: 7,
+    marginTop:1,
     borderBottomWidth: 1,
     borderBottomColor: '#DDD',
   },
   title: {
     fontWeight: 'bold',
-    fontSize:hp(1.8),
+    fontSize: hp(1.8),
     marginBottom: 5,
   },
   message: {
     marginBottom: 3,
-    fontSize:hp(1.5)
+    fontSize: hp(1.5),
+    textAlign:"justify",
+    paddingRight:12
   },
   timestamp: {
-    fontSize: 12,
+    fontSize: hp(1.5),
     color: 'black',
   },
   loadingContainer: {

@@ -102,6 +102,7 @@ const BookVideo = (props: any) => {
   const [suger1, setSuger1] = useState('');
   const [suger2, setSuger2] = useState('');
   const [suger3, setSuger3] = useState('');
+  const [respiratoryRate,setRespiratoryRate]=useState('');
   const [height, setHeight] = useState(0);
   const [heightUnit, setUnit] = useState('cm');
   const [weight, setWeight] = useState(0);
@@ -130,7 +131,8 @@ const BookVideo = (props: any) => {
 
   const calculateBMI = () => {
     if (height && weight) {
-      const heightInMeters = heightUnit === 'cm' ? height / 100 : height * 0.3048;
+      const heightInMeters =
+        heightUnit === 'cm' ? height / 100 : height * 0.3048;
       const bmiValue = (weight / (heightInMeters * heightInMeters)).toFixed(2);
       setBmi(bmiValue);
     }
@@ -142,14 +144,14 @@ const BookVideo = (props: any) => {
   const handleDateChange = async (selectedDate: string) => {
     try {
       setTimeSlot([]);
-    const dateObject = new Date(selectedDate);
-    // converting into dd/mm/yyyy 
-    const day = dateObject.getDate();
-    const month = dateObject.getMonth() + 1;
-    const year = dateObject.getFullYear();
-    const formattedDay = day < 10 ? '0' + day : day;
-    const formattedMonth = month < 10 ? '0' + month : month;
-    const dateString = `${formattedDay}-${formattedMonth}-${year}`;
+      const dateObject = new Date(selectedDate);
+      // converting into dd/mm/yyyy
+      const day = dateObject.getDate();
+      const month = dateObject.getMonth() + 1;
+      const year = dateObject.getFullYear();
+      const formattedDay = day < 10 ? '0' + day : day;
+      const formattedMonth = month < 10 ? '0' + month : month;
+      const dateString = `${formattedDay}-${formattedMonth}-${year}`;
 
       const response = await fetch(`${url}/time-slot/${drrIdes}`, {
         method: 'POST',
@@ -206,12 +208,6 @@ const BookVideo = (props: any) => {
         return;
       }
       if (height && !weight) {
-        setMeetingConfirmation(false);
-        setPage(2);
-        toastError('heights or Weight are mandatory !!!');
-        return;
-      }
-      if (!height && weight) {
         setMeetingConfirmation(false);
         setPage(2);
         toastError('heights or Weight are mandatory !!!');
@@ -275,11 +271,11 @@ const BookVideo = (props: any) => {
         patientName,
         paymentMode: 'Online',
         pulse,
+        respiratoryRate,
         selectedTimeSlot,
         suger1,
         suger2,
         suger3,
-       
       };
       console.log(obj);
       let {data: res} = await addAppointments(obj);
@@ -842,7 +838,66 @@ const BookVideo = (props: any) => {
                 />
               </View>
             </View>
-
+            <View style={{
+                flexDirection: 'row',
+                marginTop: hp(1),
+                justifyContent: 'space-between',
+              }}>
+              <View style={{width: wp(45)}}>
+                <Text
+                  style={{
+                    fontSize: hp(1.8),
+                    fontFamily: mainFontBold,
+                    color: 'black',
+                  }}>
+                 Respiratory rate (RR)
+                 <Text>(bpm)</Text>
+                </Text>
+                <TextInput
+                  keyboardType="numeric"
+                  onChangeText={e => setRespiratoryRate(e)}
+                  value={respiratoryRate}
+                  placeholderTextColor="#8E8E8E"
+                  placeholder="RR"
+                  style={{
+                    height: hp(7.1),
+                    fontSize: hp(2),
+                    backgroundColor: '#F2F2F2E5',
+                    marginTop: hp(1),
+                    borderRadius: wp(1.2),
+                    borderColor: 'gray',
+                    borderWidth: 0.5,
+                  }}
+                />
+              </View>
+              <View style={{width: wp(45)}}>
+                <Text
+                  style={{
+                    fontSize: hp(1.8),
+                    fontFamily: mainFontBold,
+                    color: 'black',
+                  }}>
+                  Random Blood Sugar (RBS)
+                  <Text style={{color: 'black'}}> mg/dL</Text>
+                </Text>
+                <TextInput
+                  keyboardType="numeric"
+                  onChangeText={e => setSuger3(e)}
+                  value={suger3}
+                  placeholderTextColor="#8E8E8E"
+                  placeholder="Random Blood Sugar"
+                  style={{
+                    height: hp(7.1),
+                    fontSize: hp(2),
+                    backgroundColor: '#F2F2F2E5',
+                    marginTop: hp(1),
+                    borderRadius: wp(1.2),
+                    borderColor: 'gray',
+                    borderWidth: 0.5,
+                  }}
+                />
+              </View>
+            </View>
             <View
               style={{
                 flexDirection: 'row',
@@ -856,23 +911,14 @@ const BookVideo = (props: any) => {
                     fontFamily: mainFontBold,
                     color: 'black',
                   }}>
-                  Fasting Blood Sugar (FBS)
-                </Text>
-                <Text
-                  style={{
-                    fontSize: hp(1.8),
-                    fontFamily: mainFontBold,
-                    color: 'black',
-                  }}>
-                  {' '}
-                  mg/dL
+                  Fasting Blood Sugar (FBS) mg/dL
                 </Text>
                 <TextInput
                   keyboardType="numeric"
                   onChangeText={e => setSuger1(e)}
                   value={suger1}
                   placeholderTextColor="#8E8E8E"
-                  placeholder="Fasting Blood Sugar (FBS)"
+                  placeholder="Fasting Blood Sugar(FBS)"
                   style={{
                     height: hp(7.1),
                     fontSize: hp(2),
@@ -884,7 +930,6 @@ const BookVideo = (props: any) => {
                   }}
                 />
               </View>
-
               <View style={{width: wp(45)}}>
                 <Text
                   style={{
@@ -919,35 +964,7 @@ const BookVideo = (props: any) => {
                 flexDirection: 'row',
                 marginTop: hp(1),
                 justifyContent: 'space-between',
-              }}>
-              <View style={{width: wp(95)}}>
-                <Text
-                  style={{
-                    fontSize: hp(1.8),
-                    fontFamily: mainFontBold,
-                    color: 'black',
-                  }}>
-                  Random Blood Sugar (RBS)
-                  <Text style={{color: 'black'}}> mg/dL</Text>
-                </Text>
-                <TextInput
-                  keyboardType="numeric"
-                  onChangeText={e => setSuger3(e)}
-                  value={suger3}
-                  placeholderTextColor="#8E8E8E"
-                  placeholder="Random Blood Sugar"
-                  style={{
-                    height: hp(7.1),
-                    fontSize: hp(2),
-                    backgroundColor: '#F2F2F2E5',
-                    marginTop: hp(1),
-                    borderRadius: wp(1.2),
-                    borderColor: 'gray',
-                    borderWidth: 0.5,
-                  }}
-                />
-              </View>
-            </View>
+              }}></View>
             {/* new added component */}
             <View
               style={{
@@ -963,7 +980,7 @@ const BookVideo = (props: any) => {
                       fontFamily: mainFontBold,
                       color: 'black',
                     }}>
-                    Height (ft)
+                    Height
                   </Text>
                   <View style={{width: wp(45), flexDirection: 'row'}}>
                     <TextInput
@@ -1192,12 +1209,12 @@ const BookVideo = (props: any) => {
             />
           </TouchableOpacity>
           <Calendar
-                        onDayPress={day => {
-                            setDateTime(day.dateString);
-                            setDateModal(false)
-                        }}
-                        minDate={`${new Date()}`}
-                    />
+            onDayPress={day => {
+              setDateTime(day.dateString);
+              setDateModal(false);
+            }}
+            minDate={`${new Date()}`}
+          />
           {/* <Calendar
             onDayPress={day => {
               // Format the date string to dd-mm-yyyy

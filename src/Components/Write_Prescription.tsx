@@ -110,7 +110,7 @@ const Write_Prescription = (props: any) => {
       duration_count: '',
     },
   ]);
-  console.log(" dfgs  gfh        ",appointMentObj)
+  console.log(' dfgs  gfh        ', appointMentObj);
 
   const handleGetMedicines = async () => {
     setloding(true);
@@ -374,10 +374,22 @@ const Write_Prescription = (props: any) => {
                     paddingLeft: wp(3),
                   }}>
                   <Text style={{fontSize: hp(1.7), fontFamily: mainFont}}>
+                    Gender :
+                    <Text style={{color: '#757474'}}>
+                      {appointMentObj?.gender}
+                    </Text>
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(1),
+                    paddingLeft: wp(3),
+                  }}>
+                  <Text style={{fontSize: hp(1.7), fontFamily: mainFont}}>
                     BP :
                     <Text style={{color: '#757474'}}>{appointMentObj?.bp}</Text>
                   </Text>
-                  
                 </View>
                 <View
                   style={{
@@ -405,21 +417,7 @@ const Write_Prescription = (props: any) => {
                     </Text>
                   </Text>
                 </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginTop: hp(1),
-                    paddingLeft: wp(3),
-                  }}>
-                  <Text style={{fontSize: hp(1.7), fontFamily: mainFont}}>
-                    RR :
-                    <Text style={{color: '#757474'}}>
-                      {appointMentObj?.respiratoryRate}
-                    </Text>
-                  </Text>
-                </View>
               </View>
-              
 
               <View style={{width: wp(45)}}>
                 <View
@@ -431,7 +429,16 @@ const Write_Prescription = (props: any) => {
                   <Text style={{fontSize: hp(1.7), fontFamily: mainFont}}>
                     Age :
                     <Text style={{color: '#757474'}}>
-                      {appointMentObj?.age}
+                      {appointMentObj?.age === 0 ||
+                      appointMentObj?.age === undefined
+                        ? ''
+                        : `${appointMentObj?.age} Year `}
+                      {appointMentObj?.months == 0 ||
+                      appointMentObj?.months === undefined
+                        ? ''
+                        : appointMentObj?.age > 0 || appointMentObj?.months > 0
+                        ? ` ${appointMentObj?.months} Month`
+                        : ''}
                     </Text>
                   </Text>
                 </View>
@@ -455,9 +462,9 @@ const Write_Prescription = (props: any) => {
                     paddingLeft: wp(3),
                   }}>
                   <Text style={{fontSize: hp(1.7), fontFamily: mainFont}}>
-                    Pulse :
+                    RR :
                     <Text style={{color: '#757474'}}>
-                      {appointMentObj?.pulse}
+                      {appointMentObj?.respiratoryRate}
                     </Text>
                   </Text>
                 </View>
@@ -468,9 +475,9 @@ const Write_Prescription = (props: any) => {
                     paddingLeft: wp(3),
                   }}>
                   <Text style={{fontSize: hp(1.7), fontFamily: mainFont}}>
-                    Gender :
+                    Pulse :
                     <Text style={{color: '#757474'}}>
-                      {appointMentObj?.gender}
+                      {appointMentObj?.pulse}
                     </Text>
                   </Text>
                 </View>
@@ -488,7 +495,6 @@ const Write_Prescription = (props: any) => {
                   </Text>
                 </View>
               </View>
-              
             </View>
 
             <View
