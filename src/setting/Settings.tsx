@@ -448,31 +448,6 @@ export default function Settings() {
                   />
                 </View>
               </View>
-              {/* <View
-                style={{
-                  flexDirection: 'row',
-                  marginTop: hp(1),
-                  justifyContent: 'space-between',
-                }}>
-                <View style={{width: wp(95)}}>
-                  <Text
-                    style={{
-                      fontSize: hp(1.8),
-                      fontFamily: mainFont,
-                      color: 'black',
-                    }}>
-                    Confirm account number
-                  </Text>
-                  <TextInput
-                    placeholderTextColor="#8E8E8E"
-                    placeholder="Email Id"
-                    editable={false}
-                    value={mobile}
-                    onChangeText={e => setMobile(e)}
-                    style={styles.inputfildeStyle}
-                  />
-                </View>
-              </View> */}
               <View style={{width: wp(95)}}>
                 <Text
                   style={{
