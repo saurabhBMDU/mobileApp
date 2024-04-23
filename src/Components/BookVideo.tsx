@@ -10,7 +10,6 @@ import {
   StyleSheet,
   Pressable,
   ScrollView,
-  TouchableWithoutFeedback,
   Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
@@ -19,6 +18,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import Headerr from '../ReuseableComp/Headerr';
+import Clode_icons from 'react-native-vector-icons/AntDesign';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {Dropdown} from 'react-native-element-dropdown';
 import {toastError, toastSuccess} from '../utils/toast.utils';
@@ -32,9 +32,7 @@ import {SendNotificationForMeetingCreation} from '../Services/notificationSevice
 import {getWallet} from '../Services/wallet.service';
 const {height, width} = Dimensions.get('window');
 import {getUser} from '../Services/user.service';
-import {Roles} from '../utils/constant';
 import url from '../Services/url.service';
-import moment from 'moment';
 
 const modeOf = 'Video';
 
@@ -102,7 +100,7 @@ const BookVideo = (props: any) => {
   const [suger1, setSuger1] = useState('');
   const [suger2, setSuger2] = useState('');
   const [suger3, setSuger3] = useState('');
-  const [respiratoryRate,setRespiratoryRate]=useState('');
+  const [respiratoryRate, setRespiratoryRate] = useState('');
   const [height, setHeight] = useState(0);
   const [heightUnit, setUnit] = useState('cm');
   const [weight, setWeight] = useState(0);
@@ -128,15 +126,21 @@ const BookVideo = (props: any) => {
     {length: Math.ceil(data.length / chunkSize)},
     (_, index) => data.slice(index * chunkSize, index * chunkSize + chunkSize),
   );
-
   const calculateBMI = () => {
     if (height && weight) {
-      const heightInMeters =
-        heightUnit === 'cm' ? height / 100 : height * 0.3048;
+      let heightInMeters = 0;
+      if (heightUnit === 'ft') {
+        const [feet, inches] = height.split('.');
+        heightInMeters =
+          parseInt(feet) * 0.3048 + parseInt(inches || '0') * 0.0254;
+      } else if (heightUnit === 'cm') {
+        heightInMeters = parseFloat(height) / 100;
+      }
       const bmiValue = (weight / (heightInMeters * heightInMeters)).toFixed(2);
       setBmi(bmiValue);
     }
   };
+
   useEffect(() => {
     calculateBMI();
   }, [heightUnit, height, weight, bmi]);
@@ -838,7 +842,8 @@ const BookVideo = (props: any) => {
                 />
               </View>
             </View>
-            <View style={{
+            <View
+              style={{
                 flexDirection: 'row',
                 marginTop: hp(1),
                 justifyContent: 'space-between',
@@ -850,8 +855,8 @@ const BookVideo = (props: any) => {
                     fontFamily: mainFontBold,
                     color: 'black',
                   }}>
-                 Respiratory rate (RR)
-                 <Text>(bpm)</Text>
+                  Respiratory rate (RR)
+                  <Text>(bpm)</Text>
                 </Text>
                 <TextInput
                   keyboardType="numeric"
@@ -1003,6 +1008,10 @@ const BookVideo = (props: any) => {
                         borderRightWidth: 0, // Right border width set to 0 to remove
                       }}
                     />
+                    <Text style={{alignSelf: 'center', marginHorizontal: 5}}>
+                      {heightUnit === 'ft' ? "'" : 'cm'}
+                    </Text>
+
                     <Dropdown
                       style={[
                         styles.uint,
@@ -1192,7 +1201,7 @@ const BookVideo = (props: any) => {
         <View
           style={{
             width: wp(85),
-            paddingTop: hp(3),
+            paddingTop: hp(1),
             paddingBottom: hp(3),
             backgroundColor: 'white',
             alignSelf: 'center',
@@ -1203,9 +1212,13 @@ const BookVideo = (props: any) => {
           <TouchableOpacity
             onPress={() => setDateModal(false)}
             style={{alignSelf: 'flex-end'}}>
-            <Image
-              source={require('../../assets/images/close.png')}
-              style={{tintColor: 'black', height: wp(5), width: wp(5)}}
+            <Clode_icons
+              name="close"
+              style={{
+                fontSize: hp(4),
+                paddingLeft: wp(6),
+                marginBottom: hp(1),
+              }}
             />
           </TouchableOpacity>
           <Calendar

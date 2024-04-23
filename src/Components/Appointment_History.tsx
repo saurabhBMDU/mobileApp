@@ -37,7 +37,7 @@ import {
   getJwt,
   getUser,
   isUserLoggedIn,
-} from '../Services/user.service';
+} from '../Services/user.service'; 
 import {Calendar} from 'react-native-calendars';
 import {Dropdown} from 'react-native-element-dropdown';
 import moment from 'moment';
@@ -297,7 +297,6 @@ const Appointment_History = (props: any) => {
       let {data: res} = await getAppointmentById(
         props?.route?.params?.data._id,
       );
-      // console.log("soo bmioiiiiiiiiiiiiiiiiiiiiiiiiii",res?.data?.height);
       console.log('hh', height);
       // Alert.alert(res?.data?.height);
       if (res.data) {
@@ -400,38 +399,6 @@ const Appointment_History = (props: any) => {
       toastError(error);
     }
   };
-  // const handleDownloadPrescription = (id: string, index: number) => {
-  //   setDownloding(true);
-  //   setDownlodingIndex(index);
-  //   if (Platform.OS == 'android') {
-  //     const android = RNFetchBlob.android;
-  //     RNFetchBlob.config({
-  //       fileCache: true,
-  //       addAndroidDownloads: {
-  //         useDownloadManager: true,
-  //         notification: true,
-  //         path: RNFetchBlob.fs.dirs.DownloadDir + '/Prescription' + '.pdf',
-  //         mime: 'application/pdf',
-  //         description: 'File downloaded by download manager.',
-  //       },
-  //     })
-  //       .fetch('GET', `${url}/prescription-by-id/${id}`, {
-  //         responseType: 'blob',
-  //       })
-  //       .then(res => {
-  //         android.actionViewIntent(res.path(), 'application/pdf');
-  //         toastSuccess('Prescription Downloaded');
-  //         setDownloding(false);
-  //       })
-  //       .catch(err => {
-  //         console.log(err);
-  //         setDownloding(false);
-  //       });
-  //   } else {
-  //     toastError('Not Configured');
-  //     setDownloding(false);
-  //   }
-  // };
   const handleDownloadPrescription = async (id: string, index: number) => {
     setDownloding(true);
     setDownlodingIndex(index);
@@ -566,7 +533,6 @@ const Appointment_History = (props: any) => {
                   />
                 </View>
               </View>
-
               <View style={{justifyContent: 'space-between', marginTop: hp(1)}}>
                 <View style={{width: wp(95)}}>
                   <Text

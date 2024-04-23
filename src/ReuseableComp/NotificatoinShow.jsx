@@ -1,42 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
-import { getNotifications, isReadNotification } from '../Services/user.service';
+import { getNotifications, getUser, isReadNotification } from '../Services/user.service';
 import Icon from 'react-native-vector-icons/Feather';
 import Headerr from './Headerr';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { useIsFocused } from '@react-navigation/native';
 
-
+import moment from 'moment';
 
 const NotificationShow = () => {
+  const focused = useIsFocused();
 
   const [notifications, setNotifications] = useState([]);
-  const [readNotifications, setReadNotifications] = useState(new Map());
   const [loading, setLoading] = useState(true);
+  const [userObj, setUserObj] = useState('');
 
+  const handleGetAndSetUser = async () => {
+    let userData = await getUser();
+    if (userData) {
+      setUserObj(userData?._id);
+      getAllNotifications();
+    }
+  };
 
-  const markAsRead = async (id) => {
+  const markAsRead = async () => {
     try {
-      const { data: res } = await isReadNotification(id);
-      if (res.status === true) {
-        getAllNotifications();
-      } else {
-        throw new Error(res.error);
-      }
+      const { data: res } = await isReadNotification(userObj);
     } catch (err) {
       console.error('Error fetching notifications:', err);
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   };
 
-
   const getAllNotifications = async () => {
     try {
       const { data: res } = await getNotifications();
-      console.log("my this respons", res.data)
+
       if (res.status === true) {
-        setNotifications(res.data);
+        setNotifications(res.data); // This will execute after handleGetAndSetUser()
+        markAsRead();
       } else {
         throw new Error(res.error);
       }
@@ -48,8 +51,8 @@ const NotificationShow = () => {
   };
 
   useEffect(() => {
-    getAllNotifications();
-  }, []);
+    handleGetAndSetUser();
+  }, [focused]);
 
   const preProcessData = (data) => {
     return data.map((item, index) => {
@@ -58,19 +61,7 @@ const NotificationShow = () => {
     });
   };
 
-  // Usage example:
-
-  const preprocessedData = preProcessData(notifications);
-
   const renderItem = ({ items, index }) => {
-    let showRelativeTime = false;
-    // Check if the current item is not the first one and if its timestamp is the same as the previous one
-
-    // if (index > 0 && items[index - 1].timestamp === timestamp) {
-    //   showRelativeTime = false;
-    // } else {
-    //   showRelativeTime = true;
-    // }
     let iconName;
     let iconColor;
 
@@ -86,7 +77,7 @@ const NotificationShow = () => {
         break;
       case 'Appointment Created':
         iconName = 'plus-circle';
-        iconColor = '#000'; // Example color, adjust as needed
+        iconColor = 'green'; // Example color, adjust as needed
         break;
       case 'Appointment cancelled':
         iconName = 'alert-circle';
@@ -105,13 +96,10 @@ const NotificationShow = () => {
         iconColor = 'black'; // Default color
         break;
     }
-    const timestamp = new Date(items.timestamp);
-
-    const formattedDate = `${('0' + (timestamp.getMonth() + 1)).slice(-2)}-${('0' + timestamp.getDate()).slice(-2)}-${timestamp.getFullYear()}`;
     return (
       <TouchableOpacity
-        style={[styles.notificationItem, { backgroundColor: items.read ? '#EEE' : '#FFF' }]}
-        onPress={() => markAsRead(items._id)}>
+        key={index}
+        style={[styles.notificationItem, { backgroundColor: items.read ? '#FFF' : '#dadde0' }]}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View
@@ -128,7 +116,7 @@ const NotificationShow = () => {
             <View
               style={{
                 marginLeft: 10,
-                width: '87%'
+                width: '86%'
               }}>
               <View
                 style={{
@@ -138,7 +126,7 @@ const NotificationShow = () => {
                 }}>
 
                 <Text style={styles.title}>{items.title}</Text>
-                <Text style={styles.timestamp}>{formattedDate}</Text>
+                <Text style={styles.timestamp}>{moment(items.timestamp).format('DD-MM-YYYY hh:mm a')}</Text>
               </View>
               <Text style={styles.message}>{items.message}</Text>
             </View>
@@ -184,8 +172,8 @@ const NotificationShow = () => {
 
 const styles = StyleSheet.create({
   notificationItem: {
-    padding: 7,
-    marginTop:1,
+    padding: 10,
+    marginTop: 1,
     borderBottomWidth: 1,
     borderBottomColor: '#DDD',
   },
@@ -197,11 +185,11 @@ const styles = StyleSheet.create({
   message: {
     marginBottom: 3,
     fontSize: hp(1.5),
-    textAlign:"justify",
-    paddingRight:12
+    textAlign: "justify",
+    paddingRight: 12
   },
   timestamp: {
-    fontSize: hp(1.5),
+    fontSize: hp(1.3),
     color: 'black',
   },
   loadingContainer: {

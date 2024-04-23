@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   ScrollView,
@@ -8,30 +8,25 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
+import {Dropdown, MultiSelect} from 'react-native-element-dropdown';
 
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import axios from '../Services/axios.service';
+import url from '../Services/url.service';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Headerr from '../ReuseableComp/Headerr';
-import {
-  getProfile,
-  getUser,
-  setUser,
-  updatePassword,
-  updateProfile,
-  updateSlot,
-} from '../Services/user.service';
-import { toastError, toastSuccess } from '../utils/toast.utils';
+import {getUser, setUser, updateSlot} from '../Services/user.service';
+import {toastError, toastSuccess} from '../utils/toast.utils';
 // import { navigationRef } from '../Navigation/Root';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import DocumentPicker from 'react-native-document-picker';
-import { generateFilePath } from '../Services/url.service';
-import { Roles } from '../utils/constant';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {generateFilePath} from '../Services/url.service';
+import Notification_icons from 'react-native-vector-icons/MaterialIcons';
+import {Roles} from '../utils/constant';
 import InterNetError from '../noInterNet/InterNetError';
-import { useNetInfo } from '@react-native-community/netinfo';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 export default function Settings() {
   // internet connection
@@ -79,17 +74,11 @@ export default function Settings() {
   const [specialization, setSpecialization] = useState('');
   const [abhaid, setAbhaid] = useState('');
   const [userObj, setUserObj] = useState<any>('');
+  const [isNotification, setIsNotification] = useState('OFF');
 
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [oldPassword, setOldPassword] = useState('');
-
-  const [refreshCount, setRefreshCount] = useState(0);
   const handleGetAndSetUser = async () => {
     let userData = await getUser();
-
     if (userData) {
-      console.log(JSON.stringify(userData, null, 2), 'userData');
       setUserObj(userData);
       setGender(userData?.gender);
       setImage(userData?.image);
@@ -105,6 +94,7 @@ export default function Settings() {
       setProfilePhoto(userData?.image);
       setTimeSlot(userData?.timeSlot.map((el: any) => el.value));
       setTimeSlotoffline(userData?.timeSlotoffline.map((el: any) => el.value));
+      setIsNotification(userData?.isNotification);
     }
   };
 
@@ -122,16 +112,15 @@ export default function Settings() {
         // gender,
       };
       if (userObj.role == Roles.DOCTOR) {
-        obj.timeSlot = timeSlot.map(el => ({ label: el, value: el }));
+        obj.timeSlot = timeSlot.map(el => ({label: el, value: el}));
         obj.timeSlotoffline = timeSlotoffline.map(el => ({
           label: el,
           value: el,
         }));
       }
-      let { data: res }: any = await updateSlot(obj);
+      let {data: res}: any = await updateSlot(obj);
       if (res) {
         await setUser(res.data);
-
         toastSuccess(res.message);
 
         setUserObj(res.data);
@@ -143,6 +132,78 @@ export default function Settings() {
       }
     } catch (error) {
       toastError(error);
+    }
+  };
+  const handleRenderProfilePhoto = () => {
+    if (image && image?.uri && image?.uri != '') {
+      return {uri: image?.uri};
+    } else if (
+      profilePhoto &&
+      profilePhoto != '' &&
+      profilePhoto.includes('file')
+    ) {
+      return {uri: generateFilePath(profilePhoto)};
+    } else {
+      return require('../../assets/images/profile.png');
+    }
+  };
+
+  const [accountNumber, setaccountNumber] = useState('');
+  const [ifsc, setifsc] = useState('');
+  const [bankName, setbankName] = useState('');
+  const [customerName, setcustomerName] = useState('');
+  const [branchName, setbranchName] = useState('');
+  const [upiId, setupiId] = useState('');
+  const [upiNumber, setupiNumber] = useState('');
+
+  // const
+
+  const BankInfo = async () => {
+    // Validate required fields
+    if (
+      !accountNumber ||
+      !ifsc ||
+      !bankName ||
+      !customerName ||
+      !branchName ||
+      !upiId ||
+      !upiNumber
+    ) {
+      toastError('All fields are mandatory');
+      return;
+    }
+    const getRespons = async () => {
+      console.log(`${url}/doctor-detail/${userObj?._id}`);
+      const response = await axios.get(`${url}/doctor-detail/${userObj?._id}`);
+      console.log(response);
+    };
+    useEffect(() => {
+      getRespons();
+    }, [focused]);
+
+    const allResponsData = {
+      accountNumber,
+      ifsc,
+      bankName,
+      customerName,
+      branchName,
+      upiId,
+      upiNumber,
+    };
+
+    try {
+      const response = await axios.post(
+        `${url}/account-information`,
+        allResponsData,
+      );
+      if (response.status === 200) {
+        toastSuccess('Account details successfully added');
+      } else {
+        toastError('Unable to add Account details');
+      }
+    } catch (error) {
+      console.error('Error adding account details:', error);
+      toastError('Error adding account details');
     }
   };
 
@@ -162,9 +223,9 @@ export default function Settings() {
             const nextAmPm = nextHours >= 12 ? 'PM' : 'AM';
             const formattedNextHours = nextHours % 12 || 12;
             const nextMinutes = (minutes + 15) % 60;
-            const formattedNextMinutes = nextMinutes < 10 ? `0${nextMinutes}` : nextMinutes;
+            const formattedNextMinutes =
+              nextMinutes < 10 ? `0${nextMinutes}` : nextMinutes;
             const endTime = `${formattedNextHours}:${formattedNextMinutes} ${nextAmPm}`;
-
             // Concatenate the start and end times with a space
             times.push({
               label: `${startTime} - ${endTime}`,
@@ -179,23 +240,46 @@ export default function Settings() {
       setOption(timeArray);
     }
   }, [focused]);
-
+  // Notofication on and off code
+  const handleNotificationToggle = async () => {
+    try {
+      const response = await axios.put(`${url}/notification-alert`, {
+        isNotification: isNotification,
+      });
+      if (response.status === 200) {
+        handleGetAndSetUser();
+      } else {
+        throw new Error('Failed to update notification setting');
+      }
+    } catch (error: any) {
+      console.error('Error toggling notification:', error.message);
+    }
+  };
 
   if (isConnected === false) {
-    return (
-      <InterNetError labels={"Setting"} />
-    )
+    return <InterNetError labels={'Setting'} />;
   } else {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{flex: 1, paddingBottom: 25}}>
         <Headerr secndheader={true} label="Setting" />
-        <ScrollView style={{ paddingHorizontal: 10, backgroundColor: '#fff' }} showsVerticalScrollIndicator={false}>
-          <View style={{ alignItems: 'center', paddingVertical: 20 }}>
+
+        <ScrollView
+          style={{paddingHorizontal: 10, backgroundColor: '#fff'}}
+          showsVerticalScrollIndicator={false}>
+          <TouchableOpacity onPress={handleNotificationToggle}>
+            <Notification_icons
+              name={
+                isNotification === 'ON' ? 'notifications-off' : 'notifications'
+              }
+              style={styles.notificationIcons}
+            />
+          </TouchableOpacity>
+          <View style={{alignItems: 'center', marginBottom: hp(5)}}>
             <Image
-              source={require('../../assets/images/imgchek.jpg')}
+              source={handleRenderProfilePhoto()}
               style={{
-                width: wp(25),
-                height: wp(25),
+                width: wp(20),
+                height: wp(20),
                 borderRadius: 50,
                 objectFit: 'contain',
               }}
@@ -216,9 +300,13 @@ export default function Settings() {
               marginTop: hp(1),
               justifyContent: 'space-between',
             }}>
-            <View style={{ width: wp(95) }}>
+            <View style={{width: wp(95)}}>
               <Text
-                style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>
+                style={{
+                  fontSize: hp(1.8),
+                  fontFamily: mainFont,
+                  color: 'black',
+                }}>
                 Name:
               </Text>
               <TextInput
@@ -237,16 +325,21 @@ export default function Settings() {
               marginTop: hp(1),
               justifyContent: 'space-between',
             }}>
-            <View style={{ width: wp(95) }}>
+            <View style={{width: wp(95)}}>
               <Text
-                style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>
+                style={{
+                  fontSize: hp(1.8),
+                  fontFamily: mainFont,
+                  color: 'black',
+                }}>
                 Email Id
               </Text>
               <TextInput
                 placeholderTextColor="#8E8E8E"
                 placeholder="Email Id"
+                editable={false}
                 onChangeText={e => setEmailid(e)}
-                value={emailid}
+                value={email}
                 style={styles.inputfildeStyle}
               />
             </View>
@@ -258,15 +351,45 @@ export default function Settings() {
               marginTop: hp(1),
               justifyContent: 'space-between',
             }}>
-            <View style={{ width: wp(95) }}>
+            <View style={{width: wp(95)}}>
               <Text
-                style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black' }}>
+                style={{
+                  fontSize: hp(1.8),
+                  fontFamily: mainFont,
+                  color: 'black',
+                }}>
+                Phone
+              </Text>
+              <TextInput
+                placeholderTextColor="#8E8E8E"
+                placeholder="Email Id"
+                editable={false}
+                value={mobile}
+                onChangeText={e => setMobile(e)}
+                style={styles.inputfildeStyle}
+              />
+            </View>
+          </View>
+
+          <View
+            style={{
+              flexDirection: 'row',
+              marginTop: hp(1),
+              justifyContent: 'space-between',
+            }}>
+            <View style={{width: wp(95)}}>
+              <Text
+                style={{
+                  fontSize: hp(1.8),
+                  fontFamily: mainFont,
+                  color: 'black',
+                }}>
                 Gender:
               </Text>
               <Dropdown
                 style={[
                   styles.dropdown1,
-                  isGenderFocused && { borderColor: 'blue', borderWidth: 0.5 },
+                  isGenderFocused && {borderColor: 'blue', borderWidth: 0.5},
                 ]}
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={styles.selectedTextStyle}
@@ -288,17 +411,212 @@ export default function Settings() {
               />
             </View>
           </View>
-
-          {userObj?.role == Roles.DOCTOR && (
+          {(userObj?.role == Roles.DOCTOR ||
+            userObj?.role == Roles.FRANCHISE) && (
             <>
-              <Text style={{ marginTop: 10 }}>Avaliable time slot For Appointment</Text>
+              <Text
+                style={{
+                  fontFamily: mainFontmedium,
+                  fontSize: hp(2.6),
+                  color: '#1263AC',
+                  marginTop: hp(1),
+                }}>
+                Bank Info
+              </Text>
               <View
                 style={{
                   flexDirection: 'row',
                   marginTop: hp(1),
                   justifyContent: 'space-between',
                 }}>
-                <View style={{ width: wp(95) }}>
+                <View style={{width: wp(95)}}>
+                  <Text
+                    style={{
+                      fontSize: hp(1.8),
+                      fontFamily: mainFont,
+                      color: 'black',
+                      marginTop:hp(1)
+                    }}>
+                    Account Number
+                  </Text>
+                  <TextInput
+                    placeholderTextColor="#8E8E8E"
+                    placeholder="Account Number"
+                    value={accountNumber}
+                    onChangeText={e => setaccountNumber(e)}
+                    style={styles.inputfildeStyle}
+                  />
+                </View>
+              </View>
+              {/* <View
+                style={{
+                  flexDirection: 'row',
+                  marginTop: hp(1),
+                  justifyContent: 'space-between',
+                }}>
+                <View style={{width: wp(95)}}>
+                  <Text
+                    style={{
+                      fontSize: hp(1.8),
+                      fontFamily: mainFont,
+                      color: 'black',
+                    }}>
+                    Confirm account number
+                  </Text>
+                  <TextInput
+                    placeholderTextColor="#8E8E8E"
+                    placeholder="Email Id"
+                    editable={false}
+                    value={mobile}
+                    onChangeText={e => setMobile(e)}
+                    style={styles.inputfildeStyle}
+                  />
+                </View>
+              </View> */}
+              <View style={{width: wp(95)}}>
+                <Text
+                  style={{
+                    fontSize: hp(1.8),
+                    fontFamily: mainFont,
+                    color: 'black',
+                    marginTop:hp(1)
+                  }}>
+                  IFSC
+                </Text>
+                <TextInput
+                  placeholderTextColor="#8E8E8E"
+                  placeholder="IFSC"
+                  value={ifsc}
+                  onChangeText={e => setifsc(e)}
+                  style={styles.inputfildeStyle}
+                />
+              </View>
+              <View style={{width: wp(95)}}>
+                <Text
+                  style={{
+                    fontSize: hp(1.8),
+                    fontFamily: mainFont,
+                    color: 'black',
+                    marginTop:hp(1)
+                  }}>
+                  Bank Name
+                </Text>
+                <TextInput
+                  placeholderTextColor="#8E8E8E"
+                  placeholder="Bank Name"
+                  value={bankName}
+                  onChangeText={e => setbankName(e)}
+                  style={styles.inputfildeStyle}
+                />
+              </View>
+              <View style={{width: wp(95)}}>
+                <Text
+                  style={{
+                    fontSize: hp(1.8),
+                    fontFamily: mainFont,
+                    color: 'black',
+                    marginTop:hp(1)
+                  }}>
+                  Customer Name
+                </Text>
+                <TextInput
+                  placeholderTextColor="#8E8E8E"
+                  placeholder="Customer Name"
+                  value={customerName}
+                  onChangeText={e => setcustomerName(e)}
+                  style={styles.inputfildeStyle}
+                />
+              </View>
+              <View style={{width: wp(95)}}>
+                <Text
+                  style={{
+                    fontSize: hp(1.8),
+                    fontFamily: mainFont,
+                    color: 'black',
+                    marginTop:hp(1)
+                  }}>
+                  Branch Name
+                </Text>
+                <TextInput
+                  placeholderTextColor="#8E8E8E"
+                  placeholder="Branch Name"
+                  value={branchName}
+                  onChangeText={e => setbranchName(e)}
+                  style={styles.inputfildeStyle}
+                />
+              </View>
+              <View style={{width: wp(95)}}>
+                <Text
+                  style={{
+                    fontSize: hp(1.8),
+                    fontFamily: mainFont,
+                    color: 'black',
+                    marginTop:hp(1)
+                  }}>
+                  UPI id
+                </Text>
+                <TextInput
+                  placeholderTextColor="#8E8E8E"
+                  placeholder=" UPI id"
+                  value={upiId}
+                  onChangeText={e => setupiId(e)}
+                  style={styles.inputfildeStyle}
+                />
+              </View>
+              <View style={{width: wp(95)}}>
+                <Text
+                  style={{
+                    fontSize: hp(1.8),
+                    fontFamily: mainFont,
+                    color: 'black',
+                    marginTop:hp(1)
+                  }}>
+                  UPI Number
+                </Text>
+                <TextInput
+                  placeholderTextColor="#8E8E8E"
+                  placeholder="UPI Number"
+                  value={upiNumber}
+                  onChangeText={e => setupiNumber(e)}
+                  style={styles.inputfildeStyle}
+                />
+              </View>
+              <TouchableOpacity
+                style={{
+                  width: wp(95),
+                  height: hp(5),
+                  backgroundColor: '#50B148',
+                  borderRadius: 5,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  alignSelf: 'center',
+                  marginVertical: 25,
+                }}
+                onPress={() => BankInfo()}>
+                <Text
+                  style={{
+                    fontSize: hp(1.8),
+                    color: 'white',
+                    fontFamily: mainFontmedium,
+                  }}>
+                  Submit
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
+
+          {userObj?.role == Roles.DOCTOR && (
+            <>
+              <Text style={{marginTop: 10}}>
+                Avaliable time slot For Appointment
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  marginTop: hp(1),
+                  justifyContent: 'space-between',
+                }}>
+                <View style={{width: wp(95)}}>
                   <Text
                     style={{
                       fontSize: hp(1.8),
@@ -342,7 +660,7 @@ export default function Settings() {
                   marginTop: hp(1),
                   justifyContent: 'space-between',
                 }}>
-                <View style={{ width: wp(95) }}>
+                <View style={{width: wp(95)}}>
                   <Text
                     style={{
                       fontSize: hp(1.8),
@@ -384,7 +702,7 @@ export default function Settings() {
                 onPress={() => handleSubmit()}
                 style={{
                   width: wp(94),
-                  marginTop: hp(5),
+                  marginTop: hp(2),
                   height: hp(5),
                   backgroundColor: '#50B148',
                   borderRadius: 5,
@@ -402,8 +720,6 @@ export default function Settings() {
               </TouchableOpacity>
             </>
           )}
-
-
         </ScrollView>
       </View>
     );
@@ -417,24 +733,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     marginTop: hp(1),
     backgroundColor: '#F1ECEC',
-    borderColor: "gray",
-    borderWidth: .5,
+    borderColor: 'gray',
+    borderWidth: 0.5,
     paddingLeft: wp(1),
     paddingRight: wp(3),
   },
   inputfildeStyle: {
     width: wp(95),
     height: hp(5.5),
-    marginTop: hp(.5),
+    marginTop: hp(0.5),
     backgroundColor: '#F1ECEC',
-    borderColor: "gray",
-    borderWidth: .5,
+    borderColor: 'gray',
+    borderWidth: 0.5,
     borderRadius: 3,
     paddingLeft: wp(1),
     paddingRight: wp(3),
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   placeholderStyle: {
     fontSize: 16,
@@ -463,7 +779,12 @@ const styles = StyleSheet.create({
     marginRight: 5,
     fontSize: 16,
   },
-
+  notificationIcons: {
+    fontSize: hp(5),
+    textAlign: 'right',
+    color: 'red',
+    padding: hp(1),
+  },
   icon: {
     marginRight: 5,
   },

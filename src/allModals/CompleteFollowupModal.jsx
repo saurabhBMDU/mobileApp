@@ -77,10 +77,22 @@ const CompleteFollowupModal = ({ cartID, closeModal, drrIdes, modeOf }) => {
     }
     Alert.alert('Submitted');
   };
- const completedStatus=async()=>{
-  const response= await axios.put(`${url}/appointments/${cartID}`)
-  
- }
+
+  const completedStatus = async () => {
+    try {
+      const response = await axios.put(`${url}appointments/${cartID}`, {
+        status: 'completed',
+      });
+      console.log(response);
+      if (response.status === 200) {
+        offModal();
+      } else {
+        
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
 
   const handleFinalSubmit = () => {
     Alert.alert(
@@ -89,7 +101,7 @@ const CompleteFollowupModal = ({ cartID, closeModal, drrIdes, modeOf }) => {
       [
         {
           text: 'Completed',
-          onPress: () => closeModal(),
+          onPress: () => completedStatus(),
           // style: 'default', // or 'cancel' for iOS
           color: 'blue', // text color
           backgroundColor: 'lightblue' // background color

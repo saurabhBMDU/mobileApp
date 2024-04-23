@@ -17,6 +17,7 @@ import {
   View,
   Alert,
 } from 'react-native';
+import Clode_icons from 'react-native-vector-icons/AntDesign';
 import {Calendar} from 'react-native-calendars';
 import Modal from 'react-native-modal';
 import {
@@ -60,7 +61,7 @@ import axios from '../Services/axios.service';
 const {height, width} = Dimensions.get('window');
 const mainFontBold = 'Montserrat-Bold';
 
-const Appointment = () => {
+const Appointment = (proper: any) => {
   const serverUrl = url;
   const handleLogout = async () => {
     try {
@@ -112,8 +113,6 @@ const Appointment = () => {
   const [lastPageReached, setLastPageReached] = useState(false);
   const [prevLimit, setPrevLimit] = useState(10);
 
-
-
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const focused = useIsFocused();
@@ -124,6 +123,7 @@ const Appointment = () => {
 
   const [fromDate, setFromDate] = useState('');
   const [toDate, settoDate] = useState('');
+  const [filterData, setFilterData] = useState(proper?.route?.params?.baseurl);
 
   const [animation] = useState(new Animated.Value(1));
 
@@ -150,8 +150,12 @@ const Appointment = () => {
 
   const HandleGetAppointmentsPaginated = async (pageValue: any) => {
     try {
+      
       let queryString = `page=${pageValue}&limit=${limit}`;
-
+      if (proper?.route?.params?.baseurl !== undefined) {
+        queryString = `page=${pageValue}&limit=${limit}&${filterData}`;
+      }
+      console.log(queryString)
       if (fromDate && fromDate != '') {
         queryString = `${queryString}&fromDate=${fromDate}`;
       }
@@ -166,7 +170,6 @@ const Appointment = () => {
         } else {
           setAppointmentsArr((prev: any) => [...prev, ...res.data]);
           setLastPageReached(true);
-
         }
       }
       setLoading(false);
@@ -180,6 +183,7 @@ const Appointment = () => {
 
   const HandleGetAppointmentsWithFilterPaginated = async () => {
     try {
+      setFilterData('');
       setPage(1);
       let queryString = `page=${1}&limit=${limit}`;
 
@@ -203,20 +207,6 @@ const Appointment = () => {
       toastError(err);
     }
   };
-  useEffect(() => {
-    if (focused) {
-      HandleGetAppointmentsPaginated(1);
-      let tempInterval = setInterval(
-        () => HandleGetAppointmentsPaginated(1),
-        20000,
-      );
-      return () => {
-        setAppointmentsArr([]);
-        setPage(1);
-        clearInterval(tempInterval);
-      };
-    }
-  }, []);
 
   useEffect(() => {
     HandleGetAppointmentsPaginated(1);
@@ -229,7 +219,7 @@ const Appointment = () => {
       setPage(1);
       clearInterval(tempInterval);
     };
-  }, []);
+  }, [proper?.route?.params?.baseur]);
 
   const handleGetAndSetUser = async () => {
     let userData = await getUser();
@@ -805,35 +795,6 @@ const Appointment = () => {
           onEndReachedThreshold={0.5}
           initialNumToRender={limit}
           renderItem={({item, index}) => {
-            const apiDate = moment(item?.dateTime).format('YYYY-MM-DD'); // real date time
-            const currentDate = moment().format('YYYY-MM-DD'); // current date time
-            const gapInDays = moment(apiDate).diff(moment(currentDate), 'days'); // diffrent
-
-            let dateText = '';
-
-            switch (gapInDays) {
-              case 0:
-                dateText = 'Today';
-                break;
-              case -1:
-                dateText = 'Yesterday';
-                break;
-              case 1:
-                dateText = 'Tomorrow';
-                break;
-              default:
-                dateText =
-                  gapInDays > 0
-                    ? `After ${gapInDays - 1} days at`
-                    : `${Math.abs(gapInDays)} days ago at`;
-                break;
-            }
-
-            // Display original date if within 4 days or greater than 4 days
-            if (Math.abs(gapInDays) < -3 || gapInDays > 3) {
-              dateText = moment(item?.dateTime).format('DD-MM-YYYY');
-            }
-
             return (
               <View
                 style={{
@@ -980,7 +941,6 @@ const Appointment = () => {
                       </View>
                     </View>
                   )}
-
                 <View style={{width: width, flexDirection: 'row'}}>
                   <View
                     style={{
@@ -994,7 +954,7 @@ const Appointment = () => {
                         {justifyContent: 'space-between'},
                       ]}>
                       <View
-                        style={[styles.common_displayFlex, {width: wp(40)}]}>
+                        style={[styles.common_displayFlex, {width: wp(50)}]}>
                         <Profiles_setting_icons
                           name="profile"
                           style={styles.iconsStyls}
@@ -1010,14 +970,38 @@ const Appointment = () => {
                         {item?.patientName}
                       </Text>
                     </View>
-
                     <View
                       style={[
                         styles.common_displayFlex,
                         {justifyContent: 'space-between'},
                       ]}>
                       <View
-                        style={[styles.common_displayFlex, {width: wp(40)}]}>
+                        style={[styles.common_displayFlex, {width: wp(50)}]}>
+                        <Mans_icons name="man" style={styles.iconsStyls} />
+                        <Text style={{fontSize: hp(2)}}>Age:</Text>
+                      </View>
+                      <Text
+                        style={{
+                          color: 'gray',
+                          fontSize: hp(1.8),
+                        }}>
+                        {item?.age === 0 || item?.age === undefined
+                          ? ''
+                          : `${item?.age} Year `}
+                        {item?.months == 0 || item?.months === undefined
+                          ? ''
+                          : item?.age > 0 || item?.months > 0
+                          ? `${item?.months} Month`
+                          : ''}
+                      </Text>
+                    </View>
+                    <View
+                      style={[
+                        styles.common_displayFlex,
+                        {justifyContent: 'space-between'},
+                      ]}>
+                      <View
+                        style={[styles.common_displayFlex, {width: wp(50)}]}>
                         <Profiles_setting_icons
                           name="setting"
                           style={styles.iconsStyls}
@@ -1053,31 +1037,6 @@ const Appointment = () => {
                         />
                       </View>
                     </View>
-                    <View
-                      style={[
-                        styles.common_displayFlex,
-                        {justifyContent: 'space-between'},
-                      ]}>
-                      <View
-                        style={[styles.common_displayFlex, {width: wp(40)}]}>
-                        <Mans_icons name="man" style={styles.iconsStyls} />
-                        <Text style={{fontSize: hp(2)}}>Age:</Text>
-                      </View>
-                      <Text
-                        style={{
-                          color: 'gray',
-                          fontSize: hp(1.8),
-                        }}>
-                        {item?.age === 0 || item?.age === undefined
-                          ? ''
-                          : `${item?.age} Year `}
-                        {item?.months == 0 || item?.months === undefined
-                          ? ''
-                          : item?.age > 0 || item?.months > 0
-                          ? ` ${item?.months} Month`
-                          : ''} 
-                      </Text>
-                    </View>
 
                     <View
                       style={[
@@ -1085,7 +1044,7 @@ const Appointment = () => {
                         {justifyContent: 'space-between'},
                       ]}>
                       <View
-                        style={[styles.common_displayFlex, {width: wp(40)}]}>
+                        style={[styles.common_displayFlex, {width: wp(50)}]}>
                         <Money_icons name="money" style={styles.iconsStyls} />
                         <Text style={{fontSize: hp(2)}}>Price:</Text>
                       </View>
@@ -1098,28 +1057,30 @@ const Appointment = () => {
                         ₹ {item?.appointmentCharge}
                       </Text>
                     </View>
-
                     <View
                       style={[
                         styles.common_displayFlex,
                         {justifyContent: 'space-between'},
                       ]}>
                       <View
-                        style={[styles.common_displayFlex, {width: wp(40)}]}>
+                        style={[styles.common_displayFlex, {width: wp(50)}]}>
                         <Calendar_icons
                           name="calendar-day"
                           style={styles.iconsStyls}
                         />
-                        <Text style={{fontSize: hp(2)}}>Request Date:</Text>
+                        <Text style={{fontSize: hp(2)}}>Appointment Date:</Text>
                       </View>
                       <Text
                         style={{
-                          color: dateText == 'Today' ? 'Green' : 'gray',
+                          color: 'gray',
                           fontSize: hp(1.8),
-                          fontFamily:
-                            dateText == 'Today' ? 'mainFontBold' : 'mainFont',
+                          fontFamily: 'mainFont',
                         }}>
-                        {dateText} ({item?.selectedTimeSlot})
+                        {moment(item?.dateTime).format('DD-MM-YYYY')}
+                        {'  '}
+                        <Text style={{fontFamily: mainFontmedium}}>
+                          {item.selectedTimeSlot}
+                        </Text>
                       </Text>
                     </View>
                     <View
@@ -1128,7 +1089,7 @@ const Appointment = () => {
                         {justifyContent: 'space-between'},
                       ]}>
                       <View
-                        style={[styles.common_displayFlex, {width: wp(40)}]}>
+                        style={[styles.common_displayFlex, {width: wp(50)}]}>
                         <Status_icons
                           name="money-bill"
                           style={styles.iconsStyls}
@@ -1144,18 +1105,16 @@ const Appointment = () => {
                         {item.paymentStatus}
                       </Text>
                     </View>
-                    <View
-                      style={[
-                        styles.common_displayFlex,
-                        {justifyContent: 'space-between'},
-                      ]}>
+                    <View style={[styles.common_displayFlex, ,]}>
                       <View
-                        style={[styles.common_displayFlex, {width: wp(40)}]}>
+                        style={[styles.common_displayFlex, {width: wp(50)}]}>
                         <Status_icons
                           name="money-bill-transfer"
                           style={styles.iconsStyls}
                         />
-                        <Text style={{fontSize: hp(2)}}>Status:</Text>
+                        <Text style={{fontSize: hp(2)}}>
+                          Appointment Status:
+                        </Text>
                       </View>
                       <Text
                         style={{
@@ -1192,7 +1151,8 @@ const Appointment = () => {
                       userObj?.role == Roles.FRANCHISE ||
                       userObj?.role == Roles.PATIENT) &&
                       item.mode === consultationMode.ONLINE &&
-                      (item.status === appointmentStatus.CONFIRMED || item.status === appointmentStatus.COMPLETED ||
+                      (item.status === appointmentStatus.CONFIRMED ||
+                        item.status === appointmentStatus.COMPLETED ||
                         item.status === appointmentStatus.RESCHEDULE ||
                         item.status === appointmentStatus.FOLLOWUP) && (
                         <TouchableOpacity
@@ -1223,7 +1183,8 @@ const Appointment = () => {
                     {(userObj?.role == Roles.DOCTOR ||
                       userObj?.role == Roles.FRANCHISE ||
                       userObj?.role == Roles.PATIENT) &&
-                      (item.status === appointmentStatus.CONFIRMED || item.status === appointmentStatus.COMPLETED ||
+                      (item.status === appointmentStatus.CONFIRMED ||
+                        item.status === appointmentStatus.COMPLETED ||
                         item.status === appointmentStatus.RESCHEDULE ||
                         item.status === appointmentStatus.FOLLOWUP) && (
                         <TouchableOpacity
@@ -1305,7 +1266,8 @@ const Appointment = () => {
                         </TouchableOpacity>
                       )}
                     {userObj?.role == Roles.DOCTOR &&
-                      (item.status === appointmentStatus.PENDING || item.status === appointmentStatus.RESCHEDULE) && (
+                      (item.status === appointmentStatus.PENDING ||
+                        item.status === appointmentStatus.RESCHEDULE) && (
                         <TouchableOpacity
                           onPress={() =>
                             handlechangeAppointmentStatus(
@@ -1337,7 +1299,9 @@ const Appointment = () => {
                       )}
 
                     {(userObj?.role === Roles.PATIENT ||
-                      userObj?.role === Roles.FRANCHISE) &&  (item.status === appointmentStatus.CONFIRMED || item.status === appointmentStatus.COMPLETED ) && 
+                      userObj?.role === Roles.FRANCHISE) &&
+                      (item.status === appointmentStatus.CONFIRMED ||
+                        item.status === appointmentStatus.COMPLETED) &&
                       item.mode === consultationMode.ONLINE &&
                       item.callInprogress && (
                         <TouchableOpacity
@@ -1369,7 +1333,8 @@ const Appointment = () => {
                       )}
                     {userObj?.role === Roles.DOCTOR &&
                       item.mode === consultationMode.ONLINE &&
-                      (item.status === appointmentStatus.CONFIRMED || item.status === appointmentStatus.COMPLETED) && (
+                      (item.status === appointmentStatus.CONFIRMED ||
+                        item.status === appointmentStatus.COMPLETED) && (
                         <TouchableOpacity
                           onPress={() => {
                             setSelectedMeeting(item);
@@ -1567,7 +1532,7 @@ const Appointment = () => {
           <View
             style={{
               width: wp(85),
-              paddingTop: hp(3),
+              paddingTop: hp(1),
               paddingBottom: hp(3),
               backgroundColor: 'white',
               alignSelf: 'center',
@@ -1578,9 +1543,13 @@ const Appointment = () => {
             <TouchableOpacity
               onPress={() => setDateModal(false)}
               style={{alignSelf: 'flex-end'}}>
-              <Image
-                source={require('../../assets/images/close.png')}
-                style={{tintColor: 'black', height: wp(5), width: wp(5)}}
+              <Clode_icons
+                name="close"
+                style={{
+                  fontSize: hp(4),
+                  paddingLeft: wp(6),
+                  marginBottom: hp(1),
+                }}
               />
             </TouchableOpacity>
             <Calendar
@@ -1588,7 +1557,6 @@ const Appointment = () => {
                 setFromDate(day.dateString);
                 setDateModal(false);
               }}
-              // minDate={`${new Date()}`}
             />
           </View>
         </Modal>
@@ -1602,7 +1570,7 @@ const Appointment = () => {
           <View
             style={{
               width: wp(85),
-              paddingTop: hp(3),
+              paddingTop: hp(1),
               paddingBottom: hp(3),
               backgroundColor: 'white',
               alignSelf: 'center',
@@ -1613,9 +1581,13 @@ const Appointment = () => {
             <TouchableOpacity
               onPress={() => setDateToModal(false)}
               style={{alignSelf: 'flex-end'}}>
-              <Image
-                source={require('../../assets/images/close.png')}
-                style={{tintColor: 'black', height: wp(5), width: wp(5)}}
+              <Clode_icons
+                name="close"
+                style={{
+                  fontSize: hp(4),
+                  paddingLeft: wp(6),
+                  marginBottom: hp(1),
+                }}
               />
             </TouchableOpacity>
             <Calendar
@@ -1851,9 +1823,11 @@ const styles = StyleSheet.create({
   },
   iconsStyls: {
     color: '#1263AC',
-    fontSize: hp(2.2),
+    fontSize: hp(2.5),
     marginRight: wp(3),
     marginVertical: 4,
+    width: wp(5),
+    textAlign: 'center',
   },
   mainView: {
     height: hp(99),

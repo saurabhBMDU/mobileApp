@@ -22,31 +22,19 @@ LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by mes
 LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 function App(): JSX.Element {
-
   const [isAuthorized, setIsAuthorized] = useState(false)
   const linkTo = useLinkTo()
 
-
- 
-
   useEffect(() => {
     const getUrlAsync = async () => {
-      // Get the deep link used to open the app
       const initialUrl = await Linking.getInitialURL();
-      console.log(initialUrl, "initialUrl, initialUrl,initialUrl ,initialUrl")
-      // setLinkedURL(decodeURI(initialUrl));
     };
-
     getUrlAsync();
   }, []);
 
 
-
-
-
   const handleLogout = async () => {
     try {
-      console.log('woriing in app.js file')
       if(isAuthorized){
       await deleteJwt();
       setIsAuthorized(false);
@@ -191,8 +179,6 @@ function App(): JSX.Element {
   };
 
 
-
-
   RNCallKeep.addEventListener('didReceiveStartCallAction', ({ handle, callUUID, name }) => {
     console.log(handle, callUUID, name, "handle, callUUID, name")
   });
@@ -268,10 +254,7 @@ function App(): JSX.Element {
         number: 10, // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
         // repeatType: "day", // (optional) Repeating interval. Check 'Repeating Notifications' section for more info.
       });
-
-
     });
-
     return unsubscribe;
   }, []);
 

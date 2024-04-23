@@ -805,16 +805,14 @@ const Book_Appointment = () => {
                     justifyContent: 'space-between',
                   }}>
                   <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate('About Doctor', {doctorId: item})
-                    }>
+                    onPress={() => navigation.navigate('About Doctor', {doctorId: item})}>
                     <View
                       style={{
                         flexDirection: 'row',
                         justifyContent: 'space-between',
                         width: '89%',
                       }}>
-                      <TouchableOpacity style={{flexDirection: 'row'}}>
+                      <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => navigation.navigate('About Doctor', {doctorId: item})}>
                         <Image
                           source={{uri: generateFilePath(item.image)}}
                           style={{height: wp(18), width: wp(18)}}

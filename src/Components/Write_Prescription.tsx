@@ -11,7 +11,7 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert,
+  Pressable,
 } from 'react-native';
 // import RNFetchBlob from 'react-native-fetch-blob';
 
@@ -85,9 +85,12 @@ const Write_Prescription = (props: any) => {
   const [isEditModeOn, setIsEditModeOn] = useState(false);
   const [prescriptionId, setPrescriptionId] = useState('');
   const [sendData, setSendData] = useState({});
+  const [soWritePrescption, setSoWritePrescption] = useState(true);
   const [page, setPage] = useState(1);
   const [limit, steLimit] = useState(1000);
   const [filter, setFilter] = useState('');
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
   const [loding, setloding] = useState(false);
   const [medicinesArr, setMedicinesArr] = useState([]);
   const handleGetAndSetUser = async () => {
@@ -96,7 +99,6 @@ const Write_Prescription = (props: any) => {
       setUserObj(userData);
     }
   };
-
   const [medicine, setMedicine] = useState([
     {
       name: '',
@@ -110,7 +112,6 @@ const Write_Prescription = (props: any) => {
       duration_count: '',
     },
   ]);
-  console.log(' dfgs  gfh        ', appointMentObj);
 
   const handleGetMedicines = async () => {
     setloding(true);
@@ -234,42 +235,53 @@ const Write_Prescription = (props: any) => {
     setPreview(false);
   };
   const handleAddPrescription = async () => {
-    if (drugAllergy === '') {
-      toastError('Drug Allergy is Required');
-      return;
-    }
-    if (pastHistory === '') {
-      toastError('Past History Is Required');
-      return;
-    }
-    try {
-      let obj: any = {
-        appointmentId: appointMentObj?._id,
-        doctorId: appointMentObj.doctor._id,
-        patientId: appointMentObj.expert._id,
-        symptoms,
-        diagnosis,
-        medicine,
-        investigation,
-        pastHistory,
-        surgicalHistory,
-        drugAllergy,
-        notes,
-        personalHistory,
-      };
-
-      if (selectedImage) {
-        const base64Image = await RNFS.readFile(selectedImage, 'base64');
-        obj.image = base64Image;
+    if (soWritePrescption) {
+      if (drugAllergy === '') {
+        toastError('Drug Allergy is Required');
+        return;
       }
-      setSendData(obj);
-      setPreview(true);
-    } catch (err) {
-      toastError(err);
+      if (pastHistory === '') {
+        toastError('Past History Is Required');
+        return;
+      }
+      try {
+        let obj: any = {
+          appointmentId: appointMentObj?._id,
+          doctorId: appointMentObj.doctor._id,
+          patientId: appointMentObj.expert._id,
+          symptoms,
+          diagnosis,
+          medicine,
+          investigation,
+          pastHistory,
+          surgicalHistory,
+          drugAllergy,
+          notes,
+          personalHistory,
+        };
+        setSendData(obj);
+        setPreview(true);
+      } catch (err) {
+        toastError(err);
+      }
+    } else {
+      try {
+        const base64Image = await RNFS.readFile(selectedImage, 'base64');
+       
+        let obj: any = {
+          appointmentId: appointMentObj?._id,
+          doctorId: appointMentObj.doctor._id,
+          patientId: appointMentObj.expert._id,
+          image: base64Image,
+        };
+        setSendData(obj);
+        setPreview(true);
+      } catch (err) {
+        toastError("Please Upload image");
+      }
     }
   };
 
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const openImagePicker = () => {
     const options: ImagePickerOptions = {
       mediaType: 'photo',
@@ -417,6 +429,21 @@ const Write_Prescription = (props: any) => {
                     </Text>
                   </Text>
                 </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(1),
+                    paddingLeft: wp(3),
+                  }}>
+                  <Text style={{fontSize: hp(1.7), fontFamily: mainFont}}>
+                    Weight :
+                    <Text style={{color: '#757474'}}>
+                      {appointMentObj?.weight == 0
+                        ? ''
+                        : `${appointMentObj?.weight} Kg`}
+                    </Text>
+                  </Text>
+                </View>
               </View>
 
               <View style={{width: wp(45)}}>
@@ -488,6 +515,21 @@ const Write_Prescription = (props: any) => {
                     paddingLeft: wp(3),
                   }}>
                   <Text style={{fontSize: hp(1.7), fontFamily: mainFont}}>
+                    Height :
+                    <Text style={{color: '#757474'}}>
+                      {appointMentObj?.height == 0
+                        ? ''
+                        : `${appointMentObj?.height} ${appointMentObj?.heightUnit}`}
+                    </Text>
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(1),
+                    paddingLeft: wp(3),
+                  }}>
+                  <Text style={{fontSize: hp(1.7), fontFamily: mainFont}}>
                     BMI :
                     <Text style={{color: '#757474'}}>
                       {appointMentObj?.bmi}
@@ -496,753 +538,774 @@ const Write_Prescription = (props: any) => {
                 </View>
               </View>
             </View>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: hp(1),
-                justifyContent: 'space-between',
-              }}>
-              <View style={{width: wp(95)}}>
-                <Text
-                  style={{
-                    fontSize: hp(1.8),
-                    fontFamily: mainFontBold,
-                    color: 'black',
-                  }}>
-                  Symptoms:
-                </Text>
-                <TextInput
-                  multiline
-                  onChangeText={e => setSymptoms(e)}
-                  value={symptoms}
-                  placeholderTextColor="#8E8E8E"
-                  placeholder="Symptoms"
-                  style={[
-                    styles.inputBoxStyl,
-                    {height: 'auto', minHeight: hp(6.1), maxHeight: hp(20)},
-                  ]}
-                />
-              </View>
-            </View>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: hp(1),
-                justifyContent: 'space-between',
-              }}>
-              <View style={{width: wp(95)}}>
-                <Text
-                  style={{
-                    fontSize: hp(1.8),
-                    fontFamily: mainFontBold,
-                    color: 'black',
-                  }}>
-                  Diagnosis:
-                </Text>
-                <TextInput
-                  onChangeText={e => setDiagnosis(e)}
-                  value={diagnosis}
-                  placeholderTextColor="#8E8E8E"
-                  placeholder="Diagnosis"
-                  style={styles.inputBoxStyl}
-                />
-              </View>
-            </View>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: hp(1),
-                justifyContent: 'space-between',
-              }}>
-              <View style={{width: wp(95)}}>
-                <Text
-                  style={{
-                    fontSize: hp(1.7),
-                    fontFamily: mainFontBold,
-                    color: 'black',
-                  }}>
-                  Prescription Date:
-                </Text>
-                <TextInput
-                  editable={false}
-                  value={moment(new Date()).format('YYYY-MM-DD')}
-                  placeholderTextColor="#8E8E8E"
-                  placeholder="Prescription"
-                  style={styles.inputBoxStyl}
-                />
-              </View>
-            </View>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: hp(1),
-                justifyContent: 'space-between',
-              }}>
-              <View style={{width: wp(95)}}>
-                <Text
-                  style={{
-                    fontSize: hp(1.8),
-                    fontFamily: mainFontBold,
-                    color: 'black',
-                  }}>
-                  *Drug Allergy:
-                </Text>
-                <TextInput
-                  onChangeText={e => setDrugAllergy(e)}
-                  value={drugAllergy}
-                  placeholderTextColor="#8E8E8E"
-                  placeholder="Drug Allergy"
-                  style={styles.inputBoxStyl}
-                />
-              </View>
-            </View>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: hp(1),
-                justifyContent: 'space-between',
-              }}>
-              <View style={{width: wp(95)}}>
-                <Text
-                  style={{
-                    fontSize: hp(1.8),
-                    fontFamily: mainFontBold,
-                    color: 'black',
-                  }}>
-                  *Past History:
-                </Text>
-                <TextInput
-                  onChangeText={e => setPastHistory(e)}
-                  value={pastHistory}
-                  placeholderTextColor="#8E8E8E"
-                  placeholder="Past History"
-                  style={styles.inputBoxStyl}
-                />
-              </View>
-            </View>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: hp(1),
-                justifyContent: 'space-between',
-              }}>
-              <View style={{width: wp(95)}}>
-                <Text
-                  style={{
-                    fontSize: hp(1.8),
-                    fontFamily: mainFontBold,
-                    color: 'black',
-                  }}>
-                  Personal History:
-                </Text>
-                <TextInput
-                  onChangeText={e => setPersonalHistory(e)}
-                  value={personalHistory}
-                  placeholderTextColor="#8E8E8E"
-                  placeholder="Personal History"
-                  style={styles.inputBoxStyl}
-                />
-              </View>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: hp(1),
-                justifyContent: 'space-between',
-              }}>
-              <View style={{width: wp(95)}}>
-                <Text
-                  style={{
-                    fontSize: hp(1.7),
-                    fontFamily: mainFontBold,
-                    color: 'black',
-                  }}>
-                  Surgical History:
-                </Text>
-                <TextInput
-                  onChangeText={e => setSurgicalHistory(e)}
-                  value={surgicalHistory}
-                  placeholderTextColor="#8E8E8E"
-                  placeholder="Surgical History"
-                  style={styles.inputBoxStyl}
-                />
-              </View>
-            </View>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                width: wp(95),
-              }}>
-              <Text style={{textTransform: 'uppercase'}}>
-                If medicine is not available in the list please add from here.
-              </Text>
+            <View>
               <TouchableOpacity
-                onPress={() => setMedicineModal(true)}
                 style={{
-                  paddingHorizontal: 15,
-                  height: hp(5),
-                  backgroundColor: '#50B148',
-                  borderRadius: 4,
-                  alignItems: 'center',
+                  width: wp(95),
+                  marginTop: hp(2),
+                  alignSelf: 'center',
                   justifyContent: 'center',
-                  marginTop: 15,
-                }}>
-                <Text
-                  style={{
-                    fontSize: hp(1.8),
-                    color: 'white',
-                    fontFamily: mainFontmedium,
-                  }}>
-                  Add more medicines +
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            {medicine.map((el: any, index: number) => {
-              return (
-                <View
-                  key={index}
-                  style={{
-                    width: wp(98),
-                    flexDirection: 'row',
-                    marginTop: hp(1),
-                    justifyContent: 'space-between',
-                    flexWrap: 'wrap',
-                    borderWidth: 1,
-                    borderColor: 'gray',
-                    borderRadius: 10,
-                    padding: 5,
-                  }}>
-                  <View style={{width: wp(40)}}>
-                    <Text
-                      style={{
-                        fontSize: hp(1.8),
-                        fontFamily: mainFontBold,
-                        color: 'black',
-                      }}>
-                      Medicine Name:
-                    </Text>
-                    <Dropdown
-                      style={[styles.dropdown]}
-                      placeholderStyle={styles.placeholderStyle}
-                      selectedTextStyle={styles.selectedTextStyle}
-                      inputSearchStyle={styles.inputSearchStyle}
-                      iconStyle={styles.iconStyle}
-                      data={
-                        loding
-                          ? [{label: 'Loading...', value: null}]
-                          : medicinesArr
-                      }
-                      search
-                      searchPlaceholder="Search..."
-                      maxHeight={300}
-                      labelField="label"
-                      valueField="value"
-                      placeholder="Select Medicine"
-                      value={el.name}
-                      onFocus={() => setIsFocus(true)}
-                      onBlur={() => setIsFocus(false)}
-                      onChange={(item: any) => {
-                        handleUpdateContentForMedicine(
-                          item.value,
-                          'name',
-                          index,
-                        );
-                      }}
-                      renderInputSearch={(onSearch: (text: string) => void) => (
-                        <TextInput
-                          style={styles.inputBoxStyl}
-                          onChangeText={text => {
-                            setFilter(text); // Log the typed text to console
-                            onSearch(text); // Trigger the search with the typed text
-                          }}
-                          placeholder="Search..."
-                        />
-                      )}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      width: wp(45),
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}>
-                    <View>
-                      <Text
-                        style={{
-                          fontSize: hp(1.8),
-                          fontFamily: mainFontBold,
-                          color: 'black',
-                        }}>
-                        Dose
-                      </Text>
-                      <Dropdown
-                        style={[styles.dropdown, {width: wp(17)}]}
-                        placeholderStyle={styles.placeholderStyle}
-                        selectedTextStyle={styles.selectedTextStyle}
-                        inputSearchStyle={styles.inputSearchStyle}
-                        iconStyle={styles.iconStyle}
-                        data={doses}
-                        maxHeight={300}
-                        labelField="label"
-                        valueField="value"
-                        placeholder="Unit"
-                        value={el.duration_count}
-                        onFocus={() => setIsFocus(true)}
-                        onBlur={() => setIsFocus(false)}
-                        onChange={(item: any) => {
-                          handleUpdateContentForMedicine(
-                            item.value,
-                            'duration_count',
-                            index,
-                          );
-                        }}
-                      />
-                    </View>
-                    <View>
-                      <Text
-                        style={{
-                          fontSize: hp(1.8),
-                          fontFamily: mainFontBold,
-                          color: 'black',
-                        }}>
-                        Dose Form:
-                      </Text>
-                      <Dropdown
-                        style={[styles.dropdown, {width: wp(26)}]}
-                        placeholderStyle={styles.placeholderStyle}
-                        selectedTextStyle={styles.selectedTextStyle}
-                        inputSearchStyle={styles.inputSearchStyle}
-                        iconStyle={styles.iconStyle}
-                        data={doseFormArr}
-                        maxHeight={300}
-                        labelField="label"
-                        valueField="value"
-                        placeholder="Select Dose"
-                        search
-                        searchPlaceholder="Search..."
-                        value={el.dose_form}
-                        onFocus={() => setIsFocus(true)}
-                        onBlur={() => setIsFocus(false)}
-                        onChange={(item: any) => {
-                          handleUpdateContentForMedicine(
-                            item.value,
-                            'dose_form',
-                            index,
-                          );
-                        }}
-                      />
-                    </View>
-                  </View>
-                  <View style={{width: wp(40)}}>
-                    <Text
-                      style={{
-                        fontSize: hp(1.8),
-                        fontFamily: mainFontBold,
-                        color: 'black',
-                      }}>
-                      ROA:
-                    </Text>
-                    <Dropdown
-                      style={[styles.dropdown]}
-                      placeholderStyle={styles.placeholderStyle}
-                      selectedTextStyle={styles.selectedTextStyle}
-                      inputSearchStyle={styles.inputSearchStyle}
-                      iconStyle={styles.iconStyle}
-                      data={roa.map(option => ({
-                        label: option.label,
-                        value: option.value,
-                      }))}
-                      maxHeight={300}
-                      labelField="label"
-                      valueField="value"
-                      placeholder="Select ROA"
-                      search
-                      searchPlaceholder="Search..."
-                      value={el.roa}
-                      onFocus={() => setIsFocus(true)}
-                      onBlur={() => setIsFocus(false)}
-                      onChange={(item: any) => {
-                        handleUpdateContentForMedicine(
-                          item.value,
-                          'roa',
-                          index,
-                        );
-                      }}
-                    />
-                  </View>
-                  <View style={{width: wp(45)}}>
-                    <Text
-                      style={{
-                        fontSize: hp(1.8),
-                        fontFamily: mainFontBold,
-                        color: 'black',
-                      }}>
-                      Time:
-                    </Text>
-                    <Dropdown
-                      style={[styles.dropdown]}
-                      placeholderStyle={styles.placeholderStyle}
-                      selectedTextStyle={styles.selectedTextStyle}
-                      inputSearchStyle={styles.inputSearchStyle}
-                      iconStyle={styles.iconStyle}
-                      data={TimeData}
-                      maxHeight={300}
-                      labelField="label"
-                      valueField="value"
-                      placeholder="Select Time"
-                      value={el.time}
-                      onFocus={() => setIsFocus(true)}
-                      onBlur={() => setIsFocus(false)}
-                      onChange={(item: any) => {
-                        handleUpdateContentForMedicine(
-                          item.value,
-                          'time',
-                          index,
-                        );
-                      }}
-                    />
-                  </View>
-                  <View style={{width: wp(45)}}>
-                    <Text
-                      style={{
-                        fontSize: hp(1.8),
-                        fontFamily: mainFontBold,
-                        color: 'black',
-                      }}>
-                      Frequency:
-                    </Text>
-                    <Dropdown
-                      style={[styles.dropdown]}
-                      placeholderStyle={styles.placeholderStyle}
-                      selectedTextStyle={styles.selectedTextStyle}
-                      inputSearchStyle={styles.inputSearchStyle}
-                      iconStyle={styles.iconStyle}
-                      data={DaysData}
-                      maxHeight={300}
-                      labelField="label"
-                      search
-                      searchPlaceholder="Search..."
-                      valueField="value"
-                      placeholder="Select"
-                      value={el.frequency}
-                      onFocus={() => setIsFocus(true)}
-                      onBlur={() => setIsFocus(false)}
-                      onChange={(item: any) => {
-                        handleUpdateContentForMedicine(
-                          item.value,
-                          'frequency',
-                          index,
-                        );
-                      }}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      width: wp(45),
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}>
-                    <View>
-                      <Text
-                        style={{
-                          fontSize: hp(1.8),
-                          fontFamily: mainFontBold,
-                          color: 'black',
-                        }}>
-                        Count
-                      </Text>
-                      <Dropdown
-                        style={[styles.dropdown, {width: wp(18)}]}
-                        placeholderStyle={styles.placeholderStyle}
-                        selectedTextStyle={styles.selectedTextStyle}
-                        inputSearchStyle={styles.inputSearchStyle}
-                        iconStyle={styles.iconStyle}
-                        data={doses}
-                        maxHeight={300}
-                        labelField="label"
-                        valueField="value"
-                        placeholder="Unit"
-                        value={el.note}
-                        onFocus={() => setIsFocus(true)}
-                        onBlur={() => setIsFocus(false)}
-                        onChange={(item: any) => {
-                          handleUpdateContentForMedicine(
-                            item.value,
-                            'note',
-                            index,
-                          );
-                        }}
-                      />
-                    </View>
-                    <View>
-                      <Text
-                        style={{
-                          fontSize: hp(1.8),
-                          fontFamily: mainFontBold,
-                          color: 'black',
-                        }}>
-                        Duration:
-                      </Text>
-                      <Dropdown
-                        style={[styles.dropdown, {width: wp(26)}]}
-                        placeholderStyle={styles.placeholderStyle}
-                        selectedTextStyle={styles.selectedTextStyle}
-                        inputSearchStyle={styles.inputSearchStyle}
-                        iconStyle={styles.iconStyle}
-                        data={durationCountData}
-                        maxHeight={300}
-                        labelField="label"
-                        valueField="value"
-                        placeholder="Duration"
-                        value={el.duration}
-                        onFocus={() => setIsFocus(true)}
-                        onBlur={() => setIsFocus(false)}
-                        onChange={(item: any) => {
-                          handleUpdateContentForMedicine(
-                            item.value,
-                            'duration',
-                            index,
-                          );
-                        }}
-                      />
-                    </View>
-                  </View>
-                </View>
-              );
-            })}
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: hp(2),
-                alignSelf: 'center',
-                paddingTop: hp(1),
-                paddingBottom: hp(1),
-                width: wp(95),
-              }}>
-              <TouchableOpacity
-                onPress={() => handleDeleteMedicine()}
-                style={{
-                  paddingHorizontal: 15,
-                  height: hp(5),
-                  backgroundColor: '#B0B0B0',
+                  backgroundColor: '#eee',
+                  borderColor: '#1263AC',
+                  borderWidth: 1,
                   borderRadius: 5,
                   alignItems: 'center',
-                  justifyContent: 'center',
+                  padding: hp(1.5),
+                }}
+                onPress={() => {
+                  setSoModalreschedule(true),
+                    setSoWritePrescption(!soWritePrescption);
+                  setSelectedImage('');
                 }}>
                 <Text
                   style={{
-                    fontSize: hp(1.8),
-                    color: 'white',
-                    fontFamily: mainFontmedium,
+                    textAlign: 'center',
+                    fontSize: hp(2),
+                    color: '#1263AC',
                   }}>
-                  -
+                  {soWritePrescption
+                    ? 'Upload Prescription'
+                    : ' Write Prescription'}
                 </Text>
               </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => handleAddMedicine()}
-                style={{
-                  paddingHorizontal: 15,
-                  height: hp(5),
-                  backgroundColor: '#50B148',
-                  borderRadius: 5,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginLeft: wp(5),
-                }}>
-                <Text
-                  style={{
-                    fontSize: hp(1.8),
-                    color: 'white',
-                    fontFamily: mainFontmedium,
-                  }}>
-                  +
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                width: wp(96),
-              }}>
-              <View
-                style={{
-                  width: wp(44),
-                  borderColor: 'gray',
-                  borderWidth: 2,
-                }}></View>
-              <Text
-                style={{
-                  fontSize: hp(2),
-                  fontFamily: mainFontmedium,
-                  color: '#1263AC',
-                }}>
-                OR
-              </Text>
-              <View
-                style={{
-                  width: wp(44),
-                  borderColor: 'gray',
-                  borderWidth: 2,
-                }}></View>
-            </View>
-            <TouchableOpacity
-              style={{
-                width: wp(95),
-                marginTop: 15,
-                alignSelf: 'center',
-                height: hp(5),
-                backgroundColor: '#eee',
-                borderColor: '#1263AC',
-                borderWidth: 0.8,
-                borderRadius: 5,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              onPress={() => setSoModalreschedule(true)}>
-              <Text
-                style={{
-                  textAlign: 'center',
-                  fontSize: hp(2),
-                  color: '#1263AC',
-                }}>
-                Upload Prescription
-              </Text>
-            </TouchableOpacity>
-
-            <Modal
-              isVisible={soModalreschedule}
-              animationIn={'bounceIn'}
-              animationOut={'slideOutDown'}
-              onBackButtonPress={() => setSoModalreschedule(false)}
-              style={{marginLeft: 0, marginRight: 0}}>
-              <TouchableWithoutFeedback
-                onPress={() => setSoModalreschedule(false)}>
-                <View
-                  style={{
-                    width: wp(100),
-                    height: hp(100),
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <View
+              {soWritePrescption ? null : (
+                <View style={{marginTop: hp(3)}}>
+                  <Pressable
+                    onPress={handleCameraLaunch}
                     style={{
-                      backgroundColor: '#fff',
-                      width: wp(40),
-                      height: hp(15),
+                      width: wp(94),
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      borderColor: '#6b9fce',
+                      borderWidth: 2,
                       borderRadius: 5,
-                      flexDirection: 'row',
-                      justifyContent: 'space-around',
                       alignItems: 'center',
+                      marginBottom: hp(1.5),
                     }}>
                     <Camera_icon
                       name="camera"
                       style={{
+                        color: '#6b9fce',
                         fontSize: hp(4),
-                        padding: hp(2),
-                        backgroundColor: '#c1d0c8',
+                        padding: hp(1.25),
                         borderRadius: 5,
                       }}
-                      onPress={handleCameraLaunch}
                     />
+                    <Text style={{fontSize: hp(2), color: '#6b9fce'}}>
+                      By Camera
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={openImagePicker}
+                    style={{
+                      width: wp(94),
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      borderColor: '#68a06e',
+                      borderWidth: 2,
+                      borderRadius: 5,
+                      alignItems: 'center',
+                    }}>
                     <Uplode_icons
                       name="upload"
                       style={{
+                        color: '#759d7a',
                         fontSize: hp(4),
-                        padding: hp(2),
-                        backgroundColor: '#cbcfd2',
+                        padding: hp(1.25),
                         borderRadius: 5,
                       }}
-                      onPress={openImagePicker}
+                    />
+                    <Text style={{fontSize: hp(2), color: '#759d7a'}}>
+                      From Gallery
+                    </Text>
+                  </Pressable>
+                </View>
+              )}
+              {selectedImage && (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(3),
+                    justifyContent: 'center',
+                  }}>
+                  <Image
+                    source={{uri: selectedImage}}
+                    style={{height: hp(50), width: wp(70), marginBottom: hp(2)}}
+                    resizeMode="contain"
+                  />
+                  <View>
+                    <Remmove_icons
+                      name="closecircle"
+                      style={{
+                        fontSize: hp(4),
+                        marginLeft: wp(3),
+                        textAlign: 'right',
+                        backgroundColor: '#fff',
+                        color: 'red',
+                        borderRadius: wp(40),
+                      }}
+                      onPress={() => setSelectedImage('')}
                     />
                   </View>
                 </View>
-              </TouchableWithoutFeedback>
-            </Modal>
+              )}
+            </View>
 
-            {selectedImage && (
-              <View style={{flexDirection: 'row'}}>
-                <Image
-                  source={{uri: selectedImage}}
-                  style={{height: hp(30), width: wp(50)}}
-                  resizeMode="contain"
-                />
-                <View>
-                  <Remmove_icons
-                    name="closecircle"
+            {soWritePrescption ? (
+              <View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    width: wp(96),
+                  }}>
+                  <View
                     style={{
-                      fontSize: hp(4),
-                      textAlign: 'right',
-                      backgroundColor: '#fff',
-                      color: 'red',
-                      borderRadius: wp(40),
-                    }}
-                    onPress={() => setSelectedImage('')}
-                  />
+                      width: wp(44),
+                      borderColor: 'gray',
+                      borderWidth: 2,
+                    }}></View>
+                  <Text
+                    style={{
+                      fontSize: hp(2),
+                      fontFamily: mainFontmedium,
+                      color: '#1263AC',
+                    }}>
+                    OR
+                  </Text>
+                  <View
+                    style={{
+                      width: wp(44),
+                      borderColor: 'gray',
+                      borderWidth: 2,
+                    }}></View>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(1),
+                    justifyContent: 'space-between',
+                  }}>
+                  <View style={{width: wp(95)}}>
+                    <Text
+                      style={{
+                        fontSize: hp(1.8),
+                        fontFamily: mainFontBold,
+                        color: 'black',
+                      }}>
+                      Symptoms:
+                    </Text>
+                    <TextInput
+                      multiline
+                      onChangeText={e => setSymptoms(e)}
+                      value={symptoms}
+                      placeholderTextColor="#8E8E8E"
+                      placeholder="Symptoms"
+                      style={[
+                        styles.inputBoxStyl,
+                        {height: 'auto', minHeight: hp(6.1), maxHeight: hp(20)},
+                      ]}
+                    />
+                  </View>
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(1),
+                    justifyContent: 'space-between',
+                  }}>
+                  <View style={{width: wp(95)}}>
+                    <Text
+                      style={{
+                        fontSize: hp(1.8),
+                        fontFamily: mainFontBold,
+                        color: 'black',
+                      }}>
+                      Diagnosis:
+                    </Text>
+                    <TextInput
+                      onChangeText={e => setDiagnosis(e)}
+                      value={diagnosis}
+                      placeholderTextColor="#8E8E8E"
+                      placeholder="Diagnosis"
+                      style={styles.inputBoxStyl}
+                    />
+                  </View>
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(1),
+                    justifyContent: 'space-between',
+                  }}>
+                  <View style={{width: wp(95)}}>
+                    <Text
+                      style={{
+                        fontSize: hp(1.7),
+                        fontFamily: mainFontBold,
+                        color: 'black',
+                      }}>
+                      Prescription Date:
+                    </Text>
+                    <TextInput
+                      editable={false}
+                      value={moment(new Date()).format('YYYY-MM-DD')}
+                      placeholderTextColor="#8E8E8E"
+                      placeholder="Prescription"
+                      style={styles.inputBoxStyl}
+                    />
+                  </View>
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(1),
+                    justifyContent: 'space-between',
+                  }}>
+                  <View style={{width: wp(95)}}>
+                    <Text
+                      style={{
+                        fontSize: hp(1.8),
+                        fontFamily: mainFontBold,
+                        color: 'black',
+                      }}>
+                      *Drug Allergy:
+                    </Text>
+                    <TextInput
+                      onChangeText={e => setDrugAllergy(e)}
+                      value={drugAllergy}
+                      placeholderTextColor="#8E8E8E"
+                      placeholder="Drug Allergy"
+                      style={styles.inputBoxStyl}
+                    />
+                  </View>
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(1),
+                    justifyContent: 'space-between',
+                  }}>
+                  <View style={{width: wp(95)}}>
+                    <Text
+                      style={{
+                        fontSize: hp(1.8),
+                        fontFamily: mainFontBold,
+                        color: 'black',
+                      }}>
+                      *Past History:
+                    </Text>
+                    <TextInput
+                      onChangeText={e => setPastHistory(e)}
+                      value={pastHistory}
+                      placeholderTextColor="#8E8E8E"
+                      placeholder="Past History"
+                      style={styles.inputBoxStyl}
+                    />
+                  </View>
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(1),
+                    justifyContent: 'space-between',
+                  }}>
+                  <View style={{width: wp(95)}}>
+                    <Text
+                      style={{
+                        fontSize: hp(1.8),
+                        fontFamily: mainFontBold,
+                        color: 'black',
+                      }}>
+                      Personal History:
+                    </Text>
+                    <TextInput
+                      onChangeText={e => setPersonalHistory(e)}
+                      value={personalHistory}
+                      placeholderTextColor="#8E8E8E"
+                      placeholder="Personal History"
+                      style={styles.inputBoxStyl}
+                    />
+                  </View>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(1),
+                    justifyContent: 'space-between',
+                  }}>
+                  <View style={{width: wp(95)}}>
+                    <Text
+                      style={{
+                        fontSize: hp(1.7),
+                        fontFamily: mainFontBold,
+                        color: 'black',
+                      }}>
+                      Surgical History:
+                    </Text>
+                    <TextInput
+                      onChangeText={e => setSurgicalHistory(e)}
+                      value={surgicalHistory}
+                      placeholderTextColor="#8E8E8E"
+                      placeholder="Surgical History"
+                      style={styles.inputBoxStyl}
+                    />
+                  </View>
+                </View>
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    width: wp(95),
+                  }}>
+                  <Text style={{textTransform: 'uppercase'}}>
+                    If medicine is not available in the list please add from
+                    here.
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => setMedicineModal(true)}
+                    style={{
+                      paddingHorizontal: 15,
+                      height: hp(5),
+                      backgroundColor: '#50B148',
+                      borderRadius: 4,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginTop: 15,
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: hp(1.8),
+                        color: 'white',
+                        fontFamily: mainFontmedium,
+                      }}>
+                      Add more medicines +
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                {medicine.map((el: any, index: number) => {
+                  return (
+                    <View
+                      key={index}
+                      style={{
+                        width: wp(98),
+                        flexDirection: 'row',
+                        marginTop: hp(1),
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        borderWidth: 1,
+                        borderColor: 'gray',
+                        borderRadius: 10,
+                        padding: 5,
+                      }}>
+                      <View style={{width: wp(40)}}>
+                        <Text
+                          style={{
+                            fontSize: hp(1.8),
+                            fontFamily: mainFontBold,
+                            color: 'black',
+                          }}>
+                          Medicine Name:
+                        </Text>
+                        <Dropdown
+                          style={[styles.dropdown]}
+                          placeholderStyle={styles.placeholderStyle}
+                          selectedTextStyle={styles.selectedTextStyle}
+                          inputSearchStyle={styles.inputSearchStyle}
+                          iconStyle={styles.iconStyle}
+                          data={
+                            loding
+                              ? [{label: 'Loading...', value: null}]
+                              : medicinesArr
+                          }
+                          search
+                          searchPlaceholder="Search..."
+                          maxHeight={300}
+                          labelField="label"
+                          valueField="value"
+                          placeholder="Select Medicine"
+                          value={el.name}
+                          onFocus={() => setIsFocus(true)}
+                          onBlur={() => setIsFocus(false)}
+                          onChange={(item: any) => {
+                            handleUpdateContentForMedicine(
+                              item.value,
+                              'name',
+                              index,
+                            );
+                          }}
+                          renderInputSearch={(
+                            onSearch: (text: string) => void,
+                          ) => (
+                            <TextInput
+                              style={styles.inputBoxStyl}
+                              onChangeText={text => {
+                                setFilter(text); // Log the typed text to console
+                                onSearch(text); // Trigger the search with the typed text
+                              }}
+                              placeholder="Search..."
+                            />
+                          )}
+                        />
+                      </View>
+                      <View
+                        style={{
+                          width: wp(45),
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                        }}>
+                        <View>
+                          <Text
+                            style={{
+                              fontSize: hp(1.8),
+                              fontFamily: mainFontBold,
+                              color: 'black',
+                            }}>
+                            Dose
+                          </Text>
+                          <Dropdown
+                            style={[styles.dropdown, {width: wp(17)}]}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            inputSearchStyle={styles.inputSearchStyle}
+                            iconStyle={styles.iconStyle}
+                            data={doses}
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Unit"
+                            value={el.duration_count}
+                            onFocus={() => setIsFocus(true)}
+                            onBlur={() => setIsFocus(false)}
+                            onChange={(item: any) => {
+                              handleUpdateContentForMedicine(
+                                item.value,
+                                'duration_count',
+                                index,
+                              );
+                            }}
+                          />
+                        </View>
+                        <View>
+                          <Text
+                            style={{
+                              fontSize: hp(1.8),
+                              fontFamily: mainFontBold,
+                              color: 'black',
+                            }}>
+                            Dose Form:
+                          </Text>
+                          <Dropdown
+                            style={[styles.dropdown, {width: wp(26)}]}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            inputSearchStyle={styles.inputSearchStyle}
+                            iconStyle={styles.iconStyle}
+                            data={doseFormArr}
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Select Dose"
+                            search
+                            searchPlaceholder="Search..."
+                            value={el.dose_form}
+                            onFocus={() => setIsFocus(true)}
+                            onBlur={() => setIsFocus(false)}
+                            onChange={(item: any) => {
+                              handleUpdateContentForMedicine(
+                                item.value,
+                                'dose_form',
+                                index,
+                              );
+                            }}
+                          />
+                        </View>
+                      </View>
+                      <View style={{width: wp(40)}}>
+                        <Text
+                          style={{
+                            fontSize: hp(1.8),
+                            fontFamily: mainFontBold,
+                            color: 'black',
+                          }}>
+                          ROA:
+                        </Text>
+                        <Dropdown
+                          style={[styles.dropdown]}
+                          placeholderStyle={styles.placeholderStyle}
+                          selectedTextStyle={styles.selectedTextStyle}
+                          inputSearchStyle={styles.inputSearchStyle}
+                          iconStyle={styles.iconStyle}
+                          data={roa.map(option => ({
+                            label: option.label,
+                            value: option.value,
+                          }))}
+                          maxHeight={300}
+                          labelField="label"
+                          valueField="value"
+                          placeholder="Select ROA"
+                          search
+                          searchPlaceholder="Search..."
+                          value={el.roa}
+                          onFocus={() => setIsFocus(true)}
+                          onBlur={() => setIsFocus(false)}
+                          onChange={(item: any) => {
+                            handleUpdateContentForMedicine(
+                              item.value,
+                              'roa',
+                              index,
+                            );
+                          }}
+                        />
+                      </View>
+                      <View style={{width: wp(45)}}>
+                        <Text
+                          style={{
+                            fontSize: hp(1.8),
+                            fontFamily: mainFontBold,
+                            color: 'black',
+                          }}>
+                          Time:
+                        </Text>
+                        <Dropdown
+                          style={[styles.dropdown]}
+                          placeholderStyle={styles.placeholderStyle}
+                          selectedTextStyle={styles.selectedTextStyle}
+                          inputSearchStyle={styles.inputSearchStyle}
+                          iconStyle={styles.iconStyle}
+                          data={TimeData}
+                          maxHeight={300}
+                          labelField="label"
+                          valueField="value"
+                          placeholder="Select Time"
+                          value={el.time}
+                          onFocus={() => setIsFocus(true)}
+                          onBlur={() => setIsFocus(false)}
+                          onChange={(item: any) => {
+                            handleUpdateContentForMedicine(
+                              item.value,
+                              'time',
+                              index,
+                            );
+                          }}
+                        />
+                      </View>
+                      <View style={{width: wp(45)}}>
+                        <Text
+                          style={{
+                            fontSize: hp(1.8),
+                            fontFamily: mainFontBold,
+                            color: 'black',
+                          }}>
+                          Frequency:
+                        </Text>
+                        <Dropdown
+                          style={[styles.dropdown]}
+                          placeholderStyle={styles.placeholderStyle}
+                          selectedTextStyle={styles.selectedTextStyle}
+                          inputSearchStyle={styles.inputSearchStyle}
+                          iconStyle={styles.iconStyle}
+                          data={DaysData}
+                          maxHeight={300}
+                          labelField="label"
+                          search
+                          searchPlaceholder="Search..."
+                          valueField="value"
+                          placeholder="Select"
+                          value={el.frequency}
+                          onFocus={() => setIsFocus(true)}
+                          onBlur={() => setIsFocus(false)}
+                          onChange={(item: any) => {
+                            handleUpdateContentForMedicine(
+                              item.value,
+                              'frequency',
+                              index,
+                            );
+                          }}
+                        />
+                      </View>
+                      <View
+                        style={{
+                          width: wp(45),
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                        }}>
+                        <View>
+                          <Text
+                            style={{
+                              fontSize: hp(1.8),
+                              fontFamily: mainFontBold,
+                              color: 'black',
+                            }}>
+                            Count
+                          </Text>
+                          <Dropdown
+                            style={[styles.dropdown, {width: wp(18)}]}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            inputSearchStyle={styles.inputSearchStyle}
+                            iconStyle={styles.iconStyle}
+                            data={doses}
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Unit"
+                            value={el.note}
+                            onFocus={() => setIsFocus(true)}
+                            onBlur={() => setIsFocus(false)}
+                            onChange={(item: any) => {
+                              handleUpdateContentForMedicine(
+                                item.value,
+                                'note',
+                                index,
+                              );
+                            }}
+                          />
+                        </View>
+                        <View>
+                          <Text
+                            style={{
+                              fontSize: hp(1.8),
+                              fontFamily: mainFontBold,
+                              color: 'black',
+                            }}>
+                            Duration:
+                          </Text>
+                          <Dropdown
+                            style={[styles.dropdown, {width: wp(26)}]}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            inputSearchStyle={styles.inputSearchStyle}
+                            iconStyle={styles.iconStyle}
+                            data={durationCountData}
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Duration"
+                            value={el.duration}
+                            onFocus={() => setIsFocus(true)}
+                            onBlur={() => setIsFocus(false)}
+                            onChange={(item: any) => {
+                              handleUpdateContentForMedicine(
+                                item.value,
+                                'duration',
+                                index,
+                              );
+                            }}
+                          />
+                        </View>
+                      </View>
+                    </View>
+                  );
+                })}
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(2),
+                    alignSelf: 'center',
+                    paddingTop: hp(1),
+                    paddingBottom: hp(1),
+                    width: wp(95),
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => handleDeleteMedicine()}
+                    style={{
+                      paddingHorizontal: 15,
+                      height: hp(5),
+                      backgroundColor: '#B0B0B0',
+                      borderRadius: 5,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: hp(1.8),
+                        color: 'white',
+                        fontFamily: mainFontmedium,
+                      }}>
+                      -
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => handleAddMedicine()}
+                    style={{
+                      paddingHorizontal: 15,
+                      height: hp(5),
+                      backgroundColor: '#50B148',
+                      borderRadius: 5,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginLeft: wp(5),
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: hp(1.8),
+                        color: 'white',
+                        fontFamily: mainFontmedium,
+                      }}>
+                      +
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(1),
+                    justifyContent: 'space-between',
+                  }}>
+                  <View style={{width: wp(95)}}>
+                    <Text
+                      style={{
+                        fontSize: hp(1.8),
+                        fontFamily: mainFontBold,
+                        color: 'black',
+                      }}>
+                      Investigation:
+                    </Text>
+                    <TextInput
+                      onChangeText={e => setInvestigation(e)}
+                      value={investigation}
+                      placeholderTextColor="#8E8E8E"
+                      placeholder="Investigation"
+                      style={styles.inputBoxStyl}
+                    />
+                  </View>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(1),
+                    justifyContent: 'space-between',
+                  }}>
+                  <View style={{width: wp(95)}}>
+                    <Text
+                      style={{
+                        fontSize: hp(1.8),
+                        fontFamily: mainFontBold,
+                        color: 'black',
+                      }}>
+                      Notes:
+                    </Text>
+                    <TextInput
+                      onChangeText={e => setNotes(e)}
+                      value={notes}
+                      placeholderTextColor="#8E8E8E"
+                      placeholder="Notes"
+                      style={styles.inputBoxStyl}
+                    />
+                  </View>
                 </View>
               </View>
-            )}
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: hp(1),
-                justifyContent: 'space-between',
-              }}>
-              <View style={{width: wp(95)}}>
-                <Text
-                  style={{
-                    fontSize: hp(1.8),
-                    fontFamily: mainFontBold,
-                    color: 'black',
-                  }}>
-                  Investigation:
-                </Text>
-                <TextInput
-                  onChangeText={e => setInvestigation(e)}
-                  value={investigation}
-                  placeholderTextColor="#8E8E8E"
-                  placeholder="Investigation"
-                  style={styles.inputBoxStyl}
-                />
-              </View>
-            </View>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: hp(1),
-                justifyContent: 'space-between',
-              }}>
-              <View style={{width: wp(95)}}>
-                <Text
-                  style={{
-                    fontSize: hp(1.8),
-                    fontFamily: mainFontBold,
-                    color: 'black',
-                  }}>
-                  Notes:
-                </Text>
-                <TextInput
-                  onChangeText={e => setNotes(e)}
-                  value={notes}
-                  placeholderTextColor="#8E8E8E"
-                  placeholder="Notes"
-                  style={styles.inputBoxStyl}
-                />
-              </View>
-            </View>
+            ) : null}
           </View>
         </TouchableWithoutFeedback>
       </ScrollView>

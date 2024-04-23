@@ -137,6 +137,7 @@ const Home = () => {
       title: 'Total Consultation',
       data: '0',
       url: 'Appointment',
+      baceURL:"status=today",
       roleArr: [Roles.DOCTOR, Roles.FRANCHISE],
     },
     {
@@ -144,6 +145,7 @@ const Home = () => {
       title: 'Today Consultation',
       data: '0',
       url: 'Appointment',
+      baceURL:"status=today",
       roleArr: [Roles.DOCTOR, Roles.FRANCHISE],
     },
     {
@@ -151,6 +153,7 @@ const Home = () => {
       title: 'Pending Consultation',
       data: '0',
       url: 'Appointment',
+      baceURL:"status=pending",
       roleArr: [Roles.DOCTOR, Roles.FRANCHISE],
     },
     {
@@ -158,6 +161,7 @@ const Home = () => {
       title: 'Total Earning',
       data: '0',
       url: 'Income',
+      baceURL:"",
       roleArr: [Roles.DOCTOR],
     },
     {
@@ -166,6 +170,8 @@ const Home = () => {
       data: wallet,
       url: 'Transaction',
       roleArr: [Roles.FRANCHISE],
+      baceURL:"",
+
     },
     {
       img: require('../../assets/images/icn10.png'),
@@ -173,6 +179,8 @@ const Home = () => {
       data: wolletAmount,
       url: 'Income',
       roleArr: [Roles.FRANCHISE],
+      baceURL:"",
+
     },
   ]);
 
@@ -834,7 +842,9 @@ const Home = () => {
                 {[...docData.filter((el: any) => el.roleArr.some((ele: string) => ele == userObj?.role))].map((item, index) => (
                   <Pressable
                     key={index}
-                    onPress={() => navigation.navigate(item.url)}
+                    onPress={() => navigation.navigate(item.url,{
+                      baseurl:`${item.baceURL}`
+                    })}
                     style={{
                       width: wp(42),
                       height: hp(15),

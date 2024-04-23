@@ -8,7 +8,6 @@ import url from '../Services/url.service';
 import { getUser } from '../Services/user.service';
 
 export default function PayementScreen(props: any) {
-    console.log("ldkfjsdflkjh lkdfjgl dfjflkjg flgjk fgbjkgf lkjnglkbgjh ;lh gflkhghlo jk", props)
     const focused = useIsFocused()
     const navigation: any = useNavigation();
     const [userObj, setUserObj] = useState<any>({});

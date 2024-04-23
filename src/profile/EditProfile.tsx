@@ -4,7 +4,6 @@ import {
   Alert,
   Dimensions,
   Image,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -283,6 +282,7 @@ const EditProfile = () => {
               <TextInput
                 onChangeText={e => setMobile(e)}
                 value={mobile}
+                editable={false}
                 placeholder={
                   isLoading ? 'Loading...' : 'Enter Your Phone Number'
                 }
@@ -400,14 +400,15 @@ const EditProfile = () => {
                 />
               </View>
             )}
-            {(userObj.role == Roles.DOCTOR || userObj.role == Roles.FRANCHISE ) && (
+            {(userObj.role == Roles.DOCTOR ||
+              userObj.role == Roles.FRANCHISE) && (
               <View style={{width: wp(95), marginTop: hp(2)}}>
                 <Text
                   style={{
                     color: 'black',
                     fontSize: hp(1.7),
                     fontFamily: mainFontmedium,
-                  }}>  
+                  }}>
                   Uplode Document
                 </Text>
               </View>

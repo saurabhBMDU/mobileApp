@@ -43,75 +43,81 @@ const PreView = ({ objectData, clodeBtn, images }) => {
     return (
         <View style={styles.mainView}>
             <View>
-                {loding ? <Text style={{ fontSize: hp(2.8), color: "gray", textAlign: "center", backgroundColor: "#fff", padding: hp(3),borderRadius:5, }}>Uploading....</Text> :
+                {loding ? <Text style={{ fontSize: hp(2.8), color: "gray", textAlign: "center", backgroundColor: "#fff", padding: hp(3), borderRadius: 5, }}>Uploading....</Text> :
                     <View style={styles.sunView}>
                         <View style={styles.dflex}>
                             <Text style={styles.priViewTexyt}>Preview</Text>
 
                         </View>
                         <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: hp(1.5) }}>
-                            <View style={styles.d_flex2}>
-                                <Text style={[styles.textStle, { width: "37%" }]}>Symptoms:</Text>
-                                <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData.symptoms}</Text>
-                            </View>
-                            <View style={styles.d_flex2}>
-                                <Text style={[styles.textStle, { width: "37%" }]}>Diagnosis : </Text>
-                                <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData.diagnosis}</Text>
-                            </View>
-                            <View style={styles.d_flex2}>
-                                <Text style={[styles.textStle, { width: "37%" }]}>*Drug Allergy:</Text>
-                                <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData.drugAllergy}</Text>
-                            </View>
-                            <View style={styles.d_flex2}>
-                                <Text style={[styles.textStle, { width: "37%" }]}>*Past History:</Text>
-                                <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData.pastHistory}</Text>
-                            </View>
-                            <View style={styles.d_flex2}>
-                                <Text style={[styles.textStle, { width: "37%" }]}>Personal History:</Text>
-                                <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData.personalHistory}</Text>
-                            </View>
-                            <View style={styles.d_flex2}>
-                                <Text style={[styles.textStle, { width: "37%" }]}>Surgical History:</Text>
-                                <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData.surgicalHistory}</Text>
-                            </View>
-                            <Text style={styles.medicineText}>Medicine</Text>
+                            {images ? null :
+                                <View>
+                                    <View style={styles.d_flex2}>
+                                        <Text style={[styles.textStle, { width: "37%" }]}>Symptoms:</Text>
+                                        <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData.symptoms}</Text>
+                                    </View>
+                                    <View style={styles.d_flex2}>
+                                        <Text style={[styles.textStle, { width: "37%" }]}>Diagnosis : </Text>
+                                        <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData.diagnosis}</Text>
+                                    </View>
+                                    <View style={styles.d_flex2}>
+                                        <Text style={[styles.textStle, { width: "37%" }]}>*Drug Allergy:</Text>
+                                        <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData.drugAllergy}</Text>
+                                    </View>
+                                    <View style={styles.d_flex2}>
+                                        <Text style={[styles.textStle, { width: "37%" }]}>*Past History:</Text>
+                                        <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData.pastHistory}</Text>
+                                    </View>
+                                    <View style={styles.d_flex2}>
+                                        <Text style={[styles.textStle, { width: "37%" }]}>Personal History:</Text>
+                                        <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData.personalHistory}</Text>
+                                    </View>
+                                    <View style={styles.d_flex2}>
+                                        <Text style={[styles.textStle, { width: "37%" }]}>Surgical History:</Text>
+                                        <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData.surgicalHistory}</Text>
+                                    </View>
+                                    <Text style={styles.medicineText}>Medicine</Text>
+                                    <View>
+                                        {
+                                            objectData.medicine[0].name !== '' && objectData.medicine.map((itms, index) => {
+                                                return <>
+                                                    <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, marginLeft: wp(1) }}>{index + 1}</Text>
+                                                    <View style={styles.mainViewMap}>
 
+                                                        <View style={styles.d_flex2}>
+                                                            <Text style={[styles.textStle, { width: "37%" }]}>Medicine Name:</Text>
+                                                            <Text style={[styles.textStle, { fontFamily: mainFont }]}>{itms.name}</Text>
+                                                        </View>
+                                                        <View style={styles.d_flex2}>
+                                                            <Text style={[styles.textStle, { width: "37%" }]}>Dose Form:</Text>
+                                                            <Text style={[styles.textStle, { fontFamily: mainFont }]}>{itms.duration_count} {itms.dose_form}</Text>
+                                                        </View>
+                                                        <View style={styles.d_flex2}>
+                                                            <Text style={[styles.textStle, { width: "37%" }]}>ROA</Text>
+                                                            <Text style={[styles.textStle, { fontFamily: mainFont }]}>{itms.roa}</Text>
+                                                        </View>
+                                                        <View style={styles.d_flex2}>
+                                                            <Text style={[styles.textStle, { width: "37%" }]}>Frequency:</Text>
+                                                            <Text style={[styles.textStle, { fontFamily: mainFont }]}>{itms.frequency}</Text>
+                                                        </View>
+                                                        <View style={styles.d_flex2}>
+                                                            <Text style={[styles.textStle, { width: "37%" }]}>Duration:</Text>
+                                                            <Text style={[styles.textStle, { fontFamily: mainFont }]}>{itms.note} {itms.duration}</Text>
+                                                        </View>
+                                                    </View>
+                                                </>
+                                            })
+                                        }
+
+                                    </View>
+                                </View>
+                            }
                             <View>
-                                {
-                                    objectData.medicine[0].name !== '' && objectData.medicine.map((itms, index) => {
-                                        return <>
-                                            <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, marginLeft: wp(1) }}>{index + 1}</Text>
-                                            <View style={styles.mainViewMap}>
-
-                                                <View style={styles.d_flex2}>
-                                                    <Text style={[styles.textStle, { width: "37%" }]}>Medicine Name:</Text>
-                                                    <Text style={[styles.textStle, { fontFamily: mainFont }]}>{itms.name}</Text>
-                                                </View>
-                                                <View style={styles.d_flex2}>
-                                                    <Text style={[styles.textStle, { width: "37%" }]}>Dose Form:</Text>
-                                                    <Text style={[styles.textStle, { fontFamily: mainFont }]}>{itms.duration_count} {itms.dose_form}</Text>
-                                                </View>
-                                                <View style={styles.d_flex2}>
-                                                    <Text style={[styles.textStle, { width: "37%" }]}>ROA</Text>
-                                                    <Text style={[styles.textStle, { fontFamily: mainFont }]}>{itms.roa}</Text>
-                                                </View>
-                                                <View style={styles.d_flex2}>
-                                                    <Text style={[styles.textStle, { width: "37%" }]}>Frequency:</Text>
-                                                    <Text style={[styles.textStle, { fontFamily: mainFont }]}>{itms.frequency}</Text>
-                                                </View>
-                                                <View style={styles.d_flex2}>
-                                                    <Text style={[styles.textStle, { width: "37%" }]}>Duration:</Text>
-                                                    <Text style={[styles.textStle, { fontFamily: mainFont }]}>{itms.note} {itms.duration}</Text>
-                                                </View>
-                                            </View>
-                                        </>
-                                    })
-                                }
                                 {images && (
-                                    <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ flexDirection: 'row', justifyContent: "center" }}>
                                         <Image
                                             source={{ uri: images }}
-                                            style={{ height: hp(30), width: wp(50) }}
+                                            style={{ height: hp(50), width: wp(80) }}
                                             resizeMode="contain"
                                         />
                                     </View>
@@ -119,10 +125,10 @@ const PreView = ({ objectData, clodeBtn, images }) => {
                             </View>
                             <View style={[styles.dflex, { marginTop: hp(5) }]}>
                                 <TouchableOpacity style={[styles.bothBtn, { backgroundColor: "#000" }]} onPress={() => clodeBtn()}>
-                                    <Text style={styles.bothText}>Back</Text>
+                                    <Text style={styles.bothText}>Edit</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.bothBtn} onPress={() => handleSubmit()}>
-                                    <Text style={styles.bothText} >Send</Text>
+                                    <Text style={styles.bothText}>Send</Text>
                                 </TouchableOpacity>
                             </View>
                         </ScrollView>
