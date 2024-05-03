@@ -84,14 +84,14 @@ const Abouts_dr = (props: any) => {
             <Text style={styles.label}>Gender:</Text>
             <Text style={styles.value}>{doctorData.gender}</Text>
           </View>
-          <View style={styles.commonD_flex}>
+          {/* <View style={styles.commonD_flex}>
             <Text style={styles.label}>Mobile:</Text>
             <Text style={styles.value}>{doctorData.mobile}</Text>
-          </View>
-          <View style={styles.commonD_flex}>
+          </View> */}
+          {/* <View style={styles.commonD_flex}>
             <Text style={styles.label}>Email:</Text>
             <Text style={styles.value}>{doctorData.email}</Text>
-          </View>
+          </View> */}
           <View style={styles.commonD_flex}>
             <Text style={styles.label}>City:</Text>
             <Text style={styles.value}>{doctorData.city}</Text>

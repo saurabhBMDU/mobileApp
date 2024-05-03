@@ -80,9 +80,9 @@ export const getNotifications = async (obj) => {
   return await axios.get(`${url}/notifications`);
 };
 
-export const isReadNotification = async (userObj) => {
-  console.log("jghjhghghjgvhgfhg",`${url}/notifications/read/${userObj}`);
-  return await axios.put(`${url}/notifications/read/${userObj}`);
+export const isReadNotification = async (id) => {
+  console.log("jghjhghghjgvhgfhg",`${url}/notifications/read/${id}`);
+  return await axios.put(`${url}/notifications/read/${id}`);
   
 };
 

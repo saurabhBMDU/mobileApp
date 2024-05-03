@@ -14,6 +14,7 @@ const NotificationShow = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userObj, setUserObj] = useState('');
+  const [trackIndex,setTrackIndex] = useState(0);
 
   const handleGetAndSetUser = async () => {
     let userData = await getUser();
@@ -23,9 +24,11 @@ const NotificationShow = () => {
     }
   };
 
-  const markAsRead = async () => {
+  const markAsRead = async (id) => {
     try {
-      const { data: res } = await isReadNotification(userObj);
+      const { data: res } = await isReadNotification(id);
+      console.log('response for mark as read',res)
+      getAllNotifications();
     } catch (err) {
       console.error('Error fetching notifications:', err);
     } finally {
@@ -39,7 +42,7 @@ const NotificationShow = () => {
 
       if (res.status === true) {
         setNotifications(res.data); // This will execute after handleGetAndSetUser()
-        markAsRead();
+        // markAsRead();
       } else {
         throw new Error(res.error);
       }
@@ -60,6 +63,7 @@ const NotificationShow = () => {
       return { ...item, showRelativeTime };
     });
   };
+
 
   const renderItem = ({ items, index }) => {
     let iconName;
@@ -96,11 +100,16 @@ const NotificationShow = () => {
         iconColor = 'black'; // Default color
         break;
     }
+    
     return (
       <TouchableOpacity
+      onPress={()=>{
+        markAsRead(items._id)
+        setTrackIndex(index)
+      }}
         key={index}
-        style={[styles.notificationItem, { backgroundColor: items.read ? '#FFF' : '#dadde0' }]}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        style={[styles.notificationItem, { backgroundColor: items.read ? '#FFF' : index === trackIndex ? '#fff' : '#dadde0' }]}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between',   }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View
               style={{
@@ -113,6 +122,7 @@ const NotificationShow = () => {
               }}>
               <Icon name={iconName} size={23} color={"#fff"} />
             </View>
+           
             <View
               style={{
                 marginLeft: 10,

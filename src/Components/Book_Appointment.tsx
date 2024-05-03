@@ -1,3 +1,4 @@
+
 import React, {useState, useEffect} from 'react';
 import {
   View,
@@ -828,6 +829,12 @@ const Book_Appointment = () => {
                               name="user-doctor"
                               style={{fontSize: hp(1.5)}}
                             />
+                            <View
+                            style={{
+                              display: 'flex',
+                              maxWidth: wp(25),
+                            }}
+                            >
                             <Text
                               style={{
                                 fontSize: hp(1.5),
@@ -835,6 +842,7 @@ const Book_Appointment = () => {
                               }}>
                               {item.specialization}
                             </Text>
+                            </View>
                           </View>
                           <View
                             style={{
