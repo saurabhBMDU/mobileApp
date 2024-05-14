@@ -11,7 +11,6 @@ import Toast from 'react-native-toast-message';
 // import { navigationRef } from './index';
 import {navigationRef,gotoInitialRoute} from './NavigationService';
 
-import NotificationSounds from 'react-native-notification-sounds';
 
 import Root from './src/Navigation/Root';
 export const LanguageContext = createContext<any>(null);
@@ -220,7 +219,7 @@ const handleIncomingCall = async (callUUID) => {
         RNCallKeep.displayIncomingCall(remoteMessage.data.appointmentId, "Doctor", "Fever99");
         // showIncomingCallNotification(remoteMessage);
         DisplayNotification();
-        InCallManager.startRingtone('_Default_')
+       
         setcalluuid(remoteMessage.data.appointmentId);
       }
       else{
@@ -459,24 +458,18 @@ notifee.onForegroundEvent(async ({ type, detail }) => {
     }
 });
 
+useEffect(()=>{
+  const permission = async () =>{
+  await notifee.requestPermission();
+  }
+  permission();
+})
 
 async function DisplayNotification(): Promise<void> {
   // Request permission if not already granted
-  await notifee.requestPermission();
+  // await notifee.requestPermission();
 
-  // // Create a channel (required for Android)
-  // const channelId = await notifee.createChannel({
-  //   id: 'default 31',
-  //   name: 'Default Channel 31',
-  //   // sound: 'default',
-  //   sound: 'hollow',
-  //   importance: AndroidImportance.HIGH,
-  // });
-
-        // Retrieve a list of system notification sounds
-// const soundsList = await NotificationSounds.getNotifications('notification');
-// console.log('soundlist',soundsList)
-
+  InCallManager.startRingtone('_Default_');
       const channelId = await  notifee.createChannel({
         id: "custom-sound",
         name: "System Sound",
@@ -489,9 +482,6 @@ async function DisplayNotification(): Promise<void> {
     body: 'Someone is calling',
     // body: 'Full-screen notification',
     android: {
-      // sound: 'default',
-      // sound: 'hollow',
-       // Recommended to set a category
     category: AndroidCategory.CALL,
     // Recommended to set importance to high
     importance: AndroidImportance.HIGH,
@@ -509,14 +499,14 @@ async function DisplayNotification(): Promise<void> {
         {
           title: 'Accept',
           // icon: 'https://my-cdn.com/icons/snooze.png',
-          icon : '@drawable/ic_accept',
+          // icon : '@drawable/ic_accept',
           pressAction: {
             id: 'accept',
           },
         },
         {
           title: 'Reject',
-          icon: 'https://my-cdn.com/icons/snooze.png',
+          // icon: 'https://my-cdn.com/icons/snooze.png',
           pressAction: {
             id: 'reject',
           },

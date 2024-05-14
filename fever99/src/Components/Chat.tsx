@@ -603,6 +603,8 @@ export default function Chat(props: any) {
     }[]
   >([]);
 
+  console.log('array for user chatting in chat line no 606',msgArr)
+
   const [socket, setSocket] = useState<any>();
 
   const allowedFile = [

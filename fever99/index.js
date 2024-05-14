@@ -7,10 +7,9 @@ import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
 import RNCallKeep from 'react-native-callkeep';
 // export const navigationRef = createNavigationContainerRef();
-import NotificationSounds from 'react-native-notification-sounds';
 import { navigate, navigationRef} from './NavigationService';
 
-import InCallManager from 'react-native-incall-manager';
+// import InCallManager from 'react-native-incall-manager';
 // Navigate to a screen
 
 import notifee, {
@@ -19,21 +18,23 @@ import notifee, {
   AuthorizationStatus,
   AndroidColor,
   AndroidStyle,
+  AndroidCategory,
 } from '@notifee/react-native';
+import InCallManager from 'react-native-incall-manager';
 
 
 AppRegistry.registerComponent(appName, () => HeadlessCheck);
 
 
 // Handle incoming call event
-const handleIncomingCall = async (callUUID) => {
-  // Open the meeting URL
-  Linking.openURL(`fever99://app/Meeting/${callUUID}`);
-  console.log('Incoming call in incallmanager: ', callUUID);
-  // Reject the call
-  InCallManager.stopRingtone(); // Stop ringing
-  InCallManager.start({ media: 'audio' }); // Start the call
-};
+// const handleIncomingCall = async (callUUID) => {
+//   // Open the meeting URL
+//   Linking.openURL(`fever99://app/Meeting/${callUUID}`);
+//   console.log('Incoming call in incallmanager: ', callUUID);
+//   // Reject the call
+//   InCallManager.stopRingtone(); // Stop ringing
+//   InCallManager.start({ media: 'audio' }); // Start the call
+// };
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log(
@@ -55,7 +56,8 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
         'Fever99',
       );
       await RNCallKeep.backToForeground();
-      InCallManager.startRingtone('_Default_')
+      // InCallManager.startRingtone('_Default_')
+      // console.log('in call manager',inCallManager)
 
       RNCallKeep.addEventListener('answerCall', async ({callUUID}) => {
         Linking.openURL(`fever99://app/Meeting/${callUUID}`);
@@ -64,126 +66,138 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
         // linkTo()
         // Linking.openURL(`fever99://app/Meeting/${remoteMessage.data.appointmentId}`)
       });
-
-      // navigationRef.current?.navigate(`Meeting`, { data: callUUID }) // Navigate to your default screen
-
-      // You can also perform any action you desire here
-      // For example, open a specific URL scheme
-      // Linking.openURL('fever99://app');
-
-      // const supported = Linking.canOpenURL("fever99://app");
-      // if (supported) {
-      //     Linking.openURL("fever99://app")
-      // }
-      // else {
-      //     console.log(`Don't know how to open this URL: ${url}`);
-      // }
-
-      // RNCallKeep.displayIncomingCall(remoteMessage.data.appointmentId, "Doctor", "user");
-      // Create a channel (required for Android)
-
-      // Retrieve a list of system notification sounds
-// const soundsList = await NotificationSounds.getNotifications('notification');
-// console.log('soundlist',soundsList)
-
-      // const channelId = await notifee.createChannel({
-      //   id: 'default 31',
-      //   name: 'Default Channel 31',
-      //   // sound: 'default',
-      //   sound: 'hollow',
-      //   importance: AndroidImportance.HIGH,
-      // });
-      const channelId = await  notifee.createChannel({
-        id: "custom-sound",
-        name: "System Sound",
-      });
-      // Display a notification with two action buttons
-      await notifee.displayNotification({
-        title: 'You have an incoming call',
-        body: 'Someone is calling',
-        android: {
-          // sound: 'default',
-          // sound: 'hollow',
-          channelId,
-          largeIcon:
-            'https://as2.ftcdn.net/v2/jpg/04/63/63/59/1000_F_463635935_IweuYhCqZRtHp3SLguQL8svOVroVXvvZ.jpg',
-          style: {
-            type: AndroidStyle.BIGPICTURE,
-            picture:
-              'https://as2.ftcdn.net/v2/jpg/04/63/63/59/1000_F_463635935_IweuYhCqZRtHp3SLguQL8svOVroVXvvZ.jpg',
+      
+        InCallManager.startRingtone('_Default_');
+            const channelId = await  notifee.createChannel({
+              id: "custom-sound",
+              name: "System Sound",
+              importance: AndroidImportance.HIGH,
+            });
+      
+        // Display a notification with two action buttons
+        await notifee.displayNotification({
+          title: 'You have an incoming call',
+          body: 'Someone is calling',
+          // body: 'Full-screen notification',
+          android: {
+          category: AndroidCategory.CALL,
+          // Recommended to set importance to high
+          importance: AndroidImportance.HIGH,
+          fullScreenAction: {
+            id: 'default',
           },
-          actions: [
-            {
-              title: 'Accept',
-              pressAction: {id: 'accept'},
-              // icon: acceptCall, // Add the name of your accept icon
-              // Custom properties for styling the accept button
-              // accentColor: '#00FF00', // Green color
-            },
-            {
-              title: 'Reject',
-              pressAction: {id: 'reject'},
-              // icon: rejectCall, // Add the name of your reject icon
-              // Custom properties for styling the reject button
-              // accentColor: '#FF0000', // Red color
-            },
-          ],
-        },
-        ios: {
-          foregroundPresentationOptions: {
-            badge: true,
-            sound: true,
-            banner: true,
-            list: true,
+            // importance: AndroidImportance.HIGH,
+            channelId,
+            largeIcon: 'https://as2.ftcdn.net/v2/jpg/04/63/63/59/1000_F_463635935_IweuYhCqZRtHp3SLguQL8svOVroVXvvZ.jpg',
+            // style: {
+              // type: AndroidStyle.BIGPICTURE,
+              // picture: 'https://as2.ftcdn.net/v2/jpg/04/63/63/59/1000_F_463635935_IweuYhCqZRtHp3SLguQL8svOVroVXvvZ.jpg',
+            // },
+            actions: [
+              {
+                title: 'Accept',
+                // icon: 'https://my-cdn.com/icons/snooze.png',
+                // icon : '@drawable/ic_accept',
+                pressAction: {
+                  id: 'accept',
+                },
+              },
+              {
+                title: 'Reject',
+                // icon: 'https://my-cdn.com/icons/snooze.png',
+                pressAction: {
+                  id: 'reject',
+                },
+              },
+            ],
           },
-        },
-      });
-
+          ios: {
+            foregroundPresentationOptions: {
+              badge: true,
+              sound: true,
+              banner: true,
+              list: true,
+            },
+          } 
+        });
+      // }
       // Function to handle background notification events
       const handleBackgroundNotification = async ({type, detail}) => {
-        console.log(
-          'Remote notification info on background: ',
-          remoteMessage.data.appointmentId,
-        );
-        switch (type) {
-          case EventType.DISMISSED:
+        // console.log(
+        //   'Remote notification info on background: ',
+        //   remoteMessage.data.appointmentId,
+        // );
+
+        if (type === EventType.ACTION_PRESS && detail.pressAction.id && 'accept' === detail.pressAction.id) {
+          console.log('User pressed an action with the id: ', detail.pressAction.id);
+          // handleIncomingCall(remoteMessage.data.appointmentId);
+          InCallManager.stopRingtone(); 
+          Linking.openURL(`fever99://app/Meeting/${remoteMessage.data.appointmentId}`)
+          setTimeout(() => {
+            // navigate('PAC');
+            // InCallManager.stopRingtone(); 
+            Linking.openURL(`fever99://app/Meeting/${remoteMessage.data.appointmentId}`)
+            // Check if navigation is ready and navigate if so
+            if (navigationRef.isReady()) {
+              // navigationRef.navigate('PAC');
+              // InCallManager.stopRingtone(); 
+              Linking.openURL(`fever99://app/Meeting/${remoteMessage.data.appointmentId}`)
+            } else {
+              console.error('Navigation is not ready');
+              // Handle the case where navigation is not ready
+              // You can choose to retry navigation later or show an error message
+            }
+          },4000); 
+        }
+        if (type === EventType.ACTION_PRESS && detail.pressAction.id && 'reject' === detail.pressAction.id) {
+          console.log('User pressed an action with the id: ', detail.pressAction.id);
+          await notifee.cancelNotification('incoming-call-notification');
+          InCallManager.stopRingtone(); // Stop ringing
+        }
+
+        // switch (type) {
+          if(type === EventType.DISMISSED){
+          // case EventType.DISMISSED:
             InCallManager.stopRingtone(); // Stop ringing
             await notifee.cancelNotification('incoming-call-notification');
             console.log('User dismissed notification', detail.notification);
-            break;
-          case EventType.PRESS:
+            // break;
+          }
+          // case EventType.PRESS:
+          if(type === EventType.PRESS){
             console.log('User pressed notification');
-            // Linking.openURL(
-            //   `fever99://app/Meeting/${remoteMessage.data.appointmentId}`,
-            // );
-            handleIncomingCall(remoteMessage.data.appointmentId);
-      
+            Linking.openURL(
+              `fever99://app/Meeting/${remoteMessage.data.appointmentId}`,
+            );
+            InCallManager.stopRingtone(); 
+            // handleIncomingCall(remoteMessage.data.appointmentId);
             // navigationRef.current?.navigate(`Meeting`, { data: remoteMessage.data.appointmentId });
             // Add a delay of 5 seconds before navigating to the 'PAC' screen
             // navigate('PAC');
             setTimeout(() => {
               // navigate('PAC');
-              Linking.openURL(`fever99://app/Meeting/${remoteMessage.data.appointmentId}`)
+              // InCallManager.stopRingtone(); 
+              // Linking.openURL(`fever99://app/Meeting/${remoteMessage.data.appointmentId}`)
               // Check if navigation is ready and navigate if so
               if (navigationRef.isReady()) {
                 // navigationRef.navigate('PAC');
+                // InCallManager.stopRingtone(); 
                 Linking.openURL(`fever99://app/Meeting/${remoteMessage.data.appointmentId}`)
               } else {
                 console.error('Navigation is not ready');
                 // Handle the case where navigation is not ready
                 // You can choose to retry navigation later or show an error message
               }
-            },3000); // 5000 milliseconds = 5 seconds
-
-            break;
-          default:
-            console.log('Unknown notification event type');
+            },4000); // 5000 milliseconds = 5 seconds
+          }
+            // break;
+          // default:
+            // console.log('Unknown notification event type');
         }
-      };
-
-      // Listen for background notification events
+        // Listen for background notification events
       notifee.onBackgroundEvent(handleBackgroundNotification);
-    }else{
+      }
+    else{
       PushNotification.localNotification({
         /* Android Only Properties */
         channelId: 'fever99', // (required) channelId, if the channel doesn't exist, it will be created with options passed above (importance, vibration, sound). Once the channel is created, the channel will not be update. Make sure your channelId is different if you change these options. If you have created a custom channel, it will apply options of the channel.
@@ -235,7 +249,6 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
         // repeatType: "day", // (optional) Repeating interval. Check 'Repeating Notifications' section for more info.
         // repeatType: "day", // (optional) Repeating interval. Check 'Repeating Notifications' section for more info.
       });
-
     }
     } catch (error) {
       console.log(error, 'error');
