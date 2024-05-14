@@ -7,9 +7,10 @@ import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
 import RNCallKeep from 'react-native-callkeep';
 // export const navigationRef = createNavigationContainerRef();
-
+import NotificationSounds from 'react-native-notification-sounds';
 import { navigate, navigationRef} from './NavigationService';
 
+import InCallManager from 'react-native-incall-manager';
 // Navigate to a screen
 
 import notifee, {
@@ -23,6 +24,17 @@ import notifee, {
 
 AppRegistry.registerComponent(appName, () => HeadlessCheck);
 
+
+// Handle incoming call event
+const handleIncomingCall = async (callUUID) => {
+  // Open the meeting URL
+  Linking.openURL(`fever99://app/Meeting/${callUUID}`);
+  console.log('Incoming call in incallmanager: ', callUUID);
+  // Reject the call
+  InCallManager.stopRingtone(); // Stop ringing
+  InCallManager.start({ media: 'audio' }); // Start the call
+};
+
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log(
     'background message in index.js',
@@ -34,14 +46,16 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
   // You can also perform any action you desire here
   // For example, open a specific URL scheme
 
-  if (remoteMessage?.data?.otherData == 'show') {
+  
     try {
+      if (remoteMessage?.data?.otherData == 'show') {
       await RNCallKeep.displayIncomingCall(
         remoteMessage.data.appointmentId,
         'Doctor',
         'Fever99',
       );
       await RNCallKeep.backToForeground();
+      InCallManager.startRingtone('_Default_')
 
       RNCallKeep.addEventListener('answerCall', async ({callUUID}) => {
         Linking.openURL(`fever99://app/Meeting/${callUUID}`);
@@ -66,7 +80,110 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
       // }
 
       // RNCallKeep.displayIncomingCall(remoteMessage.data.appointmentId, "Doctor", "user");
+      // Create a channel (required for Android)
 
+      // Retrieve a list of system notification sounds
+// const soundsList = await NotificationSounds.getNotifications('notification');
+// console.log('soundlist',soundsList)
+
+      // const channelId = await notifee.createChannel({
+      //   id: 'default 31',
+      //   name: 'Default Channel 31',
+      //   // sound: 'default',
+      //   sound: 'hollow',
+      //   importance: AndroidImportance.HIGH,
+      // });
+      const channelId = await  notifee.createChannel({
+        id: "custom-sound",
+        name: "System Sound",
+      });
+      // Display a notification with two action buttons
+      await notifee.displayNotification({
+        title: 'You have an incoming call',
+        body: 'Someone is calling',
+        android: {
+          // sound: 'default',
+          // sound: 'hollow',
+          channelId,
+          largeIcon:
+            'https://as2.ftcdn.net/v2/jpg/04/63/63/59/1000_F_463635935_IweuYhCqZRtHp3SLguQL8svOVroVXvvZ.jpg',
+          style: {
+            type: AndroidStyle.BIGPICTURE,
+            picture:
+              'https://as2.ftcdn.net/v2/jpg/04/63/63/59/1000_F_463635935_IweuYhCqZRtHp3SLguQL8svOVroVXvvZ.jpg',
+          },
+          actions: [
+            {
+              title: 'Accept',
+              pressAction: {id: 'accept'},
+              // icon: acceptCall, // Add the name of your accept icon
+              // Custom properties for styling the accept button
+              // accentColor: '#00FF00', // Green color
+            },
+            {
+              title: 'Reject',
+              pressAction: {id: 'reject'},
+              // icon: rejectCall, // Add the name of your reject icon
+              // Custom properties for styling the reject button
+              // accentColor: '#FF0000', // Red color
+            },
+          ],
+        },
+        ios: {
+          foregroundPresentationOptions: {
+            badge: true,
+            sound: true,
+            banner: true,
+            list: true,
+          },
+        },
+      });
+
+      // Function to handle background notification events
+      const handleBackgroundNotification = async ({type, detail}) => {
+        console.log(
+          'Remote notification info on background: ',
+          remoteMessage.data.appointmentId,
+        );
+        switch (type) {
+          case EventType.DISMISSED:
+            InCallManager.stopRingtone(); // Stop ringing
+            await notifee.cancelNotification('incoming-call-notification');
+            console.log('User dismissed notification', detail.notification);
+            break;
+          case EventType.PRESS:
+            console.log('User pressed notification');
+            // Linking.openURL(
+            //   `fever99://app/Meeting/${remoteMessage.data.appointmentId}`,
+            // );
+            handleIncomingCall(remoteMessage.data.appointmentId);
+      
+            // navigationRef.current?.navigate(`Meeting`, { data: remoteMessage.data.appointmentId });
+            // Add a delay of 5 seconds before navigating to the 'PAC' screen
+            // navigate('PAC');
+            setTimeout(() => {
+              // navigate('PAC');
+              Linking.openURL(`fever99://app/Meeting/${remoteMessage.data.appointmentId}`)
+              // Check if navigation is ready and navigate if so
+              if (navigationRef.isReady()) {
+                // navigationRef.navigate('PAC');
+                Linking.openURL(`fever99://app/Meeting/${remoteMessage.data.appointmentId}`)
+              } else {
+                console.error('Navigation is not ready');
+                // Handle the case where navigation is not ready
+                // You can choose to retry navigation later or show an error message
+              }
+            },3000); // 5000 milliseconds = 5 seconds
+
+            break;
+          default:
+            console.log('Unknown notification event type');
+        }
+      };
+
+      // Listen for background notification events
+      notifee.onBackgroundEvent(handleBackgroundNotification);
+    }else{
       PushNotification.localNotification({
         /* Android Only Properties */
         channelId: 'fever99', // (required) channelId, if the channel doesn't exist, it will be created with options passed above (importance, vibration, sound). Once the channel is created, the channel will not be update. Make sure your channelId is different if you change these options. If you have created a custom channel, it will apply options of the channel.
@@ -119,102 +236,11 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
         // repeatType: "day", // (optional) Repeating interval. Check 'Repeating Notifications' section for more info.
       });
 
-      // Create a channel (required for Android)
-      const channelId = await notifee.createChannel({
-        id: 'default 31',
-        name: 'Default Channel 31',
-        // sound: 'default',
-        sound: 'hollow',
-        importance: AndroidImportance.HIGH,
-      });
-
-      // Display a notification with two action buttons
-      await notifee.displayNotification({
-        title: 'You have an incoming call',
-        body: 'Someone is calling',
-        android: {
-          // sound: 'default',
-          sound: 'hollow',
-          channelId,
-          largeIcon:
-            'https://as2.ftcdn.net/v2/jpg/04/63/63/59/1000_F_463635935_IweuYhCqZRtHp3SLguQL8svOVroVXvvZ.jpg',
-          style: {
-            type: AndroidStyle.BIGPICTURE,
-            picture:
-              'https://as2.ftcdn.net/v2/jpg/04/63/63/59/1000_F_463635935_IweuYhCqZRtHp3SLguQL8svOVroVXvvZ.jpg',
-          },
-          actions: [
-            {
-              title: 'Accept',
-              pressAction: {id: 'accept'},
-              // icon: acceptCall, // Add the name of your accept icon
-              // Custom properties for styling the accept button
-              // accentColor: '#00FF00', // Green color
-            },
-            {
-              title: 'Reject',
-              pressAction: {id: 'reject'},
-              // icon: rejectCall, // Add the name of your reject icon
-              // Custom properties for styling the reject button
-              // accentColor: '#FF0000', // Red color
-            },
-          ],
-        },
-        ios: {
-          foregroundPresentationOptions: {
-            badge: true,
-            sound: true,
-            banner: true,
-            list: true,
-          },
-        },
-      });
-
-      // Function to handle background notification events
-      const handleBackgroundNotification = async ({type, detail}) => {
-        console.log(
-          'Remote notification info on background: ',
-          remoteMessage.data.appointmentId,
-        );
-        switch (type) {
-          case EventType.DISMISSED:
-            console.log('User dismissed notification', detail.notification);
-            break;
-          case EventType.PRESS:
-            console.log('User pressed notification');
-            Linking.openURL(
-              `fever99://app/Meeting/${remoteMessage.data.appointmentId}`,
-            );
-      
-            // navigationRef.current?.navigate(`Meeting`, { data: remoteMessage.data.appointmentId });
-            // Add a delay of 5 seconds before navigating to the 'PAC' screen
-            // navigate('PAC');
-            setTimeout(() => {
-              // navigate('PAC');
-              Linking.openURL(`fever99://app/Meeting/${remoteMessage.data.appointmentId}`)
-              // Check if navigation is ready and navigate if so
-              if (navigationRef.isReady()) {
-                // navigationRef.navigate('PAC');
-                Linking.openURL(`fever99://app/Meeting/${remoteMessage.data.appointmentId}`)
-              } else {
-                console.error('Navigation is not ready');
-                // Handle the case where navigation is not ready
-                // You can choose to retry navigation later or show an error message
-              }
-            },3000); // 5000 milliseconds = 5 seconds
-
-            break;
-          default:
-            console.log('Unknown notification event type');
-        }
-      };
-
-      // Listen for background notification events
-      notifee.onBackgroundEvent(handleBackgroundNotification);
+    }
     } catch (error) {
       console.log(error, 'error');
     }
-  }
+  
 });
 
 // coment
