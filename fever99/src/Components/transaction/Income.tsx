@@ -38,8 +38,8 @@ const Income = () => {
       const {data: res} = await getIncomeTransction();
       console.log('Transactions data not found in the response', res.data);
       if (res) {
-        setIncomeTrans(res.data.transactions.reverse());
-        setBalance(res.data.balance);
+        setIncomeTrans(res?.data?.transactions?.reverse());
+        setBalance(res?.data?.balance);
       } else {
         console.error('Transactions data not found in the response');
       }

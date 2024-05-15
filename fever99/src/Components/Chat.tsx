@@ -603,7 +603,7 @@ export default function Chat(props: any) {
     }[]
   >([]);
 
-  console.log('array for user chatting in chat line no 606',msgArr)
+  // console.log('array for user chatting in chat line no 606',msgArr)
 
   const [socket, setSocket] = useState<any>();
 
@@ -628,7 +628,7 @@ export default function Chat(props: any) {
         setSocket(socket);
         socket.emit('join', userObj._id);
         socket.on(userObj._id, (data: any) => {
-          console.log(data, 'data');
+          // console.log(data, 'data');
           setMsgArr(prevData => [...prevData, { ...data, toId: data.toUserId }]);
         });
       }
@@ -702,11 +702,11 @@ export default function Chat(props: any) {
   };
 
   const getFromUser = (message: any) => {
-    console.log(message.fromId, userObj?._id, message.fromId == userObj?._id);
+    // console.log(message.fromId, userObj?._id, message.fromId == userObj?._id);
     if (message.fromId == userObj?._id) {
       return 'user';
     } else {
-      console.log('other');
+      // console.log('other');
       return 'other';
     }
   };
@@ -719,7 +719,7 @@ export default function Chat(props: any) {
       if (res.data) {
         setDoctorName(res?.data?.doctor?.name);
         setPatientName(res?.data?.patientName);
-        console.log(JSON.stringify(res?.data?.history, null, 2));
+        // console.log(JSON.stringify(res?.data?.history, null, 2));
         setMsgArr(res?.data?.history);
         setAppointmentData(res.data);
       }
@@ -755,7 +755,7 @@ export default function Chat(props: any) {
           formData.append('file', el);
           let { data: res } = await fileUpload(formData);
           if (res.message) {
-            console.log(res, 'response', el, 'ele');
+            // console.log(res, 'response', el, 'ele');
             toastSuccess(res.message);
 
             setMsgArr(prev => [
@@ -769,15 +769,15 @@ export default function Chat(props: any) {
                 _id: new Date().toISOString(),
               },
             ]);
-            console.log(
-              {
-                toUserId: toUserId,
-                message: res.data,
-                fromId: userObj._id,
-                type: el.type,
-              },
-              'asdasdasdsad',
-            );
+            // console.log(
+            //   {
+            //     toUserId: toUserId,
+            //     message: res.data,
+            //     fromId: userObj._id,
+            //     type: el.type,
+            //   },
+            //   'asdasdasdsad',
+            // );
             socket?.emit('message', {
               toUserId: toUserId,
               message: res.data,
@@ -828,6 +828,18 @@ export default function Chat(props: any) {
       // height: height - wp(50) - hp(20), 
       // backgroundColor:'white'
     }}>
+       <KeyboardAvoidingView
+        // keyboardVerticalOffset={hp(5)}
+        behavior={'position'}
+        // style={{
+          // backgroundColor: 'red',
+          // marginBottom:10,
+        // }}
+        // behavior={'padding'}
+        // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        // style={{ flex: 1 }}
+        >
+
       <View
         style={{
           width: width,
@@ -1078,13 +1090,7 @@ export default function Chat(props: any) {
         
       </View>
 
-      <KeyboardAvoidingView
-        // keyboardVerticalOffset={hp(10)}
-        behavior={'position'}
-        style={{
-          // backgroundColor: 'red'
-          // marginTop:100,
-        }}>
+     
         {/* <View
           style={{
             width: width,
@@ -1140,13 +1146,17 @@ export default function Chat(props: any) {
         </View> */}
 
 
-        <View style={{ position: 'absolute', bottom:10, width: '100%', backgroundColor: '#EFE6DD', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',}}>
-          <View style={{ width: '75%',}}>
+        <View style={{ position: 'absolute', bottom:15, marginBottom:15,
+        width: '100%',
+        //  backgroundColor: '#EFE6DD',
+          //  backgroundColor:'red',
+          flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',}}>
+          <View style={{ width: '70%',}}>
             <View style={{ backgroundColor: 'white', borderRadius: 15,marginLeft:5,}}>
               <TextInput
                 placeholder="Message..."
                 placeholderTextColor={'gray'}
-                style={{ color: 'black', padding: 10, borderRadius:20, borderWidth: 1 }}
+                style={{  padding: 10, borderRadius:20 }}
                 value={userMessage}
                 onChangeText={text => setUserMessage(text)}
               />

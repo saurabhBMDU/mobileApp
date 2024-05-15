@@ -1298,7 +1298,7 @@ const Appointment = (proper: any) => {
                         </TouchableOpacity>
                       )}
 
-                    {(userObj?.role === Roles.PATIENT ||
+                    {/* {(userObj?.role === Roles.PATIENT ||
                       userObj?.role === Roles.FRANCHISE) &&
                       (item.status === appointmentStatus.CONFIRMED ||
                         item.status === appointmentStatus.COMPLETED) &&
@@ -1330,7 +1330,7 @@ const Appointment = (proper: any) => {
                             Start Call
                           </Text>
                         </TouchableOpacity>
-                      )}
+                      )} */}
                     {userObj?.role === Roles.DOCTOR &&
                       item.mode === consultationMode.ONLINE &&
                       (item.status === appointmentStatus.CONFIRMED ||

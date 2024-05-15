@@ -35,13 +35,13 @@ export default function Transactions() {
       console.log('this is my respons', res);
 
       if (res) {
-        setWallet(res.data.transactions.reverse());
-        setBalance(res.data?.balance);
+        setWallet(res?.data?.transactions?.reverse());
+        setBalance(res?.data?.balance);
       }
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      toastError(err);
+      // toastError(err);
     }
   };
 

@@ -151,7 +151,7 @@ const Profile = () => {
         setUserObj({ ...res.data });
       }
     } catch (err) {
-      toastError(err);
+      // toastError(err);
     }
   };
 
@@ -179,7 +179,7 @@ const Profile = () => {
       setPaymentModal(false);
       navigation.navigate('PayementScreen', { amount: tempAmount, });
     } catch (error) {
-      toastError(error);
+      // toastError(error);
     }
   }
   //  get income amount 
@@ -216,7 +216,7 @@ const Profile = () => {
         }
         else {
           setWithdrawModal(false);
-          toastError("Please try again later")
+          // toastError("Please try again later")
         }
       } catch (error) {
         console.error('Error occurred while making withdrawal:', error);

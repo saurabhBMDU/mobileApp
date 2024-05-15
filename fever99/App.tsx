@@ -223,8 +223,87 @@ const handleIncomingCall = async (callUUID) => {
         setcalluuid(remoteMessage.data.appointmentId);
       }
       else{
-      console.log('remote message line no 214 call is coming',remoteMessage, "remoteMessage")
+        if(remoteMessage.data.title ===  "New Message!"){
+      console.log('remote message new chat line 227',remoteMessage, "remoteMessage")
 
+      // await notifee.setNotificationCategories([
+      //   {
+      //     id: 'post',
+      //     summaryFormat: 'You have %u+ unread messages from %@.',
+      //     actions: [
+      //       {
+      //         id: 'reply',
+      //         title: 'Reply',
+      //       },
+      //     ],
+      //   },
+      // ]);
+
+      const channelId = await  notifee.createChannel({
+        id: "Chat",
+        name: "Chatting",
+        importance: AndroidImportance.HIGH,
+      });
+
+      notifee.displayNotification({
+        title: 'New Message',
+        body: 'remoteMessage.data.description',
+        android: {
+          channelId,
+          style: {
+            type: AndroidStyle.MESSAGING,
+            person: {
+              name: 'John Doe',
+              icon: 'https://my-cdn.com/avatars/123.png',
+            },
+            messages: [
+              {
+                text: 'Hey, how are you?',
+                timestamp: Date.now() - 600000, // 10 minutes ago
+              },
+              {
+                text: 'Great thanks, food later?',
+                timestamp: Date.now(), // Now
+                person: {
+                  name: 'Sarah Lane',
+                  icon: 'https://my-cdn.com/avatars/567.png',
+                },
+              },
+            ],
+          },
+        },
+      });
+      
+      // notifee.displayNotification({
+      //   title: 'New Message',
+      //   body:remoteMessage.data.message,
+      //   ios: {
+      //     categoryId: 'post',
+      //     summaryArgument: 'John',
+      //     summaryArgumentCount: 10,
+      //   },
+      // });
+
+      // async function setCategories() {
+      //   await notifee.setNotificationCategories([
+      //     {
+      //       id: 'message',
+      //       actions: [
+      //         {
+      //           id: 'reply',
+      //           title: 'Reply',
+      //           input: {
+      //             placeholderText: 'Send a message...',
+      //             buttonText: 'Send Now',
+      //           },
+      //         },
+      //       ],
+      //     },
+      //   ]);
+      // }
+      // setCategories();
+    }
+      else{
       PushNotification.localNotification({
         /* Android Only Properties */
         channelId: 'fever99', // (required) channelId, if the channel doesn't exist, it will be created with options passed above (importance, vibration, sound). Once the channel is created, the channel will not be update. Make sure your channelId is different if you change these options. If you have created a custom channel, it will apply options of the channel.
@@ -273,6 +352,8 @@ const handleIncomingCall = async (callUUID) => {
         number: 10, // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
         // repeatType: "day", // (optional) Repeating interval. Check 'Repeating Notifications' section for more info.
       });
+    }
+
     }
     });
     return unsubscribe;
@@ -433,6 +514,10 @@ notifee.onForegroundEvent(async ({ type, detail }) => {
   //console.log('details is here for all the users for incoming call',detail)
   // if (type === 'notification_action_press') {
     console.log('notification action pressed',EventType.ACTION_PRESS);
+    //this if for chatting in notifee 
+    if (type === EventType.ACTION_PRESS && pressAction.id === 'reply') {
+      updateChatOnServer(notification.data.conversationId, input);
+    }
 
     if (type === EventType.ACTION_PRESS && detail.pressAction.id && 'accept' === detail.pressAction.id) {
       console.log('User pressed an action with the id: ', detail.pressAction.id);
