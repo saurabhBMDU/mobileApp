@@ -20,7 +20,7 @@ import {
   setUser,
   updateSlot,
 } from '../Services/user.service';
-import { toastError, toastSuccess } from '../utils/toast.utils';
+import { toastError, // } from '../utils/toast.utils';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { Roles } from '../utils/constant';
 import InterNetError from '../noInterNet/InterNetError';
@@ -126,7 +126,7 @@ export default function Settings() {
       if (res) {
         await setUser(res.data);
 
-        toastSuccess(res.message);
+        //(res.message);
 
         setUserObj(res.data);
         setTimeSlot(res?.data?.timeSlot.map((el: any) => el.value));

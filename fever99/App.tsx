@@ -20,7 +20,7 @@ export const AuthContext = createContext<any>(false)
 
 import { LogBox } from 'react-native';
 import UpdateModal from './updateModal';
-import { AppVersioinCheck, deleteJwt, getJwt, isUserLoggedIn } from './src/Services/user.service';
+import { AppVersioinCheck, deleteJwt, getJwt, getUser, isUserLoggedIn } from './src/Services/user.service';
 import { toastError } from './src/utils/toast.utils';
 import DeviceInfo from 'react-native-device-info';
 LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
@@ -28,6 +28,7 @@ LogBox.ignoreAllLogs(); //Ignore all log notifications
 
   import InCallManager from 'react-native-incall-manager';
 
+  import io from 'socket.io-client';
 
 import notifee, {
   EventType, 
@@ -42,6 +43,8 @@ import notifee, {
  //calling icons
 import acceptCall from './callingIcons/incoming.png';
 import rejectCall from './callingIcons/missed-call.png';
+import { addAppointmentHistory } from './src/Services/appointmentHistory.service';
+import { fileurl } from './src/Services/url.service';
 
 
 // import ringtone from './callingIcons/ringtone.mp3'
@@ -78,6 +81,35 @@ function App(): JSX.Element {
     CheckIsUserLoggedIn();
   },[])
 
+
+  //for replay back to user using notfications
+
+  const [socket, setSocket] = useState<any>('');
+  const [userObj, setUserObj] = useState<any>('');
+  const [appointmentId,setReplayToUserId] = useState<any>('');
+  const [toUserId,setToUserId] = useState<any>('');
+
+  // useEffect(() => {
+  //   let socket: any;
+  //   if (userObj && userObj._id) {
+  //     socket = io(fileurl);
+  //     if (socket) {
+  //       setSocket(socket);
+  //       socket.emit('join', userObj._id);
+  //       socket.on(userObj._id, (data: any) => {
+  //         // console.log(data, 'data');
+  //         // setMsgArr(prevData => [...prevData, { ...data, toId: data.toUserId }]);
+  //       });
+  //     }
+  //   } else {
+  //     socket?.disconnect();
+  //   }
+  //   return () => {
+  //     socket?.disconnect();
+  //   };
+  // }, [toUserId]);
+
+  //closed 
 
 
   const CheckIsUserLoggedIn = async () => {
@@ -212,32 +244,36 @@ const handleIncomingCall = async (callUUID) => {
     // Geocoder.init("AIzaSyCtkZzuFSZ94CSPnDArwvPMqxkk58Fzfno")
 
     const unsubscribe = messaging().onMessage(async (remoteMessage: any) => {
+
+      // const handleGetAndSetUser = async () => {
+        let userData = await getUser();
+        // let socket: any;
+        // socket = io(fileurl);
+        // console.log('this is hanle get data',userData._id);
+        // if (userData) {
+        //   socket?.emit('join', userData?._id);
+        //   setUserObj(userData);
+        // }
+      // };
+      // handleGetAndSetUser();
+
       if (remoteMessage?.data?.otherData == "show") {
         // let temp = await RNCallKeep.backToForeground();
         // console.log(temp, "temp")
         console.log('incoming call',remoteMessage);
-        RNCallKeep.displayIncomingCall(remoteMessage.data.appointmentId, "Doctor", "Fever99");
+        RNCallKeep.displayIncomingCall(remoteMessage?.data?.appointmentId, "Doctor", "Fever99");
         // showIncomingCallNotification(remoteMessage);
         DisplayNotification();
        
-        setcalluuid(remoteMessage.data.appointmentId);
-      }
-      else{
-        if(remoteMessage.data.title ===  "New Message!"){
-      console.log('remote message new chat line 227',remoteMessage, "remoteMessage")
+        setcalluuid(remoteMessage?.data?.appointmentId);
+      }     
+      else if(remoteMessage?.data?.title ===  "New Message!" && userData?._id == remoteMessage.data.toId){
+        console.log('id',userData?._id, remoteMessage.data.toId)
+        console.log('remote data is here',remoteMessage?.data)
+          setReplayToUserId(remoteMessage.data.appointmentId)
+          setToUserId(remoteMessage.data.fromId)
 
-      // await notifee.setNotificationCategories([
-      //   {
-      //     id: 'post',
-      //     summaryFormat: 'You have %u+ unread messages from %@.',
-      //     actions: [
-      //       {
-      //         id: 'reply',
-      //         title: 'Reply',
-      //       },
-      //     ],
-      //   },
-      // ]);
+      // console.log('remote message new chat line 227',remoteMessage, "remoteMessage")
 
       const channelId = await  notifee.createChannel({
         id: "Chat",
@@ -245,65 +281,25 @@ const handleIncomingCall = async (callUUID) => {
         importance: AndroidImportance.HIGH,
       });
 
-      notifee.displayNotification({
-        title: 'New Message',
-        body: 'remoteMessage.data.description',
+      await notifee.displayNotification({
+        title:`You have a new message from ${remoteMessage.data.fromName}`,
+        body: remoteMessage.data.description,
         android: {
-          channelId,
-          style: {
-            type: AndroidStyle.MESSAGING,
-            person: {
-              name: 'John Doe',
-              icon: 'https://my-cdn.com/avatars/123.png',
+          channelId ,
+          actions: [
+            {
+              title: 'Reply',
+              icon: 'https://my-cdn.com/icons/reply.png',
+              pressAction: {
+                id: 'reply',
+              },
+              input: true, // enable free text input
             },
-            messages: [
-              {
-                text: 'Hey, how are you?',
-                timestamp: Date.now() - 600000, // 10 minutes ago
-              },
-              {
-                text: 'Great thanks, food later?',
-                timestamp: Date.now(), // Now
-                person: {
-                  name: 'Sarah Lane',
-                  icon: 'https://my-cdn.com/avatars/567.png',
-                },
-              },
-            ],
-          },
+          ],
         },
       });
-      
-      // notifee.displayNotification({
-      //   title: 'New Message',
-      //   body:remoteMessage.data.message,
-      //   ios: {
-      //     categoryId: 'post',
-      //     summaryArgument: 'John',
-      //     summaryArgumentCount: 10,
-      //   },
-      // });
-
-      // async function setCategories() {
-      //   await notifee.setNotificationCategories([
-      //     {
-      //       id: 'message',
-      //       actions: [
-      //         {
-      //           id: 'reply',
-      //           title: 'Reply',
-      //           input: {
-      //             placeholderText: 'Send a message...',
-      //             buttonText: 'Send Now',
-      //           },
-      //         },
-      //       ],
-      //     },
-      //   ]);
-      // }
-      // setCategories();
     }
-      else{
+      else if(remoteMessage?.data?.title !== "New Message!"){
       PushNotification.localNotification({
         /* Android Only Properties */
         channelId: 'fever99', // (required) channelId, if the channel doesn't exist, it will be created with options passed above (importance, vibration, sound). Once the channel is created, the channel will not be update. Make sure your channelId is different if you change these options. If you have created a custom channel, it will apply options of the channel.
@@ -352,8 +348,6 @@ const handleIncomingCall = async (callUUID) => {
         number: 10, // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
         // repeatType: "day", // (optional) Repeating interval. Check 'Repeating Notifications' section for more info.
       });
-    }
-
     }
     });
     return unsubscribe;
@@ -510,13 +504,55 @@ const requestIndividualPermissions = async () => {
 
 //--------------------
 
+//sendig replay to user back
+
+
+
+const handleSendReplayFromNotification = async (userMessage: any) => {
+
+  console.log('getting user details',userMessage)
+  console.log('socket data',{
+    toUserId: toUserId,
+    message: userMessage,
+    userId: userObj._id,
+    appointmentId:appointmentId
+  })
+
+//  if (!userMessage) return;
+ let socket: any;
+ socket = io(fileurl);
+socket?.emit('message', {
+        toUserId: toUserId,
+        message: userMessage,
+        userId: userObj._id,
+        type: 'text',
+      });
+      socket.close();
+
+
+  await addAppointmentHistory(appointmentId, {
+              message: userMessage,
+              toId: toUserId,
+              type: 'text',
+            });
+            return
+}
+
+//---------
+
 notifee.onForegroundEvent(async ({ type, detail }) => {
   //console.log('details is here for all the users for incoming call',detail)
   // if (type === 'notification_action_press') {
-    console.log('notification action pressed',EventType.ACTION_PRESS);
+    // console.log('notification action pressed',EventType.ACTION_PRESS);
     //this if for chatting in notifee 
-    if (type === EventType.ACTION_PRESS && pressAction.id === 'reply') {
-      updateChatOnServer(notification.data.conversationId, input);
+    // if (type === EventType.ACTION_PRESS && pressAction.id === 'reply') {
+    //   updateChatOnServer(notification.data.conversationId, input);
+    // }
+
+    if (type === EventType.ACTION_PRESS && detail.pressAction.id === 'reply') {
+      console.log('replay pressed')
+      await handleSendReplayFromNotification(detail.input);
+      await notifee.cancelNotification(detail.notification.id);
     }
 
     if (type === EventType.ACTION_PRESS && detail.pressAction.id && 'accept' === detail.pressAction.id) {
@@ -535,11 +571,11 @@ notifee.onForegroundEvent(async ({ type, detail }) => {
         await notifee.cancelNotification('incoming-call-notification');
         InCallManager.stopRingtone(); // Stop ringing
         break;
-      case EventType.PRESS:
-        console.log('User pressed notification', detail.notification);
-        handleIncomingCall(calluuid);
-        // Linking.openURL(`fever99://app/Meeting/${calluuid}`);
-        break;      
+      // case EventType.PRESS:
+      //   console.log('User pressed notification', detail.notification);
+      //   handleIncomingCall(calluuid);
+      //   // Linking.openURL(`fever99://app/Meeting/${calluuid}`);
+      //   break;      
     }
 });
 
@@ -610,15 +646,15 @@ async function DisplayNotification(): Promise<void> {
 }
 
 
-useEffect(() => {
-  const unsubscribe = messaging().onMessage(async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
-    //console.log('remoteMessage', JSON.stringify(remoteMessage));
-    //console.log('getting message from firebase');
-    // DisplayNotification();
-    // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-  });
-  return unsubscribe;
-}, []);
+// useEffect(() => {
+//   const unsubscribe = messaging().onMessage(async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
+//     //console.log('remoteMessage', JSON.stringify(remoteMessage));
+//     //console.log('getting message from firebase');
+//     // DisplayNotification();
+//     // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+//   });
+//   return unsubscribe;
+// }, []);
 
 
 
@@ -703,39 +739,39 @@ useEffect(()=>{
 
 
 
-  PushNotification.configure({
-    // (required) Called when a remote or local notification is opened or received
-    onNotification: async function (notification) {
-        console.log("NOTIFICATIONNOTIFICATIONNOTIFICATIONNOTIFICATIONNOTIFICATIONNOTIFICATIONNOTIFICATION:", notification);
-        console.log('notification pressed in app.js file in line no 658');
-        DisplayNotification();
-        // await Linking.openURL("fever99://app/Meeting" + notification.redirectTo)
-        console.log("a1", notification)
-        // await Linking.openURL("fever99://app/Meeting/" + notification.data.id);
-        console.log("a2")
+//   PushNotification.configure({
+//     // (required) Called when a remote or local notification is opened or received
+//     onNotification: async function (notification) {
+//         console.log("NOTIFICATIONNOTIFICATIONNOTIFICATIONNOTIFICATIONNOTIFICATIONNOTIFICATIONNOTIFICATION:", notification);
+//         console.log('notification pressed in app.js file in line no 658');
+//         DisplayNotification();
+//         // await Linking.openURL("fever99://app/Meeting" + notification.redirectTo)
+//         console.log("a1", notification)
+//         // await Linking.openURL("fever99://app/Meeting/" + notification.data.id);
+//         console.log("a2")
 
 
        
           
-        // navigationRef.current.navigate("Meeting", { data: notification.data.id })
-        // Process the notification here
-        // You can add other navigation logic here
-    },
-    // IOS ONLY: (optional) Called when Action is pressed (IOS)
-    onAction: function (notification) {
-        console.log("ACTION:", notification.action);
-        console.log("NOTIFICATION:", notification);
+//         // navigationRef.current.navigate("Meeting", { data: notification.data.id })
+//         // Process the notification here
+//         // You can add other navigation logic here
+//     },
+//     // IOS ONLY: (optional) Called when Action is pressed (IOS)
+//     onAction: function (notification) {
+//         console.log("ACTION:", notification.action);
+//         console.log("NOTIFICATION:", notification);
 
-    },
-    // Should the initial notification be popped automatically
-    // default: true
-    popInitialNotification: true,
+//     },
+//     // Should the initial notification be popped automatically
+//     // default: true
+//     popInitialNotification: true,
 
-    /**
-     * (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
-     */
-    requestPermissions: true,
-});
+//     /**
+//      * (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
+//      */
+//     requestPermissions: true,
+// });
 
 
   // RNCallKeep.setup(options).then(() => {
@@ -823,7 +859,7 @@ useEffect(()=>{
                 }
               }}>
               <Root />
-              <Toast />
+              {/* <Toast /> */}
             </NavigationContainer>
             {deviceVersion < backendVeriosn && 
             <UpdateModal isVisible={showUpdateModal} onClose={() => setShowUpdateModal(false)} />

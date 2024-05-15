@@ -3,6 +3,7 @@ import { Alert } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 export const toastError = (error, note = "Error") => {
+  console.log('toast error')
   console.error(JSON.stringify(error, null, 2), "error");
   if (typeof error?.response?.data?.message == 'string') {
     Toast.show({
@@ -61,10 +62,11 @@ export const alertError = (note = "", error) => {
 
 
 export const toastSuccess = (message) => {
+  console.log('toast runing')
   Toast.show({
     type: 'success',
     text1: 'Success',
     text2: message,
   });
-  // alert(message)
+  alert(message)
 };

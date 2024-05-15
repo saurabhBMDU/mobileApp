@@ -177,7 +177,7 @@ const Appointment = (proper: any) => {
       setLoading(false);
       setLastPageReached(true);
 
-      toastError(err);
+      // toastError(err);
     }
   };
 
@@ -204,7 +204,7 @@ const Appointment = (proper: any) => {
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      toastError(err);
+      // toastError(err);
     }
   };
 
@@ -252,7 +252,7 @@ const Appointment = (proper: any) => {
         toastSuccess(res.message);
       }
     } catch (error) {
-      toastError(error);
+      // toastError(error);
     }
   };
 
@@ -279,7 +279,7 @@ const Appointment = (proper: any) => {
         }
       }
     } catch (error) {
-      toastError(error);
+      // toastError(error);
     }
   };
 
@@ -311,7 +311,7 @@ const Appointment = (proper: any) => {
         toastError('Not Configured');
       }
     } catch (error) {
-      toastError(error);
+      // toastError(error);
     }
   };
 
@@ -341,7 +341,7 @@ const Appointment = (proper: any) => {
         setComplaintModal(false);
       }
     } catch (err) {
-      toastError(err);
+      // toastError(err);
     }
   };
   // ***********feedback function
@@ -405,7 +405,7 @@ const Appointment = (proper: any) => {
         HandleGetAppointmentsWithFilterPaginated();
       }
     } catch (error) {
-      toastError(error);
+      // toastError(error);
     }
   };
   const handleCancleApt = (itms: Item) => {
@@ -438,7 +438,7 @@ const Appointment = (proper: any) => {
         toastError('Unable to Reject');
       }
     } catch (error) {
-      toastError(error);
+      // toastError(error);
     }
   };
 

@@ -352,7 +352,7 @@ const BookVideo = (props: any) => {
         setMeetingConfirmation(false);
         if (!res.status) {
           setMeetingConfirmation(false);
-          toastError(res.data.message);
+          toastError(res?.data?.message);
           return;
         }
         if (
@@ -417,7 +417,7 @@ const BookVideo = (props: any) => {
         }
       }
     } catch (error) {
-      toastError(error);
+      // toastError(error);
     }
   };
 
@@ -438,7 +438,7 @@ const BookVideo = (props: any) => {
         ]);
       }
     } catch (err) {
-      toastError(err);
+      // toastError(err);
     }
   };
   useEffect(() => {
