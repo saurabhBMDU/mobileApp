@@ -9,9 +9,7 @@ import RNCallKeep from 'react-native-callkeep';
 import PushNotification from 'react-native-push-notification';
 import Toast from 'react-native-toast-message';
 // import { navigationRef } from './index';
-import {navigationRef,gotoInitialRoute} from './NavigationService';
-
-
+import {navigationRef,gotoInitialRoute,navigate} from './NavigationService';
 import Root from './src/Navigation/Root';
 export const LanguageContext = createContext<any>(null);
 export const LoginContext = createContext<any>(null);
@@ -343,49 +341,14 @@ const handleIncomingCall = async (callUUID) => {
   
   
   
-  // useEffect(()=>{
-  //   const permission = async () =>{
-  //   await notifee.requestPermission();
-  //   }
-  //   permission();
-  // })
+  useEffect(()=>{
+    const permission = async () =>{
+    await notifee.requestPermission();
+    }
+    permission();
+  })
   
   
-  // const handleSendReplayFromNotification = async (userMessage: any) => {
-  
-  //   let userData = await getUser();
-  
-  //   console.log('getting user details',userMessage)
-  //   console.log('socket data',{
-  //     toUserId: toUserId,
-  //     message: userMessage,
-  //     userId: userData._id,
-  //     appointmentId:appointmentId
-  //   })
-  
-  //  if (!appointmentId) return;
-  //  let socket: any;
-  //  socket = io(fileurl);
-  // socket?.emit('message', {
-  //         toUserId: toUserId,
-  //         message: userMessage,
-  //         userId: userObj._id,
-  //         type: 'text',
-  //       });
-  //       socket.close();
-  
-  
-  //   await addAppointmentHistory(appointmentId, {
-  //               message: userMessage,
-  //               toId: toUserId,
-  //               type: 'text',
-  //             });
-  //             return
-  // }
-
-//one
-
-//two
 
   useEffect(() => {
     const handleForegroundEvent = async ({ type, detail }) => {
@@ -411,9 +374,52 @@ const handleIncomingCall = async (callUUID) => {
           InCallManager.stopRingtone(); // Stop ringing
         }
       } else if (type === EventType.DISMISSED) {
+        InCallManager.stopRingtone(); 
         console.log('User dismissed notification', detail.notification);
         await notifee.cancelNotification('incoming-call-notification');
-        InCallManager.stopRingtone(); // Stop ringing
+        // InCallManager.stopRingtone(); // Stop ringing
+      }else if(type === EventType.PRESS){
+        if (detail["notification"]["data"]["fromId"]) {
+          console.log('replay with tap press for incoming chat to send chat on that screen')
+        console.log('User pressed notification');
+        navigate('Chat');
+        Linking.openURL(`fever99://app/Meeting/`)
+        setTimeout(() => {
+          navigate('Chat');
+          // InCallManager.stopRingtone(); 
+          Linking.openURL(`fever99://app/Meeting/`)
+          // Check if navigation is ready and navigate if so
+          if (navigationRef.isReady()) {
+            navigationRef.navigate('Chat');
+            // InCallManager.stopRingtone(); 
+            // Linking.openURL(`fever99://app/Meeting/${remoteMessage.data.appointmentId}`)
+          } else {
+            console.error('Navigation is not ready');
+            navigate('Chat');
+            // Handle the case where navigation is not ready
+            // You can choose to retry navigation later or show an error message
+          }
+        },4000); 
+      } else if(detail["notification"]["data"]["data"]){
+        //for incoming call 
+        InCallManager.stopRingtone(); 
+        Linking.openURL(`fever99://app/Meeting/${detail["notification"]["data"]["appointmentId"]}`)
+        setTimeout(() => {
+          // navigate('PAC');  appointmentId
+          // InCallManager.stopRingtone(); 
+          Linking.openURL(`fever99://app/Meeting/${detail["notification"]["data"]["appointmentId"]}`)
+          // Check if navigation is ready and navigate if so
+          if (navigationRef.isReady()) {
+            // navigationRef.navigate('PAC');
+            // InCallManager.stopRingtone(); 
+            Linking.openURL(`fever99://app/Meeting/${detail["notification"]["data"]["appointmentId"]}`)
+          } else {
+            console.error('Navigation is not ready');
+            // Handle the case where navigation is not ready
+            // You can choose to retry navigation later or show an error message
+          }
+        },4000); 
+      }
       }
     };
 
@@ -425,7 +431,7 @@ const handleIncomingCall = async (callUUID) => {
       if (remoteMessage?.data?.otherData === "show") {
         console.log('incoming call', remoteMessage);
         RNCallKeep.displayIncomingCall(remoteMessage?.data?.appointmentId, "Doctor", "Fever99");
-        DisplayNotification();
+        DisplayNotification(remoteMessage?.data?.appointmentId);
         setcalluuid(remoteMessage?.data?.appointmentId);
       } else if (remoteMessage?.data?.title === "New Message!" && userData?._id === remoteMessage.data.toId) {
         console.log('id', userData?._id, remoteMessage.data.toId);
@@ -575,7 +581,7 @@ const requestIndividualPermissions = async () => {
 
 
 
-async function DisplayNotification(): Promise<void> {
+async function DisplayNotification(appointmentId): Promise<void> {
   // Request permission if not already granted
   // await notifee.requestPermission();
 
@@ -585,13 +591,20 @@ async function DisplayNotification(): Promise<void> {
         name: "System Sound",
         importance: AndroidImportance.HIGH,
       });
+     
+
+
 
   // Display a notification with two action buttons
   await notifee.displayNotification({
     title: 'You have an incoming call',
-    body: 'Someone is calling',
+    // body: 'Someone is calling',
+    body: 'Ongoing notification',
+    data: {data:'calling',appointmentId:appointmentId},
     // body: 'Full-screen notification',
     android: {
+      ongoing: true,
+      // asForegroundService: true,
     category: AndroidCategory.CALL,
     // Recommended to set importance to high
     importance: AndroidImportance.HIGH,
@@ -632,6 +645,7 @@ async function DisplayNotification(): Promise<void> {
       },
     } 
   });
+
 }
 
 

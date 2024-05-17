@@ -23,6 +23,7 @@ import notifee, {
   AndroidCategory,
 } from '@notifee/react-native';
 import InCallManager from 'react-native-incall-manager';
+import { getUser } from './src/Services/user.service';
 
 
 AppRegistry.registerComponent(appName, () => HeadlessCheck);
@@ -42,7 +43,7 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
   
     try {
       let userData = await getUser();
-      
+
       if (remoteMessage?.data?.otherData == 'show') {
       await RNCallKeep.displayIncomingCall(
         remoteMessage.data.appointmentId,
@@ -61,19 +62,22 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
         // Linking.openURL(`fever99://app/Meeting/${remoteMessage.data.appointmentId}`)
       });
       
-        InCallManager.startRingtone('_Default_');
+       
             const channelId = await  notifee.createChannel({
               id: "custom-sound",
               name: "System Sound",
               importance: AndroidImportance.HIGH,
             });
-      
+            InCallManager.startRingtone('_Default_');
         // Display a notification with two action buttons
         await notifee.displayNotification({
           title: 'You have an incoming call',
-          body: 'Someone is calling',
+          // body: 'Someone is calling',
+          body: 'Ongoing notification',
+          data: {data:'calling',appointmentId:remoteMessage.data.appointmentId},
           // body: 'Full-screen notification',
           android: {
+            ongoing: true,
           category: AndroidCategory.CALL,
           // Recommended to set importance to high
           importance: AndroidImportance.HIGH,
@@ -248,10 +252,58 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
       // switch (type) {
         if(type === EventType.DISMISSED){
         // case EventType.DISMISSED:
-          InCallManager.stopRingtone(); // Stop ringing
+        InCallManager.stopRingtone(); 
+          // InCallManager.stopRingtone(); // Stop ringing
           await notifee.cancelNotification('incoming-call-notification');
           console.log('User dismissed notification', detail.notification);
           // break;
+        }else if(type === EventType.PRESS){
+          let  data = detail
+          if (data["notification"]["data"]["fromId"]) {
+            console.log('replay with tap press')
+          console.log('User pressed notification');
+          navigate('Chat');
+          Linking.openURL(`fever99://app/Meeting/`)
+          setTimeout(() => {
+            navigate('Chat');
+            // InCallManager.stopRingtone(); 
+            Linking.openURL(`fever99://app/Meeting/`)
+            // Check if navigation is ready and navigate if so
+            if (navigationRef.isReady()) {
+              navigationRef.navigate('Chat');
+              // InCallManager.stopRingtone(); 
+              // Linking.openURL(`fever99://app/Meeting/${remoteMessage.data.appointmentId}`)
+            } else {
+              console.error('Navigation is not ready');
+              navigate('Chat');
+              // Handle the case where navigation is not ready
+              // You can choose to retry navigation later or show an error message
+            }
+          },4000); 
+          // Linking.openURL(
+          //   `fever99`,
+          // );
+          // navigate('Chat')
+        } else if(detail["notification"]["data"]["data"]){
+          //for incoming call 
+          InCallManager.stopRingtone(); 
+          Linking.openURL(`fever99://app/Meeting/${detail["notification"]["data"]["appointmentId"]}`)
+          setTimeout(() => {
+            // navigate('PAC');  appointmentId
+            // InCallManager.stopRingtone(); 
+            Linking.openURL(`fever99://app/Meeting/${detail["notification"]["data"]["appointmentId"]}`)
+            // Check if navigation is ready and navigate if so
+            if (navigationRef.isReady()) {
+              // navigationRef.navigate('PAC');
+              // InCallManager.stopRingtone(); 
+              Linking.openURL(`fever99://app/Meeting/${detail["notification"]["data"]["appointmentId"]}`)
+            } else {
+              console.error('Navigation is not ready');
+              // Handle the case where navigation is not ready
+              // You can choose to retry navigation later or show an error message
+            }
+          },4000); 
+        }
         }
         // case EventType.PRESS:
         // if(type === EventType.PRESS){

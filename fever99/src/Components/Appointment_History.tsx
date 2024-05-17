@@ -399,9 +399,36 @@ const Appointment_History = (props: any) => {
       toastError(error);
     }
   };
+
+
+
+  const requestStoragePermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'Storage Permission Required',
+          message: 'This app needs access to your storage to download files',
+        }
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  };
+
   const handleDownloadPrescription = async (id: string, index: number) => {
     setDownloding(true);
     setDownlodingIndex(index);
+
+    const hasPermission = await requestStoragePermission();
+    if (!hasPermission) {
+      toastError('Storage permission denied');
+      setDownloding(false);
+      return;
+    }
+
 
     try {
       if (Platform.OS === 'android') {

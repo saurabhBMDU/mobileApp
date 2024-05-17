@@ -16,6 +16,7 @@ import {
   TouchableWithoutFeedback,
   View,
   Alert,
+  PermissionsAndroid,
 } from 'react-native';
 import Clode_icons from 'react-native-vector-icons/AntDesign';
 import {Calendar} from 'react-native-calendars';
@@ -283,8 +284,46 @@ const Appointment = (proper: any) => {
     }
   };
 
+
+  const requestStoragePermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'Storage Permission Required',
+          message: 'This app needs access to your storage to download files',
+        }
+      );
+     
+
+      const readGranted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        {
+          title: 'Storage Permission Required',
+          message: 'This app needs access to your storage to read files',
+        }
+      );
+
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  };
+
+
   const handleDownloadPrescription = async (_id: string) => {
     try {
+
+
+      const hasPermission = await requestStoragePermission();
+      if (!hasPermission) {
+        toastError('Storage permission denied');
+        // setDownloding(false);
+        return;
+      }
+
       if (Platform.OS == 'android') {
         const android = RNFetchBlob.android;
         RNFetchBlob.config({
