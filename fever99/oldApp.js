@@ -172,6 +172,23 @@ const handleIncomingCall = async (callUUID) => {
   const [user, setUser] = useState('')
   const [userData, setUserData] = useState('')
 
+  // const notifyChannel = () => {
+  //   console.log('message background')
+  //   PushNotification.createChannel(
+  //     {
+  //       channelId: 'fever99', // (required)
+  //       channelName: 'General', // (required)
+  //       channelDescription: 'General Channel', // (optional) default: undefined.
+  //       playSound: true, // (optional) default: true
+  //       soundName: 'my_sound.mp3', // (optional) See `soundName` parameter of `localNotification` function
+  //       importance: 4, // (optional) default: 4. Int value of the Android notification importance
+  //       vibrate: true, // (optional) default: true. Creates the default vibration patten if true.
+  //     },
+  //     created => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
+  //   );
+  // };
+
+
   RNCallKeep.addEventListener('didReceiveStartCallAction', ({ handle, callUUID, name }) => {
     console.log(handle, callUUID, name, "handle, callUUID, name")
     // console.log('incoming call in rnclall keep 164 line ',callUUID)
@@ -389,15 +406,18 @@ const handleIncomingCall = async (callUUID) => {
 
   useEffect(() => {
     const handleForegroundEvent = async ({ type, detail }) => {
+      console.log('detials ',detail.notification.data)
+    let  data = detail
+
+      // # Extract values
+    let  appointment_id = data["notification"]["data"]["appointmentId"]
+     let    from_id = data["notification"]["data"]["fromId"]
+      
+      console.log("Appointment ID:", appointment_id)
+      console.log("From ID:", from_id)
+      
       if (type === EventType.ACTION_PRESS) {
         if (detail.pressAction.id === 'reply') {
-          console.log('detials ',detail.notification.data)
-          let  data = detail
-            // # Extract values
-          let  appointment_id = data["notification"]["data"]["appointmentId"]
-           let    from_id = data["notification"]["data"]["fromId"]
-            console.log("Appointment ID:", appointment_id)
-            console.log("From ID:", from_id)
           // const { appointmentId, fromId } = detail.notification.android?.data || {};
           console.log('Reply pressed', detail);
           await handleSendReplayFromNotification(detail.input,appointment_id, from_id);
@@ -430,6 +450,8 @@ const handleIncomingCall = async (callUUID) => {
       } else if (remoteMessage?.data?.title === "New Message!" && userData?._id === remoteMessage.data.toId) {
         console.log('id', userData?._id, remoteMessage.data.toId);
         console.log('remote data is here', remoteMessage?.data);
+        setAppointmentId(remoteMessage.data.appointmentId);
+        setToUserId(remoteMessage.data.fromId);
 
         const channelId = await notifee.createChannel({
           id: "Chat",
@@ -530,6 +552,117 @@ const handleIncomingCall = async (callUUID) => {
   const [routeName, setRouteName] = useState<any>();
 
 
+
+
+// Call the function to request phone state permission
+// requestPhonePermission();
+
+  useEffect(() => {
+    // requestPhonePermission();
+  }, []); // Run only once when the component mounts
+
+
+ 
+
+
+  const setup = async () => {
+   const options = {
+  ios: {
+    appName: 'My app name',
+  },
+  android: {
+    alertTitle: 'Permissions required',
+    alertDescription: 'This application needs to access your phone accounts',
+    cancelButton: 'Cancel',
+    okButton: 'ok',
+    imageName: 'phone_account_icon',
+    additionalPermissions: [PermissionsAndroid.PERMISSIONS.example],
+    // Required to get audio in background when using Android 11
+    foregroundService: {
+      channelId: 'com.company.my',
+      channelName: 'Foreground service for my app',
+      notificationTitle: 'My app is running on background',
+      notificationIcon: 'Path to the resource icon of the notification',
+    }, 
+  }
+};
+
+// RNCallKeep.setup(options).then(accepted => {});
+    //  RNCallKeep.setAvailable(true); // Only used for Android, see doc above.
+
+     const optionns = {
+      alertTitle: 'Default not set',
+      alertDescription: 'Please set the default phone account'
+    };
+    
+    RNCallKeep.hasDefaultPhoneAccount(options);
+    RNCallKeep.checkPhoneAccountEnabled();
+    RNCallKeep.checkPhoneAccountEnabled();
+    RNCallKeep.backToForeground();
+    // RNCallKeep.registerPhoneAccount(optionns);
+  
+  }
+
+
+
+
+async function requestContactPermission() {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+      {
+        title: 'Contacts Permission',
+        message: 'This application needs access to your contacts to function properly.',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      },
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('Contacts permission granted');
+    } else {
+      console.log('Contacts permission denied');
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+}
+
+
+const askPermission = async () => {
+  try {
+    const permissions = await PermissionsAndroid.requestMultiple([
+      PermissionsAndroid.PERMISSIONS.READ_CALL_LOG,
+      PermissionsAndroid.PERMISSIONS.READ_PHONE_STATE,
+      // PermissionsAndroid.PERMISSIONS.MODIFY_AUDIO_SETTINGS,
+      PermissionsAndroid.PERMISSIONS.CALL_PHONE,
+      // PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+      // PermissionsAndroid.PERMISSIONS.BIND_TELECOM_CONNECTION_SERVICE,
+      // PermissionsAndroid.PERMISSIONS.FOREGROUND_SERVICE,
+    ]);
+
+    // Check if all required permissions are granted
+    const allGranted = Object.values(permissions).every(
+      result => result === PermissionsAndroid.RESULTS.GRANTED
+    );
+
+    if (allGranted) {
+      console.log('All permissions granted');
+      // Proceed with setup
+      // RNCallKeep.setup();
+      // RNCallKeep.setAvailable(true); // Only used for Android
+    } else {
+      console.log('Some permissions were not granted');
+      // Handle case where some permissions were not granted
+    }
+  } catch (err) {
+    console.log('Error requesting permissions:', err);
+    // Handle permission request error
+  }
+};
+
+
+
 const requestIndividualPermissions = async () => {
   try {
     const readCallLogGranted = await PermissionsAndroid.request(
@@ -567,6 +700,50 @@ const requestIndividualPermissions = async () => {
 //--------------------
 
 //sendig replay to user back
+
+
+
+
+//---------
+
+// notifee.onForegroundEvent(async ({ type, detail }) => {
+//   //console.log('details is here for all the users for incoming call',detail)
+//   // if (type === 'notification_action_press') {
+//     // console.log('notification action pressed',EventType.ACTION_PRESS);
+//     //this if for chatting in notifee 
+//     // if (type === EventType.ACTION_PRESS && pressAction.id === 'reply') {
+//     //   updateChatOnServer(notification.data.conversationId, input);
+//     // }
+
+//     if (type === EventType.ACTION_PRESS && detail.pressAction.id === 'reply') {
+//       console.log('replay pressed')
+//       await handleSendReplayFromNotification(detail.input);
+//       await notifee.cancelNotification(detail.notification.id);
+//     }
+
+//     if (type === EventType.ACTION_PRESS && detail.pressAction.id && 'accept' === detail.pressAction.id) {
+//       console.log('User pressed an action with the id: ', detail.pressAction.id);
+//       handleIncomingCall(calluuid);
+//     }
+//     if (type === EventType.ACTION_PRESS && detail.pressAction.id && 'reject' === detail.pressAction.id) {
+//       console.log('User pressed an action with the id: ', detail.pressAction.id);
+//       await notifee.cancelNotification('incoming-call-notification');
+//       InCallManager.stopRingtone(); // Stop ringing
+//     }
+
+//     switch (type) {
+//       case EventType.DISMISSED:
+//         console.log('User dismissed notification', detail.notification);
+//         await notifee.cancelNotification('incoming-call-notification');
+//         InCallManager.stopRingtone(); // Stop ringing
+//         break;
+//       // case EventType.PRESS:
+//       //   console.log('User pressed notification', detail.notification);
+//       //   handleIncomingCall(calluuid);
+//       //   // Linking.openURL(`fever99://app/Meeting/${calluuid}`);
+//       //   break;      
+//     }
+// });
 
 
 
@@ -635,8 +812,56 @@ async function DisplayNotification(): Promise<void> {
 }
 
 
+// useEffect(() => {
+//   const unsubscribe = messaging().onMessage(async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
+//     //console.log('remoteMessage', JSON.stringify(remoteMessage));
+//     //console.log('getting message from firebase');
+//     // DisplayNotification();
+//     // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+//   });
+//   return unsubscribe;
+// }, []);
+
+
+
+
+ //background event is here
+
+
+ //background event is here
+
+
+async function checkNotificationPermission() {
+  const settings = await notifee.getNotificationSettings();
+
+  if (settings.authorizationStatus == AuthorizationStatus.AUTHORIZED) {
+    console.log('Notification permissions has been authorized');
+  } else if (settings.authorizationStatus == AuthorizationStatus.DENIED) {
+    console.log('Notification permissions has been denied');
+  }
+}
+
+
+  // Call the function to show incoming call notification when needed
+   
+  useEffect(()=>{
+    // setup()
+    // showIncomingCallNotification();
+    // requestNotificationPermission();
+    // checkNotificationPermission();
+  },[])
+
+
+
+
+
+
+
 //------------------
+
 useEffect(()=>{
+  // requestContactPermission();
+  // askPermission();
   requestIndividualPermissions();
 },[])
 
@@ -679,6 +904,47 @@ useEffect(()=>{
   // };
 
 
+
+//   PushNotification.configure({
+//     // (required) Called when a remote or local notification is opened or received
+//     onNotification: async function (notification) {
+//         console.log("NOTIFICATIONNOTIFICATIONNOTIFICATIONNOTIFICATIONNOTIFICATIONNOTIFICATIONNOTIFICATION:", notification);
+//         console.log('notification pressed in app.js file in line no 658');
+//         DisplayNotification();
+//         // await Linking.openURL("fever99://app/Meeting" + notification.redirectTo)
+//         console.log("a1", notification)
+//         // await Linking.openURL("fever99://app/Meeting/" + notification.data.id);
+//         console.log("a2")
+
+
+       
+          
+//         // navigationRef.current.navigate("Meeting", { data: notification.data.id })
+//         // Process the notification here
+//         // You can add other navigation logic here
+//     },
+//     // IOS ONLY: (optional) Called when Action is pressed (IOS)
+//     onAction: function (notification) {
+//         console.log("ACTION:", notification.action);
+//         console.log("NOTIFICATION:", notification);
+
+//     },
+//     // Should the initial notification be popped automatically
+//     // default: true
+//     popInitialNotification: true,
+
+//     /**
+//      * (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
+//      */
+//     requestPermissions: true,
+// });
+
+
+  // RNCallKeep.setup(options).then(() => {
+  //   console.log('CallKeep setup done');
+  // }).catch(error => {
+  //   console.error('CallKeep Setup Error:', error);
+  // });
 
 //......
 
