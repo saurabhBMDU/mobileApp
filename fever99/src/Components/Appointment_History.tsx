@@ -39,6 +39,7 @@ import {
   isUserLoggedIn,
 } from '../Services/user.service'; 
 import {Calendar} from 'react-native-calendars';
+import { PERMISSIONS, request, check, RESULTS } from 'react-native-permissions';
 import {Dropdown} from 'react-native-element-dropdown';
 import moment from 'moment';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -52,6 +53,8 @@ const {height, width} = Dimensions.get('window');
 
 const Appointment_History = (props: any) => {
   const focused = useIsFocused();
+
+  const serverUrl = url;
 
   const mainFont = 'Montserrat-Regular';
   const mainFontBold = 'Montserrat-Bold';
@@ -402,67 +405,160 @@ const Appointment_History = (props: any) => {
 
 
 
-  const requestStoragePermission = async () => {
+  // const requestStoragePermission = async () => {
+  //   try {
+  //     const granted = await PermissionsAndroid.request(
+  //       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+  //       {
+  //         title: 'Storage Permission Required',
+  //         message: 'This app needs access to your storage to download files',
+  //       }
+  //     );
+  //     return granted === PermissionsAndroid.RESULTS.GRANTED;
+  //   } catch (err) {
+  //     console.warn(err);
+  //     return false;
+  //   }
+  // };
+
+
+
+const requestStoragePermission = async () => {
+  if (Platform.OS === 'android' && Platform.Version < 29) {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        {
-          title: 'Storage Permission Required',
-          message: 'This app needs access to your storage to download files',
-        }
-      );
-      return granted === PermissionsAndroid.RESULTS.GRANTED;
+      const writeGranted = await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
+      const readGranted = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+
+      return writeGranted === RESULTS.GRANTED && readGranted === RESULTS.GRANTED;
     } catch (err) {
       console.warn(err);
       return false;
     }
-  };
-
-  const handleDownloadPrescription = async (id: string, index: number) => {
-    setDownloding(true);
-    setDownlodingIndex(index);
-
-    const hasPermission = await requestStoragePermission();
-    if (!hasPermission) {
-      toastError('Storage permission denied');
-      setDownloding(false);
-      return;
-    }
+  } else {
+    // For Android 10 and above, no need to request WRITE_EXTERNAL_STORAGE permission
+    return true;
+  }
+};
 
 
+  // const handleDownloadPrescription = async (id: string, index: number) => {
+  //   setDownloding(true);
+  //   setDownlodingIndex(index);
+
+  //   const hasPermission = await requestStoragePermission();
+  //   if (!hasPermission) {
+  //     toastError('Storage permission denied');
+  //     setDownloding(false);
+  //     return;
+  //   }
+
+
+  //   try {
+  //     if (Platform.OS === 'android') {
+  //       const android = RNFetchBlob.android;
+  //       const response = await RNFetchBlob.config({
+  //         fileCache: true,
+  //         addAndroidDownloads: {
+  //           useDownloadManager: true,
+  //           notification: true,
+  //           path: RNFetchBlob.fs.dirs.DownloadDir + '/Prescription.pdf',
+  //           mime: 'application/pdf',
+  //           description: 'File downloaded by download manager.',
+  //         },
+  //       }).fetch('GET', `${url}/prescription-by-id/${id}`, {
+  //         responseType: 'blob',
+  //       });
+  //       console.log(response);
+  //       if (response.respInfo.status === 200) {
+  //         android.actionViewIntent(response.path(), 'application/pdf');
+  //         toastSuccess('Prescription Downloaded');
+  //         setDownloding(false);
+  //       } else {
+  //         throw new Error('Failed to download prescription');
+  //       }
+  //     } else {
+  //       toastError('Not Configured');
+  //       setDownloding(false);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error downloading prescription:', error);
+  //     // toastError('Error downloading prescription');0.
+  //     setDownloding(false);
+  //   }
+  // };
+
+
+
+
+  const handleDownloadPrescription = async (_id: string) => {
     try {
+      const hasPermission = await requestStoragePermission();
+      if (!hasPermission) {
+        toastError('Storage permission denied');
+        return;
+      }
+  
+      const url = `${serverUrl}/prescription-by-id/${_id}`;
+      const { config, fs } = RNFetchBlob;
+      const downloadDir = fs.dirs.DownloadDir;
+  
       if (Platform.OS === 'android') {
-        const android = RNFetchBlob.android;
-        const response = await RNFetchBlob.config({
-          fileCache: true,
-          addAndroidDownloads: {
-            useDownloadManager: true,
-            notification: true,
-            path: RNFetchBlob.fs.dirs.DownloadDir + '/Prescription.pdf',
-            mime: 'application/pdf',
-            description: 'File downloaded by download manager.',
-          },
-        }).fetch('GET', `${url}/prescription-by-id/${id}`, {
-          responseType: 'blob',
-        });
-        console.log(response);
-        if (response.respInfo.status === 200) {
-          android.actionViewIntent(response.path(), 'application/pdf');
-          toastSuccess('Prescription Downloaded');
-          setDownloding(false);
+        if (Platform.Version >= 29) {
+          // Use MediaStore for Android 10 and above
+          RNFetchBlob.config({
+            fileCache: true,
+            addAndroidDownloads: {
+              useDownloadManager: true,
+              notification: true,
+              mime: 'application/pdf',
+              description: 'File downloaded by download manager.',
+              mediaScannable: true,
+              path: `${downloadDir}/prescription-by-id${_id}.pdf`,
+            },
+          })
+            .fetch('GET', url)
+            .then(res => {
+              toastSuccess('Prescription Downloaded');
+            })
+            .catch(err => {
+              console.log(err);
+              toastError('Download failed');
+            });
         } else {
-          throw new Error('Failed to download prescription');
+          // For Android 9 and below
+          RNFetchBlob.config({
+            fileCache: true,
+            addAndroidDownloads: {
+              useDownloadManager: true,
+              notification: true,
+              path: `${downloadDir}/prescription-by-id${_id}.pdf`,
+              mime: 'application/pdf',
+              description: 'File downloaded by download manager.',
+            },
+          })
+            .fetch('GET', url)
+            .then(res => {
+              RNFetchBlob.android.actionViewIntent(res.path(), 'application/pdf');
+              toastSuccess('Prescription Downloaded');
+            })
+            .catch(err => {
+              console.log(err);
+              toastError('Download failed');
+            });
         }
       } else {
         toastError('Not Configured');
-        setDownloding(false);
       }
     } catch (error) {
-      console.error('Error downloading prescription:', error);
-      // toastError('Error downloading prescription');0.
-      setDownloding(false);
+      console.error(error);
+      toastError('An error occurred');
     }
   };
+  
+
+
+
+
 
   return (
     <View

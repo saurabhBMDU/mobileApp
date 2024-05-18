@@ -24,7 +24,7 @@ const PreView = ({ objectData, clodeBtn, images }) => {
     const handleSubmit = async () => {
         setLoding(true);
         try {
-            console.log(objectData, `${url}/{url}/prescriptions/forApp`)
+            console.log( `${url}/prescriptions/forApp`)
             const respons = await axios.post(`${url}/prescriptions/forApp`, objectData);
             console.log('prescription for app response is here',respons)
             if (respons.status === 200) {
@@ -39,6 +39,9 @@ const PreView = ({ objectData, clodeBtn, images }) => {
             }
         } catch (err) {
             console.log(err);
+            alert(err.message)
+            // toastError(err.message)
+            setLoding(false);
         }
     }
     return (

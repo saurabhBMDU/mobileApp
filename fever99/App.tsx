@@ -15,6 +15,7 @@ export const LanguageContext = createContext<any>(null);
 export const LoginContext = createContext<any>(null);
 export const UserDataContext = createContext<any>(null);
 export const AuthContext = createContext<any>(false)
+import { PERMISSIONS, request, check, RESULTS } from 'react-native-permissions';
 
 import { LogBox } from 'react-native';
 import UpdateModal from './updateModal';
@@ -432,8 +433,8 @@ const handleIncomingCall = async (callUUID) => {
     const unsubscribeForeground = notifee.onForegroundEvent(handleForegroundEvent);
 
     const unsubscribeMessaging = messaging().onMessage(async (remoteMessage) => {
+      console.log('new notificaion received',remoteMessage)
       let userData = await getUser();
-
       if (remoteMessage?.data?.otherData === "show") {
         console.log('incoming call', remoteMessage);
         RNCallKeep.displayIncomingCall(remoteMessage?.data?.appointmentId, "Doctor", "Fever99");
@@ -467,7 +468,66 @@ const handleIncomingCall = async (callUUID) => {
             ],
           },
         });
-      } else if (remoteMessage?.data?.title !== "New Message!") {
+    } else if (remoteMessage?.data?.title === "Prescription ready") {
+      console.log('preasection is ready but notifcaion not opening in app side')
+
+      const channelId = await notifee.createChannel({
+        id: "Prescription",
+        name: "Ready",
+        importance: AndroidImportance.HIGH,
+      });
+
+      await notifee.displayNotification({
+        title: `${remoteMessage.data.title}`,
+        body: `${remoteMessage.data.description}`,
+        // data: {appointmentId:remoteMessage.data.appointmentId,fromId:remoteMessage.data.fromId},
+        android: {
+          channelId,
+          // actions: [
+          //   {
+          //     title: 'Reply',
+          //     icon: 'https://my-cdn.com/icons/reply.png',
+          //     pressAction: {
+          //       id: 'reply',
+          //     },
+          //     input: true, // enable free text input
+          //   },
+          // ],
+        },
+      });
+
+    //  await  PushNotification.localNotification({
+    //     channelId: 'fever99',
+    //     ticker: 'My Notification Ticker',
+    //     showWhen: true,
+    //     autoCancel: true,
+    //     largeIcon: 'ic_launcher',
+    //     smallIcon: 'ic_notification',
+    //     vibrate: true,
+    //     vibration: 2000,
+    //     tag: 'some_tag',
+    //     group: 'group',
+    //     groupSummary: false,
+    //     ongoing: false,
+    //     priority: 'high',
+    //     visibility: 'private',
+    //     ignoreInForeground: false,
+    //     shortcutId: 'shortcut-id',
+    //     onlyAlertOnce: false,
+    //     when: null,
+    //     usesChronometer: false,
+    //     timeoutAfter: null,
+    //     messageId: 'google:message_id',
+    //     invokeApp: false,
+    //     title: `${remoteMessage?.data?.title}`,
+    //     message: `${remoteMessage?.data?.description}`,
+    //     userInfo: `${remoteMessage.data.redirectTo}`,
+    //     playSound: true,
+    //     soundName: 'my_sound.mp3',
+    //     number: 10,
+    //   });
+    }
+      else if (remoteMessage?.data?.title !== "New Message!") {
         PushNotification.localNotification({
           channelId: 'fever99',
           ticker: 'My Notification Ticker',
@@ -667,36 +727,78 @@ useEffect(()=>{
 
 
 //.......
+const acceptFromLessAndroid9 = async () => {
+  try {
+    if (Platform.OS === 'android' && Platform.Version < 29) {
+      // const permissions = [
+      //   PERMISSIONS.ANDROID.READ_PHONE_STATE,
+      //   PERMISSIONS.ANDROID.CALL_PHONE,
+      //   PERMISSIONS.ANDROID.RECORD_AUDIO,
+      //   PERMISSIONS.ANDROID.MODIFY_AUDIO_SETTINGS,
+      //   PERMISSIONS.ANDROID.BIND_TELECOM_CONNECTION_SERVICE,
+      //   PERMISSIONS.ANDROID.FOREGROUND_SERVICE,
+      // ];
 
-  // const options = {
-  //   ios: {
-  //     appName: 'fever99',
-  //   },
+      // const permissionRequests = permissions.map(permission =>
+      //   request(permission)
+      // );
 
-    
-  //   android: {
-  //     alertTitle: 'Permission required',
-  //     alertDescription: 'This application needs to access your phone accounts',
-  //     cancelButton: 'Cancel',
-  //     okButton: 'OK',
-  //     imageName: "ic_launcher",
-  //     additionalPermissions: [
-  //       'android.permission.READ_PHONE_STATE',
-  //       'android.permission.CALL_PHONE',
-  //       'android.permission.RECORD_AUDIO',
-  //       'android.permission.MODIFY_AUDIO_SETTINGS',
-  //       'android.permission.BIND_TELECOM_CONNECTION_SERVICE',
-  //       'android.permission.FOREGROUND_SERVICE',
-  //     ],
-  //     callKitEnabled: true,
-  //     foregroundService: {
-  //       channelId: "com.fever99",
-  //       channelName: "fever99",
-  //       notificationTitle: "Call from background",
-  //       notificationIcon: "ic_launcher"
-  //     }
-  //   }
-  // };
+      // const results = await Promise.all(permissionRequests);
+
+      // const allPermissionsGranted = results.every(
+      //   result => result === RESULTS.GRANTED
+      // );
+
+      // if (!allPermissionsGranted) {
+      //   console.log('One or more permissions were not granted');
+      //   return;
+      // }
+
+      const options = {
+        ios: {
+          appName: 'fever99',
+        },
+        android: {
+          alertTitle: 'Permission required',
+          alertDescription: 'This application needs to access your phone accounts',
+          cancelButton: 'Cancel',
+          okButton: 'OK',
+          imageName: 'ic_launcher',
+          additionalPermissions: [
+            'android.permission.READ_PHONE_STATE',
+            'android.permission.CALL_PHONE',
+            'android.permission.RECORD_AUDIO',
+            'android.permission.MODIFY_AUDIO_SETTINGS',
+            'android.permission.BIND_TELECOM_CONNECTION_SERVICE',
+            'android.permission.FOREGROUND_SERVICE',
+          ],
+          callKitEnabled: true,
+          foregroundService: {
+            channelId: 'com.fever99',
+            channelName: 'fever99',
+            notificationTitle: 'Call from background',
+            notificationIcon: 'ic_launcher',
+          },
+        },
+      };
+
+      RNCallKeep.setup(options)
+        .then(() => {
+          console.log('CallKeep setup done');
+        })
+        .catch(error => {
+          console.error('CallKeep Setup Error:', error);
+        });
+    }
+  } catch (err) {
+    console.log('Error:', err);
+  }
+};
+
+
+useEffect(() =>{
+  // acceptFromLessAndroid9();
+},[])
 
 
 

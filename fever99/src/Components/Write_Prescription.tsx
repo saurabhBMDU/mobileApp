@@ -182,6 +182,7 @@ const Write_Prescription = (props: any) => {
       handleGetAndSetUser();
       handleGetMedicines();
       setAppointMentObj(props?.route?.params?.data);
+      console.log('appoiitment object data i prescription',appointMentObj)
       if (props?.route?.params?.editModeOn) {
         setIsEditModeOn(true);
         handleSetDataToEdit(props?.route?.params?.prescriptionObj);
@@ -1405,7 +1406,7 @@ const Write_Prescription = (props: any) => {
               fontFamily: mainFont,
               fontWeight: 'bold',
             }}>
-            Raise an issue
+            Add New Medicine
           </Text>
 
           <TextInput
@@ -1451,7 +1452,7 @@ const Write_Prescription = (props: any) => {
             }}>
             <Text
               style={{color: 'white', fontFamily: mainFont, fontSize: hp(1.8)}}>
-              Raise an issue / complaint
+              Add Medicine
             </Text>
           </TouchableOpacity>
         </View>
