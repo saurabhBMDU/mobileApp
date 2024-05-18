@@ -382,20 +382,26 @@ const handleIncomingCall = async (callUUID) => {
         if (detail["notification"]["data"]["fromId"]) {
           console.log('replay with tap press for incoming chat to send chat on that screen')
         console.log('User pressed notification');
-        navigate('Chat');
+        let  appointment_id = detail["notification"]["data"]["appointmentId"]
+        console.log('appointment id ',detail["notification"]["data"]["appointmentId"])
+        navigate('Chat',{data :detail["notification"]["data"]["appointmentId"]});
+        // navigation.navigate('Chat', {data: item})
         Linking.openURL(`fever99://app/Meeting/`)
         setTimeout(() => {
-          navigate('Chat');
+          // navigate('Chat');
+          navigate('Chat',{data :detail["notification"]["data"]["appointmentId"]});
           // InCallManager.stopRingtone(); 
           Linking.openURL(`fever99://app/Meeting/`)
           // Check if navigation is ready and navigate if so
           if (navigationRef.isReady()) {
-            navigationRef.navigate('Chat');
+            // navigationRef.navigate('Chat');
+            navigate('Chat',{data :detail["notification"]["data"]["appointmentId"]});
             // InCallManager.stopRingtone(); 
             // Linking.openURL(`fever99://app/Meeting/${remoteMessage.data.appointmentId}`)
           } else {
             console.error('Navigation is not ready');
-            navigate('Chat');
+            // navigate('Chat');
+            navigate('Chat',{data :detail["notification"]["data"]["appointmentId"]});
             // Handle the case where navigation is not ready
             // You can choose to retry navigation later or show an error message
           }

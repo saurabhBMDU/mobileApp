@@ -18,7 +18,10 @@ const Meeting = (props: any) => {
     // token: token
   };
   const rtcCallbacks = {
+
     EndCall: () => {
+      console.log('this call back is working fine to end call ')
+      // alert('wow')
       setVideoCall(false);
       navigation.goBack();
     },

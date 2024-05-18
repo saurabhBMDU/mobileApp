@@ -166,7 +166,7 @@
 //   const handleGetAppointmentById = async () => {
 //     try {
 //       let {data: res} = await getAppointmentById(
-//         props?.route?.params?.data._id,
+//         props?.route?.params?.data,
 //       );
 //       if (res.data) {
 //         setDoctorName(res?.data?.doctor?.name);
@@ -526,6 +526,31 @@
 //   );
 // }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import {
   View,
   Text,
@@ -539,6 +564,8 @@ import {
   Pressable,
   Linking,
   Keyboard,
+  ScrollView,
+  ActivityIndicator
 } from 'react-native';
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import {
@@ -564,15 +591,30 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Attachment_Send_icons from 'react-native-vector-icons/MaterialCommunityIcons'; // send and attachment
 import { SendNotification, SendNotificationForMeetingCreation } from '../Services/notificationSevice';
 
+
+import LoadingModal from './ChatLoadingModal';
+
 const { height, width } = Dimensions.get('window');
-export default function Chat(props: any) {
+export default function Chat (props: any) {
+  console.log('props in chat app for chatting individual persons',props)
+  console.log('clik on chat inside app', props?.route?.params?.data,)
+  console.log('clik on chat outside of app', props?.route?.params?.data)
   //  auto scroller code
   const flatListRef = useRef<FlatList>(null);
-  const scrollToBottom = () => {
-    if (flatListRef.current) {
-      flatListRef.current.scrollToEnd({ animated: true });
-    }
+  // const scrollToBottom = () => {
+  //   if (flatListRef.current) {
+  //     // flatListRef.current.scrollToEnd({ animated: false });
+  //     flatListRef.current?.scrollToOffset({
+  //           offset: 0,
+  //           // animated,
+  //         });
+  //   }
+  // };
+
+  const scrollToBottom = (animated = true) => {
+    flatListRef.current?.scrollToEnd({ animated: false });
   };
+
 
   const mainFont = 'Montserrat-Regular';
   const mainFontBold = 'Montserrat-Bold';
@@ -714,7 +756,7 @@ export default function Chat(props: any) {
   const handleGetAppointmentById = async () => {
     try {
       let { data: res } = await getAppointmentById(
-        props?.route?.params?.data._id,
+        props?.route?.params?.data,
       );
       if (res.data) {
         setDoctorName(res?.data?.doctor?.name);
@@ -820,6 +862,28 @@ export default function Chat(props: any) {
     setKeyboardOffset(0);
   };
 
+
+
+  // const scrollToBottom = (animated = true) => {
+  //   flatListRef.current?.scrollToOffset({
+  //     offset: 0,
+  //     animated,
+  //   });
+  // };
+
+  // Scroll to bottom on initial render
+  useEffect(() => {
+    if (msgArr.length > 0) {
+      scrollToBottom(false);
+    }
+  }, []);
+
+  // Scroll to bottom when new messages are added
+  useEffect(() => {
+    if (msgArr.length > 0) {
+      scrollToBottom(true);
+    }
+  }, [msgArr]);
  
 
   return (
@@ -906,185 +970,199 @@ export default function Chat(props: any) {
             marginBottom:149,
           }}
         >
-          <FlatList
-            ref={flatListRef}
-            data={msgArr}
-            renderItem={({ item, index }) => {
-              return (
-                <View
+        
+        {/* flat to scolview */}
+        <ScrollView
+    ref={flatListRef}
+  contentContainerStyle={{ flexGrow: 1 }}
+  onContentSizeChange={() => scrollToBottom(true)}
+  // onEndReached={fetchMoreMessages}
+  onEndReachedThreshold={0.1}
+>
+  <View>
+{msgArr.length === 0 ? (
+  <>
+  <LoadingModal/>
+</>
+) : (
+  msgArr.map((item, index) => (
+    <View
+      key={index.toString()}
+      style={{
+        backgroundColor: '#EFE6DD',
+      }}
+    >
+      <View
+        style={{
+          width: width,
+          backgroundColor: '#EFE6DD',
+          alignSelf: 'center',
+          paddingTop: 10,
+          paddingRight: 10,
+          paddingLeft: 10,
+        }}
+      >
+        {getFromUser(item) === 'user' && (
+          <View
+            style={{
+              width: wp(98),
+              flexDirection: 'column',
+              marginBottom: hp(1),
+              justifyContent: 'space-between',
+              paddingRight: wp(1),
+              paddingLeft: wp(0.5),
+              alignSelf: 'center',
+            }}
+          >
+            {!item.type || item.type == 'text' ? (
+              <View
+                style={{
+                  backgroundColor: maincolor,
+                  padding: wp(3.8),
+                  borderTopLeftRadius: 30,
+                  borderTopRightRadius: 30,
+                  borderBottomLeftRadius: 30,
+                  borderBottomRightRadius: 1,
+                  marginLeft: wp(1),
+                  alignSelf: 'flex-end',
+                  marginRight: wp(2),
+                }}
+              >
+                <Text
                   style={{
-                    backgroundColor: '#EFE6DD',
+                    color: 'black',
+                    fontSize: hp(2),
                   }}
                 >
-                  <View
-                    style={{
-                      width: width,
-                      // paddingTop: hp(1),
-                      // paddingBottom: hp(2),
-                      backgroundColor: '#EFE6DD',
-                      alignSelf: 'center',
-                      // paddingLeft: wp(1),   
-                      paddingTop:10,
-                      // padding:10 
-                      paddingRight:10,
-                      paddingLeft:10,
-                    }}>
-                    {getFromUser(item) === 'user' && (
-                      <View
-                        style={{
-                          width: wp(98),
-                          flexDirection: 'column',
-                          marginBottom: hp(1),
-                          justifyContent: 'space-between',
-                          paddingRight: wp(1),
-                          paddingLeft: wp(0.5),
-                          alignSelf: 'center',
-                        }}>
-                        {!item.type || item.type == 'text' ? (
-                          <View
-                            style={{
-                              backgroundColor: maincolor,
-                              padding: wp(3.8),
-                              borderTopLeftRadius: 30,
-                              borderTopRightRadius: 30,
-                              borderBottomLeftRadius: 30,
-                              borderBottomRightRadius: 1,
-                              marginLeft: wp(1),
-                              alignSelf: 'flex-end',
-                              marginRight: wp(2),
-                            }}>
-                            <Text
-                              style={{
-                                color: 'black',
-                                fontSize: hp(2),
-                                // fontFamily: mainFont,
-                                // fontWeight:'400'
-                              }}>
-                              {item.message}
-                            </Text>
-                          </View>
-                        ) : allowedFile.some(el =>
-                          el.toLowerCase().includes(item.type.toLowerCase()),
-                        ) ? (
-                          <Image
-                            source={{ uri: generateFilePath(item.message) }}
-                            style={{
-                              height: wp(40),
-                              width: wp(40),
-                              borderRadius: 10,
-                              alignSelf: 'flex-end',
-                            }}
-                          />
-                        ) : (
-                          <Pressable
-                            onPress={() =>
-                              Linking.openURL(generateFilePath(item.message))
-                            }
-                            style={{
-                              backgroundColor: maincolor,
-                              padding: 15,
-                              borderRadius: 5,
-                              marginLeft: wp(1),
-                              alignSelf: 'flex-end',
-                            }}>
-                            <Text style={{ color: 'white' }}>Click to open file</Text>
-                          </Pressable>
-                        )}
-                        {/* {/ date time /} */}
-                        <Text
-                          style={{
-                            color:'#453f3b',
-                            fontSize: hp(1.2),
-                            fontFamily: mainFont,
-                            alignSelf: 'flex-end',
-                            fontWeight:"bold",
-                            marginRight: wp(2),
-                          }}>
-                          {moment(item.timestamp).format('DD/MM/YY hh:mm a')}
-                        </Text>
-                      </View>
-                    )}
+                  {item.message}
+                </Text>
+              </View>
+            ) : allowedFile.some(el =>
+                el.toLowerCase().includes(item.type.toLowerCase()),
+              ) ? (
+                <Image
+                  source={{ uri: generateFilePath(item.message) }}
+                  style={{
+                    height: wp(40),
+                    width: wp(40),
+                    borderRadius: 10,
+                    alignSelf: 'flex-end',
+                  }}
+                />
+              ) : (
+                <Pressable
+                  onPress={() =>
+                    Linking.openURL(generateFilePath(item.message))
+                  }
+                  style={{
+                    backgroundColor: maincolor,
+                    padding: 15,
+                    borderRadius: 5,
+                    marginLeft: wp(1),
+                    alignSelf: 'flex-end',
+                  }}
+                >
+                  <Text style={{ color: 'white' }}>Click to open file</Text>
+                </Pressable>
+              )}
+            <Text
+              style={{
+                color: '#453f3b',
+                fontSize: hp(1.2),
+                fontFamily: mainFont,
+                alignSelf: 'flex-end',
+                fontWeight: "bold",
+                marginRight: wp(2),
+              }}
+            >
+              {moment(item.timestamp).format('DD/MM/YY hh:mm a')}
+            </Text>
+          </View>
+        )}
 
-                    {!(getFromUser(item) === 'user') && (
-                      <View
-                        style={{
-                          width: wp(98),
-                          flexDirection: 'column',
-                          marginBottom: hp(1),
-                          justifyContent: 'space-between',
-                          paddingRight: wp(1),
-                          alignSelf: 'center',
-                        }}>
-                        {!item.type || item.type == 'text' ? (
-                          <View
-                            style={{
-                              backgroundColor: 'white',
-                              padding: wp(3.8),
-                              borderTopLeftRadius: 1,
-                              borderTopRightRadius: 30,
-                              borderBottomLeftRadius: 30,
-                              borderBottomRightRadius: 30,
-                              alignSelf: 'flex-start',
-                              marginLeft: wp(2),
-                            }}>
-                            <Text
-                              style={{
-                                color: 'black',
-                                fontSize: hp(2),
-                                // fontFamily: mainFont,
-                                // fontWeight:"650"
-                              }}>
-                              {item.message}
-                            </Text>
-                          </View>
-                        ) : allowedFile.some(el =>
-                          el.toLowerCase().includes(item.type.toLowerCase()),
-                        ) ? (
-                          <Image
-                            source={{ uri: generateFilePath(item.message) }}
-                            style={{
-                              height: wp(40),
-                              width: wp(40),
-                              borderRadius: 10,
-                              alignSelf: 'flex-start',
-                            }}
-                          />
-                        ) : (
-                          <Pressable
-                            onPress={() =>
-                              Linking.openURL(generateFilePath(item.message))
-                            }
-                            style={{
-                              backgroundColor: maincolor,
-                              padding: 15,
-                              borderRadius: 5,
-                              marginLeft: wp(1),
-                              alignSelf: 'flex-start',
-                            }}>
-                            <Text style={{ color: 'white' }}>Click to open file</Text>
-                          </Pressable>
-                        )}
-                        <Text
-                          style={{
-                            color: '#453f3b',
-                            fontSize: hp(1.5),
-                            fontFamily: mainFont,
-                            fontWeight:'bold',
-                            marginLeft: wp(2),
-                          }}>
-                          {moment(item.timestamp).format('DD/MM/YY hh:mm a')}
-                        </Text>
-                      </View>
-                    )}
-                  </View>
-                </View>
-              );
+        {!(getFromUser(item) === 'user') && (
+          <View
+            style={{
+              width: wp(98),
+              flexDirection: 'column',
+              marginBottom: hp(1),
+              justifyContent: 'space-between',
+              paddingRight: wp(1),
+              alignSelf: 'center',
             }}
-            ListFooterComponent={<View style={{ height: keyboardOffset }} />} // Add empty 
-            keyExtractor={(item, index) => index.toString()}
-            onContentSizeChange={scrollToBottom} // Automatically scrolls to bottom when content size changes
-            onLayout={scrollToBottom}
-          />
+          >
+            {!item.type || item.type == 'text' ? (
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  padding: wp(3.8),
+                  borderTopLeftRadius: 1,
+                  borderTopRightRadius: 30,
+                  borderBottomLeftRadius: 30,
+                  borderBottomRightRadius: 30,
+                  alignSelf: 'flex-start',
+                  marginLeft: wp(2),
+                }}
+              >
+                <Text
+                  style={{
+                    color: 'black',
+                    fontSize: hp(2),
+                  }}
+                >
+                  {item.message}
+                </Text>
+              </View>
+            ) : allowedFile.some(el =>
+                el.toLowerCase().includes(item.type.toLowerCase()),
+              ) ? (
+                <Image
+                  source={{ uri: generateFilePath(item.message) }}
+                  style={{
+                    height: wp(40),
+                    width: wp(40),
+                    borderRadius: 10,
+                    alignSelf: 'flex-start',
+                  }}
+                />
+              ) : (
+                <Pressable
+                  onPress={() =>
+                    Linking.openURL(generateFilePath(item.message))
+                  }
+                  style={{
+                    backgroundColor: maincolor,
+                    padding: 15,
+                    borderRadius: 5,
+                    marginLeft: wp(1),
+                    alignSelf: 'flex-start',
+                  }}
+                >
+                  <Text style={{ color: 'white' }}>Click to open file</Text>
+                </Pressable>
+              )}
+            <Text
+              style={{
+                color: '#453f3b',
+                fontSize: hp(1.5),
+                fontFamily: mainFont,
+                fontWeight: 'bold',
+                marginLeft: wp(2),
+              }}
+            >
+              {moment(item.timestamp).format('DD/MM/YY hh:mm a')}
+            </Text>
+          </View>
+        )}
+      </View>
+    </View>
+  ))
+)}
+</View>
+  <View style={{ height: keyboardOffset }} />
+</ScrollView>
+
+
         </View>
 
         
