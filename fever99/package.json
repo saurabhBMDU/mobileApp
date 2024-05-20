@@ -47,6 +47,7 @@
     "react-native-element-dropdown": "^2.10.0",
     "react-native-fast-image": "^8.6.3",
     "react-native-fs": "^2.20.0",
+    "react-native-image-crop-picker": "^0.41.1",
     "react-native-image-picker": "^7.1.2",
     "react-native-incall-manager": "^4.2.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",

@@ -21,11 +21,33 @@ const PreView = ({ objectData, clodeBtn, images }) => {
     const [loding, setLoding] = useState(false);
 
 
+    const getBase64Size = (base64String) => {
+        let padding, inBytes, base64StringLength;
+        
+        if (base64String.endsWith('==')) padding = 2;
+        else if (base64String.endsWith('=')) padding = 1;
+        else padding = 0;
+      
+        base64StringLength = base64String.length;
+        inBytes = (base64StringLength / 4) * 3 - padding;
+        return inBytes / (1024 * 1024); // size in MB
+      };
+
+
     const handleSubmit = async () => {
         setLoding(true);
         try {
             console.log( `${url}/prescriptions/forApp`)
-            const respons = await axios.post(`${url}/prescriptions/forApp`, objectData);
+            console.log(objectData)
+
+            const imageSize = getBase64Size(objectData.image); // Assuming image is a property in objectData
+            console.log(`Image size: ${imageSize} MB`);
+
+            const respons = await axios.post(`${url}/prescriptions/forApp`, objectData,{
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                  },
+            });
             console.log('prescription for app response is here',respons)
             if (respons.status === 200) {
                 clodeBtn();
