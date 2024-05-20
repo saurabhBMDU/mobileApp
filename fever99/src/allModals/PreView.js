@@ -10,6 +10,8 @@ import { useNavigation } from '@react-navigation/native';
 import url from '../Services/url.service';
 import { toastError, toastSuccess } from '../utils/toast.utils';
 
+import AlertBox from './AlertBox';
+
 const mainFont = 'Montserrat-Regular';
 const mainFontBold = 'Montserrat-Bold';
 const mainFontmedium = 'Montserrat-Medium';
@@ -22,30 +24,42 @@ const PreView = ({ objectData, clodeBtn, images }) => {
 
 
     const getBase64Size = (base64String) => {
+        if(base64String && base64String.length){
         let padding, inBytes, base64StringLength;
         
-        if (base64String.endsWith('==')) padding = 2;
-        else if (base64String.endsWith('=')) padding = 1;
+        if ( base64String && base64String.endsWith('==')) padding = 2;
+        else if (base64String && base64String.endsWith('=')) padding = 1;
         else padding = 0;
       
         base64StringLength = base64String.length;
         inBytes = (base64StringLength / 4) * 3 - padding;
         return inBytes / (1024 * 1024); // size in MB
+        }
       };
 
+
+      const [alertVisible, setAlertVisible] = useState(false);
+
+      const showAlert = () => {
+        setAlertVisible(true);
+        setTimeout(() => {
+          setAlertVisible(false);
+        }, 3300); // Extra 300ms to account for the sliding out animation
+      };
 
     const handleSubmit = async () => {
         setLoding(true);
         try {
             console.log( `${url}/prescriptions/forApp`)
-            console.log(objectData)
+            console.log('in view preview prescription',objectData)
 
             const imageSize = getBase64Size(objectData.image); // Assuming image is a property in objectData
             console.log(`Image size: ${imageSize} MB`);
 
             const respons = await axios.post(`${url}/prescriptions/forApp`, objectData,{
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    'Content-Type': 'Application/json',
+                    'Accept': 'Application/json'
                   },
             });
             console.log('prescription for app response is here',respons)
@@ -80,32 +94,32 @@ const PreView = ({ objectData, clodeBtn, images }) => {
                                 <View>
                                     <View style={styles.d_flex2}>
                                         <Text style={[styles.textStle, { width: "37%" }]}>Symptoms:</Text>
-                                        <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData.symptoms}</Text>
+                                        <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData && objectData.symptoms ? objectData.symptoms : ''}</Text>
                                     </View>
                                     <View style={styles.d_flex2}>
                                         <Text style={[styles.textStle, { width: "37%" }]}>Diagnosis : </Text>
-                                        <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData.diagnosis}</Text>
+                                        <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData && objectData.diagnosis ? objectData.diagnosis  : ''}</Text>
                                     </View>
                                     <View style={styles.d_flex2}>
                                         <Text style={[styles.textStle, { width: "37%" }]}>*Drug Allergy:</Text>
-                                        <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData.drugAllergy}</Text>
+                                        <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData && objectData.drugAllergy ? objectData.drugAllergy : ''}</Text>
                                     </View>
                                     <View style={styles.d_flex2}>
                                         <Text style={[styles.textStle, { width: "37%" }]}>*Past History:</Text>
-                                        <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData.pastHistory}</Text>
+                                        <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData && objectData.pastHistory ? objectData.pastHistory : ''}</Text>
                                     </View>
                                     <View style={styles.d_flex2}>
                                         <Text style={[styles.textStle, { width: "37%" }]}>Personal History:</Text>
-                                        <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData.personalHistory}</Text>
+                                        <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData && objectData.personalHistory ? objectData.personalHistory : ''}</Text>
                                     </View>
                                     <View style={styles.d_flex2}>
                                         <Text style={[styles.textStle, { width: "37%" }]}>Surgical History:</Text>
-                                        <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData.surgicalHistory}</Text>
+                                        <Text style={[styles.textStle, { fontFamily: mainFont }]}>{objectData && objectData.surgicalHistory ? objectData.surgicalHistory: ''}</Text>
                                     </View>
                                     <Text style={styles.medicineText}>Medicine</Text>
                                     <View>
                                         {
-                                            objectData.medicine[0].name !== '' && objectData.medicine.map((itms, index) => {
+                                            objectData && objectData.medicine && objectData.medicine.length >0   && objectData.medicine[0].name  && objectData.medicine.map((itms, index) => {
                                                 return <>
                                                     <Text style={{ fontSize: hp(1.8), fontFamily: mainFontBold, marginLeft: wp(1) }}>{index + 1}</Text>
                                                     <View style={styles.mainViewMap}>

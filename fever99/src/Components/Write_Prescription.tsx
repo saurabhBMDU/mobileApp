@@ -27,7 +27,7 @@ import RNFS from 'react-native-fs';
 import Headerr from '../ReuseableComp/Headerr';
 import {getUser} from '../Services/user.service';
 import {addMedicine, getMedicines} from '../Services/MedicinesList.service';
-import {toastError, toastSuccess} from '../utils/toast.utils';
+import {showAlert, toastSuccess} from '../utils/toast.utils';
 import Camera_icon from 'react-native-vector-icons/FontAwesome';
 import Uplode_icons from 'react-native-vector-icons/Entypo';
 import {
@@ -39,6 +39,8 @@ import {
 } from 'react-native-image-picker';
 
 import moment from 'moment';
+
+import AlertBox from '../allModals/AlertBox';
 
 import Modal from 'react-native-modal';
 import {
@@ -93,6 +95,18 @@ const Write_Prescription = (props: any) => {
 
   const [loding, setloding] = useState(false);
   const [medicinesArr, setMedicinesArr] = useState([]);
+
+
+
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setAlertVisible(true);
+    setTimeout(() => {
+      setAlertVisible(false);
+    }, 3300); // Extra 300ms to account for the sliding out animation
+  };
+
+
   const handleGetAndSetUser = async () => {
     let userData = await getUser();
     if (userData) {
@@ -130,23 +144,23 @@ const Write_Prescription = (props: any) => {
         );
       }
     } catch (error) {
-      toastError(error);
+      showAlert(error);
     }
   };
   const handleAddMedicineToDataBase = async () => {
     try {
       if (name == '') {
-        toastError('Name is mandatory !!!');
+        showAlert('Name is mandatory !!!');
         return;
       }
 
       if (combination == '') {
-        toastError('combination is mandatory !!!');
+        showAlert('combination is mandatory !!!');
         return;
       }
 
       if (company == '') {
-        toastError('Company is mandatory !!!');
+        showAlert('Company is mandatory !!!');
         return;
       }
 
@@ -162,7 +176,7 @@ const Write_Prescription = (props: any) => {
         setMedicineModal(false);
       }
     } catch (error) {
-      toastError(error);
+      showAlert(error);
     }
   };
   const handleSetDataToEdit = (data: any) => {
@@ -197,6 +211,13 @@ const Write_Prescription = (props: any) => {
     }, delay);
     return () => clearTimeout(timer);
   }, [filter, delay]);
+
+
+
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+
+
 
   const handleAddMedicine = () => {
     let tempArr = medicine;
@@ -235,14 +256,16 @@ const Write_Prescription = (props: any) => {
   const clodeModal = () => {
     setPreview(false);
   };
+
+
   const handleAddPrescription = async () => {
     if (soWritePrescption) {
       if (drugAllergy === '') {
-        toastError('Drug Allergy is Required');
+        showAlert('Drug Allergy is Required');
         return;
       }
       if (pastHistory === '') {
-        toastError('Past History Is Required');
+        showAlert('Past History Is Required');
         return;
       }
       try {
@@ -260,10 +283,19 @@ const Write_Prescription = (props: any) => {
           notes,
           personalHistory,
         };
+
+        // const formData = new FormData();
+
+        // for (const key in obj) {
+        //   if (obj.hasOwnProperty(key)) {
+        //     formData.append(key, obj[key]);
+        //   }
+        // }
+
         setSendData(obj);
         setPreview(true);
       } catch (err) {
-        toastError(err);
+        showAlert(err);
       }
     } else {
       try {
@@ -278,7 +310,7 @@ const Write_Prescription = (props: any) => {
         setSendData(obj);
         setPreview(true);
       } catch (err) {
-        toastError("Please Upload image");
+        showAlert("Please Upload image");
       }
     }
   };
@@ -287,8 +319,8 @@ const Write_Prescription = (props: any) => {
     const options: ImagePickerOptions = {
       mediaType: 'photo',
       includeBase64: false,
-      maxHeight: 2000,
-      maxWidth: 2000,
+      maxHeight: 1000,
+      maxWidth: 1000,
     };
 
     launchImageLibrary(options, handleResponse);
@@ -309,7 +341,7 @@ const Write_Prescription = (props: any) => {
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         launchCameraAfterPermission();
       } else {
-        toastError('Camera permission denied');
+        showAlert('Camera permission denied');
       }
     } catch (err) {
       console.warn(err);
@@ -320,8 +352,8 @@ const Write_Prescription = (props: any) => {
     const options: ImagePickerOptions = {
       mediaType: 'photo',
       includeBase64: false,
-      maxHeight: 2000,
-      maxWidth: 2000,
+      maxHeight:1000,
+      maxWidth: 1000,
     };
     launchCamera(options, handleResponse);
   };
@@ -331,7 +363,7 @@ const Write_Prescription = (props: any) => {
     } else if (response.errorMessage) {
     } else {
       let imageUri;
-      if (response.assets && response.assets.length > 0) {
+      if (response && response.assets && response.assets.length > 0) {
         imageUri = response.assets[0]?.uri;
       } else {
         imageUri = response.uri;
@@ -343,6 +375,7 @@ const Write_Prescription = (props: any) => {
   return (
     <View style={{width: width, flex: 1, backgroundColor: 'white'}}>
       <Headerr secndheader={true} label="Prescription" />
+      {alertVisible && <AlertBox message={alertMessage} onClose={() => setAlertVisible(false)} />}
       <ScrollView
         contentContainerStyle={{paddingBottom: hp(0.5)}}
         showsVerticalScrollIndicator={false}>

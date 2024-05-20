@@ -23,9 +23,9 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import url, { fileurl, generateFilePath } from '../Services/url.service';
+import url, { fileurl, generateFilePath, } from '../Services/url.service';
 import DocumentPicker from 'react-native-document-picker';
-
+import RNFetchBlob from 'rn-fetch-blob';
 import io from 'socket.io-client';
 import moment from 'moment';
 import { Roles } from '../utils/constant';
@@ -42,13 +42,17 @@ import Attachment_Send_icons from 'react-native-vector-icons/MaterialCommunityIc
 import { SendNotification, SendNotificationForMeetingCreation } from '../Services/notificationSevice';
 
 
+
+import { PERMISSIONS, request, check, RESULTS } from 'react-native-permissions';
+
+
 import LoadingModal from './ChatLoadingModal';
 
 const { height, width } = Dimensions.get('window');
 export default function Chat (props: any) {
-  console.log('props in chat app for chatting individual persons',props)
-  console.log('clik on chat inside app', props?.route?.params?.data,)
-  console.log('clik on chat outside of app', props?.route?.params?.data)
+  // console.log('props in chat app for chatting individual persons',props)
+  // console.log('clik on chat inside app', props?.route?.params?.data,)
+  // console.log('clik on chat outside of app', props?.route?.params?.data)
   //  auto scroller code
   const flatListRef = useRef<FlatList>(null);
   // const scrollToBottom = () => {
@@ -316,6 +320,122 @@ export default function Chat (props: any) {
     }
   }, [msgArr]);
 
+
+
+  //image download funciton 
+
+  
+const requestStoragePermission = async () => {
+  if (Platform.OS === 'android' && Platform.Version < 29) {
+    try {
+      const writeGranted = await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
+      const readGranted = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+
+      return writeGranted === RESULTS.GRANTED && readGranted === RESULTS.GRANTED;
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  } else {
+    // For Android 10 and above, no need to request WRITE_EXTERNAL_STORAGE permission
+    return true;
+  }
+};
+
+
+
+
+  const handleDownloadPrescription = async (message: string) => {
+    try {
+      const hasPermission = await requestStoragePermission();
+      if (!hasPermission) {
+        toastError('Storage permission denied');
+        return;
+      }
+      const fileUrl = generateFilePath(message)
+
+      const fileType = fileUrl.split('.').pop();
+
+      // Define the MIME types
+      const mimeTypes = {
+        pdf: 'application/pdf',
+        jpg: 'image/jpeg',
+        jpeg: 'image/jpeg',
+        png: 'image/png',
+      };
+    
+      // Get the MIME type based on the file type
+      const mimeType = mimeTypes[fileType];
+    
+      if (!mimeType) {
+        throw new Error('Unsupported file type');
+      }
+    
+      
+      // Define the file name
+      const fileName = fileUrl.split('/').pop();
+  
+      // const url = `${fileurl}/prescription-by-id/${_id}`;
+     
+      console.log('url is here',fileUrl)
+      const { config, fs } = RNFetchBlob;
+      const downloadDir = fs.dirs.DownloadDir;
+
+     
+  
+      if (Platform.OS === 'android') {
+        if (Platform.Version >= 29) {
+          // Use MediaStore for Android 10 and above
+          RNFetchBlob.config({
+            fileCache: true,
+            addAndroidDownloads: {
+              useDownloadManager: true,
+              notification: true,
+              mime: mimeType,
+              description: 'File downloaded by download manager.',
+              mediaScannable: true,
+              path: `${downloadDir}/${fileName}`,
+            },
+          })
+            .fetch('GET', fileUrl)
+            .then(res => {
+              toastSuccess('Downloaded');
+            })
+            .catch(err => {
+              console.log(err);
+              toastError('Download failed');
+            });
+        } else {
+          // For Android 9 and below
+          RNFetchBlob.config({
+            fileCache: true,
+            addAndroidDownloads: {
+              useDownloadManager: true,
+              notification: true,
+              path: `${downloadDir}/${fileName}`,
+              mime: mimeType,
+              description: 'File downloaded by download manager.',
+            },
+          })
+            .fetch('GET', fileUrl)
+            .then(res => {
+              RNFetchBlob.android.actionViewIntent(res.path(), 'application/pdf/jpg/png/jpeg');
+              toastSuccess(' Downloaded');
+            })
+            .catch(err => {
+              console.log(err);
+              toastError('Download failed');
+            });
+        }
+      } else {
+        toastError('Not Configured');
+      }
+    } catch (error) {
+      console.error(error);
+      toastError('An error occurred');
+    }
+  };
+
 return (
   <TouchableWithoutFeedback 
   style={{height:hp(100),width:wp(100),backgroundColor:'#EFE6DD'}}
@@ -362,10 +482,17 @@ return (
                     <Text style={[styles.messageText,{fontFamily: mainFont}]}>{item.message}</Text>
                   </View>
                 ) : allowedFile.some(el => el.toLowerCase().includes(item.type.toLowerCase())) ? (
+                 <TouchableOpacity
+                 onPress={() => {
+                  handleDownloadPrescription(item.message);
+                 }}
+                 >
                   <Image
                     source={{ uri: generateFilePath(item.message) }}
                     style={styles.messageImage}
                   />
+                  </TouchableOpacity>
+                  
                 ) : (
                   <TouchableOpacity
                     onPress={() => Linking.openURL(generateFilePath(item.message))}
@@ -385,10 +512,20 @@ return (
                     <Text style={styles.messageText}>{item.message}</Text>
                   </View>
                 ) : allowedFile.some(el => el.toLowerCase().includes(item.type.toLowerCase())) ? (
-                  <Image
-                    source={{ uri: generateFilePath(item.message) }}
-                    style={styles.messageImage}
+                  <TouchableOpacity
+                  onPress={()=> {
+                    // console.log('pressed image icon');
+                    // alert('alert is  non user');
+                    handleDownloadPrescription(item.message);
+                    // Linking.openURL(generateFilePath(item.message))
+                  }}
+                  >
+                   <Image
+                     source={{ uri: generateFilePath(item.message) }}
+                     style={styles.messageImage}
                   />
+                  </TouchableOpacity>
+            
                 ) : (
                   <TouchableOpacity
                     onPress={() => Linking.openURL(generateFilePath(item.message))}
