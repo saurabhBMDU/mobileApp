@@ -138,6 +138,8 @@ const Appointment_History = (props: any) => {
 
   const [userMessage, setUserMessage] = useState('');
 
+  const [passData,setpassData] = useState('')
+
   const startAnimation = () => {
     Animated.timing(animation, {
       toValue: btnClicked ? 0 : 1,
@@ -254,6 +256,8 @@ const Appointment_History = (props: any) => {
         heightUnit === 'cm' ? height / 100 : height * 0.3048;
       const bmiValue = (weight / (heightInMeters * heightInMeters)).toFixed(2);
       setBmi(bmiValue);
+    }else{
+      setBmi('0')
     }
   };
   useEffect(() => {
@@ -321,6 +325,10 @@ const Appointment_History = (props: any) => {
         setUnit(res?.data?.heightUnit);
         setBmi(res?.data?.bmi);
         setWeight(res?.data?.weight);
+        //setting updated data to show in next page 
+        setpassData(res?.data)
+
+        console.log('new weight updated',res?.data?.weight)
       }
     } catch (err) {
       toastError(err);
@@ -337,6 +345,7 @@ const Appointment_History = (props: any) => {
   }, [focused, props?.route?.params?.data]);
 
   const handlechangeAppointmentStatus = async () => {
+    console.log('in update line 340')
     if (height && !weight) {
       setMeetingConfirmation(false);
       toastError('heights or Weight are mandatory !!!');
@@ -368,7 +377,12 @@ const Appointment_History = (props: any) => {
         obj,
       );
       if (res) {
-        toastSuccess(res.message);
+        console.log('response is here',res)
+        
+        if(res.status){
+          toastSuccess('Vitals has been updated successfully');
+          handleGetAppointmentById();
+        }
         Keyboard.dismiss();
       }
     } catch (error) {
@@ -1033,7 +1047,7 @@ const requestStoragePermission = async () => {
             {
               userObj?.role == Roles.DOCTOR &&
                 navigation.navigate('Write_P', {
-                  data: props?.route?.params?.data,
+                  data: passData,
                   editModeOn: false,
                 });
             }

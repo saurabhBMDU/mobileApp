@@ -27,25 +27,27 @@ const FeedBack = ({cartId, onCloseModal}) => {
 
   const handleSubmit = async () => {
     console.log(`${url}/feedback`);
-    if (!name || !email || !subject || !description) {
+    if (!subject || !description) {
       setHasError(true);
       return;
       
     }
 
     try {
-      const feedbackData = {name, email, subject, description};
+      let appointmentId = cartId
+      const feedbackData = {subject, description,appointmentId};
       console.log(feedbackData, `${url}/feedback`);
       const response = await axios.post(`${url}/feedback`, feedbackData);
 
-      if (response.status === 201) {
+       console.log('response for feedbakc in fever99',response.data.message)
+      if (response.status) {
         onCloseModal();
-        toastSuccess(response.message);
+        toastSuccess(response.data.message);
         console.log(response);
       } else {
         console.error('Error:', response.data);
         onCloseModal();
-        toastError(response.data);
+        toastError(response.data.message);
       }
     } catch (error) {
       console.error('Error sending feedback:', error);
@@ -88,20 +90,20 @@ const FeedBack = ({cartId, onCloseModal}) => {
                 />
               </Pressable>
             </View>
-            <TextInput
+            {/* <TextInput
               placeholder="Name"
               style={[styles.input, hasError && !name && styles.invalidInput]}
               placeholderTextColor="gray"
               value={name}
               onChangeText={setName}
-            />
-            <TextInput
+            /> */}
+            {/* <TextInput
               placeholder="Email"
               style={[styles.input, hasError && !email && styles.invalidInput]}
               placeholderTextColor="gray"
               value={email}
               onChangeText={setEmail}
-            />
+            /> */}
             <TextInput
               placeholder="Subject"
               style={[

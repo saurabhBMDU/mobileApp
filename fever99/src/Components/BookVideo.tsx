@@ -66,6 +66,18 @@ const BookVideo = (props: any) => {
   const [centimeters, setCentimeters] = useState('');
 
 
+  const datavikram = [
+    { label: 'Item 1', value: '1' },
+    { label: 'Item 2', value: '2' },
+    { label: 'Item 3', value: '3' },
+    { label: 'Item 4', value: '4' },
+    { label: 'Item 5', value: '5' },
+    { label: 'Item 6', value: '6' },
+    { label: 'Item 7', value: '7' },
+    { label: 'Item 8', value: '8' },
+  ];
+
+
 
   const textInputStyle = {
     height: hp(7.1),
@@ -111,7 +123,9 @@ const BookVideo = (props: any) => {
   const [age, setAge] = useState(0);
   const [months, setMonths] = useState(0);
   const [dateTime, setDateTime] = useState('');
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
+  
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+
   const [gender, setGender] = useState('');
   const [mode, setMode] = useState('');
   const [patientName, setPatientName] = useState('');
@@ -246,10 +260,13 @@ const BookVideo = (props: any) => {
 
       const timeSlotsArray = responseData[
         modeOf === 'Video' ? 'extractedOnlineTimes' : 'extractedOfflineTimes'
-      ].map(time => ({
-        label: time,
-        value: time,
-      }));
+      ]
+      // .map(time => ({
+      //   label: time,
+      //   value: time,
+      // }));
+
+      console.log('online time is here',timeSlotsArray)
 
       setTimeSlot(timeSlotsArray);
     } catch (error) {
@@ -504,19 +521,31 @@ const BookVideo = (props: any) => {
                   inputSearchStyle={styles.inputSearchStyle}
                   iconStyle={styles.iconStyle}
                   data={timeSlotss}
+                  // data={datavikram}
                   search
                   maxHeight={300}
                   labelField="label"
-                  
                   valueField="value"
                   placeholder="Select Slot"
                   searchPlaceholder="Search..."
                   value={selectedTimeSlot}
                   onFocus={() => setIsFocus(true)}
                   onBlur={() => setIsFocus(false)}
-                  onChange={(item: any) => {
-                    setSelectedTimeSlot(item.value);
+                  onChange={(item : any) => {
+                    console.log('item.label',item.label,'value', item.value)
+                    if(item.value === 'yes'){
+                      setSelectedTimeSlot(item.label);
+                      setSelectedTimeSlot(item.label);
                     setIsFocus(false);
+                   
+                    // return
+                    }else{
+                     
+                      Alert.alert('Error', 'This time is already occupied or gone please choose another time slot');
+                      // setSelectedTimeSlot(null);
+                      // setSelectedTimeSlot(null);
+                      // return
+                    }
                   }}
                 />
               </View>

@@ -1356,7 +1356,7 @@ const handleDownloadPrescription = async (_id: string) => {
                               fontFamily: mainFont,
                               fontSize: hp(1.8),
                             }}>
-                            Downloade Prescription
+                            Download Prescription
                           </Text>
                         </TouchableOpacity>
                       )}

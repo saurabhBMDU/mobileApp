@@ -11,6 +11,7 @@ import {
   Keyboard,
   StyleSheet,
   Modal,
+  Pressable,
 } from 'react-native';
 import React, { useContext, useState } from 'react';
 import {
@@ -30,7 +31,7 @@ import { ProceedToLoginUser, loginUser, setJwt } from '../../Services/user.servi
 import AlertBox from '../../allModals/AlertBox';
 import Lock from 'react-native-vector-icons/FontAwesome6';
 
-
+import Openeye_closeEye from 'react-native-vector-icons/Ionicons';
 
 
 const STYLES = ['default', 'dark-content', 'light-content'] as const;
@@ -293,25 +294,40 @@ const Login = () => {
                   marginTop: hp(1),
                   borderRadius: 5,
                   alignItems: 'center',
-                  paddingLeft: wp(2),
+                  paddingLeft: wp(3),
                   flexDirection: 'row',
-                  marginBottom:20,
+                  justifyContent: "space-between"
                 }}>
-                <Mail_icons
-                  name="mail"
+                <Lock
+                  name="lock"
                   style={{
                     color: 'grey',
                     fontSize: hp(2.8),
-                  }} />
-
+                  }}
+                />
                 <TextInput
-                  placeholder="Enter Password"
+                  placeholder="Enter password"
                   placeholderTextColor="gray"
+                  secureTextEntry={hide}
                   onChangeText={e => setPassword(e)}
                   value={password}
                   style={{ width: wp(70), fontSize: hp(2) }}
                 />
+                <Pressable onPress={() => setHide(!hide)} style={{ padding: wp(2),marginLeft:-100 }}>
+                  <Openeye_closeEye
+                    name={hide ? "eye-off" : "eye"}
+                    style={{
+                      color: '#696968',
+                      fontSize: hp(3),
+                    }}
+                  />
+                </Pressable>
               </View>
+              <Pressable
+                onPress={() => navigation.navigate('ForgotPassword')}
+                style={{ alignSelf: 'flex-end', marginTop: 8 }}>
+                <Text style={{ color: '#1263AC', fontSize: hp(1.8) }}>Forgot Password? </Text>
+              </Pressable>
 
               {/* Button section >>>>>>>>>>>>>>>>>> */}
               <TouchableOpacity
@@ -321,9 +337,9 @@ const Login = () => {
                   styles.both_reg_continew_BTN,
                   { backgroundColor: '#1263AC', borderColor: '#1263AC' },
                 ]}>
-                <Text style={styles.register_And_Continew}>SIGN IN</Text>
+                <Text style={styles.register_And_Continew}>Sign in</Text>
               </TouchableOpacity>
-              <Text
+              {/* <Text
                 style={{
                   fontSize: hp(2),
                   fontWeight: '600',
@@ -333,12 +349,13 @@ const Login = () => {
                   padding: 10,
                 }}>
                 Or
-              </Text>
+              </Text> */}
               <View
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  justifyContent: "center"
+                  justifyContent: "center",
+                  marginTop:15,
                 }}
               >
                 <Text style={{
