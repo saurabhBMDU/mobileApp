@@ -117,10 +117,10 @@ const Appointment_History = (props: any) => {
   const [suger2, setSuger2] = useState('');
   const [suger3, setSuger3] = useState('');
   const [isGenderFocused, setIsGenderFocused] = useState(false);
-  const [height, setHeight] = useState();
+  const [height, setHeight] = useState(0);
   const [heightUnit, setUnit] = useState();
-  const [weight, setWeight] = useState();
-  const [bmi, setBmi] = useState('0');
+  const [weight, setWeight] = useState(0);
+  const [bmi, setBmi] = useState(0);
 
   const [doctorName, setDoctorName] = useState('');
   const [patientName, setPatientName] = useState('');
@@ -251,7 +251,7 @@ const Appointment_History = (props: any) => {
   };
 
   const calculateBMI = () => {
-    if (height && weight) {
+    if (height > 0 && weight > 0) {
       const heightInMeters =
         heightUnit === 'cm' ? height / 100 : height * 0.3048;
       const bmiValue = (weight / (heightInMeters * heightInMeters)).toFixed(2);

@@ -52,6 +52,7 @@ import {
   doses,
 } from '../allArrayData/DrArrayDatta';
 import PreView from '../allModals/PreView';
+import { template } from 'lodash';
 
 const {height, width} = Dimensions.get('window');
 
@@ -96,7 +97,7 @@ const Write_Prescription = (props: any) => {
   const [loding, setloding] = useState(false);
   const [medicinesArr, setMedicinesArr] = useState([]);
 
-
+  // console.log('medicne arra',medicinesArr)
 
   const showAlert = (message) => {
     setAlertMessage(message);
@@ -124,6 +125,7 @@ const Write_Prescription = (props: any) => {
       doses: '',
       dose_form: '',
       duration_count: '',
+      combination : '',
     },
   ]);
 
@@ -137,10 +139,11 @@ const Write_Prescription = (props: any) => {
         query = `page=${page}&limit=${limit}`;
       }
       let {data: res} = await getMedicines(query);
+      // console.log('response from db for medicines',res.data)
       if (res.data) {
         setloding(false);
         setMedicinesArr(
-          res.data.map((el: any) => ({label: el.name, value: el.name})),
+          res.data.map((el: any) => ({label: el.name, value: el.combination})),
         );
       }
     } catch (error) {
@@ -196,13 +199,13 @@ const Write_Prescription = (props: any) => {
       handleGetAndSetUser();
       handleGetMedicines();
       setAppointMentObj(props?.route?.params?.data);
-      console.log('appoiitment object data i prescription',appointMentObj)
+      // console.log('appoiitment object data i prescription',appointMentObj)
       if (props?.route?.params?.editModeOn) {
         setIsEditModeOn(true);
         handleSetDataToEdit(props?.route?.params?.prescriptionObj);
       }
     }
-  }, [focused, props?.route?.params?.data]);
+  }, [focused, props?.route?.params?.data,medicine]);
   // debouncing implementation
   let delay = 700;
   useEffect(() => {
@@ -231,8 +234,11 @@ const Write_Prescription = (props: any) => {
       doses: '',
       dose_form: '',
       duration_count: '',
+      combination : ''
     });
     setMedicine([...tempArr]);
+
+    console.log('handle add medicine ',medicine)
   };
   const handleDeleteMedicine = () => {
     let tempArr = medicine;
@@ -252,7 +258,11 @@ const Write_Prescription = (props: any) => {
     tempArr[index][field] = value;
 
     setMedicine([...tempArr]);
+    console.log('temp arr',tempArr)
+
   };
+
+ 
   const clodeModal = () => {
     setPreview(false);
   };
@@ -966,13 +976,18 @@ const Write_Prescription = (props: any) => {
                           labelField="label"
                           valueField="value"
                           placeholder="Select Medicine"
-                          value={el.name}
+                          value={el.combination}
                           onFocus={() => setIsFocus(true)}
                           onBlur={() => setIsFocus(false)}
                           onChange={(item: any) => {
                             handleUpdateContentForMedicine(
-                              item.value,
+                              item.label,
                               'name',
+                              index,
+                            );
+                            handleUpdateContentForMedicine(
+                              item.value,
+                              'combination',
                               index,
                             );
                           }}

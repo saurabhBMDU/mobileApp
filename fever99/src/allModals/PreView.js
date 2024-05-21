@@ -129,6 +129,10 @@ const PreView = ({ objectData, clodeBtn, images }) => {
                                                             <Text style={[styles.textStle, { fontFamily: mainFont }]}>{itms.name}</Text>
                                                         </View>
                                                         <View style={styles.d_flex2}>
+                                                            <Text style={[styles.textStle, { width: "37%" }]}>Combination:</Text>
+                                                            <Text style={[styles.textStle, { fontFamily: mainFont }]}>{itms.combination}</Text>
+                                                        </View>
+                                                        <View style={styles.d_flex2}>
                                                             <Text style={[styles.textStle, { width: "37%" }]}>Dose Form:</Text>
                                                             <Text style={[styles.textStle, { fontFamily: mainFont }]}>{itms.duration_count} {itms.dose_form}</Text>
                                                         </View>
