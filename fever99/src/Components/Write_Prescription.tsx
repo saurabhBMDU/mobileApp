@@ -26,7 +26,7 @@ import RNFS from 'react-native-fs';
 
 import Headerr from '../ReuseableComp/Headerr';
 import {getUser} from '../Services/user.service';
-import {addMedicine, getMedicines} from '../Services/MedicinesList.service';
+import {addLikedMedicine, addMedicine, getMedicines} from '../Services/MedicinesList.service';
 import {showAlert, toastSuccess} from '../utils/toast.utils';
 import Camera_icon from 'react-native-vector-icons/FontAwesome';
 import Uplode_icons from 'react-native-vector-icons/Entypo';
@@ -97,7 +97,8 @@ const Write_Prescription = (props: any) => {
   const [loding, setloding] = useState(false);
   const [medicinesArr, setMedicinesArr] = useState([]);
 
-  // console.log('medicne arra',medicinesArr)
+  // console.log('medicne arra',sendData)
+
 
   const showAlert = (message) => {
     setAlertMessage(message);
@@ -115,6 +116,23 @@ const Write_Prescription = (props: any) => {
     }
   };
   const [medicine, setMedicine] = useState([
+    {
+      name: '',
+      time: '',
+      frequency: '',
+      duration: '',
+      note: '',
+      roa: '',
+      doses: '',
+      dose_form: '',
+      duration_count: '',
+      combination : '',
+    },
+  ]);
+
+
+
+  const [likedMedicine, setLikedMedicine] = useState([
     {
       name: '',
       time: '',
@@ -199,6 +217,7 @@ const Write_Prescription = (props: any) => {
       handleGetAndSetUser();
       handleGetMedicines();
       setAppointMentObj(props?.route?.params?.data);
+      console.log('data ',props?.route?.params?.data)
       // console.log('appoiitment object data i prescription',appointMentObj)
       if (props?.route?.params?.editModeOn) {
         setIsEditModeOn(true);
@@ -238,7 +257,7 @@ const Write_Prescription = (props: any) => {
     });
     setMedicine([...tempArr]);
 
-    console.log('handle add medicine ',medicine)
+    // console.log('handle add medicine ',medicine)
   };
   const handleDeleteMedicine = () => {
     let tempArr = medicine;
@@ -258,9 +277,78 @@ const Write_Prescription = (props: any) => {
     tempArr[index][field] = value;
 
     setMedicine([...tempArr]);
-    console.log('temp arr',tempArr)
+    // console.log('temp arr',tempArr)
 
   };
+
+  const handleUpdateContentForLikedMedicine = (
+    value: any,
+    field: string,
+    index: number,
+  ) => {
+    let tempArr: any = likedMedicine;
+
+    tempArr[index][field] = value;
+
+    setLikedMedicine([...tempArr]);
+    // console.log('temp arr',tempArr)
+
+  };
+
+
+  //for liked medicine to add in database function
+
+  const addLIkedMedicinesToDatabase = async(name,time,
+  frequency,
+  duration,
+  note,
+  roa,
+  doses,
+  dose_form,
+  duration_count,
+  combination ) =>{
+
+    console.log('all data here form that data',{
+  name : name,
+  time : time,
+  frequency : frequency,
+  duration : duration,
+  note : note,
+  roa : roa,
+  doses : doses,
+  dose_form : dose_form,
+  duration_count : duration_count,
+  combination : combination
+    })
+
+
+    let obj ={
+  name,
+  time,
+  frequency,
+  duration,
+  note,
+  roa,
+  doses,
+  dose_form,
+  duration_count,
+  combination
+    }
+
+    setloding(true);
+    try {
+      let {data: res} = await addLikedMedicine(obj);
+      console.log('response from db for liked medicines medicines',res.message)
+      if (res.message) {
+        alert(res.message);
+        setloding(false);
+        
+      }
+    } catch (error) {
+      showAlert(error);
+    }
+      
+  }
 
  
   const clodeModal = () => {
@@ -282,6 +370,7 @@ const Write_Prescription = (props: any) => {
         let obj: any = {
           appointmentId: appointMentObj?._id,
           doctorId: appointMentObj.doctor._id,
+          // patientId: appointMentObj.expert._id,
           patientId: appointMentObj.expert._id,
           symptoms,
           diagnosis,
@@ -294,14 +383,9 @@ const Write_Prescription = (props: any) => {
           personalHistory,
         };
 
-        // const formData = new FormData();
-
-        // for (const key in obj) {
-        //   if (obj.hasOwnProperty(key)) {
-        //     formData.append(key, obj[key]);
-        //   }
-        // }
-
+       
+        // console.log('patinet id is here in appointment ',appointMentObj.expert._id,)
+        console.log('id all data',appointMentObj.expert)
         setSendData(obj);
         setPreview(true);
       } catch (err) {
@@ -975,19 +1059,20 @@ const Write_Prescription = (props: any) => {
                           maxHeight={300}
                           labelField="label"
                           valueField="value"
-                          placeholder="Select Medicine"
-                          value={el.combination}
+                          placeholder={el.name ? el.name :'select medicine'}
+                          // value={el.combination}
                           onFocus={() => setIsFocus(true)}
                           onBlur={() => setIsFocus(false)}
                           onChange={(item: any) => {
-                            handleUpdateContentForMedicine(
-                              item.label,
-                              'name',
-                              index,
-                            );
+                            
                             handleUpdateContentForMedicine(
                               item.value,
                               'combination',
+                              index,
+                            );
+                            handleUpdateContentForMedicine(
+                              item.label,
+                              'name',
                               index,
                             );
                           }}
@@ -1252,6 +1337,39 @@ const Write_Prescription = (props: any) => {
                           />
                         </View>
                       </View>
+
+                      <TouchableOpacity
+                    onPress={() => addLIkedMedicinesToDatabase(
+                            el.name,
+                            el.time,
+                            el.frequency,
+                            el.duration,
+                            el.note,
+                            el.roa,
+                            el.doses,
+                            el.dose_form,
+                            el.duration_count,
+                            el.combination,
+                    )}
+                    style={{
+                      paddingHorizontal: 15,
+                      height: hp(5),
+                      backgroundColor: '#50B148',
+                      borderRadius: 5,
+                      alignItems: 'left',
+                      justifyContent: 'center',
+                      marginLeft: wp(5),
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: hp(1.8),
+                        color: 'white',
+                        fontFamily: mainFontmedium,
+                      }}>
+                      Add to liked medicine
+                    </Text>
+                  </TouchableOpacity>
+
                     </View>
                   );
                 })}
@@ -1305,6 +1423,362 @@ const Write_Prescription = (props: any) => {
                     </Text>
                   </TouchableOpacity>
                 </View>
+
+                {/* frequently asked medicines */}
+
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    width: wp(95),
+                  }}>
+                  <TouchableOpacity
+                    // onPress={() => setMedicineModal(true)}
+                    style={{
+                      paddingHorizontal: 15,
+                      height: hp(5),
+                      backgroundColor: '#50B148',
+                      borderRadius: 4,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginTop: 15,
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: hp(1.8),
+                        color: 'white',
+                        fontFamily: mainFontmedium,
+                      }}>
+                      Frequently used medicine's
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                
+                {likedMedicine.map((el: any, index: number) => {
+                  return (
+                    <View
+                      key={index}
+                      style={{
+                        width: wp(98),
+                        flexDirection: 'row',
+                        marginTop: hp(1),
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        borderWidth: 1,
+                        borderColor: 'gray',
+                        borderRadius: 10,
+                        padding: 5,
+                      }}>
+                      <View style={{width: wp(40)}}>
+                        <Text
+                          style={{
+                            fontSize: hp(1.8),
+                            fontFamily: mainFontBold,
+                            color: 'black',
+                          }}>
+                          Medicine Name:
+                        </Text>
+                        <Dropdown
+                          style={[styles.dropdown]}
+                          placeholderStyle={styles.placeholderStyle}
+                          selectedTextStyle={styles.selectedTextStyle}
+                          inputSearchStyle={styles.inputSearchStyle}
+                          iconStyle={styles.iconStyle}
+                          data={
+                            loding
+                              ? [{label: 'Loading...', value: null}]
+                              : medicinesArr
+                          }
+                          search
+                          searchPlaceholder="Search..."
+                          maxHeight={300}
+                          labelField="label"
+                          valueField="value"
+                          // placeholder="Select Medicine"
+                          placeholder={el.name ? el.name :'select medicine'}
+                          // value={el.combination}
+                          onFocus={() => setIsFocus(true)}
+                          onBlur={() => setIsFocus(false)}
+                          onChange={(item: any) => {
+                            
+                            handleUpdateContentForLikedMedicine(
+                              item.value,
+                              'combination',
+                              index,
+                            );
+                            handleUpdateContentForLikedMedicine(
+                              item.label,
+                              'name',
+                              index,
+                            );
+                          }}
+                          renderInputSearch={(
+                            onSearch: (text: string) => void,
+                          ) => (
+                            <TextInput
+                              style={styles.inputBoxStyl}
+                              onChangeText={text => {
+                                setFilter(text); // Log the typed text to console
+                                onSearch(text); // Trigger the search with the typed text
+                              }}
+                              placeholder="Search..."
+                            />
+                          )}
+                        />
+                      </View>
+                      <View
+                        style={{
+                          width: wp(45),
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                        }}>
+                        <View>
+                          <Text
+                            style={{
+                              fontSize: hp(1.8),
+                              fontFamily: mainFontBold,
+                              color: 'black',
+                            }}>
+                            Dose
+                          </Text>
+                          <Dropdown
+                            style={[styles.dropdown, {width: wp(17)}]}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            inputSearchStyle={styles.inputSearchStyle}
+                            iconStyle={styles.iconStyle}
+                            data={doses}
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Unit"
+                            value={el.duration_count}
+                            onFocus={() => setIsFocus(true)}
+                            onBlur={() => setIsFocus(false)}
+                            onChange={(item: any) => {
+                              handleUpdateContentForLikedMedicine(
+                                item.value,
+                                'duration_count',
+                                index,
+                              );
+                            }}
+                          />
+                        </View>
+                        <View>
+                          <Text
+                            style={{
+                              fontSize: hp(1.8),
+                              fontFamily: mainFontBold,
+                              color: 'black',
+                            }}>
+                            Dose Form:
+                          </Text>
+                          <Dropdown
+                            style={[styles.dropdown, {width: wp(26)}]}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            inputSearchStyle={styles.inputSearchStyle}
+                            iconStyle={styles.iconStyle}
+                            data={doseFormArr}
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Select Dose"
+                            search
+                            searchPlaceholder="Search..."
+                            value={el.dose_form}
+                            onFocus={() => setIsFocus(true)}
+                            onBlur={() => setIsFocus(false)}
+                            onChange={(item: any) => {
+                              handleUpdateContentForLikedMedicine(
+                                item.value,
+                                'dose_form',
+                                index,
+                              );
+                            }}
+                          />
+                        </View>
+                      </View>
+                      <View style={{width: wp(40)}}>
+                        <Text
+                          style={{
+                            fontSize: hp(1.8),
+                            fontFamily: mainFontBold,
+                            color: 'black',
+                          }}>
+                          ROA:
+                        </Text>
+                        <Dropdown
+                          style={[styles.dropdown]}
+                          placeholderStyle={styles.placeholderStyle}
+                          selectedTextStyle={styles.selectedTextStyle}
+                          inputSearchStyle={styles.inputSearchStyle}
+                          iconStyle={styles.iconStyle}
+                          data={roa.map(option => ({
+                            label: option.label,
+                            value: option.value,
+                          }))}
+                          maxHeight={300}
+                          labelField="label"
+                          valueField="value"
+                          placeholder="Select ROA"
+                          search
+                          searchPlaceholder="Search..."
+                          value={el.roa}
+                          onFocus={() => setIsFocus(true)}
+                          onBlur={() => setIsFocus(false)}
+                          onChange={(item: any) => {
+                            handleUpdateContentForLikedMedicine(
+                              item.value,
+                              'roa',
+                              index,
+                            );
+                          }}
+                        />
+                      </View>
+                      <View style={{width: wp(45)}}>
+                        <Text
+                          style={{
+                            fontSize: hp(1.8),
+                            fontFamily: mainFontBold,
+                            color: 'black',
+                          }}>
+                          Time:
+                        </Text>
+                        <Dropdown
+                          style={[styles.dropdown]}
+                          placeholderStyle={styles.placeholderStyle}
+                          selectedTextStyle={styles.selectedTextStyle}
+                          inputSearchStyle={styles.inputSearchStyle}
+                          iconStyle={styles.iconStyle}
+                          data={TimeData}
+                          maxHeight={300}
+                          labelField="label"
+                          valueField="value"
+                          placeholder="Select Time"
+                          value={el.time}
+                          onFocus={() => setIsFocus(true)}
+                          onBlur={() => setIsFocus(false)}
+                          onChange={(item: any) => {
+                            handleUpdateContentForLikedMedicine(
+                              item.value,
+                              'time',
+                              index,
+                            );
+                          }}
+                        />
+                      </View>
+                      <View style={{width: wp(45)}}>
+                        <Text
+                          style={{
+                            fontSize: hp(1.8),
+                            fontFamily: mainFontBold,
+                            color: 'black',
+                          }}>
+                          Frequency:
+                        </Text>
+                        <Dropdown
+                          style={[styles.dropdown]}
+                          placeholderStyle={styles.placeholderStyle}
+                          selectedTextStyle={styles.selectedTextStyle}
+                          inputSearchStyle={styles.inputSearchStyle}
+                          iconStyle={styles.iconStyle}
+                          data={DaysData}
+                          maxHeight={300}
+                          labelField="label"
+                          search
+                          searchPlaceholder="Search..."
+                          valueField="value"
+                          placeholder="Select"
+                          value={el.frequency}
+                          onFocus={() => setIsFocus(true)}
+                          onBlur={() => setIsFocus(false)}
+                          onChange={(item: any) => {
+                            handleUpdateContentForLikedMedicine(
+                              item.value,
+                              'frequency',
+                              index,
+                            );
+                          }}
+                        />
+                      </View>
+                      <View
+                        style={{
+                          width: wp(45),
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                        }}>
+                        <View>
+                          <Text
+                            style={{
+                              fontSize: hp(1.8),
+                              fontFamily: mainFontBold,
+                              color: 'black',
+                            }}>
+                            Count
+                          </Text>
+                          <Dropdown
+                            style={[styles.dropdown, {width: wp(18)}]}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            inputSearchStyle={styles.inputSearchStyle}
+                            iconStyle={styles.iconStyle}
+                            data={doses}
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Unit"
+                            value={el.note}
+                            onFocus={() => setIsFocus(true)}
+                            onBlur={() => setIsFocus(false)}
+                            onChange={(item: any) => {
+                              handleUpdateContentForLikedMedicine(
+                                item.value,
+                                'note',
+                                index,
+                              );
+                            }}
+                          />
+                        </View>
+                        <View>
+                          <Text
+                            style={{
+                              fontSize: hp(1.8),
+                              fontFamily: mainFontBold,
+                              color: 'black',
+                            }}>
+                            Duration:
+                          </Text>
+                          <Dropdown
+                            style={[styles.dropdown, {width: wp(26)}]}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            inputSearchStyle={styles.inputSearchStyle}
+                            iconStyle={styles.iconStyle}
+                            data={durationCountData}
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Duration"
+                            value={el.duration}
+                            onFocus={() => setIsFocus(true)}
+                            onBlur={() => setIsFocus(false)}
+                            onChange={(item: any) => {
+                              handleUpdateContentForLikedMedicine(
+                                item.value,
+                                'duration',
+                                index,
+                              );
+                            }}
+                          />
+                        </View>
+                      </View>
+                    </View>
+                  );
+                })}
+
+                {/* frequenlty asked medicnes closed */}
                 <View
                   style={{
                     flexDirection: 'row',

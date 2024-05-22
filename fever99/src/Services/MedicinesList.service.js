@@ -35,3 +35,23 @@ export const addMedicine = async (obj) => {
 
     return await axios.post(`${serverUrl}`, obj, config);
 };
+
+
+
+//get liked medicines
+
+const likedMedicineUrl = url + '/frequent-medicine';
+
+
+
+export const addLikedMedicine = async (obj) => {
+    let config = {
+        headers: {
+            'Content-type': "application/json",
+            "Access-control-Allow-Origin": "*"
+        }
+    }
+
+    return await axios.post(`${likedMedicineUrl}`, obj, config);
+};
+

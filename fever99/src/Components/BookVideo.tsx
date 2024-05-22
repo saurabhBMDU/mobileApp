@@ -12,7 +12,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState,useCallback} from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -227,7 +227,7 @@ const BookVideo = (props: any) => {
   const handleDateChange = async (selectedDate: string) => {
     try {
       setTimeSlot([]);
-      const dateObject = new Date(selectedDate);
+      const dateObject = new Date(dateTime);
       // converting into dd/mm/yyyy
       const day = dateObject.getDate();
       const month = dateObject.getMonth() + 1;
@@ -236,12 +236,14 @@ const BookVideo = (props: any) => {
       const formattedMonth = month < 10 ? '0' + month : month;
       const dateString = `${formattedDay}-${formattedMonth}-${year}`;
 
+      console.log('this string going in backend',dateString)
+
       const response = await fetch(`${url}/time-slot/${drrIdes}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({dateTime: dateString}),
+        body: JSON.stringify({'dateTime': String(dateString)}),
       });
 
       console.log({dateTime: dateString});
@@ -277,7 +279,10 @@ const BookVideo = (props: any) => {
   useEffect(() => {
     setTimeSlot([]);
     handleDateChange(dateTime);
-  }, [dateTime]);
+  }, [dateModal]);
+
+
+
 
   const handleCreateBooking = async () => {
     try {
@@ -487,11 +492,11 @@ const BookVideo = (props: any) => {
                   }}>
                   Date:
                 </Text>
-                <Pressable onPress={() => setDateModal(true)}>
+                <Pressable onPress={() => {setDateModal(true);  handleDateChange (dateTime);} }>
                   <TextInput
                     placeholder="Select Date"
                     editable={false}
-                    onChangeText={e => setDateTime(e)}
+                    // onChangeText={e =>{ setDateTime(e); handleDateChange (dateTime); alert('uu')}}
                     value={dateTime}
                     style={{
                       height: hp(6.7),

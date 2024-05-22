@@ -304,7 +304,7 @@ const Appointment_History = (props: any) => {
       let {data: res} = await getAppointmentById(
         props?.route?.params?.data._id,
       );
-      console.log('hh', height);
+      // console.log('hh', height);
       // Alert.alert(res?.data?.height);
       if (res.data) {
         setBp(res?.data?.bp);
@@ -316,6 +316,7 @@ const Appointment_History = (props: any) => {
         setSuger2(res?.data?.suger2);
         setSuger3(res?.data?.suger3);
         setPrescriptionArr(res?.data?.prescription);
+        console.log('this is appointmed data to wonolod its pdf',res?.data?.prescription)
         setDoctorName(res?.data?.doctor?.name);
         setPatientName(res?.data?.patientName);
         setrr(res?.data?.respiratoryRate);
@@ -326,9 +327,11 @@ const Appointment_History = (props: any) => {
         setBmi(res?.data?.bmi);
         setWeight(res?.data?.weight);
         //setting updated data to show in next page 
-        setpassData(res?.data)
+        setpassData(res?.data);
+        console.log('dynamic data is',res?.data);
+        console.log('this is data here for patinet id', props?.route?.params?.data);
 
-        console.log('new weight updated',res?.data?.weight)
+        // console.log('new weight updated',res?.data?.weight)
       }
     } catch (err) {
       toastError(err);
@@ -345,7 +348,7 @@ const Appointment_History = (props: any) => {
   }, [focused, props?.route?.params?.data]);
 
   const handlechangeAppointmentStatus = async () => {
-    console.log('in update line 340')
+    // console.log('in update line 340')
     if (height && !weight) {
       setMeetingConfirmation(false);
       toastError('heights or Weight are mandatory !!!');
@@ -377,7 +380,7 @@ const Appointment_History = (props: any) => {
         obj,
       );
       if (res) {
-        console.log('response is here',res)
+        // console.log('response is here',res)
         
         if(res.status){
           toastSuccess('Vitals has been updated successfully');
@@ -445,7 +448,7 @@ const requestStoragePermission = async () => {
 
       return writeGranted === RESULTS.GRANTED && readGranted === RESULTS.GRANTED;
     } catch (err) {
-      console.warn(err);
+      // console.warn(err);
       return false;
     }
   } else {
@@ -535,7 +538,7 @@ const requestStoragePermission = async () => {
               toastSuccess('Prescription Downloaded');
             })
             .catch(err => {
-              console.log(err);
+              // console.log(err);
               toastError('Download failed');
             });
         } else {
@@ -556,7 +559,7 @@ const requestStoragePermission = async () => {
               toastSuccess('Prescription Downloaded');
             })
             .catch(err => {
-              console.log(err);
+              // console.log(err);
               toastError('Download failed');
             });
         }
@@ -564,7 +567,7 @@ const requestStoragePermission = async () => {
         toastError('Not Configured');
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       toastError('An error occurred');
     }
   };
@@ -990,6 +993,7 @@ const requestStoragePermission = async () => {
                           <TouchableOpacity
                             onPress={() =>
                               handleDownloadPrescription(item._id, index)
+                              // alert('working fine ')
                             }
                             style={{
                               backgroundColor: maincolor,
