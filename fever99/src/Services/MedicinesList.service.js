@@ -55,3 +55,61 @@ export const addLikedMedicine = async (obj) => {
     return await axios.post(`${likedMedicineUrl}`, obj, config);
 };
 
+export const getFromDatabaseAllLikedMedicines = async (obj) => {
+    let config = {
+        headers: {
+            'Content-type': "application/json",
+            "Access-control-Allow-Origin": "*"
+        }
+    }
+
+    return await axios.get(`${likedMedicineUrl}`, obj, config);
+};
+
+export const updateLikedMedicine = async (
+    id,
+    name,
+    time,
+    frequency,
+    duration,
+    note,
+    roa,
+    doses,
+    dose_form,
+    duration_count,
+    combination,
+) => {
+
+    let obj = {
+    name,
+    time,
+    frequency,
+    duration,
+    note,
+    roa,
+    doses,
+    dose_form,
+    duration_count,
+    combination,
+    }
+    let config = {
+        headers: {
+            'Content-type': "application/json",
+            "Access-control-Allow-Origin": "*"
+        }
+    }
+
+    return await axios.put(`${likedMedicineUrl}/${id}`,obj,  config);
+};
+
+export const deleteLikedMedicine = async (id) => {
+    let config = {
+        headers: {
+            'Content-type': "application/json",
+            "Access-control-Allow-Origin": "*"
+        }
+    }
+
+    return await axios.delete(`${likedMedicineUrl}/${id}`, config);
+};
+

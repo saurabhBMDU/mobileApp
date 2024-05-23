@@ -50,8 +50,8 @@ const PreView = ({ objectData, clodeBtn, images }) => {
     const handleSubmit = async () => {
         setLoding(true);
         try {
-            console.log( `${url}/prescriptions/forApp`)
-            console.log('in view preview prescription',objectData)
+            console.log( `${url}/prescriptions/forApp`);
+            console.log('in view preview prescription',objectData);
 
             const imageSize = getBase64Size(objectData.image); // Assuming image is a property in objectData
             console.log(`Image size: ${imageSize} MB`);

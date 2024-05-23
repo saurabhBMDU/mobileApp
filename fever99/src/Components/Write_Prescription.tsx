@@ -12,6 +12,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Pressable,
+  Button,
 } from 'react-native';
 // import RNFetchBlob from 'react-native-fetch-blob';
 
@@ -26,7 +27,14 @@ import RNFS from 'react-native-fs';
 
 import Headerr from '../ReuseableComp/Headerr';
 import {getUser} from '../Services/user.service';
-import {addLikedMedicine, addMedicine, getMedicines} from '../Services/MedicinesList.service';
+import {
+  addLikedMedicine,
+  addMedicine,
+  deleteLikedMedicine,
+  getFromDatabaseAllLikedMedicines,
+  getMedicines,
+  updateLikedMedicine,
+} from '../Services/MedicinesList.service';
 import {showAlert, toastSuccess} from '../utils/toast.utils';
 import Camera_icon from 'react-native-vector-icons/FontAwesome';
 import Uplode_icons from 'react-native-vector-icons/Entypo';
@@ -52,7 +60,7 @@ import {
   doses,
 } from '../allArrayData/DrArrayDatta';
 import PreView from '../allModals/PreView';
-import { template } from 'lodash';
+import {template} from 'lodash';
 
 const {height, width} = Dimensions.get('window');
 
@@ -99,15 +107,13 @@ const Write_Prescription = (props: any) => {
 
   // console.log('medicne arra',sendData)
 
-
-  const showAlert = (message) => {
+  const showAlert = message => {
     setAlertMessage(message);
     setAlertVisible(true);
     setTimeout(() => {
       setAlertVisible(false);
     }, 3300); // Extra 300ms to account for the sliding out animation
   };
-
 
   const handleGetAndSetUser = async () => {
     let userData = await getUser();
@@ -126,11 +132,9 @@ const Write_Prescription = (props: any) => {
       doses: '',
       dose_form: '',
       duration_count: '',
-      combination : '',
+      combination: '',
     },
   ]);
-
-
 
   const [likedMedicine, setLikedMedicine] = useState([
     {
@@ -143,7 +147,7 @@ const Write_Prescription = (props: any) => {
       doses: '',
       dose_form: '',
       duration_count: '',
-      combination : '',
+      combination: '',
     },
   ]);
 
@@ -217,14 +221,14 @@ const Write_Prescription = (props: any) => {
       handleGetAndSetUser();
       handleGetMedicines();
       setAppointMentObj(props?.route?.params?.data);
-      console.log('data ',props?.route?.params?.data)
+      console.log('data ', props?.route?.params?.data);
       // console.log('appoiitment object data i prescription',appointMentObj)
       if (props?.route?.params?.editModeOn) {
         setIsEditModeOn(true);
         handleSetDataToEdit(props?.route?.params?.prescriptionObj);
       }
     }
-  }, [focused, props?.route?.params?.data,medicine]);
+  }, [focused, props?.route?.params?.data, medicine]);
   // debouncing implementation
   let delay = 700;
   useEffect(() => {
@@ -234,12 +238,8 @@ const Write_Prescription = (props: any) => {
     return () => clearTimeout(timer);
   }, [filter, delay]);
 
-
-
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
-
-
 
   const handleAddMedicine = () => {
     let tempArr = medicine;
@@ -253,12 +253,178 @@ const Write_Prescription = (props: any) => {
       doses: '',
       dose_form: '',
       duration_count: '',
-      combination : ''
+      combination: '',
     });
     setMedicine([...tempArr]);
 
     // console.log('handle add medicine ',medicine)
   };
+
+  //add liked medicne into prescriptions medicne
+
+  const handleAddLikedMedicine = (
+    name: any,
+    time: any,
+    frequency: any,
+    duration: any,
+    note: any,
+    roa: any,
+    doses: any,
+    dose_form: any,
+    duration_count: any,
+    combination: any,
+  ) => {
+
+    console.log('all data to add in liked medicine to prescriptns',{
+      name: name,
+      time: time,
+      frequency: frequency,
+      duration: duration,
+      note:note,
+      roa:roa,
+      doses:doses,
+      dose_form: dose_form,
+      duration_count: duration_count,
+      combination: combination,
+    })
+
+    // let tempArr = medicine;
+    // tempArr.push({
+    //   name: name,
+    //   time: time,
+    //   frequency: frequency,
+    //   duration: duration,
+    //   note:note,
+    //   roa:roa,
+    //   doses:doses,
+    //   dose_form: dose_form,
+    //   duration_count: duration_count,
+    //   combination: combination,
+    // });
+    // setMedicine([...tempArr]);
+
+   
+
+    let tempArr = [...medicine];
+
+    const isObjectEmpty = (obj : any) => {
+      return Object.values(obj).every(value => value === '');
+    };
+
+    if (tempArr.length === 1 && isObjectEmpty(tempArr[0])) {
+      tempArr = [];
+      setMedicine([]);
+    tempArr.push({
+      name: name,
+      time: time,
+      frequency: frequency,
+      duration: duration,
+      note: note,
+      roa: roa,
+      doses: doses,
+      dose_form: dose_form,
+      duration_count: duration_count,
+      combination: combination,
+    });
+    setMedicine(tempArr);
+  }else{
+
+    tempArr.push({
+      name: name,
+      time: time,
+      frequency: frequency,
+      duration: duration,
+      note: note,
+      roa: roa,
+      doses: doses,
+      dose_form: dose_form,
+      duration_count: duration_count,
+      combination: combination,
+    });
+
+    // alert(medicine.length)
+    setMedicine([...tempArr]);
+    console.log('medicine legnh',medicine.length)
+  }
+
+    
+
+    // console.log('handle add medicine ',medicine)
+  };
+
+//update liked medicine in database
+  const handleUpdateLikedMedicine = async (
+    id : any ,
+    name: any,
+    time: any,
+    frequency: any,
+    duration: any,
+    note: any,
+    roa: any,
+    doses: any,
+    dose_form: any,
+    duration_count: any,
+    combination: any,
+  
+  )=>{
+    try {
+
+      console.log('update  medicine to prescriptns',{
+        name: name,
+        time: time,
+        frequency: frequency,
+        duration: duration,
+        note:note,
+        roa:roa,
+        doses:doses,
+        dose_form: dose_form,
+        duration_count: duration_count,
+        combination: combination,
+      })
+
+      console.log('coming in update section for frequently used medicines')
+      let {data: res} = await updateLikedMedicine(
+        id,
+        name,
+        time,
+        frequency,
+        duration,
+        note,
+        roa,
+        doses,
+        dose_form,
+        duration_count,
+        combination,
+      );
+      console.log('update liked medicine from database ', res.message);
+      // setLikedMedicine(res.data)
+      if (res.message) {
+        alert(res.message);
+        setloding(false);
+      }
+    } catch (error) {
+      showAlert(error);
+    }
+  }
+
+  //delete liked medicine from database
+
+  const handleDeleteLikedMedicine = async (id:any) =>{
+    try {
+      let {data: res} = await deleteLikedMedicine(id);
+      console.log('delete liked medicine from database ', res);
+      if (res.status) {
+        getAllLikedMedicinesFromDatabase();
+        alert(res.message);
+        setloding(false);
+      }
+    } catch (error) {
+      showAlert(error);
+    }
+  }
+
+
+
   const handleDeleteMedicine = () => {
     let tempArr = medicine;
 
@@ -278,7 +444,6 @@ const Write_Prescription = (props: any) => {
 
     setMedicine([...tempArr]);
     // console.log('temp arr',tempArr)
-
   };
 
   const handleUpdateContentForLikedMedicine = (
@@ -292,69 +457,108 @@ const Write_Prescription = (props: any) => {
 
     setLikedMedicine([...tempArr]);
     // console.log('temp arr',tempArr)
-
   };
-
 
   //for liked medicine to add in database function
 
-  const addLIkedMedicinesToDatabase = async(name,time,
-  frequency,
-  duration,
-  note,
-  roa,
-  doses,
-  dose_form,
-  duration_count,
-  combination ) =>{
+  const addLIkedMedicinesToDatabase = async (
+    name: any,
+    time: any,
+    frequency: any,
+    duration: any,
+    note: any,
+    roa: any,
+    doses: any,
+    dose_form: any,
+    duration_count: any,
+    combination: any,
+  ) => {
+    console.log('all data here form that data', {
+      name: name,
+      time: time,
+      frequency: frequency,
+      duration: duration,
+      note: note,
+      roa: roa,
+      doses: doses,
+      dose_form: dose_form,
+      duration_count: duration_count,
+      combination: combination,
+    });
 
-    console.log('all data here form that data',{
-  name : name,
-  time : time,
-  frequency : frequency,
-  duration : duration,
-  note : note,
-  roa : roa,
-  doses : doses,
-  dose_form : dose_form,
-  duration_count : duration_count,
-  combination : combination
-    })
+    if (
+      name &&
+      time &&
+      frequency &&
+      duration &&
+      note &&
+      roa &&
+      dose_form &&
+      duration_count &&
+      combination
+    ) {
+      console.log('goood');
 
+      let obj = {
+        name,
+        time,
+        frequency,
+        duration,
+        note,
+        roa,
+        doses,
+        dose_form,
+        duration_count,
+        combination,
+      };
 
-    let obj ={
-  name,
-  time,
-  frequency,
-  duration,
-  note,
-  roa,
-  doses,
-  dose_form,
-  duration_count,
-  combination
+      setloding(true);
+      try {
+        let {data: res} = await addLikedMedicine(obj);
+        console.log(
+          'response from db for liked medicines medicines',
+          res.message,
+        );
+        if (res.status) {
+          getAllLikedMedicinesFromDatabase();
+          alert(res.message);
+          setloding(false);
+        }
+      } catch (error) {
+        showAlert(error);
+      }
+    } else {
+      console.log('not good');
+      alert('select all fields to add in frequently used medicines');
+      return;
     }
+  };
 
-    setloding(true);
+  const [showAll, setShowAll] = useState(false);
+
+  const displayedData = showAll ? likedMedicine : likedMedicine.slice(0, 4);
+
+  const getAllLikedMedicinesFromDatabase = async () => {
     try {
-      let {data: res} = await addLikedMedicine(obj);
-      console.log('response from db for liked medicines medicines',res.message)
+      let {data: res} = await getFromDatabaseAllLikedMedicines();
+      console.log('all liked medicine from database ', res);
+      setLikedMedicine(res.data);
       if (res.message) {
         alert(res.message);
         setloding(false);
-        
       }
     } catch (error) {
       showAlert(error);
     }
-      
-  }
+  };
 
- 
+  useEffect(() => {
+    getAllLikedMedicinesFromDatabase();
+  }, []);
+
   const clodeModal = () => {
     setPreview(false);
   };
-
 
   const handleAddPrescription = async () => {
     if (soWritePrescption) {
@@ -383,9 +587,8 @@ const Write_Prescription = (props: any) => {
           personalHistory,
         };
 
-       
         // console.log('patinet id is here in appointment ',appointMentObj.expert._id,)
-        console.log('id all data',appointMentObj.expert)
+        console.log('id all data', appointMentObj.expert);
         setSendData(obj);
         setPreview(true);
       } catch (err) {
@@ -394,7 +597,7 @@ const Write_Prescription = (props: any) => {
     } else {
       try {
         const base64Image = await RNFS.readFile(selectedImage, 'base64');
-       
+
         let obj: any = {
           appointmentId: appointMentObj?._id,
           doctorId: appointMentObj.doctor._id,
@@ -404,7 +607,7 @@ const Write_Prescription = (props: any) => {
         setSendData(obj);
         setPreview(true);
       } catch (err) {
-        showAlert("Please Upload image");
+        showAlert('Please Upload image');
       }
     }
   };
@@ -446,7 +649,7 @@ const Write_Prescription = (props: any) => {
     const options: ImagePickerOptions = {
       mediaType: 'photo',
       includeBase64: false,
-      maxHeight:1000,
+      maxHeight: 1000,
       maxWidth: 1000,
     };
     launchCamera(options, handleResponse);
@@ -469,7 +672,12 @@ const Write_Prescription = (props: any) => {
   return (
     <View style={{width: width, flex: 1, backgroundColor: 'white'}}>
       <Headerr secndheader={true} label="Prescription" />
-      {alertVisible && <AlertBox message={alertMessage} onClose={() => setAlertVisible(false)} />}
+      {alertVisible && (
+        <AlertBox
+          message={alertMessage}
+          onClose={() => setAlertVisible(false)}
+        />
+      )}
       <ScrollView
         contentContainerStyle={{paddingBottom: hp(0.5)}}
         showsVerticalScrollIndicator={false}>
@@ -1014,7 +1222,7 @@ const Write_Prescription = (props: any) => {
                         color: 'white',
                         fontFamily: mainFontmedium,
                       }}>
-                      Add more medicines +
+                      Add new medicines +
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -1059,12 +1267,11 @@ const Write_Prescription = (props: any) => {
                           maxHeight={300}
                           labelField="label"
                           valueField="value"
-                          placeholder={el.name ? el.name :'select medicine'}
+                          placeholder={el.name ? el.name : 'select medicine'}
                           // value={el.combination}
                           onFocus={() => setIsFocus(true)}
                           onBlur={() => setIsFocus(false)}
                           onChange={(item: any) => {
-                            
                             handleUpdateContentForMedicine(
                               item.value,
                               'combination',
@@ -1339,7 +1546,8 @@ const Write_Prescription = (props: any) => {
                       </View>
 
                       <TouchableOpacity
-                    onPress={() => addLIkedMedicinesToDatabase(
+                        onPress={() =>
+                          addLIkedMedicinesToDatabase(
                             el.name,
                             el.time,
                             el.frequency,
@@ -1350,26 +1558,26 @@ const Write_Prescription = (props: any) => {
                             el.dose_form,
                             el.duration_count,
                             el.combination,
-                    )}
-                    style={{
-                      paddingHorizontal: 15,
-                      height: hp(5),
-                      backgroundColor: '#50B148',
-                      borderRadius: 5,
-                      alignItems: 'left',
-                      justifyContent: 'center',
-                      marginLeft: wp(5),
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: hp(1.8),
-                        color: 'white',
-                        fontFamily: mainFontmedium,
-                      }}>
-                      Add to liked medicine
-                    </Text>
-                  </TouchableOpacity>
-
+                          )
+                        }
+                        style={{
+                          paddingHorizontal: 15,
+                          height: hp(5),
+                          backgroundColor: '#50B148',
+                          borderRadius: 5,
+                          alignItems: 'left',
+                          justifyContent: 'center',
+                          // marginLeft: wp(5),
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: hp(1.8),
+                            color: 'white',
+                            fontFamily: mainFontmedium,
+                          }}>
+                          Add to frequently used medicine
+                        </Text>
+                      </TouchableOpacity>
                     </View>
                   );
                 })}
@@ -1454,8 +1662,8 @@ const Write_Prescription = (props: any) => {
                     </Text>
                   </TouchableOpacity>
                 </View>
-                
-                {likedMedicine.map((el: any, index: number) => {
+
+                {displayedData.map((el: any, index: number) => {
                   return (
                     <View
                       key={index}
@@ -1496,12 +1704,11 @@ const Write_Prescription = (props: any) => {
                           labelField="label"
                           valueField="value"
                           // placeholder="Select Medicine"
-                          placeholder={el.name ? el.name :'select medicine'}
+                          placeholder={el.name ? el.name : 'select medicine'}
                           // value={el.combination}
                           onFocus={() => setIsFocus(true)}
                           onBlur={() => setIsFocus(false)}
                           onChange={(item: any) => {
-                            
                             handleUpdateContentForLikedMedicine(
                               item.value,
                               'combination',
@@ -1774,9 +1981,116 @@ const Write_Prescription = (props: any) => {
                           />
                         </View>
                       </View>
+
+                      {/* add update and delete */}
+
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          marginTop: hp(2),
+                          alignSelf: 'center',
+                          paddingTop: hp(1),
+                          paddingBottom: hp(1),
+                          width: wp(95),
+                        }}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            handleAddLikedMedicine(
+                              el.name,
+                              el.time,
+                              el.frequency,
+                              el.duration,
+                              el.note,
+                              el.roa,
+                              el.doses,
+                              el.dose_form,
+                              el.duration_count,
+                              el.combination,
+                            );
+                            console.log('working fine');
+                          }}
+                          style={{
+                            paddingHorizontal: 15,
+                            height: hp(5),
+                            backgroundColor: '#50B148',
+                            borderRadius: 5,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: hp(1.8),
+                              color: 'white',
+                              fontFamily: mainFontmedium,
+                            }}>
+                            Add to Prescription
+                          </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          onPress={() =>{
+                             handleUpdateLikedMedicine(
+                              el._id,
+                              el.name,
+                              el.time,
+                              el.frequency,
+                              el.duration,
+                              el.note,
+                              el.roa,
+                              el.doses,
+                              el.dose_form,
+                              el.duration_count,
+                              el.combination,
+                            );
+
+                            }}
+                          style={{
+                            paddingHorizontal: 15,
+                            height: hp(5),
+                            backgroundColor: '#50B148',
+                            borderRadius: 5,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginLeft: wp(5),
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: hp(1.8),
+                              color: 'white',
+                              fontFamily: mainFontmedium,
+                            }}>
+                            Update
+                          </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          onPress={() => handleDeleteLikedMedicine(el._id)}
+                          style={{
+                            paddingHorizontal: 15,
+                            height: hp(5),
+                            backgroundColor: '#fc034e',
+                            borderRadius: 5,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginLeft: wp(5),
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: hp(1.8),
+                              color: 'white',
+                              fontFamily: mainFontmedium,
+                            }}>
+                            Delete
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   );
                 })}
+
+                {!showAll && (
+                  <Button title="View More" onPress={() => setShowAll(true)} />
+                )}
 
                 {/* frequenlty asked medicnes closed */}
                 <View
