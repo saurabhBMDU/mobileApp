@@ -109,12 +109,31 @@ const Password = (props: any) => {
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={{ flex: 1 }}>
-        <View>
-          <Image
+        
+        <View
+        
+        style={{ 
+          flex: 1,
+          backgroundColor:'#fff',
+          borderTopLeftRadius:50,
+          borderTopRightRadius:50,
+          marginBottom:10,
+          marginTop: '-10%',
+          width:'100%'
+           }}
+        >
+          {/* <Image
             source={require('../../../assets/images/final1.png')}
             resizeMode="stretch"
             style={{ width: wp(100), height: hp(33),}}
-          />
+          /> */}
+
+<Image
+            source={require('../../../assets/images/Logo.png')}
+            resizeMode='stretch'
+            style={{ width: wp(72), height: hp(15),alignSelf:'center',marginTop:30 }} 
+            />
+
         </View>
 
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

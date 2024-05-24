@@ -81,6 +81,7 @@ export const updateLikedMedicine = async (
 ) => {
 
     let obj = {
+    id,
     name,
     time,
     frequency,

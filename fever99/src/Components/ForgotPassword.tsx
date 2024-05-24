@@ -52,12 +52,13 @@ const ForgotPassword = () => {
   return (
     <View
       style={{
-        width: width,
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: height,
+        // width: width,
+        // alignItems: 'center',
+        // justifyContent: 'center',
+        // height: height,
+        backgroundColor:'#fff'
       }}>
-      <ImageBackground
+      {/* <ImageBackground
         source={require('../../assets/images/feverNewLogo.png')}
         resizeMode="stretch"
         style={{ flex: 1, width: wp(100), height: hp(100), alignItems: 'center', justifyContent: 'center' }}>
@@ -65,7 +66,68 @@ const ForgotPassword = () => {
           style={{
             justifyContent: 'center',
             flex: 1,
-          }}>
+          }}> */}
+
+<View
+        style={{ 
+          width: wp(100), 
+          height: hp(33),
+          backgroundColor:"#1263AC",
+          justifyContent:"center",
+          alignItems:'center'
+         }}
+        >
+          <Text
+          style = {{
+             color:"#ffff",
+             fontSize:50
+          }}
+          >Welcome !</Text>
+          <Text
+          style={{
+            color:"#ffff"
+          }}
+          >Forgot Password</Text>
+          {/* <Image
+            source={require('../../../assets/images/final1.png')}
+            resizeMode='stretch'
+            style={{ width: wp(100), height: hp(33) }} /> */}
+        </View>
+        
+<View
+  style={{ 
+    // flex: 1,
+    backgroundColor:'#fff',
+    borderTopLeftRadius:50,
+    borderTopRightRadius:50,
+    // marginBottom:40,
+    marginTop: '-10%',
+    width:'100%',
+    height:'20%'
+     }}
+> 
+          <Image
+            source={require('../../assets/images/Logo.png')}
+            resizeMode='stretch'
+            style={{ width: wp(72), height: hp(15),alignSelf:'center',marginTop:30,marginBottom:8, backgroundColor:'#fff',}} 
+            />
+
+          <Text
+            style={{
+              alignSelf:"center",
+              fontSize:17,
+              fontWeight:"300",
+              backgroundColor:'#fff',
+            }}
+            >HEALTH CARE AT YOUR DOORESTEP</Text>
+</View> 
+
+ <View
+ style={{
+  backgroundColor:'#fff',
+  height:'80%'
+ }}
+ >
           <Text
             style={{
               fontSize: hp(3),
@@ -73,6 +135,7 @@ const ForgotPassword = () => {
               fontWeight: 'bold',
               fontFamily: mainFont,
               marginBottom: hp(2),
+              marginLeft:20,
             }}>
             Forgot Password
           </Text>
@@ -116,9 +179,7 @@ const ForgotPassword = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          <View></View>
         </View>
-      </ImageBackground>
     </View>
   );
 };

@@ -58,6 +58,7 @@ import {
   DaysData,
   doseFormArr,
   doses,
+  duration_count,
 } from '../allArrayData/DrArrayDatta';
 import PreView from '../allModals/PreView';
 import {template} from 'lodash';
@@ -106,6 +107,15 @@ const Write_Prescription = (props: any) => {
   const [medicinesArr, setMedicinesArr] = useState([]);
 
   // console.log('medicne arra',sendData)
+
+  const [searchText, setSearchText] = useState('');
+  const [filteredData, setFilteredData] = useState([]);
+
+  const [showAll, setShowAll] = useState(false);
+
+  const [displayedData,setDisplayedData] = useState('');
+
+
 
   const showAlert = message => {
     setAlertMessage(message);
@@ -365,6 +375,7 @@ const Write_Prescription = (props: any) => {
     dose_form: any,
     duration_count: any,
     combination: any,
+    
   
   )=>{
     try {
@@ -414,7 +425,7 @@ const Write_Prescription = (props: any) => {
       let {data: res} = await deleteLikedMedicine(id);
       console.log('delete liked medicine from database ', res);
       if (res.status) {
-        getAllLikedMedicinesFromDatabase();
+        getAllLikedMedicinesFromDatabase(false);
         alert(res.message);
         setloding(false);
       }
@@ -425,14 +436,31 @@ const Write_Prescription = (props: any) => {
 
 
 
-  const handleDeleteMedicine = () => {
-    let tempArr = medicine;
+  // const handleDeleteMedicine = (index: Number) => {
+  //   let tempArr = medicine;
 
-    if (tempArr && tempArr.length > 1) {
-      tempArr.pop();
-      setMedicine([...tempArr]);
+  //   if (tempArr && tempArr.length > 1) {
+  //     tempArr.splice(index);
+  //     setMedicine([...tempArr]);
+  //   }
+  // };
+
+
+  const handleDeleteMedicine = (index: number) => {
+    // Create a copy of the medicine array
+    let tempArr = [...medicine];
+  
+    // Check if the index is within the bounds of the array
+    // if (index >= 1 && index < tempArr.length) {
+      if (index < tempArr.length-1) {
+      // Remove the item at the specified index
+      tempArr.splice(index, 1);
+      // Update the state with the new array
+      setMedicine(tempArr);
     }
   };
+  
+
   const handleUpdateContentForMedicine = (
     value: any,
     field: string,
@@ -456,7 +484,7 @@ const Write_Prescription = (props: any) => {
     tempArr[index][field] = value;
 
     setLikedMedicine([...tempArr]);
-    // console.log('temp arr',tempArr)
+    console.log('temp arr',tempArr)
   };
 
   //for liked medicine to add in database function
@@ -491,7 +519,7 @@ const Write_Prescription = (props: any) => {
       time &&
       frequency &&
       duration &&
-      note &&
+      doses &&
       roa &&
       dose_form &&
       duration_count &&
@@ -520,7 +548,7 @@ const Write_Prescription = (props: any) => {
           res.message,
         );
         if (res.status) {
-          getAllLikedMedicinesFromDatabase();
+          getAllLikedMedicinesFromDatabase(false);
           alert(res.message);
           setloding(false);
         }
@@ -534,15 +562,19 @@ const Write_Prescription = (props: any) => {
     }
   };
 
-  const [showAll, setShowAll] = useState(false);
 
-  const displayedData = showAll ? likedMedicine : likedMedicine.slice(0, 4);
 
-  const getAllLikedMedicinesFromDatabase = async () => {
+  const getAllLikedMedicinesFromDatabase = async (show) => {
     try {
       let {data: res} = await getFromDatabaseAllLikedMedicines();
-      console.log('all liked medicine from database ', res);
+      // console.log('all liked medicine from database ', res);
       setLikedMedicine(res.data);
+      
+  const displayedData = show ? res.data : res.data.slice(0, 4);
+  console.log('displayed data',displayedData.length)
+      setFilteredData(displayedData)
+      setDisplayedData(res.data);
+      
       if (res.message) {
         alert(res.message);
         setloding(false);
@@ -553,8 +585,10 @@ const Write_Prescription = (props: any) => {
   };
 
   useEffect(() => {
-    getAllLikedMedicinesFromDatabase();
+    getAllLikedMedicinesFromDatabase(false);
   }, []);
+
+ 
 
   const clodeModal = () => {
     setPreview(false);
@@ -588,7 +622,8 @@ const Write_Prescription = (props: any) => {
         };
 
         // console.log('patinet id is here in appointment ',appointMentObj.expert._id,)
-        console.log('id all data', appointMentObj.expert);
+        // console.log('id all data', appointMentObj.expert);
+        // console.log('handle add prescription ',  medicine,)
         setSendData(obj);
         setPreview(true);
       } catch (err) {
@@ -669,6 +704,34 @@ const Write_Prescription = (props: any) => {
       setSoModalreschedule(false);
     }
   };
+
+
+
+
+  
+  // useEffect(() => {
+  
+  // }, [searchText, displayedData]);
+
+ 
+  const serchFrequentlyUsedMedicine = (e : any) => {
+    console.log('search text in funciton ',e)
+ 
+    if(!e){
+      console.log('false is working')
+      getAllLikedMedicinesFromDatabase(false);
+    }
+    
+  setFilteredData(
+    displayedData.filter(medicine =>
+      medicine.name.toLowerCase().includes(searchText.toLowerCase())
+    )
+  )
+ 
+}
+
+
+
   return (
     <View style={{width: width, flex: 1, backgroundColor: 'white'}}>
       <Headerr secndheader={true} label="Prescription" />
@@ -1323,13 +1386,14 @@ const Write_Prescription = (props: any) => {
                             labelField="label"
                             valueField="value"
                             placeholder="Unit"
-                            value={el.duration_count}
+                            value={el.doses}
                             onFocus={() => setIsFocus(true)}
                             onBlur={() => setIsFocus(false)}
                             onChange={(item: any) => {
+                              console.log(' item.value doses index', item.value,index,)
                               handleUpdateContentForMedicine(
                                 item.value,
-                                'duration_count',
+                                'doses',
                                 index,
                               );
                             }}
@@ -1494,18 +1558,18 @@ const Write_Prescription = (props: any) => {
                             selectedTextStyle={styles.selectedTextStyle}
                             inputSearchStyle={styles.inputSearchStyle}
                             iconStyle={styles.iconStyle}
-                            data={doses}
+                            data={duration_count}
                             maxHeight={300}
                             labelField="label"
                             valueField="value"
                             placeholder="Unit"
-                            value={el.note}
+                            value={el.duration_count}
                             onFocus={() => setIsFocus(true)}
                             onBlur={() => setIsFocus(false)}
                             onChange={(item: any) => {
                               handleUpdateContentForMedicine(
                                 item.value,
-                                'note',
+                                'duration_count',
                                 index,
                               );
                             }}
@@ -1545,7 +1609,20 @@ const Write_Prescription = (props: any) => {
                         </View>
                       </View>
 
-                      <TouchableOpacity
+                    
+
+                      <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(2),
+                    alignSelf: 'center',
+                    paddingTop: hp(1),
+                    paddingBottom: hp(1),
+                    width: wp(95),
+                    justifyContent:"space-evenly"
+                  }}>
+
+                        <TouchableOpacity
                         onPress={() =>
                           addLIkedMedicinesToDatabase(
                             el.name,
@@ -1567,7 +1644,6 @@ const Write_Prescription = (props: any) => {
                           borderRadius: 5,
                           alignItems: 'left',
                           justifyContent: 'center',
-                          // marginLeft: wp(5),
                         }}>
                         <Text
                           style={{
@@ -1578,20 +1654,9 @@ const Write_Prescription = (props: any) => {
                           Add to frequently used medicine
                         </Text>
                       </TouchableOpacity>
-                    </View>
-                  );
-                })}
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginTop: hp(2),
-                    alignSelf: 'center',
-                    paddingTop: hp(1),
-                    paddingBottom: hp(1),
-                    width: wp(95),
-                  }}>
+
                   <TouchableOpacity
-                    onPress={() => handleDeleteMedicine()}
+                    onPress={() => handleDeleteMedicine(index)}
                     style={{
                       paddingHorizontal: 15,
                       height: hp(5),
@@ -1632,6 +1697,11 @@ const Write_Prescription = (props: any) => {
                   </TouchableOpacity>
                 </View>
 
+                    </View>
+                  );
+                })}
+              
+
                 {/* frequently asked medicines */}
 
                 <View
@@ -1640,6 +1710,8 @@ const Write_Prescription = (props: any) => {
                     flexDirection: 'row',
                     flexWrap: 'wrap',
                     width: wp(95),
+                    alignItems:'center',
+                    justifyContent:'space-evenly',
                   }}>
                   <TouchableOpacity
                     // onPress={() => setMedicineModal(true)}
@@ -1661,9 +1733,29 @@ const Write_Prescription = (props: any) => {
                       Frequently used medicine's
                     </Text>
                   </TouchableOpacity>
+
+                  <TextInput
+        style={{
+          height: hp(5),
+          borderColor: 'gray',
+          borderWidth: 1,
+          borderRadius: 5,
+          paddingHorizontal: 10,
+          marginBottom: hp(1),
+        }}
+        placeholder="Search medicine..."
+        value={searchText}
+        onChangeText={(e) => {
+          serchFrequentlyUsedMedicine(e);
+          setSearchText(e)
+        }}
+      />
+
                 </View>
 
-                {displayedData.map((el: any, index: number) => {
+                
+
+                {filteredData.map((el: any, index: number) => {
                   return (
                     <View
                       key={index}
@@ -1760,13 +1852,13 @@ const Write_Prescription = (props: any) => {
                             labelField="label"
                             valueField="value"
                             placeholder="Unit"
-                            value={el.duration_count}
+                            value={el.doses}
                             onFocus={() => setIsFocus(true)}
                             onBlur={() => setIsFocus(false)}
                             onChange={(item: any) => {
                               handleUpdateContentForLikedMedicine(
                                 item.value,
-                                'duration_count',
+                                'doses',
                                 index,
                               );
                             }}
@@ -1931,18 +2023,18 @@ const Write_Prescription = (props: any) => {
                             selectedTextStyle={styles.selectedTextStyle}
                             inputSearchStyle={styles.inputSearchStyle}
                             iconStyle={styles.iconStyle}
-                            data={doses}
+                            data={duration_count}
                             maxHeight={300}
                             labelField="label"
                             valueField="value"
                             placeholder="Unit"
-                            value={el.note}
+                            value={el.duration_count}
                             onFocus={() => setIsFocus(true)}
                             onBlur={() => setIsFocus(false)}
                             onChange={(item: any) => {
                               handleUpdateContentForLikedMedicine(
                                 item.value,
-                                'note',
+                                'duration_count',
                                 index,
                               );
                             }}
@@ -2089,7 +2181,10 @@ const Write_Prescription = (props: any) => {
                 })}
 
                 {!showAll && (
-                  <Button title="View More" onPress={() => setShowAll(true)} />
+                  <Button title="View More" onPress={() => {
+                    setShowAll(true);
+                    getAllLikedMedicinesFromDatabase(true);
+                  }} />
                 )}
 
                 {/* frequenlty asked medicnes closed */}

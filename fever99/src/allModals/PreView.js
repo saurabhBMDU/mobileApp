@@ -19,6 +19,8 @@ const maincolor = '#1263AC';
 const PreView = ({ objectData, clodeBtn, images }) => {
     const sending = "Sending.....";
 
+    console.log('preview data',objectData.medicine)
+
     const navigation = useNavigation();
     const [loding, setLoding] = useState(false);
 
@@ -135,6 +137,10 @@ const PreView = ({ objectData, clodeBtn, images }) => {
                                                         <View style={styles.d_flex2}>
                                                             <Text style={[styles.textStle, { width: "37%" }]}>Dose Form:</Text>
                                                             <Text style={[styles.textStle, { fontFamily: mainFont }]}>{itms.duration_count} {itms.dose_form}</Text>
+                                                        </View>
+                                                        <View style={styles.d_flex2}>
+                                                            <Text style={[styles.textStle, { width: "37%" }]}>Dose:</Text>
+                                                            <Text style={[styles.textStle, { fontFamily: mainFont }]}>{itms.doses}</Text>
                                                         </View>
                                                         <View style={styles.d_flex2}>
                                                             <Text style={[styles.textStle, { width: "37%" }]}>ROA</Text>

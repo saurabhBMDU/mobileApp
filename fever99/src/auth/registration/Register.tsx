@@ -143,14 +143,69 @@ const Register = () => {
         justifyContent: 'center',
         backgroundColor: 'white',
       }}>
-      <View>
-        <Image
+
+
+<View
+        style={{ 
+          width: wp(100), 
+          height: hp(33),
+          backgroundColor:"#1263AC",
+          justifyContent:"center",
+          alignItems:'center'
+         }}
+        >
+          <Text
+          style = {{
+             color:"#ffff",
+             fontSize:50
+          }}
+          >Welcome !</Text>
+          <Text
+          style={{
+            color:"#ffff"
+          }}
+          >Register And continue</Text>
+          {/* <Image
+            source={require('../../../assets/images/final1.png')}
+            resizeMode='stretch'
+            style={{ width: wp(100), height: hp(33) }} /> */}
+        </View>
+
+      <View
+         style={{ 
+          flex: 1,
+          backgroundColor:'#fff',
+          borderTopLeftRadius:50,
+          borderTopRightRadius:50,
+          marginBottom:10,
+          marginTop: '-10%',
+          width:'100%'
+           }}
+      >
+        {/* <Image
           source={require('../../../assets/images/final1.png')}
           resizeMode="stretch"
           style={{
             width: wp(100),
             height: hp(33),
-          }} />
+          }} /> */}
+
+          <Image
+            source={require('../../../assets/images/Logo.png')}
+            resizeMode='stretch'
+            style={{ width: wp(72), height: hp(15),alignSelf:'center',marginTop:30,marginBottom:10, }} 
+            />
+
+<Text
+            style={{
+              alignSelf:"center",
+              fontSize:17,
+              fontWeight:"300",
+              backgroundColor:'#fff',
+              marginBottom:20,
+            }}
+            >HEALTH CARE AT YOUR DOORESTEP</Text>
+
       </View>
 
       <KeyboardAvoidingView

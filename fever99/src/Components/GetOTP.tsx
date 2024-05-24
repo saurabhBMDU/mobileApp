@@ -61,10 +61,65 @@ const GetOTP = (props: any) => {
     }
     return (
         <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={{ width: width }}>
+            <View style={{ width: width,backgroundColor:'#fff' }}>
                 <View>
-                    <View>
-                        <Image source={require('../../assets/images/final1.png')} resizeMode='stretch' style={{ height: hp(30), width: wp(100) }} />
+                    {/* <View> */}
+                    <View
+        style={{ 
+          width: wp(100), 
+          height: hp(33),
+          backgroundColor:"#1263AC",
+          justifyContent:"center",
+          alignItems:'center'
+         }}
+        >
+          <Text
+          style = {{
+             color:"#ffff",
+             fontSize:50
+          }}
+          >Welcome !</Text>
+          <Text
+          style={{
+            color:"#ffff"
+          }}
+          >Verify Otp</Text>
+          {/* <Image
+            source={require('../../../assets/images/final1.png')}
+            resizeMode='stretch'
+            style={{ width: wp(100), height: hp(33) }} /> */}
+        </View>
+
+                        {/* <Image source={require('../../assets/images/final1.png')} resizeMode='stretch' style={{ height: hp(30), width: wp(100) }} /> */}
+                        <View
+  style={{ 
+    // flex: 1,
+    backgroundColor:'#fff',
+    borderTopLeftRadius:50,
+    borderTopRightRadius:50,
+    // marginBottom:40,
+    marginTop: '-10%',
+    width:'100%',
+    // height:'20%'
+     }}
+> 
+          <Image
+            source={require('../../assets/images/Logo.png')}
+            resizeMode='stretch'
+            style={{ width: wp(72), height: hp(15),alignSelf:'center',marginTop:30,marginBottom:4, backgroundColor:'#fff',}} 
+            />
+
+          <Text
+            style={{
+              alignSelf:"center",
+              fontSize:17,
+              fontWeight:"300",
+              backgroundColor:'#fff',
+              marginBottom:20
+            }}
+            >HEALTH CARE AT YOUR DOORESTEP</Text>
+{/* </View>  */}
+
                     </View>
                     <View style={{}}>
                         <Text style={{ fontSize: hp(3), marginLeft: wp(5), fontFamily: mainFont, color: '#1263AC', fontWeight: 'bold' }}>OTP Verification</Text>

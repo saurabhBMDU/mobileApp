@@ -13,43 +13,43 @@ import {
   Modal,
   Pressable,
 } from 'react-native';
-import React, { useContext, useState } from 'react';
+import React, {useContext, useState} from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { useNavigation } from '@react-navigation/native';
-import { AuthContext, LoginContext, UserDataContext } from '../../../App';
-import { toastError } from '../../utils/toast.utils';
+import {useNavigation} from '@react-navigation/native';
+import {AuthContext, LoginContext, UserDataContext} from '../../../App';
+import {toastError} from '../../utils/toast.utils';
 import Mail_icons from 'react-native-vector-icons/Entypo';
-const { height, width } = Dimensions.get('window');
-import { useNetInfo } from '@react-native-community/netinfo';
-import type { StatusBarStyle } from 'react-native';
+const {height, width} = Dimensions.get('window');
+import {useNetInfo} from '@react-native-community/netinfo';
+import type {StatusBarStyle} from 'react-native';
 import RoundedStatusBar from '../../allModals/CustomStatusBar';
 import CustomStatusBar from '../../allModals/CustomStatusBar';
-import { ProceedToLoginUser, loginUser, setJwt } from '../../Services/user.service';
+import {
+  ProceedToLoginUser,
+  loginUser,
+  setJwt,
+} from '../../Services/user.service';
 import AlertBox from '../../allModals/AlertBox';
 import Lock from 'react-native-vector-icons/FontAwesome6';
 
 import Openeye_closeEye from 'react-native-vector-icons/Ionicons';
 
-
 const STYLES = ['default', 'dark-content', 'light-content'] as const;
 const TRANSITIONS = ['fade', 'slide', 'none'] as const;
 
-
 const Login = () => {
-
   // checking internet connection
 
   // message and password
 
-  const [message,setUserMessage] = useState('')
-  const [onClose,setONclose] = useState(false)
+  const [message, setUserMessage] = useState('');
+  const [onClose, setONclose] = useState(false);
 
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
-
 
   const netInfo = useNetInfo();
   const isConnected = netInfo.isConnected;
@@ -63,14 +63,14 @@ const Login = () => {
   const handleRedirectToNextScreen = () => {
     if (email == '') {
       toastError('Email is mandatory !!!');
-      showAlert('Email is mandatory !!!')
+      showAlert('Email is mandatory !!!');
       return;
     }
     // navigation.navigate('Password', { data: email });
   };
 
   //for password section
-  
+
   const [hide, setHide] = useState(true);
   const [password, setPassword] = useState('');
   const [isAuthorized, setIsAuthorized] = useContext<any>(AuthContext);
@@ -89,11 +89,11 @@ const Login = () => {
         password,
       };
 
-      const { data: res }: any = await loginUser(obj);
+      const {data: res}: any = await loginUser(obj);
       if (res.status == false) {
         if (res.error === 'User already login in other device') {
           showModalPopup();
-          console.log('response from backend', res)
+          console.log('response from backend', res);
         } else {
           throw new Error(res.error);
         }
@@ -109,7 +109,6 @@ const Login = () => {
     }
   };
 
-
   const ProceedToLogin = async () => {
     try {
       if (password == '') {
@@ -120,9 +119,9 @@ const Login = () => {
         email,
         password,
       };
-      const { data: res }: any = await ProceedToLoginUser(obj);
+      const {data: res}: any = await ProceedToLoginUser(obj);
       if (res.status == false) {
-        console.log('response from backend', res)
+        console.log('response from backend', res);
         throw new Error(res.error);
       }
 
@@ -139,7 +138,6 @@ const Login = () => {
     }
   };
 
-
   const showModalPopup = () => {
     setShowModal(true);
   };
@@ -148,45 +146,50 @@ const Login = () => {
     setShowModal(false);
   };
 
-  
+  //show alert box
 
-  //show alert box 
-
-
-
- const showAlert = (message) => {
+  const showAlert = message => {
     setAlertMessage(message);
     setAlertVisible(true);
     setTimeout(() => {
       setAlertVisible(false);
     }, 3300); // Extra 300ms to account for the sliding out animation
   };
- 
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}
-    style={{
-      backgroundColor:'#fff'
-    }}
-    >
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={{
+        backgroundColor: '#fff',
+      }}>
       {/* <AlertBox message={message} onClose={onClose}/> */}
-      {alertVisible && <AlertBox message={alertMessage} onClose={() => setAlertVisible(false)} />}
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center',backgroundColor:'#fff' }}>
+      {alertVisible && (
+        <AlertBox
+          message={alertMessage}
+          onClose={() => setAlertVisible(false)}
+        />
+      )}
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#fff',
+        }}>
         <View>
           {/*<StatusBar backgroundColor={isConnected ? '#baddff' : '#cc5933'} />*/}
           {/* <CustomStatusBar/> */}
 
-          <CustomStatusBar/>
+          <CustomStatusBar />
 
           <View
             style={{
               backgroundColor: isConnected ? '#8f4608' : '#cc5933',
               width: wp(100),
               alignItems: 'center',
-            }}
-            >
+            }}>
             {!isConnected && (
-              <Text style={{ fontSize: wp(4), color: '#fff' }}>
+              <Text style={{fontSize: wp(4), color: '#fff'}}>
                 Verify Your Connection
               </Text>
             )}
@@ -194,25 +197,26 @@ const Login = () => {
         </View>
 
         <View
-        style={{ 
-          width: wp(100), 
-          height: hp(33),
-          backgroundColor:"#1263AC",
-          justifyContent:"center",
-          alignItems:'center'
-         }}
-        >
-          <Text
-          style = {{
-             color:"#ffff",
-             fontSize:50
-          }}
-          >Welcome !</Text>
-          <Text
           style={{
-            color:"#ffff"
-          }}
-          >Sign in to continue</Text>
+            width: wp(100),
+            height: hp(33),
+            backgroundColor: '#1263AC',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text
+            style={{
+              color: '#ffff',
+              fontSize: 50,
+            }}>
+            Welcome !
+          </Text>
+          <Text
+            style={{
+              color: '#ffff',
+            }}>
+            Sign in to continue
+          </Text>
           {/* <Image
             source={require('../../../assets/images/final1.png')}
             resizeMode='stretch'
@@ -221,35 +225,44 @@ const Login = () => {
 
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View
-            style={{ 
-            flex: 1,
-            backgroundColor:'#fff',
-            borderTopLeftRadius:50,
-            borderTopRightRadius:50,
-            marginBottom:10,
-            marginTop: '-10%',
-            width:'100%'
-             }}>
-
+            style={{
+              flex: 1,
+              backgroundColor: '#fff',
+              borderTopLeftRadius: 50,
+              borderTopRightRadius: 50,
+              marginBottom: 10,
+              marginTop: '-10%',
+              width: '100%',
+            }}>
             <Image
-            source={require('../../../assets/images/Logo.png')}
-            resizeMode='stretch'
-            style={{ width: wp(72), height: hp(15),alignSelf:'center',marginTop:30 }} 
+              source={require('../../../assets/images/Logo.png')}
+              resizeMode="stretch"
+              style={{
+                width: wp(72),
+                height: hp(15),
+                alignSelf: 'center',
+                marginTop: 30,
+              }}
             />
             <Text
-            style={{
-              alignSelf:"center",
-              fontSize:17,
-              fontWeight:"300"
-            }}
-            >HEALTH CARE AT YOUR DOORESTEP</Text>
+              style={{
+                alignSelf: 'center',
+                fontSize: 17,
+                fontWeight: '300',
+              }}>
+              HEALTH CARE AT YOUR DOORESTEP
+            </Text>
 
+            <View style={{flexDirection: 'row'}}></View>
             <View
-              style={{ flexDirection: 'row', }}>
-              
-            </View>
-            <View style={{ width: wp(73), alignSelf: 'center', marginTop: hp(2) }}>
-              <Text style={{ color: '#1263AC', fontWeight: 'bold', fontSize: hp(1.8),marginBottom:5, }}>
+              style={{width: wp(73), alignSelf: 'center', marginTop: hp(2)}}>
+              <Text
+                style={{
+                  color: '#1263AC',
+                  fontWeight: 'bold',
+                  fontSize: hp(1.8),
+                  marginBottom: 5,
+                }}>
                 Email/Mobile No
               </Text>
               <View
@@ -262,29 +275,37 @@ const Login = () => {
                   alignItems: 'center',
                   paddingLeft: wp(2),
                   flexDirection: 'row',
-                  marginBottom:20,
+                  marginBottom: 20,
                 }}>
                 <Mail_icons
                   name="mail"
                   style={{
                     color: 'grey',
                     fontSize: hp(2.8),
-                  }} />
+                  }}
+                />
 
                 <TextInput
                   placeholder="Enter Mobile Number or Email"
                   placeholderTextColor="gray"
                   onChangeText={e => setEmail(e)}
                   value={email}
-                  style={{ width: wp(70), fontSize: hp(2) }}
-
+                  style={{
+                    width: wp(70),
+                    fontSize: hp(2),
+                    paddingLeft: 20,
+                  }}
                 />
-
-                
               </View>
 
-              <Text style={{ color: '#1263AC', fontWeight: 'bold', fontSize: hp(1.8),marginBottom:5, }}>
-              Password
+              <Text
+                style={{
+                  color: '#1263AC',
+                  fontWeight: 'bold',
+                  fontSize: hp(1.8),
+                  marginBottom: 5,
+                }}>
+                Password
               </Text>
               <View
                 style={{
@@ -296,7 +317,7 @@ const Login = () => {
                   alignItems: 'center',
                   paddingLeft: wp(3),
                   flexDirection: 'row',
-                  justifyContent: "space-between"
+                  justifyContent: 'space-between',
                 }}>
                 <Lock
                   name="lock"
@@ -311,11 +332,13 @@ const Login = () => {
                   secureTextEntry={hide}
                   onChangeText={e => setPassword(e)}
                   value={password}
-                  style={{ width: wp(70), fontSize: hp(2) }}
+                  style={{width: wp(70), fontSize: hp(2)}}
                 />
-                <Pressable onPress={() => setHide(!hide)} style={{ padding: wp(2),marginLeft:-100 }}>
+                <Pressable
+                  onPress={() => setHide(!hide)}
+                  style={{padding: wp(2), marginLeft: -100}}>
                   <Openeye_closeEye
-                    name={hide ? "eye-off" : "eye"}
+                    name={hide ? 'eye-off' : 'eye'}
                     style={{
                       color: '#696968',
                       fontSize: hp(3),
@@ -325,8 +348,10 @@ const Login = () => {
               </View>
               <Pressable
                 onPress={() => navigation.navigate('ForgotPassword')}
-                style={{ alignSelf: 'flex-end', marginTop: 8 }}>
-                <Text style={{ color: '#1263AC', fontSize: hp(1.8) }}>Forgot Password? </Text>
+                style={{alignSelf: 'flex-end', marginTop: 8}}>
+                <Text style={{color: '#1263AC', fontSize: hp(1.8)}}>
+                  Forgot Password?{' '}
+                </Text>
               </Pressable>
 
               {/* Button section >>>>>>>>>>>>>>>>>> */}
@@ -335,7 +360,7 @@ const Login = () => {
                 onPress={() => handleLogin()}
                 style={[
                   styles.both_reg_continew_BTN,
-                  { backgroundColor: '#1263AC', borderColor: '#1263AC' },
+                  {backgroundColor: '#1263AC', borderColor: '#1263AC'},
                 ]}>
                 <Text style={styles.register_And_Continew}>Sign in</Text>
               </TouchableOpacity>
@@ -354,24 +379,26 @@ const Login = () => {
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  justifyContent: "center",
-                  marginTop:15,
-                }}
-              >
-                <Text style={{
-                  fontSize: hp(1.8),
-                }}>Don't have an account?</Text>
+                  justifyContent: 'center',
+                  marginTop: 15,
+                }}>
+                <Text
+                  style={{
+                    fontSize: hp(1.8),
+                  }}>
+                  Don't have an account?
+                </Text>
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('Register')}
-                >
+                  onPress={() => navigation.navigate('Register')}>
                   <Text
                     style={{
-                      color: "#1263AC",
+                      color: '#1263AC',
                       fontSize: hp(1.8),
-                      fontWeight: "bold",
+                      fontWeight: 'bold',
                       marginLeft: 10,
-                    }}
-                  >SIGN UP</Text>
+                    }}>
+                    SIGN UP
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -382,19 +409,82 @@ const Login = () => {
           animationType="slide"
           transparent={true}
           visible={showModal}
-          onRequestClose={() => closeModal()}
-        >
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-            <View style={{ backgroundColor: '#ececec', padding: 20, borderRadius: 10, width: '80%' }}>
-              <Lock name="lock" style={{ height: wp(5.5), width: wp(5.5), color: 'grey', fontSize: hp(2.8), alignSelf: "center", marginBottom: 10 }} />
-              <Text style={{ fontSize: 18, fontWeight: 'normal', textAlign: 'center', marginBottom: 20 }}>Are you sure you want to log out from another device and log in here?</Text>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <TouchableOpacity onPress={() => closeModal()} style={{ flex: 1, marginRight: 10, backgroundColor: '#fa1640', borderRadius: 5, padding: 10 }}>
-                  <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center' }}>Cancel</Text>
+          onRequestClose={() => closeModal()}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            }}>
+            <View
+              style={{
+                backgroundColor: '#ececec',
+                padding: 20,
+                borderRadius: 10,
+                width: '80%',
+              }}>
+              <Lock
+                name="lock"
+                style={{
+                  height: wp(5.5),
+                  width: wp(5.5),
+                  color: 'grey',
+                  fontSize: hp(2.8),
+                  alignSelf: 'center',
+                  marginBottom: 10,
+                }}
+              />
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: 'normal',
+                  textAlign: 'center',
+                  marginBottom: 20,
+                }}>
+                Are you sure you want to log out from another device and log in
+                here?
+              </Text>
+              <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <TouchableOpacity
+                  onPress={() => closeModal()}
+                  style={{
+                    flex: 1,
+                    marginRight: 10,
+                    backgroundColor: '#fa1640',
+                    borderRadius: 5,
+                    padding: 10,
+                  }}>
+                  <Text
+                    style={{
+                      color: '#fff',
+                      fontWeight: 'bold',
+                      textAlign: 'center',
+                    }}>
+                    Cancel
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => { closeModal(); ProceedToLogin(); }} style={{ flex: 1, marginLeft: 10, backgroundColor: '#1263AC', borderRadius: 5, padding: 10 }}>
-                  <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center' }}>Proceed</Text>
+                  onPress={() => {
+                    closeModal();
+                    ProceedToLogin();
+                  }}
+                  style={{
+                    flex: 1,
+                    marginLeft: 10,
+                    backgroundColor: '#1263AC',
+                    borderRadius: 5,
+                    padding: 10,
+                  }}>
+                  <Text
+                    style={{
+                      color: '#fff',
+                      fontWeight: 'bold',
+                      textAlign: 'center',
+                    }}>
+                    Proceed
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -416,7 +506,7 @@ const styles = StyleSheet.create({
   register_And_Continew: {
     color: 'white',
     fontFamily: 'AvenirNextLTPro-Regular',
-    fontSize: hp(2)
+    fontSize: hp(2),
   },
   Both_small_Line: {
     width: wp(40),

@@ -41,7 +41,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Attachment_Send_icons from 'react-native-vector-icons/MaterialCommunityIcons'; // send and attachment
 import { SendNotification, SendNotificationForMeetingCreation } from '../Services/notificationSevice';
 
-
+import { launchImageLibrary } from 'react-native-image-picker';
 
 import { PERMISSIONS, request, check, RESULTS } from 'react-native-permissions';
 
@@ -68,6 +68,10 @@ export default function Chat (props: any) {
   const scrollToBottom = (animated = true) => {
     flatListRef.current?.scrollToEnd({ animated: false });
   };
+
+
+
+  const [isLoading, setIsLoading] = useState(false);
 
 
   const mainFont = 'Montserrat-Regular';
@@ -144,11 +148,11 @@ export default function Chat (props: any) {
 
       let toUserId = '';
       if (Roles.DOCTOR === userObj?.role) {
-        toUserId = appointmentData?.expert;
+        toUserId = appointmentData?.expert?._id;
       } else {
         toUserId = appointmentData?.doctor?._id;
       }
-
+       console.group('to user id si here',toUserId)
       socket?.emit('message', {
         toUserId: toUserId,
         message: userMessage,
@@ -222,66 +226,241 @@ export default function Chat (props: any) {
     }
   }, [focused, props?.route?.params?.data]);
 
-  const handleDocumentPicker = async () => {
-    try {
-      let file: any = await DocumentPicker.pick({
-        presentationStyle: 'fullScreen',
-        allowMultiSelection: true,
-        type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
-      });
-      if (file) {
+
+  // <Stack.Screen name="ChatPreviewScreen" component={ChatPreviewScreen} />
+
+  // const handleDocumentPicker = async () => {
+  //   try {
+  //     let file: any = await DocumentPicker.pick({
+  //       presentationStyle: 'fullScreen',
+  //       allowMultiSelection: true,
+  //       type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
+  //     });
+  //     if (file && file.length > 0) {
+  //       // Navigate to preview screen with the selected file
+  //       navigation.navigate('ChatPreviewScreen', { file });
+  //     }
+  //   } catch (error) {
+  //     toastError(error);
+  //   }
+  // };
+
+
+  //javab
+   
+  // const handleDocumentPicker = () => {
+  //     const options = {
+  //       mediaType: 'photo',
+  //       includeBase64: false,
+  //     };
+  
+  //     launchImageLibrary(options, response => {
+  //       if (response.didCancel) {
+  //         console.log('User cancelled image picker');
+  //       } else if (response.errorMessage) {
+  //         console.log('ImagePicker Error: ', response.errorMessage);
+  //       } else if (response.assets && response.assets.length > 0) {
+  //         // Navigate to preview screen with the selected image and send callback
+  //         navigation.navigate('ChatPreviewScreen', {
+  //           file: response.assets[0],
+  //           onSend: handleSend,
+  //         });
+  //       }
+  //     });
+  //   };
+  
+  //   const handleSend = async (file) => {
+  //     try {
+  //       setIsLoading(true); // Show the loading indicator
+
+  //       let toUserId = '';
+  //       if (Roles.DOCTOR === userObj?.role) {
+  //         toUserId = appointmentData?.expert?._id;
+  //       } else {
+  //         toUserId = appointmentData?.doctor?._id;
+  //       }
+  
+  //       let formData = new FormData();
+  //       formData.append('file', {
+  //         uri: file.uri,
+  //         type: file.type,
+  //         name: file.fileName,
+  //       });
+  
+  //       let { data: res } = await fileUpload(formData);
+  //       if (res.message) {
+  //         toastSuccess(res.message);
+  //         setMsgArr(prev => [
+  //           ...prev,
+  //           {
+  //             toId: toUserId,
+  //             message: res.data,
+  //             fromId: userObj._id,
+  //             type: file.type,
+  //             timestamp: new Date().toISOString(),
+  //             _id: new Date().toISOString(),
+  //           },
+  //         ]);
+  //         socket?.emit('message', {
+  //           toUserId: toUserId,
+  //           message: res.data,
+  //           fromId: userObj._id,
+  //           type: file.type,
+  //         });
+  //         await addAppointmentHistory(appointmentData._id, {
+  //           message: res.data,
+  //           toId: toUserId,
+  //           type: file.type,
+  //         });
+  //       }
+        
+  //       navigation.goBack(); // Go back to the chat screen after sending
+  //     } catch (error) {
+  //       toastError(error);
+  //      } finally {
+  //     setIsLoading(false); // Hide the loading indicator
+  //   }
+  //   };
+  
+    //javab
+
+
+    const handleDocumentPicker = async () => {
+      try {
+        const res = await DocumentPicker.pick({
+          type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
+        });
+        if (res && res.length > 0) {
+          // Navigate to preview screen with the selected file and send callback
+          navigation.navigate('ChatPreviewScreen', {
+            file: res[0],
+            onSend: handleSend,
+          });
+        }
+      } catch (err) {
+        if (DocumentPicker.isCancel(err)) {
+          console.log('User cancelled document picker');
+        } else {
+          console.error(err);
+        }
+      }
+    };
+  
+    const handleSend = async (file) => {
+      setIsLoading(true); // Show the loading indicator
+      try {
         let toUserId = '';
         if (Roles.DOCTOR === userObj?.role) {
-          toUserId = appointmentData?.expert;
+          toUserId = appointmentData?.expert?._id;
         } else {
           toUserId = appointmentData?.doctor?._id;
         }
-        for (const el of file) {
-          let formData = new FormData();
-          formData.append('file', el);
-          let { data: res } = await fileUpload(formData);
-          if (res.message) {
-            // console.log(res, 'response', el, 'ele');
-            toastSuccess(res.message);
-
-            setMsgArr(prev => [
-              ...prev,
-              {
-                toId: toUserId,
-                message: res.data,
-                fromId: userObj._id,
-                type: el.type,
-                timestamp: new Date().toISOString(),
-                _id: new Date().toISOString(),
-              },
-            ]);
-            // console.log(
-            //   {
-            //     toUserId: toUserId,
-            //     message: res.data,
-            //     fromId: userObj._id,
-            //     type: el.type,
-            //   },
-            //   'asdasdasdsad',
-            // );
-            socket?.emit('message', {
-              toUserId: toUserId,
+  
+        let formData = new FormData();
+        formData.append('file', {
+          uri: file.uri,
+          type: file.type,
+          name: file.name,
+        });
+  
+        let { data: res } = await fileUpload(formData);
+        if (res.message) {
+          toastSuccess(res.message);
+          setMsgArr(prev => [
+            ...prev,
+            {
+              toId: toUserId,
               message: res.data,
               fromId: userObj._id,
-              type: el.type,
-            });
-            await addAppointmentHistory(appointmentData._id, {
-              message: res.data,
-              toId: toUserId,
-              type: el.type,
-            });
-          }
+              type: file.type,
+              timestamp: new Date().toISOString(),
+              _id: new Date().toISOString(),
+            },
+          ]);
+          socket?.emit('message', {
+            toUserId: toUserId,
+            message: res.data,
+            fromId: userObj._id,
+            type: file.type,
+          });
+          await addAppointmentHistory(appointmentData._id, {
+            message: res.data,
+            toId: toUserId,
+            type: file.type,
+          });
         }
+  
+        navigation.goBack(); // Go back to the chat screen after sending
+      } catch (error) {
+        toastError(error);
+      } finally {
+        setIsLoading(false); // Hide the loading indicator
       }
-    } catch (error) {
-      toastError(error);
-    }
-  };
+    };
+
+
+  
+
+  // const handleDocumentPicker = async () => {
+  //   try {
+  //     let file: any = await DocumentPicker.pick({
+  //       presentationStyle: 'fullScreen',
+  //       allowMultiSelection: true,
+  //       type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
+  //     });
+  //     if (file) {
+  //       let toUserId = '';
+  //       if (Roles.DOCTOR === userObj?.role) {
+  //         toUserId = appointmentData?.expert?._id;
+  //       } else {
+  //         toUserId = appointmentData?.doctor?._id;
+  //       }
+  //       for (const el of file) {
+  //         let formData = new FormData();
+  //         formData.append('file', el);
+  //         let { data: res } = await fileUpload(formData);
+  //         if (res.message) {
+  //           // console.log(res, 'response', el, 'ele');
+  //           toastSuccess(res.message);
+
+  //           setMsgArr(prev => [
+  //             ...prev,
+  //             {
+  //               toId: toUserId,
+  //               message: res.data,
+  //               fromId: userObj._id,
+  //               type: el.type,
+  //               timestamp: new Date().toISOString(),
+  //               _id: new Date().toISOString(),
+  //             },
+  //           ]);
+  //           // console.log(
+  //           //   {
+  //           //     toUserId: toUserId,
+  //           //     message: res.data,
+  //           //     fromId: userObj._id,
+  //           //     type: el.type,
+  //           //   },
+  //           //   'asdasdasdsad',
+  //           // );
+  //           socket?.emit('message', {
+  //             toUserId: toUserId,
+  //             message: res.data,
+  //             fromId: userObj._id,
+  //             type: el.type,
+  //           });
+  //           await addAppointmentHistory(appointmentData._id, {
+  //             message: res.data,
+  //             toId: toUserId,
+  //             type: el.type,
+  //           });
+  //         }
+  //       }
+  //     }
+  //   } catch (error) {
+  //     toastError(error);
+  //   }
+  // };
 
   // const flatListRef = useRef<FlatList>(null);
   const [keyboardOffset, setKeyboardOffset] = useState<number>(0);
@@ -441,6 +620,9 @@ return (
   style={{height:hp(100),width:wp(100),backgroundColor:'#EFE6DD'}}
   onPress={Keyboard.dismiss}
   >
+     {isLoading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) :(
   <KeyboardAvoidingView
     style={{ flex: 1 }}
     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -564,6 +746,7 @@ return (
       </View>
     </View>
   </KeyboardAvoidingView>
+)}
 
 </TouchableWithoutFeedback>
 );
