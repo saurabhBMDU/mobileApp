@@ -103,21 +103,20 @@ const GetOTP = (props: any) => {
     // height:'20%'
      }}
 > 
-          <Image
-            source={require('../../assets/images/Logo.png')}
-            resizeMode='stretch'
-            style={{ width: wp(72), height: hp(15),alignSelf:'center',marginTop:30,marginBottom:4, backgroundColor:'#fff',}} 
+            <Image
+              source={require('../../assets/images/Logo34.png')}
+              resizeMode="stretch"
+              style={{
+                width: wp(77),
+                height: hp(20),
+                alignSelf: 'center',
+                marginTop: 30,
+                marginRight:5,
+              }}
             />
 
-          <Text
-            style={{
-              alignSelf:"center",
-              fontSize:17,
-              fontWeight:"300",
-              backgroundColor:'#fff',
-              marginBottom:20
-            }}
-            >HEALTH CARE AT YOUR DOORESTEP</Text>
+
+        
 {/* </View>  */}
 
                     </View>

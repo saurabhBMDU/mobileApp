@@ -81,7 +81,7 @@ export default function Contactus() {
                 </View>
                 <Pressable onPress={() => handleRedirectToWhatsapp()} style={internalcss.boxinfo}>
                     <Location_icon name='location' size={25} color='red' />
-                    <Text style={internalcss.numver}>Fever99 E-clinic, Shriram Complex, Near SPR Society, Sector 82, Faridabad, Haryana</Text>
+                    <Text style={internalcss.numver}>fever99 E-clinic, Shriram Complex, Near SPR Society, Sector 82, Faridabad, Haryana</Text>
                 </Pressable>
 
             </ScrollView>

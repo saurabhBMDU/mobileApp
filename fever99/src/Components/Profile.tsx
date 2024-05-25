@@ -682,7 +682,7 @@ const Profile = () => {
           }
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('About Fever99')}
+            onPress={() => navigation.navigate('About fever99')}
 
             //ProfileTemrs
             style={styles.clickbleLines}>
@@ -700,7 +700,7 @@ const Profile = () => {
                   fontFamily: mainFont,
                   marginLeft: wp(2),
                 }}>
-                About Fever99
+                About fever99
               </Text>
             </View>
             <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />

@@ -214,7 +214,7 @@ const handleIncomingCall = async (callUUID) => {
   //       // let temp = await RNCallKeep.backToForeground();
   //       // console.log(temp, "temp")
   //       console.log('incoming call',remoteMessage);
-  //       RNCallKeep.displayIncomingCall(remoteMessage?.data?.appointmentId, "Doctor", "Fever99");
+  //       RNCallKeep.displayIncomingCall(remoteMessage?.data?.appointmentId, "Doctor", "fever99");
   //       // showIncomingCallNotification(remoteMessage);
   //       DisplayNotification();
        
@@ -437,7 +437,7 @@ const handleIncomingCall = async (callUUID) => {
       let userData = await getUser();
       if (remoteMessage?.data?.otherData === "show") {
         console.log('incoming call', remoteMessage);
-        RNCallKeep.displayIncomingCall(remoteMessage?.data?.appointmentId, "Doctor", "Fever99");
+        RNCallKeep.displayIncomingCall(remoteMessage?.data?.appointmentId, "Doctor", "fever99");
         DisplayNotification(remoteMessage?.data?.appointmentId);
         setcalluuid(remoteMessage?.data?.appointmentId);
       } else if (remoteMessage?.data?.title === "New Message!" && userData?._id === remoteMessage.data.toId) {

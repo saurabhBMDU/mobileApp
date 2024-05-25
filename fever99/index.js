@@ -48,7 +48,7 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
       await RNCallKeep.displayIncomingCall(
         remoteMessage.data.appointmentId,
         'Doctor',
-        'Fever99',
+        'fever99',
       );
       await RNCallKeep.backToForeground();
       // InCallManager.startRingtone('_Default_')

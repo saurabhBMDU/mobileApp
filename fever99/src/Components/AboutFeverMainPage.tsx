@@ -75,7 +75,7 @@ const ProfileTermsAndConditions = () => {
             fontWeight: 'bold',
             marginBottom: 10,
           }}>
-        Fever99
+        fever99
         </Text>
 
         <Text
@@ -87,7 +87,7 @@ const ProfileTermsAndConditions = () => {
         }}
         >
           {' '}
-          Fever99 - About Us is a leading healthcare provider dedicated to
+          fever99 - About Us is a leading healthcare provider dedicated to
           delivering exceptional medical services to individuals and families.
           Our journey began with a simple but profound mission: to make
           healthcare accessible, convenient, and compassionate.

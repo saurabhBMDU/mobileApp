@@ -16,8 +16,8 @@ const TermAndC = () => {
     <View style={{ width: width, height: height, }} >
       <Headerr secndheader={true} label='Terms & conditions' />
       <ScrollView style={{ width: wp(95), alignSelf: 'center', marginBottom: hp(3) }} showsVerticalScrollIndicator={false}>
-        <Text style={{ marginTop: hp(1), fontFamily: mainFont, fontSize: hp(1.8), color: 'black' }}>Welcome to Fever99.com. By continuing to browse and use this website, you agree to adhere to and be bound by the following terms and conditions of use. These terms, along with our privacy policy, govern the relationship between you and Fever99.com in connection with this website. If you do not agree with any part of these terms and conditions, we kindly request that you refrain from using our website.</Text>
-        <Text style={{ marginTop: hp(2), fontFamily: mainFontmedium, fontSize: hp(1.9), color: 'black' }}>The term 'Fever99.com' or 'we' or 'us' refers to the owner of the website. Your use of this website is subject to the following terms:</Text>
+        <Text style={{ marginTop: hp(1), fontFamily: mainFont, fontSize: hp(1.8), color: 'black' }}>Welcome to fever99.com. By continuing to browse and use this website, you agree to adhere to and be bound by the following terms and conditions of use. These terms, along with our privacy policy, govern the relationship between you and fever99.com in connection with this website. If you do not agree with any part of these terms and conditions, we kindly request that you refrain from using our website.</Text>
+        <Text style={{ marginTop: hp(2), fontFamily: mainFontmedium, fontSize: hp(1.9), color: 'black' }}>The term 'fever99.com' or 'we' or 'us' refers to the owner of the website. Your use of this website is subject to the following terms:</Text>
         <Text style={{ marginTop: hp(2), fontFamily: mainFontmedium, fontSize: hp(1.9), color: 'black' }}>
           The content on the pages of this website is for your general information and use only. It is subject to change without prior notice.
         </Text>
@@ -46,7 +46,7 @@ const TermAndC = () => {
           Your use of this website and any dispute arising out of such use is subject to the laws of the Republic of India
         </Text>
         <Text style={{ marginTop: hp(2), fontFamily: mainFontmedium, fontSize: hp(1.9), color: 'black' }}>
-          Thank you for choosing Fever99.com for your healthcare needs
+          Thank you for choosing fever99.com for your healthcare needs
         </Text>
       </ScrollView>
     </View>

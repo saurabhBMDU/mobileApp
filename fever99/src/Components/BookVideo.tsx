@@ -1413,7 +1413,7 @@
 //             }}
 //             showsVerticalScrollIndicator={false}>
 //             <Text style={{color: 'black', fontSize: hp(1.8), marginBottom: 10}}>
-//               1. Fever99 is offering telemedicine or video consultation where
+//               1. fever99 is offering telemedicine or video consultation where
 //               patients are not being able to reach the hospital. A video or
 //               telemedicine consultation can never be compared to a normal
 //               in-hospital consultation where the doctor is able to physically
@@ -1441,7 +1441,7 @@
 //               ideal conditions, unforeseen situations may occur.
 //             </Text>
 //             <Text style={{color: 'black', fontSize: hp(1.8), marginBottom: 10}}>
-//               5. Fever99 and/or its doctors shall not be responsible for
+//               5. fever99 and/or its doctors shall not be responsible for
 //               complete accuracy of telemedicine consultation, limited in its
 //               scope as it is, with no physical examination of the patient being
 //               possible. While every attempt will be made to ensure
@@ -2915,7 +2915,7 @@ const BookVideo = (props: any) => {
             }}
             showsVerticalScrollIndicator={false}>
             <Text style={{color: 'black', fontSize: hp(1.8), marginBottom: 10}}>
-              1. Fever99 is offering telemedicine or video consultation where
+              1. fever99 is offering telemedicine or video consultation where
               patients are not being able to reach the hospital. A video or
               telemedicine consultation can never be compared to a normal
               in-hospital consultation where the doctor is able to physically
@@ -2943,7 +2943,7 @@ const BookVideo = (props: any) => {
               ideal conditions, unforeseen situations may occur.
             </Text>
             <Text style={{color: 'black', fontSize: hp(1.8), marginBottom: 10}}>
-              5. Fever99 and/or its doctors shall not be responsible for
+              5. fever99 and/or its doctors shall not be responsible for
               complete accuracy of telemedicine consultation, limited in its
               scope as it is, with no physical examination of the patient being
               possible. While every attempt will be made to ensure

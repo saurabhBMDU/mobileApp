@@ -53,7 +53,7 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
       await RNCallKeep.displayIncomingCall(
         remoteMessage.data.appointmentId,
         'Doctor',
-        'Fever99',
+        'fever99',
       );
       await RNCallKeep.backToForeground();
       // InCallManager.startRingtone('_Default_')
@@ -351,7 +351,7 @@ AppState.addEventListener('change', nextAppState => {
 
 //     if (remoteMessage?.data?.otherData == "show") {
 //         try {
-//             await RNCallKeep.displayIncomingCall(remoteMessage.data.appointmentId, "Doctor", "Fever99");
+//             await RNCallKeep.displayIncomingCall(remoteMessage.data.appointmentId, "Doctor", "fever99");
 //             await RNCallKeep.backToForeground();
 
 //             RNCallKeep.addEventListener('answerCall', async ({ callUUID }) => {

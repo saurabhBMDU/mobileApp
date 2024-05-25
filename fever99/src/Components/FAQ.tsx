@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 
 const faqData = [
-  { question: 'What is Fever99.com?', answer: 'Fever99.com is an online healthcare platform...' },
+  { question: 'What is fever99.com?', answer: 'fever99.com is an online healthcare platform...' },
   { question: 'How do I sign up for an account?', answer: 'To sign up for an account...' },
   { question: 'Is my personal information safe?', answer: 'Yes, we are committed to safeguarding your personal information...' },
   // Add more FAQ data here
@@ -28,7 +28,7 @@ const App: React.FC = () => {
       
       />
       {/* </View> */}
-        <Text style={styles.headerText}>Fever99 FAQ</Text>
+        <Text style={styles.headerText}>fever99 FAQ</Text>
       </View>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {faqData.map((faq, index) => (

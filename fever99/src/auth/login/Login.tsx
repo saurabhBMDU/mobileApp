@@ -20,7 +20,7 @@ import {
 } from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/native';
 import {AuthContext, LoginContext, UserDataContext} from '../../../App';
-import {toastError} from '../../utils/toast.utils';
+import {showAlert} from '../../utils/toast.utils';
 import Mail_icons from 'react-native-vector-icons/Entypo';
 const {height, width} = Dimensions.get('window');
 import {useNetInfo} from '@react-native-community/netinfo';
@@ -62,8 +62,8 @@ const Login = () => {
 
   const handleRedirectToNextScreen = () => {
     if (email == '') {
-      toastError('Email is mandatory !!!');
       showAlert('Email is mandatory !!!');
+      // showAlert('Email is mandatory !!!');
       return;
     }
     // navigation.navigate('Password', { data: email });
@@ -81,7 +81,7 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       if (password == '') {
-        toastError('Password is mandatory !!!');
+        showAlert('Password is mandatory !!!');
         return;
       }
       let obj = {
@@ -105,14 +105,14 @@ const Login = () => {
         setIsAuthorized(true);
       }
     } catch (err) {
-      toastError(err);
+      showAlert(err.message);
     }
   };
 
   const ProceedToLogin = async () => {
     try {
       if (password == '') {
-        toastError('Password is mandatory !!!');
+        showAlert('Password is mandatory !!!');
         return;
       }
       let obj = {
@@ -134,7 +134,7 @@ const Login = () => {
       }
       // }
     } catch (err) {
-      toastError(err);
+      showAlert(err.message);
     }
   };
 
@@ -235,23 +235,16 @@ const Login = () => {
               width: '100%',
             }}>
             <Image
-              source={require('../../../assets/images/Logo.png')}
+              source={require('../../../assets/images/Logo34.png')}
               resizeMode="stretch"
               style={{
-                width: wp(72),
-                height: hp(15),
+                width: wp(77),
+                height: hp(20),
                 alignSelf: 'center',
                 marginTop: 30,
+                marginRight:5,
               }}
             />
-            <Text
-              style={{
-                alignSelf: 'center',
-                fontSize: 17,
-                fontWeight: '300',
-              }}>
-              HEALTH CARE AT YOUR DOORESTEP
-            </Text>
 
             <View style={{flexDirection: 'row'}}></View>
             <View

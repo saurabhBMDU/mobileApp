@@ -15,8 +15,9 @@ import {
 } from 'react-native-responsive-screen';
 import { useNavigation } from '@react-navigation/native';
 import { LoginContext } from '../../App';
-import { toastError, toastSuccess } from '../utils/toast.utils';
+import { showAlert, toastSuccess } from '../utils/toast.utils';
 import { forgotPassword } from '../Services/user.service';
+import AlertBox from '../allModals/AlertBox';
 const { height, width } = Dimensions.get('window');
 
 const ForgotPassword = () => {
@@ -30,10 +31,24 @@ const ForgotPassword = () => {
   const mobileNumberPattern = /^[0-9]{10}$/;
   const [mobile, setMobile] = useState('');
 
+
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+
+
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setAlertVisible(true);
+    setTimeout(() => {
+      setAlertVisible(false);
+    }, 3300); // Extra 300ms to account for the sliding out animation
+  };
+
+
   const handleForgotPassword = async () => {
     try {
       if (!mobile || mobile == '' || !mobileNumberPattern.test(mobile)) {
-        toastError('Mobile is mandatory !!!');
+        showAlert('Mobile is mandatory !!!');
         return;
       }
       let obj = {
@@ -42,11 +57,11 @@ const ForgotPassword = () => {
 
       let { data: res } = await forgotPassword(obj);
       if (res.message) {
-        toastSuccess(res.message);
+        showAlert(res.message);
         navigation.navigate('GetOTP', { data: mobile });
       }
     } catch (err) {
-      toastError(err);
+      showAlert(err.message);
     }
   };
   return (
@@ -58,6 +73,15 @@ const ForgotPassword = () => {
         // height: height,
         backgroundColor:'#fff'
       }}>
+
+{alertVisible && (
+        <AlertBox
+          message={alertMessage}
+          onClose={() => setAlertVisible(false)}
+        />
+      )}
+
+
       {/* <ImageBackground
         source={require('../../assets/images/feverNewLogo.png')}
         resizeMode="stretch"
@@ -106,20 +130,19 @@ const ForgotPassword = () => {
     height:'20%'
      }}
 > 
-          <Image
-            source={require('../../assets/images/Logo.png')}
-            resizeMode='stretch'
-            style={{ width: wp(72), height: hp(15),alignSelf:'center',marginTop:30,marginBottom:8, backgroundColor:'#fff',}} 
-            />
+        
 
-          <Text
-            style={{
-              alignSelf:"center",
-              fontSize:17,
-              fontWeight:"300",
-              backgroundColor:'#fff',
-            }}
-            >HEALTH CARE AT YOUR DOORESTEP</Text>
+            <Image
+              source={require('../../assets/images/Logo34.png')}
+              resizeMode="stretch"
+              style={{
+                width: wp(77),
+                height: hp(20),
+                alignSelf: 'center',
+                marginTop: 30,
+                marginRight:5,
+              }}
+            />
 </View> 
 
  <View

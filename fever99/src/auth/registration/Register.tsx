@@ -20,10 +20,11 @@ import {
 } from 'react-native-responsive-screen';
 import { useNavigation } from '@react-navigation/native';
 import { LoginContext } from '../../../App';
-import { toastError, toastSuccess } from '../../utils/toast.utils';
+import { showAlert, toastSuccess } from '../../utils/toast.utils';
 import { Dropdown } from 'react-native-element-dropdown';
 import { registerUser, sendOtp } from '../../Services/user.service';
 import Openeye_closeEye from 'react-native-vector-icons/Ionicons';
+import AlertBox from '../../allModals/AlertBox';
 
 const { height, width } = Dimensions.get('window');
 
@@ -44,6 +45,12 @@ const Register = () => {
   const [hide, setHide] = useState(true);
   const [hide2, setHide2] = useState(true);
 
+
+  
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+
+
   const [showOtpInput, setShowOtpInput] = useState(true);
 
   const [isAggreed, setIsAggreed] = useState(false);
@@ -51,40 +58,46 @@ const Register = () => {
   const handleRegister = async () => {
     try {
       if (name == '') {
-        toastError('Name is mandatory !!!');
+        showAlert('Name is mandatory !!!');
+        showAlert('Name is mandatory !!!')
         return;
       }
       if (name.length > 20) {
-        toastError('Name must be less than or equal to 20 characters !!!');
+        showAlert('Name must be less than or equal to 20 characters !!!');
+        showAlert('Name must be less than or equal to 20 characters !!!')
         return;
       }
       const emailRegex = /\S+@\S+\.\S+/;
       if (!emailRegex.test(email)) {
-        toastError('Invalid email format !!!');
+        showAlert('Invalid email format !!!');
+        showAlert('Name must be less than or equal to 20 characters !!!')
         return;
       }
       if (mobile == '') {
-        toastError('Mobile number is mandatory !!!');
+        showAlert('Mobile number is mandatory !!!');
+        showAlert('Mobile number is mandatory !!!')
         return;
       }
       if (!otp || otp == '') {
-        toastError('Please enter otp to register !!!');
+        showAlert('Please enter otp to register !!!');
+        showAlert('Please enter otp to register !!!')
         return;
       }
       if (gender == '') {
-        toastError('Gender is mandatory !!!');
+        showAlert('Gender is mandatory !!!');
+        showAlert('Gender is mandatory !!!')
         return;
       }
       if (password == '') {
-        toastError('Password is mandatory !!!');
+        showAlert('Password is mandatory !!!');
         return;
       }
       if (rePassword == '') {
-        toastError('Confirm Password is mandatory !!!');
+        showAlert('Confirm Password is mandatory !!!');
         return;
       }
       if (rePassword !== password) {
-        toastError('Password and Confirm Password does not match !!!');
+        showAlert('Password and Confirm Password does not match !!!');
         return;
       }
 
@@ -105,13 +118,13 @@ const Register = () => {
       }
     } catch (err) {
       console.error(JSON.stringify(err));
-      toastError(err);
+      showAlert(err);
     }
   };
   const handleSendOtp = async () => {
     try {
       if (!mobile || mobile == '' || mobile.length != 10) {
-        toastError('Please enter a valid mobile number');
+        showAlert('Please enter a valid mobile number');
         return;
       }
       let obj = {
@@ -123,18 +136,39 @@ const Register = () => {
         setShowOtpInput(false);
       }
     } catch (error) {
-      toastError(error);
+      showAlert(error);
     }
   };
 
   const handleRedirectToNextScreen = () => {
     if (email == '') {
-      toastError('Email is mandatory !!!');
+      showAlert('Email is mandatory !!!');
       return;
     }
     navigation.navigate('Password', { data: email });
   };
+
+
+
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setAlertVisible(true);
+    setTimeout(() => {
+      setAlertVisible(false);
+    }, 3300); // Extra 300ms to account for the sliding out animation
+  };
+
+
   return (
+    <View>
+
+{alertVisible && (
+        <AlertBox
+          message={alertMessage}
+          onClose={() => setAlertVisible(false)}
+        />
+      )}
+
     <ScrollView
     showsVerticalScrollIndicator={false}
       contentContainerStyle={{
@@ -142,7 +176,7 @@ const Register = () => {
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'white',
-      }}>
+      }}>      
 
 
 <View
@@ -170,6 +204,7 @@ const Register = () => {
             resizeMode='stretch'
             style={{ width: wp(100), height: hp(33) }} /> */}
         </View>
+        
 
       <View
          style={{ 
@@ -190,24 +225,24 @@ const Register = () => {
             height: hp(33),
           }} /> */}
 
-          <Image
-            source={require('../../../assets/images/Logo.png')}
-            resizeMode='stretch'
-            style={{ width: wp(72), height: hp(15),alignSelf:'center',marginTop:30,marginBottom:10, }} 
+            <Image
+              source={require('../../../assets/images/Logo34.png')}
+              resizeMode="stretch"
+              style={{
+                width: wp(77),
+                height: hp(20),
+                alignSelf: 'center',
+                marginTop: 30,
+                marginRight:5,
+              }}
             />
 
-<Text
-            style={{
-              alignSelf:"center",
-              fontSize:17,
-              fontWeight:"300",
-              backgroundColor:'#fff',
-              marginBottom:20,
-            }}
-            >HEALTH CARE AT YOUR DOORESTEP</Text>
+
 
       </View>
 
+
+    
       <KeyboardAvoidingView
         behavior={'padding'}
         keyboardVerticalOffset={Platform.OS == 'ios' ? 100 : 50}
@@ -218,8 +253,7 @@ const Register = () => {
           style={{
             height: hp(100),
             justifyContent: 'center',
-            marginTop: hp(-13),
-            
+            marginTop: hp(-13),          
           }}>
           <Text
             style={{
@@ -228,7 +262,8 @@ const Register = () => {
               marginLeft: wp(2.9),
               fontFamily: mainFont,
               fontWeight: 'bold',
-
+              alignSelf:"center",
+              marginTop:100,
             }}>
             Register
           </Text>
@@ -420,7 +455,7 @@ const Register = () => {
                   fontFamily: 'AvenirNextLTPro-Regular',
                   fontSize: hp(1.8)
                 }}>
-                I accept Fever99
+                I accept fever99
               </Text>
               <Pressable onPress={() => navigation.navigate('PAC')}>
                 <Text style={{
@@ -453,6 +488,7 @@ const Register = () => {
                 borderRadius: 5,
                 alignItems: 'center',
                 justifyContent: 'center',
+                marginBottom:80,
               }}>
               <Text
                 style={{
@@ -468,6 +504,7 @@ const Register = () => {
       </KeyboardAvoidingView>
       {/* </ImageBackground> */}
     </ScrollView>
+    </View>
   );
 };
 const styles = StyleSheet.create({

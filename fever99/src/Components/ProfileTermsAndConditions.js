@@ -230,7 +230,7 @@
 //         }}
 //         >
 //           {' '}
-//           Fever99 - About Us is a leading healthcare provider dedicated to
+//           fever99 - About Us is a leading healthcare provider dedicated to
 //           delivering exceptional medical services to individuals and families.
 //           Our journey began with a simple but profound mission: to make
 //           healthcare accessible, convenient, and compassionate.
@@ -366,12 +366,12 @@ const AboutUsPage = () => {
       </View>
 
       <Text style={styles.description}>
-        Fever99 is a leading healthcare provider dedicated to delivering exceptional medical services to individuals and families. Our journey began with a simple but profound mission: to make healthcare accessible, convenient, and compassionate.
+        fever99 is a leading healthcare provider dedicated to delivering exceptional medical services to individuals and families. Our journey began with a simple but profound mission: to make healthcare accessible, convenient, and compassionate.
       </Text>
 
-      <Text style={styles.subHeader}>Get To Know About Fever99</Text>
+      <Text style={styles.subHeader}>Get To Know About fever99</Text>
       <Text style={styles.missionDescription}>
-      Fever99 is a leading healthcare provider dedicated to delivering exceptional medical services to individuals and families. Our journey began with a simple but profound mission: to make healthcare accessible, convenient, and compassionate.
+      fever99 is a leading healthcare provider dedicated to delivering exceptional medical services to individuals and families. Our journey began with a simple but profound mission: to make healthcare accessible, convenient, and compassionate.
       </Text>
 
       <Image
@@ -387,7 +387,7 @@ const AboutUsPage = () => {
 
       <Text style={styles.subHeader}>Our Vision</Text>
       <Text style={styles.missionDescription}>
-        Our mission is to enhance the well-being of our patients by providing comprehensive and high-quality healthcare services. We believe that everyone deserves access to excellent medical care, and we strive to meet that need with professionalism and empathy. Fever99 is not just a healthcare provider; we are a part of the communities we serve. We actively engage in community initiatives and health education programs to promote overall well-being.
+        Our mission is to enhance the well-being of our patients by providing comprehensive and high-quality healthcare services. We believe that everyone deserves access to excellent medical care, and we strive to meet that need with professionalism and empathy. fever99 is not just a healthcare provider; we are a part of the communities we serve. We actively engage in community initiatives and health education programs to promote overall well-being.
       </Text>
 
 
