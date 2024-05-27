@@ -440,7 +440,7 @@ const handleIncomingCall = async (callUUID) => {
         RNCallKeep.displayIncomingCall(remoteMessage?.data?.appointmentId, "Doctor", "fever99");
         DisplayNotification(remoteMessage?.data?.appointmentId);
         setcalluuid(remoteMessage?.data?.appointmentId);
-      } else if (remoteMessage?.data?.title === "New Message!" && userData?._id === remoteMessage.data.toId) {
+      } else if (remoteMessage?.data?.title === "New Message!" && userData?._id === remoteMessage?.data?.toId) {
         console.log('id', userData?._id, remoteMessage.data.toId);
         console.log('remote data is here', remoteMessage?.data);
 
@@ -527,36 +527,92 @@ const handleIncomingCall = async (callUUID) => {
     //     number: 10,
     //   });
     }
-      else if (remoteMessage?.data?.title !== "New Message!") {
-        PushNotification.localNotification({
-          channelId: 'fever99',
-          ticker: 'My Notification Ticker',
-          showWhen: true,
-          autoCancel: true,
-          largeIcon: 'ic_launcher',
-          smallIcon: 'ic_notification',
-          vibrate: true,
-          vibration: 2000,
-          tag: 'some_tag',
-          group: 'group',
-          groupSummary: false,
-          ongoing: false,
-          priority: 'high',
-          visibility: 'private',
-          ignoreInForeground: false,
-          shortcutId: 'shortcut-id',
-          onlyAlertOnce: false,
-          when: null,
-          usesChronometer: false,
-          timeoutAfter: null,
-          messageId: 'google:message_id',
-          invokeApp: false,
-          title: `${remoteMessage?.data?.title}`,
-          message: `${remoteMessage?.data?.description}`,
-          userInfo: `${remoteMessage.data.redirectTo}`,
-          playSound: true,
-          soundName: 'my_sound.mp3',
-          number: 10,
+      // else if (remoteMessage?.data?.title !== "New Message!") {
+      //   console.log('cominghere');
+
+      //   const channelId = await notifee.createChannel({
+      //     id: "notificaion",
+      //     name: "new",
+      //     importance: AndroidImportance.HIGH,
+      //   });
+  
+      //   await notifee.displayNotification({
+      //     title: `${remoteMessage.data.title}`,
+      //     body: `${remoteMessage.data.description}`,
+      //     // data: {appointmentId:remoteMessage.data.appointmentId,fromId:remoteMessage.data.fromId},
+      //     android: {
+      //       channelId,
+      //       // actions: [
+      //       //   {
+      //       //     title: 'Reply',
+      //       //     icon: 'https://my-cdn.com/icons/reply.png',
+      //       //     pressAction: {
+      //       //       id: 'reply',
+      //       //     },
+      //       //     input: true, // enable free text input
+      //       //   },
+      //       // ],
+      //     },
+      //   });
+
+
+      //   // PushNotification.localNotification({
+      //   //   channelId: 'fever99',
+      //   //   ticker: 'My Notification Ticker',
+      //   //   showWhen: true,
+      //   //   autoCancel: true,
+      //   //   largeIcon: 'ic_launcher',
+      //   //   smallIcon: 'ic_notification',
+      //   //   vibrate: true,
+      //   //   vibration: 2000,
+      //   //   tag: 'some_tag',
+      //   //   group: 'group',
+      //   //   groupSummary: false,
+      //   //   ongoing: false,
+      //   //   priority: 'high',
+      //   //   visibility: 'private',
+      //   //   ignoreInForeground: false,
+      //   //   shortcutId: 'shortcut-id',
+      //   //   onlyAlertOnce: false,
+      //   //   when: null,
+      //   //   usesChronometer: false,
+      //   //   timeoutAfter: null,
+      //   //   messageId: 'google:message_id',
+      //   //   invokeApp: false,
+      //   //   title: `${remoteMessage?.data?.title}`,
+      //   //   message: `${remoteMessage?.data?.description}`,
+      //   //   userInfo: `${remoteMessage.data.redirectTo}`,
+      //   //   playSound: true,
+      //   //   soundName: 'my_sound.mp3',
+      //   //   number: 10,
+      //   // });
+      // }
+      
+      else{
+        console.log('coming inside this')
+        const channelId = await notifee.createChannel({
+          id: "notificaion",
+          name: "new",
+          importance: AndroidImportance.HIGH,
+        });
+  
+        await notifee.displayNotification({
+          title: `${remoteMessage.data.title}`,
+          body: `${remoteMessage.data.description}`,
+          // data: {appointmentId:remoteMessage.data.appointmentId,fromId:remoteMessage.data.fromId},
+          android: {
+            channelId,
+            // actions: [
+            //   {
+            //     title: 'Reply',
+            //     icon: 'https://my-cdn.com/icons/reply.png',
+            //     pressAction: {
+            //       id: 'reply',
+            //     },
+            //     input: true, // enable free text input
+            //   },
+            // ],
+          },
         });
       }
     });
