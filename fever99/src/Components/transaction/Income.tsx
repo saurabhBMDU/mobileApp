@@ -54,8 +54,8 @@ const Income = () => {
     <View>
       <Headerr
         secndheader={true}
-        secondText={`Total Income : ₹${balance}`}  
-        label={`Total Income : ₹${balance}`}
+        secondText={`Income Wallet: ₹${balance}`}  
+        label={`ToIncome : ₹${balance}`}
         btn={false}
       />
       <FlatList

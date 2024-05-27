@@ -34,9 +34,9 @@ export const TimeData = [
 ]
 
 export const doseFormArr = [
-    { value: "Ml", label: "M l" },
-    { value: "Mg", label: "Mg" },
-    { value: "Gm", label: "Gm" },
+    { value: "ml", label: "ml" },
+    { value: "mg", label: "mg" },
+    { value: "gm", label: "gm" },
     { value: "Tablet(s)", label: "Tablet(s)" },
     { value: "Puff(s)", label: "Puff(s)" },
     { value: "Units", label: "Units" },
