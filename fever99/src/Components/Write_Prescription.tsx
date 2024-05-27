@@ -452,7 +452,7 @@ const Write_Prescription = (props: any) => {
   
     // Check if the index is within the bounds of the array
     // if (index >= 1 && index < tempArr.length) {
-      if (index < tempArr.length-1) {
+      if (index < tempArr.length) {
       // Remove the item at the specified index
       tempArr.splice(index, 1);
       // Update the state with the new array

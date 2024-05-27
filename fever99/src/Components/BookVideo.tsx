@@ -21,7 +21,7 @@
 // import Clode_icons from 'react-native-vector-icons/AntDesign';
 // import {useIsFocused, useNavigation} from '@react-navigation/native';
 // import {Dropdown} from 'react-native-element-dropdown';
-// import {toastError, toastSuccess} from '../utils/toast.utils';
+// import {showAlert, toastSuccess} from '../utils/toast.utils';
 // import {addAppointments} from '../Services/appointments.service';
 // import Modal from 'react-native-modal';
 // import {Calendar, LocaleConfig} from 'react-native-calendars';
@@ -299,55 +299,55 @@
 //       if (gender == '') {
 //         setMeetingConfirmation(false);
 //         setPage(1);
-//         toastError('Gender is mandatory !!!');
+//         showAlert('Gender is mandatory !!!');
 //         return;
 //       }
 //       if (dateTime == '') {
 //         setMeetingConfirmation(false);
 //         setPage(1);
-//         toastError('Date is mandatory !!!');
+//         showAlert('Date is mandatory !!!');
 //         return;
 //       }
 //       if (height && !weight) {
 //         setMeetingConfirmation(false);
 //         setPage(2);
-//         toastError('heights or Weight are mandatory !!!');
+//         showAlert('heights or Weight are mandatory !!!');
 //         return;
 //       }
 //       if (age == 0 && months == 0) {
 //         setMeetingConfirmation(false);
 //         setPage(1);
-//         toastError('Age or Months are mandatory !!!');
+//         showAlert('Age or Months are mandatory !!!');
 //         return;
 //       }
 //       if (age > 120) {
 //         setMeetingConfirmation(false);
 //         setPage(1);
-//         toastError('Please enter a valid age (1-120).');
+//         showAlert('Please enter a valid age (1-120).');
 //         return;
 //       }
 //       if (months > 11) {
 //         setMeetingConfirmation(false);
 //         setPage(1);
-//         toastError('Please enter a valid Months (1-12).');
+//         showAlert('Please enter a valid Months (1-12).');
 //         return;
 //       }
 //       if (months < 0) {
 //         setMeetingConfirmation(false);
 //         setPage(1);
-//         toastError('Please enter a valid Months (1-12).');
+//         showAlert('Please enter a valid Months (1-12).');
 //         return;
 //       }
 //       if (selectedTimeSlot == '') {
 //         setMeetingConfirmation(false);
 //         setPage(1);
-//         toastError('Time Slot is mandatory !!!');
+//         showAlert('Time Slot is mandatory !!!');
 //         return;
 //       }
 //       if (patientName == '') {
 //         setMeetingConfirmation(false);
 //         setPage(1);
-//         toastError('Patient Name is mandatory !!!');
+//         showAlert('Patient Name is mandatory !!!');
 //         return;
 //       }
 //       let userData = await getUser();
@@ -384,7 +384,7 @@
 //         setMeetingConfirmation(false);
 //         if (!res.status) {
 //           setMeetingConfirmation(false);
-//           toastError(res?.data?.message);
+//           showAlert(res?.data?.message);
 //           return;
 //         }
 //         if (
@@ -403,7 +403,7 @@
 //         }
 //       }
 //     } catch (err) {
-//       toastError(err);
+//       showAlert(err);
 //     }
 //   };
 
@@ -416,7 +416,7 @@
 //         setBalance(res?.data?.balance);
 //       }
 //     } catch (err) {
-//       toastError(err);
+//       showAlert(err);
 //     }
 //   };
 
@@ -456,7 +456,7 @@
 //         }
 //       }
 //     } catch (error) {
-//       // toastError(error);
+//       // showAlert(error);
 //     }
 //   };
 
@@ -481,7 +481,7 @@
 //         ]);
 //       }
 //     } catch (err) {
-//       // toastError(err);
+//       // showAlert(err);
 //     }
 //   };
 //   // useEffect(() => {
@@ -1583,7 +1583,7 @@ import Headerr from '../ReuseableComp/Headerr';
 import Clode_icons from 'react-native-vector-icons/AntDesign';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {Dropdown} from 'react-native-element-dropdown';
-import {toastError, toastSuccess} from '../utils/toast.utils';
+import {showAlert, toastSuccess} from '../utils/toast.utils';
 import {addAppointments} from '../Services/appointments.service';
 import Modal from 'react-native-modal';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
@@ -1595,6 +1595,7 @@ import {getWallet} from '../Services/wallet.service';
 const {height, width} = Dimensions.get('window');
 import {getUser} from '../Services/user.service';
 import url from '../Services/url.service';
+import AlertBox from '../allModals/AlertBox';
 
 const modeOf = 'Video';
 
@@ -1670,8 +1671,8 @@ const BookVideo = (props: any) => {
     },
   ];
 
-  const [age, setAge] = useState(0);
-  const [months, setMonths] = useState(0);
+  const [age, setAge] = useState <number>(0);
+  const [months, setMonths] = useState <number>(0);
   const [dateTime, setDateTime] = useState('');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
   const [gender, setGender] = useState('');
@@ -1688,15 +1689,40 @@ const BookVideo = (props: any) => {
   const [suger2, setSuger2] = useState('');
   const [suger3, setSuger3] = useState('');
   const [respiratoryRate, setRespiratoryRate] = useState('');
+
   const [height, setHeight] = useState(0);
   const [heightUnit, setUnit] = useState('cm');
   const [weight, setWeight] = useState(0);
   const [bmi, setBmi] = useState('');
+
+  // const [weight, setWeight] = useState<string>('');
+  // const [height, setHeight] = useState<string>('');
+  // const [bmi, setBmi] = useState<string>('0');
+
   const [cityIsFocused, setCityIsFocused] = useState(false);
   const [balance, setBalance] = useState(0);
   const [wallet, setWallet] = useState([]);
   const [drrIdes, setDrrIdes] = useState(props?.route?.params?.doctor._id);
   const [timeSlotss, setTimeSlot] = useState([]);
+
+
+  //for pop up in this page 
+
+  
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+
+
+ const showAlert = message => {
+    setAlertMessage(message);
+    setAlertVisible(true);
+    setTimeout(() => {
+      setAlertVisible(false);
+    }, 3300); // Extra 300ms to account for the sliding out animation
+  };
+
+
+
 
   const tempanount = 10;
   const handleGetAndSetUser = async () => {
@@ -1760,7 +1786,11 @@ const BookVideo = (props: any) => {
 
     const bmiValue = weightInKg / (heightInMeters * heightInMeters);
     console.log('bmi value is this',bmiValue)
-    setBmi(bmiValue.toFixed(2));
+    // if (isNaN(bmiValue)) {
+    //   setBmi(0);
+    // } else {
+      setBmi(bmiValue.toFixed(2));
+    // }
   };
 
   useEffect(() => {
@@ -1824,60 +1854,15 @@ const BookVideo = (props: any) => {
 
   const handleCreateBooking = async () => {
     try {
-      if (gender == '') {
-        setMeetingConfirmation(false);
-        setPage(1);
-        toastError('Gender is mandatory !!!');
-        return;
-      }
-      if (dateTime == '') {
-        setMeetingConfirmation(false);
-        setPage(1);
-        toastError('Date is mandatory !!!');
-        return;
-      }
-      if (height && !weight) {
-        setMeetingConfirmation(false);
-        setPage(2);
-        toastError('heights or Weight are mandatory !!!');
-        return;
-      }
-      if (age == 0 && months == 0) {
-        setMeetingConfirmation(false);
-        setPage(1);
-        toastError('Age or Months are mandatory !!!');
-        return;
-      }
-      if (age > 120) {
-        setMeetingConfirmation(false);
-        setPage(1);
-        toastError('Please enter a valid age (1-120).');
-        return;
-      }
-      if (months > 11) {
-        setMeetingConfirmation(false);
-        setPage(1);
-        toastError('Please enter a valid Months (1-12).');
-        return;
-      }
-      if (months < 0) {
-        setMeetingConfirmation(false);
-        setPage(1);
-        toastError('Please enter a valid Months (1-12).');
-        return;
-      }
-      if (selectedTimeSlot == '') {
-        setMeetingConfirmation(false);
-        setPage(1);
-        toastError('Time Slot is mandatory !!!');
-        return;
-      }
-      if (patientName == '') {
-        setMeetingConfirmation(false);
-        setPage(1);
-        toastError('Patient Name is mandatory !!!');
-        return;
-      }
+      console.log('line 1860 Gender:', gender);
+      console.log('DateTime:', dateTime);
+      console.log('Age:', age);
+      console.log('Months:', months);
+      console.log('Selected Time Slot:', selectedTimeSlot);
+      console.log('Patient Name:', patientName);
+
+      setMeetingConfirmation(false);
+     
       let userData = await getUser();
       let obj = {
         age,
@@ -1908,30 +1893,34 @@ const BookVideo = (props: any) => {
       };
       console.log(obj);
       let {data: res} = await addAppointments(obj);
-      if (res.appointment.status == 'pending') {
+      showAlert(res.message)
+      if(res?.status){
+        setMeetingConfirmation(true);
+      }
+      if (res?.appointment?.status == 'pending') {
         setMeetingConfirmation(false);
-        if (!res.status) {
+        if (!res?.status) {
           setMeetingConfirmation(false);
-          toastError(res.data.message);
+          showAlert(res?.data?.message);
           return;
         }
         if (
           userObj?.role == 'FRANCHISE' &&
-          res.appointment.appointmentCharge <= balance
+          res?.appointment?.appointmentCharge <= balance
         ) {
           await SendNotificationForMeetingCreation({
-            appointment: res.appointment._id,
+            appointment: res?.appointment?._id,
           });
           navigation.navigate('Appointment');
-        } else if (res.appointment.appointmentCharge) {
+        } else if (res?.appointment?.appointmentCharge) {
           navigation.navigate('PayementScreen', {
-            amount: res.appointment.appointmentCharge,
-            appointmentId: res.appointment._id,
+            amount: res?.appointment?.appointmentCharge,
+            appointmentId: res?.appointment?._id,
           });
         }
       }
     } catch (err) {
-      toastError(err);
+      showAlert(err?.message);
     }
   };
 
@@ -1944,7 +1933,7 @@ const BookVideo = (props: any) => {
         setBalance(res?.data?.balance);
       }
     } catch (err) {
-      toastError(err);
+      showAlert(err?.message);
     }
   };
 
@@ -1977,7 +1966,7 @@ const BookVideo = (props: any) => {
         }
       }
     } catch (error) {
-      toastError(error);
+      showAlert(error);
     }
   };
 
@@ -1998,7 +1987,7 @@ const BookVideo = (props: any) => {
         ]);
       }
     } catch (err) {
-      toastError(err);
+      showAlert(err?.message);
     }
   };
   useEffect(() => {
@@ -2010,6 +1999,13 @@ const BookVideo = (props: any) => {
   return (
     <View style={{width: width, flex: 1, backgroundColor: 'white'}}>
       <Headerr secndheader={true} label="Appointment Details" />
+      {alertVisible && (
+        <AlertBox
+          message={alertMessage}
+          onClose={() => setAlertVisible(false)}
+        />
+      )}
+
       <ScrollView
         style={{width: wp(95), height: height, alignSelf: 'center'}}
         showsVerticalScrollIndicator={false}>
@@ -2057,7 +2053,7 @@ const BookVideo = (props: any) => {
                   }}>
                   Select Slot:
                 </Text>
-                <Dropdown
+                {/* <Dropdown
                   style={[styles.dropdown, isFocus && {borderWidth: 0.5}]}
                   placeholderStyle={styles.placeholderStyle}
                   selectedTextStyle={styles.selectedTextStyle}
@@ -2076,15 +2072,55 @@ const BookVideo = (props: any) => {
                   onBlur={() => setIsFocus(false)}
                   onChange={(item: any) => {
                     console.log('item',item.value);
+                    setSelectedTimeSlot(item.label)
+                    console.log('selected time slot',item.label,'selected time slot',selectedTimeSlot)
                     if(item.value == 'yes'){
                       console.log('worked its',item.label);
-                    setSelectedTimeSlot(item.value);
+                    // setSelectedTimeSlot(item.label);
+                    console.log('selected time slot',item.label)
                     setIsFocus(false);
                     }else{
+                      // setSelectedTimeSlot(item.label);
                       alert('this time slot is already booked');
                     }
                   }}
-                />
+                /> */}
+
+<Dropdown
+  style={[styles.dropdown, isFocus && { borderWidth: 0.5 }]}
+  placeholderStyle={styles.placeholderStyle}
+  selectedTextStyle={styles.selectedTextStyle}
+  inputSearchStyle={styles.inputSearchStyle}
+  iconStyle={styles.iconStyle}
+  data={timeSlotss}
+  search
+  maxHeight={300}
+  labelField="label"
+  valueField="value"
+  placeholder="Select Slot"
+  searchPlaceholder="Search..."
+  value={selectedTimeSlot}
+  onFocus={() => setIsFocus(true)}
+  onBlur={() => setIsFocus(false)}
+  onChange={(item: any) => {
+    console.log('selected time slot', item.label); // Log the selected date (label)
+    console.log('selected value', item.value); // Log the selected value ('yes' or 'no')
+
+    // Check if the value is 'yes' or 'no'
+    if (item.value === 'yes') {
+      // Update the state with the selected date (label)
+      setSelectedTimeSlot(item.label);
+      setIsFocus(false);
+    } else {
+      // If value is not 'yes', show an alert indicating the slot is already booked
+      alert('This time slot is already booked');
+      // You can choose to keep the selectedTimeSlot state unchanged or clear it based on your requirement
+      // setSelectedTimeSlot(''); // Clear the selected time slot if needed
+    }
+  }}
+/>
+
+
               </View>
             </View>
 
@@ -2781,16 +2817,79 @@ const BookVideo = (props: any) => {
         )}
         {page == 1 ? (
           <TouchableOpacity
-            onPress={() => setPage(2)}
-            style={{
-              width: wp(45),
-              height: hp(5),
-              backgroundColor: '#50B148',
-              borderRadius: 5,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginLeft: wp(5),
-            }}>
+          style={{
+            width: wp(45),
+            height: hp(5),
+            backgroundColor: '#50B148',
+            borderRadius: 5,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginLeft: wp(5),
+          }}
+
+          onPress={() => {
+            const fields = [
+              { value: dateTime.trim(), message: 'Date is mandatory !!!' },
+              { value: selectedTimeSlot.trim(), message: 'Time Slot is mandatory !!!' },
+              { value: patientName.trim(), message: 'Patient Name is mandatory !!!' },
+              { value: gender.trim(), message: 'Gender is mandatory !!!' },
+              // { value: age, validate: (val) => !isNaN(val) && val > 0 && val <= 120, message: 'Please enter a valid age (1-120).' },
+              // { value: months, validate: (val) => !isNaN(val) && val >= 0 && val <= 12, message: 'Please enter a valid month (0-12).' },
+              { value: age, validate: (val) => !isNaN(val) && val > 0 && val <= 120, message: 'Please enter a valid age (1-120).' },
+              { value: months, validate: (val) => !isNaN(val) && val >= 0 && val <= 11, message: 'Please enter a valid month (0-11).' },          
+              { value: state.trim(), message: 'State is mandatory !!!' },
+              { value: city.trim(), message: 'City is mandatory !!!' },  
+            ];
+          
+            for (let field of fields) {
+              if (typeof field.value === 'string' && !field.value.trim()) {
+                setMeetingConfirmation(false);
+                setPage(1);
+                showAlert(field.message);
+                return;
+              } else if (typeof field.value === 'number' && field.validate && !field.validate(field.value)) {
+                setMeetingConfirmation(false);
+                setPage(1);
+                showAlert(field.message);
+                return;
+              }
+              // if(age > 120){
+              //   console.log('age',age)
+              //   showAlert('Please enter a valid age (1-120).')
+              //   return
+              // }
+              // if(age <= 0){
+              //   console.log('age',age)
+              //   showAlert('Age should not be 0')
+              //   return
+              // }
+              // if(months > 12){
+              //   console.log('age',age)
+              //   showAlert('Please enter a valid month (0-12)')
+              //   return
+              // }
+            }
+            
+            if(age > 120){
+              console.log('age',age)
+              showAlert('Please enter a valid age (1-120).')
+              return
+            }
+            if(age <= 0){
+              console.log('age',age)
+              showAlert('Age should not be 0')
+              return
+            }
+            if(months > 12){
+              console.log('age',age)
+              showAlert('Please enter a valid month (0-12)')
+              return
+            }
+         setPage(2);
+          }}
+          
+          
+            >
             <Text
               style={{
                 fontSize: hp(1.8),
@@ -2802,7 +2901,9 @@ const BookVideo = (props: any) => {
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
-            onPress={() => setMeetingConfirmation(true)}
+            onPress={() => {
+              setMeetingConfirmation(true)
+            }}
             style={{
               width: wp(45),
               height: hp(5),
@@ -2960,7 +3061,9 @@ const BookVideo = (props: any) => {
                 alignSelf: 'center',
               }}>
               <TouchableOpacity
-                onPress={() => handleCreateBooking()}
+                onPress={() => {
+                  handleCreateBooking()
+                }}
                 style={{
                   width: wp(25),
                   height: hp(5),
