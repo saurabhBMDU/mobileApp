@@ -983,7 +983,7 @@ const Appointment_History = (props: any) => {
                 </Text>
                         <TextInput
                           keyboardType="numeric"
-                          value={feet.toString()}
+                          value={feet ? feet.toString() : feet}
                           onChangeText={text => setFeet(text)}
                           placeholderTextColor="#8E8E8E"
                           placeholder="Feet"
@@ -1005,7 +1005,7 @@ const Appointment_History = (props: any) => {
                 </Text>
                         <TextInput
                           keyboardType="numeric"
-                          value={inch.toString()}
+                          value={inch ? inch.toString() : inch}
                           onChangeText={text => setinch(text)}
                           placeholderTextColor="#8E8E8E"
                           placeholder="inch"

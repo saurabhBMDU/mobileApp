@@ -67,7 +67,7 @@ const {height, width} = Dimensions.get('window');
 
 const Write_Prescription = (props: any) => {
 
-  console.log('write prescription daata',props?.route?.params?.data);
+  // console.log('write prescription daata',props?.route?.params?.data);
 
   const mainFont = 'Montserrat-Regular';
   const mainFontBold = 'Montserrat-Bold';
@@ -234,7 +234,8 @@ const Write_Prescription = (props: any) => {
       handleGetAndSetUser();
       handleGetMedicines();
       setAppointMentObj(props?.route?.params?.data);
-      console.log('data ', props?.route?.params?.data);
+      console.log('prescrin feet',props?.route?.params?.data.feet)
+      // console.log('data ', props?.route?.params?.data);
       // console.log('appoiitment object data i prescription',appointMentObj)
       if (props?.route?.params?.editModeOn) {
         setIsEditModeOn(true);
@@ -840,9 +841,13 @@ const Write_Prescription = (props: any) => {
                   <Text style={{fontSize: hp(1.7), fontFamily: mainFont}}>
                     Weight :
                     <Text style={{color: '#757474'}}>
-                      {appointMentObj?.weight == 0
-                        ? ''
-                        : `${appointMentObj?.weight} Kg`}
+                      {/* {appointMentObj?.weight
+                        ? '0'
+                        : `${appointMentObj?.weight} Kg`} */}
+                        {appointMentObj?.weight 
+                        ? `${appointMentObj.weight} Kg`
+                        : '0 Kg'}
+
                     </Text>
                   </Text>
                 </View>
@@ -919,9 +924,21 @@ const Write_Prescription = (props: any) => {
                   <Text style={{fontSize: hp(1.7), fontFamily: mainFont}}>
                     Height :
                     <Text style={{color: '#757474'}}>
-                      {appointMentObj?.height == 0
-                        ? `${appointMentObj?.feet} feet ${appointMentObj?.inch} inch`
-                        : `${appointMentObj?.height} ${appointMentObj?.heightUnit}`}
+                      {/* {appointMentObj?.heightUnits == 'ft'
+                        ? `${appointMentObj?.feet}` && `${appointMentObj?.inch}` ? `${appointMentObj?.feet} feet ${appointMentObj?.inch} inch` : '0'
+                        : `${appointMentObj?.height}` && `${appointMentObj?.heightUnit}` ? `${appointMentObj?.height} ${appointMentObj?.heightUnit}` : '0'
+                        } */}
+
+                          {appointMentObj?.heightUnit === 'ft' ? 
+                            (props?.route?.params?.data?.feet || appointMentObj?.inch ? 
+                              `${props?.route?.params?.data?.feet} feet ${appointMentObj?.inch} inch` : 
+                              '0') : 
+                            (appointMentObj?.height ? 
+                              `${appointMentObj.height} ${appointMentObj.heightUnit}` : 
+                              '0')
+                          }
+
+
                     </Text>
                   </Text>
                 </View>
