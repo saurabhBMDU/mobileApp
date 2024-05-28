@@ -655,30 +655,30 @@ const Profile = () => {
             </View>
           } */}
           {
-            userObj.role == Roles.DOCTOR &&
-            <TouchableOpacity
-              onPress={() => navigation.navigate('SMART PRESCRIPTION')}
-              //ProfileTemrs
-              style={styles.clickbleLines}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  height: wp(8),
-                  alignItems: 'center',
-                }}>
-                <Polocy_Icons name="policy" style={styles.allIconsStyle} />
-                <Text
-                  style={{
-                    fontSize: hp(1.8),
-                    color: '#4A4D64',
-                    fontFamily: mainFont,
-                    marginLeft: wp(2),
-                  }}>
-                  Smart Prescription
-                </Text>
-              </View>
-              <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
-            </TouchableOpacity>
+            // userObj.role == Roles.DOCTOR &&
+            // <TouchableOpacity
+            //   onPress={() => navigation.navigate('SMART PRESCRIPTION')}
+            //   //ProfileTemrs
+            //   style={styles.clickbleLines}>
+            //   <View
+            //     style={{
+            //       flexDirection: 'row',
+            //       height: wp(8),
+            //       alignItems: 'center',
+            //     }}>
+            //     <Polocy_Icons name="policy" style={styles.allIconsStyle} />
+            //     <Text
+            //       style={{
+            //         fontSize: hp(1.8),
+            //         color: '#4A4D64',
+            //         fontFamily: mainFont,
+            //         marginLeft: wp(2),
+            //       }}>
+            //       Smart Prescription
+            //     </Text>
+            //   </View>
+            //   <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
+            // </TouchableOpacity>
           }
 
           <TouchableOpacity

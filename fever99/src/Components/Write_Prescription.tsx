@@ -1092,7 +1092,7 @@ const Write_Prescription = (props: any) => {
                         fontSize: hp(1.8),
                         fontFamily: mainFontBold,
                         color: 'black',
-                      }}>
+                      }}> 
                       Symptoms:
                     </Text>
                     <TextInput
@@ -1117,6 +1117,7 @@ const Write_Prescription = (props: any) => {
                   }}>
                   <View style={{width: wp(95)}}>
                     <Text
+                    
                       style={{
                         fontSize: hp(1.8),
                         fontFamily: mainFontBold,
@@ -1125,11 +1126,16 @@ const Write_Prescription = (props: any) => {
                       Diagnosis:
                     </Text>
                     <TextInput
+                     multiline
                       onChangeText={e => setDiagnosis(e)}
                       value={diagnosis}
                       placeholderTextColor="#8E8E8E"
                       placeholder="Diagnosis"
-                      style={styles.inputBoxStyl}
+                      // style={styles.inputBoxStyl}
+                      style={[
+                        styles.inputBoxStyl,
+                        {height: 'auto', minHeight: hp(6.1), maxHeight: hp(20)},
+                      ]}
                     />
                   </View>
                 </View>
@@ -1154,7 +1160,11 @@ const Write_Prescription = (props: any) => {
                       value={moment(new Date()).format('YYYY-MM-DD')}
                       placeholderTextColor="#8E8E8E"
                       placeholder="Prescription"
-                      style={styles.inputBoxStyl}
+                      // style={styles.inputBoxStyl}
+                      style={[
+                        styles.inputBoxStyl,
+                        {height: 'auto', minHeight: hp(6.1), maxHeight: hp(20)},
+                      ]}
                     />
                   </View>
                 </View>
@@ -1175,11 +1185,16 @@ const Write_Prescription = (props: any) => {
                       *Drug Allergy:
                     </Text>
                     <TextInput
+                     multiline
                       onChangeText={e => setDrugAllergy(e)}
                       value={drugAllergy}
                       placeholderTextColor="#8E8E8E"
                       placeholder="Drug Allergy"
-                      style={styles.inputBoxStyl}
+                      // style={styles.inputBoxStyl}
+                      style={[
+                        styles.inputBoxStyl,
+                        {height: 'auto', minHeight: hp(6.1), maxHeight: hp(20)},
+                      ]}
                     />
                   </View>
                 </View>
@@ -1200,11 +1215,16 @@ const Write_Prescription = (props: any) => {
                       *Past History:
                     </Text>
                     <TextInput
+                     multiline
                       onChangeText={e => setPastHistory(e)}
                       value={pastHistory}
                       placeholderTextColor="#8E8E8E"
                       placeholder="Past History"
-                      style={styles.inputBoxStyl}
+                      // style={styles.inputBoxStyl}
+                      style={[
+                        styles.inputBoxStyl,
+                        {height: 'auto', minHeight: hp(6.1), maxHeight: hp(20)},
+                      ]}
                     />
                   </View>
                 </View>
@@ -1225,11 +1245,16 @@ const Write_Prescription = (props: any) => {
                       Personal History:
                     </Text>
                     <TextInput
+                     multiline
                       onChangeText={e => setPersonalHistory(e)}
                       value={personalHistory}
                       placeholderTextColor="#8E8E8E"
                       placeholder="Personal History"
-                      style={styles.inputBoxStyl}
+                      // style={styles.inputBoxStyl}
+                      style={[
+                        styles.inputBoxStyl,
+                        {height: 'auto', minHeight: hp(6.1), maxHeight: hp(20)},
+                      ]}
                     />
                   </View>
                 </View>
@@ -1249,11 +1274,16 @@ const Write_Prescription = (props: any) => {
                       Surgical History:
                     </Text>
                     <TextInput
+                     multiline
                       onChangeText={e => setSurgicalHistory(e)}
                       value={surgicalHistory}
                       placeholderTextColor="#8E8E8E"
                       placeholder="Surgical History"
-                      style={styles.inputBoxStyl}
+                      // style={styles.inputBoxStyl}
+                      style={[
+                        styles.inputBoxStyl,
+                        {height: 'auto', minHeight: hp(6.1), maxHeight: hp(20)},
+                      ]}
                     />
                   </View>
                 </View>

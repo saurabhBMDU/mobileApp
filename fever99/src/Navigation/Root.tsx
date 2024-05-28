@@ -28,7 +28,7 @@ import PayementScreen from '../paymentScreen/PayementScreen';
 import ClintPayment from '../ReuseableComp/ClintPayment';
 import { deleteJwt, getJwt, getUser, isUserLoggedIn } from '../Services/user.service';
 import BottamTab from '../TabNavigators/BottamTab';
-import { useLinkTo } from '@react-navigation/native';
+import { NavigationContainer, useLinkTo } from '@react-navigation/native';
 import ForgotPassword from '../Components/ForgotPassword';
 import PaymentFail from '../paymentScreen/PaymentFail';
 import Abouts_dr from '../Components/dr_full_detail/Abouts_dr';
@@ -42,6 +42,7 @@ import Income from '../Components/transaction/Income';
 import Appointment from '../Components/Appointment';
 import HomeFirstScreen from '../Components/HomeFirstScreen';
 import ChatPreviewScreen from '../Components/ChatPreviewScreen';
+import SplashScreen from '../commonScreen/SplashScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -119,6 +120,20 @@ export default function Root() {
     }
   }, []);
 
+
+
+
+
+  return (
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="SplashScreen" component={SplashScreen} />
+        <Stack.Screen name="Root" component={RootScreens} />
+      </Stack.Navigator>
+  );
+}
+
+function RootScreens() {
+  const [isAuthorized] = useContext(AuthContext);
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }
     }>
@@ -171,6 +186,7 @@ export default function Root() {
     </Stack.Navigator>
   );
 }
+
 
 
 

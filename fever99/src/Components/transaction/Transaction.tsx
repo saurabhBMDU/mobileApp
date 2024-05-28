@@ -1,4 +1,4 @@
-import {View, Text, FlatList, Dimensions, StyleSheet} from 'react-native';
+import {View, Text,Image, FlatList, Dimensions, StyleSheet, TouchableOpacity, TextInput} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {
   widthPercentageToDP as wp,
@@ -17,8 +17,15 @@ import Credit_icosn from 'react-native-vector-icons/SimpleLineIcons';
 import Loding_service from '../../All_Loding_page/Loding_service';
 import moment from 'moment';
 
+import Right_Icons from 'react-native-vector-icons/AntDesign';
+import Modal from 'react-native-modal';
+// import { Image } from 'react-native-svg';
+
+
 const {height, width} = Dimensions.get('window');
 export default function Transactions() {
+
+
   const navigation: any = useNavigation();
   const mainFont = 'Montserrat-Regular';
   const mainFontBold = 'Montserrat-Bold';
@@ -26,7 +33,9 @@ export default function Transactions() {
   const [balance, setBalance] = useState(0);
   const [wallet, setWallet] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [rechargeAmounterr, setRechargeAmounterr] = useState('')
+  const [amount, setAmount] = useState('');
+  
   const focused = useIsFocused();
 
   const handleGetWallet = async () => {
@@ -51,6 +60,40 @@ export default function Transactions() {
     }
   }, [focused]);
 
+
+
+
+
+
+
+
+
+  const [paymentModal, setPaymentModal] = useState(false);
+
+  // const mainFont = 'Montserrat-Regular';
+  // const mainFont = 'Montserrat-Regular';
+  
+  
+  
+    const HandleAddAmountToWallet = async () => {
+      let tempAmount = parseInt(`${amount}`) || 0;
+      if (!tempAmount) {
+        setRechargeAmounterr("Please enter amount")
+        return;
+      }
+      if (tempAmount < 10) {
+        setRechargeAmounterr("The amount should exceed 10.");
+        return;
+      }
+      try {
+        setPaymentModal(false);
+        navigation.navigate('PayementScreen', { amount: tempAmount, });
+      } catch (error) {
+        // toastError(error);
+      }
+    }
+
+
   return (
     <View>
       <Headerr
@@ -59,6 +102,22 @@ export default function Transactions() {
         label={`Wallet balance : ₹${balance}`}
         btn={false}
       />
+
+                  <TouchableOpacity
+                  onPress={() => setPaymentModal(true)}
+                  style={styles.clickbleLines}>
+                    <Money_icons name="money" style={styles.allIconsStyle} />
+                    <Text
+                      style={{
+                        fontSize: hp(1.8),
+                        color: '#fff',
+                        fontFamily: mainFont,
+                        marginLeft: wp(2),
+                      }}>
+                     Wallet Recharge
+                    </Text>
+                </TouchableOpacity>
+
       <FlatList
         showsVerticalScrollIndicator={false}
         data={wallet}
@@ -229,6 +288,47 @@ export default function Transactions() {
           );
         }}
       />
+
+<Modal
+                  isVisible={paymentModal}
+                  animationIn={'bounceIn'}
+                  animationOut={'slideOutDown'}
+                  onBackButtonPress={() => { setPaymentModal(false), setRechargeAmounterr('') }}
+                  style={{ marginLeft: 0, marginRight: 0 }}>
+                  <View style={styles.modalView}>
+
+                    <View style={styles.textAndClose}>
+                      <Text style={[styles.modalhi,{fontFamily:mainFont}]}>
+                        Recharge Amount
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() => { setPaymentModal(false), setRechargeAmounterr('') }}>
+                        <Image
+                          source={require('../../../assets/images/close.png')}
+                          style={{ tintColor: '#FA6C23', height: wp(4), width: wp(4) }}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    <TextInput
+                      placeholder="Amount"
+                      keyboardType="number-pad"
+                      style={styles.modalInputfilde}
+                      onChangeText={(e: any) => setAmount(e)}
+                      value={`${amount}`}
+                      placeholderTextColor="gray"
+                    />
+                    <Text style={{ color: "red" }}>{rechargeAmounterr}</Text>
+                    <TouchableOpacity
+                      onPress={() => HandleAddAmountToWallet()}
+                      style={styles.modalBtn}>
+                      <Text style={[styles.modlaSubmittext,{fontFamily: mainFont}]}>
+                        Recharge
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </Modal>
+
+
     </View>
   );
 }
@@ -248,4 +348,77 @@ const styles = StyleSheet.create({
     marginRight: wp(3),
     marginVertical: 4,
   },
+
+  //new 
+  allIconsStyle: {
+    color: '#fff',
+    fontSize: hp(3.4),
+  },
+
+  clickbleLines: {
+    // width: wp(95),
+    flexDirection: 'row',
+    backgroundColor: '#07cddb',
+    height: hp(5.5),
+    // justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingRight: wp(3),
+    // paddingLeft: wp(3),
+    borderRadius: wp(5),
+    marginTop: hp(2),
+    alignSelf:"center",
+    justifyContent:'center',
+    padding:10,
+    marginBottom:10,
+  },
+  modalView: {
+    width: wp(85),
+    paddingTop: hp(3),
+    paddingBottom: hp(3),
+    backgroundColor: 'white',
+    alignSelf: 'center',
+    borderRadius: 5,
+    paddingLeft: wp(4),
+    paddingRight: wp(4),
+  },
+  modalhi: {
+    fontSize: hp(2),
+    color: 'black',
+    // fontFamily: mainFont,
+    fontWeight: 'bold',
+  },
+  modalInputfilde: {
+    marginTop: 15,
+    color: 'gray',
+    backgroundColor: '#e6edf7',
+    fontSize: hp(2)
+  },
+  modalBtn: {
+    height: hp(5),
+    width: wp(77),
+    maxWidth: hp(80),
+    alignSelf: 'center',
+    marginTop: hp(1),
+    backgroundColor: '#1263AC',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modlaSubmittext: {
+    color: 'white',
+    // fontFamily: mainFont,
+    fontSize: hp(1.8),
+  },
+  closeIcon: {
+    fontSize: hp(5),
+    padding: 3,
+    backgroundColor: '#dfeefc',
+    color: '#1263AC',
+    borderRadius: wp(40),
+  },
+  textAndClose: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  }
+
 });
