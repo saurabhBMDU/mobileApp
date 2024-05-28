@@ -37,9 +37,9 @@ import {
   getJwt,
   getUser,
   isUserLoggedIn,
-} from '../Services/user.service'; 
+} from '../Services/user.service';
 import {Calendar} from 'react-native-calendars';
-import { PERMISSIONS, request, check, RESULTS } from 'react-native-permissions';
+import {PERMISSIONS, request, check, RESULTS} from 'react-native-permissions';
 import {Dropdown} from 'react-native-element-dropdown';
 import moment from 'moment';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -138,7 +138,7 @@ const Appointment_History = (props: any) => {
 
   const [userMessage, setUserMessage] = useState('');
 
-  const [passData,setpassData] = useState('')
+  const [passData, setpassData] = useState('');
 
   const startAnimation = () => {
     Animated.timing(animation, {
@@ -250,19 +250,19 @@ const Appointment_History = (props: any) => {
     return 'other';
   };
 
-  const calculateBMI = () => {
-    if (height > 0 && weight > 0) {
-      const heightInMeters =
-        heightUnit === 'cm' ? height / 100 : height * 0.3048;
-      const bmiValue = (weight / (heightInMeters * heightInMeters)).toFixed(2);
-      setBmi(bmiValue);
-    }else{
-      setBmi('0')
-    }
-  };
-  useEffect(() => {
-    calculateBMI();
-  }, [heightUnit, height, weight, bmi]);
+  // const calculateBMI = () => {
+  //   if (height > 0 && weight > 0) {
+  //     const heightInMeters =
+  //       heightUnit === 'cm' ? height / 100 : height * 0.3048;
+  //     const bmiValue = (weight / (heightInMeters * heightInMeters)).toFixed(2);
+  //     setBmi(bmiValue);
+  //   }else{
+  //     setBmi('0')
+  //   }
+  // };
+  // useEffect(() => {
+  //   calculateBMI();
+  // }, [heightUnit, height, weight, bmi]);
 
   const handleDocumentPicker = async () => {
     try {
@@ -316,7 +316,10 @@ const Appointment_History = (props: any) => {
         setSuger2(res?.data?.suger2);
         setSuger3(res?.data?.suger3);
         setPrescriptionArr(res?.data?.prescription);
-        console.log('this is appointmed data to wonolod its pdf',res?.data?.prescription)
+        console.log(
+          'this is appointmed data to wonolod its pdf',
+          res?.data?.prescription,
+        );
         setDoctorName(res?.data?.doctor?.name);
         setPatientName(res?.data?.patientName);
         setrr(res?.data?.respiratoryRate);
@@ -326,10 +329,13 @@ const Appointment_History = (props: any) => {
         setUnit(res?.data?.heightUnit);
         setBmi(res?.data?.bmi);
         setWeight(res?.data?.weight);
-        //setting updated data to show in next page 
+        //setting updated data to show in next page
         setpassData(res?.data);
-        console.log('dynamic data is',res?.data);
-        console.log('this is data here for patinet id', props?.route?.params?.data);
+        console.log('dynamic data is', res?.data);
+        console.log(
+          'this is data here for patinet id',
+          props?.route?.params?.data,
+        );
 
         // console.log('new weight updated',res?.data?.weight)
       }
@@ -381,8 +387,8 @@ const Appointment_History = (props: any) => {
       );
       if (res) {
         // console.log('response is here',res)
-        
-        if(res.status){
+
+        if (res.status) {
           toastSuccess('Vitals has been updated successfully');
           handleGetAppointmentById();
         }
@@ -420,8 +426,6 @@ const Appointment_History = (props: any) => {
     }
   };
 
-
-
   // const requestStoragePermission = async () => {
   //   try {
   //     const granted = await PermissionsAndroid.request(
@@ -438,25 +442,28 @@ const Appointment_History = (props: any) => {
   //   }
   // };
 
+  const requestStoragePermission = async () => {
+    if (Platform.OS === 'android' && Platform.Version < 29) {
+      try {
+        const writeGranted = await request(
+          PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
+        );
+        const readGranted = await request(
+          PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+        );
 
-
-const requestStoragePermission = async () => {
-  if (Platform.OS === 'android' && Platform.Version < 29) {
-    try {
-      const writeGranted = await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
-      const readGranted = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
-
-      return writeGranted === RESULTS.GRANTED && readGranted === RESULTS.GRANTED;
-    } catch (err) {
-      // console.warn(err);
-      return false;
+        return (
+          writeGranted === RESULTS.GRANTED && readGranted === RESULTS.GRANTED
+        );
+      } catch (err) {
+        // console.warn(err);
+        return false;
+      }
+    } else {
+      // For Android 10 and above, no need to request WRITE_EXTERNAL_STORAGE permission
+      return true;
     }
-  } else {
-    // For Android 10 and above, no need to request WRITE_EXTERNAL_STORAGE permission
-    return true;
-  }
-};
-
+  };
 
   // const handleDownloadPrescription = async (id: string, index: number) => {
   //   setDownloding(true);
@@ -468,7 +475,6 @@ const requestStoragePermission = async () => {
   //     setDownloding(false);
   //     return;
   //   }
-
 
   //   try {
   //     if (Platform.OS === 'android') {
@@ -504,9 +510,6 @@ const requestStoragePermission = async () => {
   //   }
   // };
 
-
-
-
   const handleDownloadPrescription = async (_id: string) => {
     try {
       const hasPermission = await requestStoragePermission();
@@ -514,11 +517,11 @@ const requestStoragePermission = async () => {
         toastError('Storage permission denied');
         return;
       }
-  
+
       const url = `${serverUrl}/prescription-by-id/${_id}`;
-      const { config, fs } = RNFetchBlob;
+      const {config, fs} = RNFetchBlob;
       const downloadDir = fs.dirs.DownloadDir;
-  
+
       if (Platform.OS === 'android') {
         if (Platform.Version >= 29) {
           // Use MediaStore for Android 10 and above
@@ -555,7 +558,10 @@ const requestStoragePermission = async () => {
           })
             .fetch('GET', url)
             .then(res => {
-              RNFetchBlob.android.actionViewIntent(res.path(), 'application/pdf');
+              RNFetchBlob.android.actionViewIntent(
+                res.path(),
+                'application/pdf',
+              );
               toastSuccess('Prescription Downloaded');
             })
             .catch(err => {
@@ -571,11 +577,71 @@ const requestStoragePermission = async () => {
       toastError('An error occurred');
     }
   };
-  
 
+  //bmi
 
+  // const [height, setHeight] = useState(0);
+  // const [heightUnit, setUnit] = useState('cm');
+  // const [weight, setWeight] = useState(0);
+  // const [bmi, setBmi] = useState('');
 
+  const [heightUnits, setHeightUnit] = useState('ft');
+  const [feet, setFeet] = useState('');
+  const [inches, setInches] = useState('');
+  const [centimeters, setCentimeters] = useState('');
 
+  const [weightUnits, setWeightUnit] = useState('lbs');
+
+  const calculateBMI = () => {
+    let heightInMeters;
+    if (heightUnits === 'ft') {
+      const totalInches = parseFloat(feet) * 12 + parseFloat(inches);
+      heightInMeters = totalInches * 0.0254;
+    } else {
+      heightInMeters = parseFloat(centimeters) * 0.01;
+    }
+
+    let weightInKg;
+    if (weightUnits === 'lbs') {
+      weightInKg = parseFloat(weight);
+    } else {
+      weightInKg = parseFloat(weight);
+    }
+
+    const bmiValue = weightInKg / (heightInMeters * heightInMeters);
+    console.log('bmi value is this', bmiValue);
+    // if (isNaN(bmiValue)) {
+    //   setBmi(0);
+    // } else {
+      if(bmiValue && bmiValue !=Infinity){
+        setBmi(bmiValue.toFixed(2));
+        return
+      }else{
+        setBmi('0');
+        return
+      }
+  };
+
+  useEffect(() => {
+    if (
+      (heightUnits === 'ft' && (feet !== '' || inches !== '')) ||
+      (heightUnits === 'cm' && centimeters !== '') || weight !== ''
+    ) {
+      calculateBMI();
+    }
+  }, [feet, inches, centimeters, weight, heightUnits, weightUnits]);
+
+  //for bmi
+  const textInputStyle = {
+    height: hp(7.1),
+    fontSize: hp(2),
+    backgroundColor: '#F2F2F2E5',
+    marginTop: hp(1),
+    borderRadius: wp(1.2),
+    borderColor: 'gray',
+    borderWidth: 0.5,
+    paddingLeft: wp(2),
+  };
 
   return (
     <View
@@ -753,7 +819,8 @@ const requestStoragePermission = async () => {
                   />
                 </View>
               </View>
-              <View
+
+              {/* <View
                 style={{
                   flexDirection: 'row',
                   marginTop: hp(1),
@@ -841,8 +908,9 @@ const requestStoragePermission = async () => {
                     }}
                   />
                 </View>
-              </View>
-              <View
+              </View> */}
+
+              {/* <View
                 style={{
                   flexDirection: 'row',
                   marginTop: hp(1),
@@ -873,7 +941,201 @@ const requestStoragePermission = async () => {
                     }}
                   />
                 </View>
+              </View> */}
+
+              {/* <View style={{ padding: wp(5) }}> */}
+              <View
+              // style={{ padding: wp(5) }}
+              >
+               
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent:'flex-start',
+                    // alignSelf:"center"
+                  }}>
+                  {heightUnits === 'ft' ? (
+                    <>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                           alignItems: 'center',
+                           justifyContent:'center'
+                           }}>
+                            <View>
+                             <Text
+                  style={{
+                    fontSize: hp(1.8),
+                    fontFamily: 'mainFontBold',
+                    color: 'black',
+                    // marginBottom: hp(1)
+                  }}>
+                  Feet
+                </Text>
+                        <TextInput
+                          keyboardType="numeric"
+                          value={feet}
+                          onChangeText={text => setFeet(text)}
+                          placeholderTextColor="#8E8E8E"
+                          placeholder="Feet"
+                          style={[textInputStyle, {width: wp(20)}]}
+                        />
+                        </View>
+                        <View
+                       
+                        >
+                        <Text
+                  style={{
+                    fontSize: hp(1.8),
+                    fontFamily: 'mainFontBold',
+                    color: 'black',
+                    marginLeft:10,
+                    // marginBottom: hp(1)
+                  }}>
+                  Inches
+                </Text>
+                        <TextInput
+                          keyboardType="numeric"
+                          value={inches}
+                          onChangeText={text => setInches(text)}
+                          placeholderTextColor="#8E8E8E"
+                          placeholder="Inches"
+                          style={[
+                            textInputStyle,
+                            {width: wp(20), marginLeft: wp(2)},
+                          ]}
+                        />
+                        </View>
+                      </View>
+                      <View style={{
+                        width: wp(50), 
+                        marginLeft: wp(2),
+                        
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: hp(1.8),
+                            fontFamily: 'mainFontBold',
+                            color: 'black',
+                            // marginBottom: hp(1),
+                          }}>
+                          Weight (kg)
+                        </Text>
+                        <TextInput
+                          keyboardType="numeric"
+                          value={weight}
+                          onChangeText={e => setWeight(e)}
+                          placeholderTextColor="#8E8E8E"
+                          placeholder="kg"
+                          style={textInputStyle}
+                         
+                        />
+                      </View>
+                    </>
+                  ) : (
+                    <>
+                    <View>
+                      <Text
+                          style={{
+                            fontSize: hp(1.8),
+                            fontFamily: 'mainFontBold',
+                            color: 'black',
+                            // marginBottom: hp(1),
+                          }}>Centimeters</Text>
+                      <TextInput
+                        keyboardType="numeric"
+                        value={centimeters}
+                        onChangeText={text => setCentimeters(text)}
+                        placeholderTextColor="#8E8E8E"
+                        placeholder="Centimeters"
+                        style={[textInputStyle, {width: wp(30)}]}
+                      />
+                      </View>
+
+                      <View style={{width: wp(63), marginLeft: wp(2)}}>
+                        <Text
+                          style={{
+                            fontSize: hp(1.8),
+                            fontFamily: 'mainFontBold',
+                            color: 'black',
+                            // marginBottom: hp(1),
+                          }}>
+                          Weight (kg)
+                        </Text>
+                        <TextInput
+                          keyboardType="numeric"
+                          value={weight}
+                          onChangeText={e => setWeight(e)}
+                          placeholderTextColor="#8E8E8E"
+                          placeholder="kg"
+                          style={textInputStyle}
+                        />
+                      </View>
+                    </>
+                  )}
+                </View>
+
+                <View style={{width: wp(45), marginTop: hp(2)}}>
+                  <Dropdown
+                    style={[
+                      {
+                        height: hp(7.1),
+                        backgroundColor: '#F2F2F2E5',
+                        borderRadius: wp(1.2),
+                        borderColor: 'gray',
+                        borderWidth: 0.5,
+                      },
+                      isGenderFocused && {borderWidth: 0.5},
+                    ]}
+                    placeholderStyle={{fontSize: hp(2), color: '#8E8E8E'}}
+                    selectedTextStyle={{fontSize: hp(2), color: 'black'}}
+                    inputSearchStyle={{fontSize: hp(2)}}
+                    iconStyle={{fontSize: hp(2.5)}}
+                    data={Unit}
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="unit"
+                    value={heightUnits}
+                    onFocus={() => setIsGenderFocused(true)}
+                    onBlur={() => setIsGenderFocused(false)}
+                    onChange={item => {
+                      setHeightUnit(item.value);
+                      setIsGenderFocused(false);
+                    }}
+                  />
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(1),
+                    justifyContent: 'space-between',
+                    width: wp(95),
+                  }}>
+                  <View style={{width: wp(95)}}>
+                    <Text
+                      style={{
+                        fontSize: hp(1.8),
+                        fontFamily: 'mainFontBold',
+                        color: 'black',
+                        marginBottom: hp(1),
+                      }}>
+                      BMI
+                    </Text>
+                    <TextInput
+                      keyboardType="numeric"
+                      value={bmi}
+                      placeholderTextColor="#8E8E8E"
+                      placeholder="BMI"
+                      style={textInputStyle}
+                    />
+                  </View>
+                </View>
               </View>
+              {/* </View> */}
+
               <View
                 style={{
                   flexDirection: 'row',
@@ -991,8 +1253,8 @@ const requestStoragePermission = async () => {
                             width: wp(100),
                           }}>
                           <TouchableOpacity
-                            onPress={() =>
-                              handleDownloadPrescription(item._id, index)
+                            onPress={
+                              () => handleDownloadPrescription(item._id, index)
                               // alert('working fine ')
                             }
                             style={{
