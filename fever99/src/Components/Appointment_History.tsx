@@ -118,7 +118,7 @@ const Appointment_History = (props: any) => {
   const [suger3, setSuger3] = useState('');
   const [isGenderFocused, setIsGenderFocused] = useState(false);
   const [height, setHeight] = useState(0);
-  const [heightUnit, setUnit] = useState();
+  // const [heightUnit, setUnit] = useState();
   const [weight, setWeight] = useState(0);
   const [bmi, setBmi] = useState(0);
 
@@ -139,6 +139,15 @@ const Appointment_History = (props: any) => {
   const [userMessage, setUserMessage] = useState('');
 
   const [passData, setpassData] = useState('');
+
+  //bmi
+  const [heightUnit, setHeightUnit] = useState('ft');
+  const [feet, setFeet] = useState('');
+  const [inch, setinch] = useState('');
+  const [centimeters, setCentimeters] = useState('');
+
+  const [weightUnits, setWeightUnit] = useState('lbs');
+
 
   const startAnimation = () => {
     Animated.timing(animation, {
@@ -320,14 +329,20 @@ const Appointment_History = (props: any) => {
           'this is appointmed data to wonolod its pdf',
           res?.data?.prescription,
         );
+        setFeet(res?.data?.feet)
+        console.log('feet and inch',res?.data?.inch,res?.data?.feet)
+        setinch(res?.data?.inch)
         setDoctorName(res?.data?.doctor?.name);
         setPatientName(res?.data?.patientName);
         setrr(res?.data?.respiratoryRate);
         setMsgArr(res?.data?.history);
         setAppointmentData(res.data);
-        setHeight(res?.data?.height);
-        setUnit(res?.data?.heightUnit);
+        setCentimeters(res?.data?.height);
+        setHeightUnit(res?.data?.heightUnit);
         setBmi(res?.data?.bmi);
+        setFeet(res?.data?.feet)
+        console.log('feet and inch',res?.data?.inch,res?.data?.feet)
+        setinch(res?.data?.inch)
         setWeight(res?.data?.weight);
         //setting updated data to show in next page
         setpassData(res?.data);
@@ -355,16 +370,17 @@ const Appointment_History = (props: any) => {
 
   const handlechangeAppointmentStatus = async () => {
     // console.log('in update line 340')
-    if (height && !weight) {
-      setMeetingConfirmation(false);
-      toastError('heights or Weight are mandatory !!!');
-      return;
-    }
-    if (!height && weight) {
-      setMeetingConfirmation(false);
-      toastError('heights or Weight are mandatory !!!');
-      return;
-    }
+    // if (!weight) {
+    //   setMeetingConfirmation(false);
+    //   toastError('heights or Weight are mandatory !!!');
+    //   return;
+    // }
+    // if (weight) {
+    //   setMeetingConfirmation(false);
+    //   toastError('heights or Weight are mandatory !!!');
+    //   return;
+    // }
+
     try {
       let obj = {
         bp,
@@ -376,10 +392,12 @@ const Appointment_History = (props: any) => {
         suger1,
         suger2,
         suger3,
-        height,
+        height : heightUnit == 'cm'  ?  centimeters : '0',
         heightUnit,
         weight,
         bmi,
+        feet, 
+        inch,
       };
       let {data: res} = await updateAppointments(
         props?.route?.params?.data._id,
@@ -578,25 +596,15 @@ const Appointment_History = (props: any) => {
     }
   };
 
-  //bmi
+  
+ 
 
-  // const [height, setHeight] = useState(0);
-  // const [heightUnit, setUnit] = useState('cm');
-  // const [weight, setWeight] = useState(0);
-  // const [bmi, setBmi] = useState('');
-
-  const [heightUnits, setHeightUnit] = useState('ft');
-  const [feet, setFeet] = useState('');
-  const [inches, setInches] = useState('');
-  const [centimeters, setCentimeters] = useState('');
-
-  const [weightUnits, setWeightUnit] = useState('lbs');
 
   const calculateBMI = () => {
     let heightInMeters;
-    if (heightUnits === 'ft') {
-      const totalInches = parseFloat(feet) * 12 + parseFloat(inches);
-      heightInMeters = totalInches * 0.0254;
+    if (heightUnit === 'ft') {
+      const totalinch = parseFloat(feet) * 12 + parseFloat(inch);
+      heightInMeters = totalinch * 0.0254;
     } else {
       heightInMeters = parseFloat(centimeters) * 0.01;
     }
@@ -624,12 +632,12 @@ const Appointment_History = (props: any) => {
 
   useEffect(() => {
     if (
-      (heightUnits === 'ft' && (feet !== '' || inches !== '')) ||
-      (heightUnits === 'cm' && centimeters !== '') || weight !== ''
+      (heightUnit === 'ft' && (feet !== '' || inch !== '')) ||
+      (heightUnit === 'cm' && centimeters !== '') || weight !== ''
     ) {
       calculateBMI();
     }
-  }, [feet, inches, centimeters, weight, heightUnits, weightUnits]);
+  }, [feet, inch, centimeters, weight, heightUnit, weightUnits]);
 
   //for bmi
   const textInputStyle = {
@@ -955,7 +963,7 @@ const Appointment_History = (props: any) => {
                     justifyContent:'flex-start',
                     // alignSelf:"center"
                   }}>
-                  {heightUnits === 'ft' ? (
+                  {heightUnit === 'ft' ? (
                     <>
                       <View
                         style={{
@@ -975,7 +983,7 @@ const Appointment_History = (props: any) => {
                 </Text>
                         <TextInput
                           keyboardType="numeric"
-                          value={feet}
+                          value={feet.toString()}
                           onChangeText={text => setFeet(text)}
                           placeholderTextColor="#8E8E8E"
                           placeholder="Feet"
@@ -993,14 +1001,14 @@ const Appointment_History = (props: any) => {
                     marginLeft:10,
                     // marginBottom: hp(1)
                   }}>
-                  Inches
+                  inch
                 </Text>
                         <TextInput
                           keyboardType="numeric"
-                          value={inches}
-                          onChangeText={text => setInches(text)}
+                          value={inch.toString()}
+                          onChangeText={text => setinch(text)}
                           placeholderTextColor="#8E8E8E"
-                          placeholder="Inches"
+                          placeholder="inch"
                           style={[
                             textInputStyle,
                             {width: wp(20), marginLeft: wp(2)},
@@ -1097,7 +1105,7 @@ const Appointment_History = (props: any) => {
                     labelField="label"
                     valueField="value"
                     placeholder="unit"
-                    value={heightUnits}
+                    value={heightUnit}
                     onFocus={() => setIsGenderFocused(true)}
                     onBlur={() => setIsGenderFocused(false)}
                     onChange={item => {

@@ -66,6 +66,9 @@ import {template} from 'lodash';
 const {height, width} = Dimensions.get('window');
 
 const Write_Prescription = (props: any) => {
+
+  console.log('write prescription daata',props?.route?.params?.data);
+
   const mainFont = 'Montserrat-Regular';
   const mainFontBold = 'Montserrat-Bold';
   const mainFontmedium = 'Montserrat-Medium';
@@ -917,7 +920,7 @@ const Write_Prescription = (props: any) => {
                     Height :
                     <Text style={{color: '#757474'}}>
                       {appointMentObj?.height == 0
-                        ? ''
+                        ? `${appointMentObj?.feet} feet ${appointMentObj?.inch} inch`
                         : `${appointMentObj?.height} ${appointMentObj?.heightUnit}`}
                     </Text>
                   </Text>
