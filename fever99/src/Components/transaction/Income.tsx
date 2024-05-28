@@ -155,6 +155,7 @@ const Income = () => {
                       </Text>
                     </View>
                   </View>
+
                   <View style={{flexDirection: 'row'}}>
                     <View style={styles.flexSTYLES}>
                       <Credit_icosn
@@ -182,6 +183,36 @@ const Income = () => {
                       </Text>
                     </View>
                   </View>
+
+                  <View style={{flexDirection: 'row'}}>
+                    <View style={styles.flexSTYLES}>
+                      <Credit_icosn
+                        name="credit-card"
+                        style={styles.iconsStyls}
+                      />
+                      <Text
+                        style={{
+                          marginLeft: wp(2),
+                          fontSize: hp(1.8),
+                          color: 'black',
+                          fontFamily: mainFontBold,
+                        }}>
+                        Remaining:
+                      </Text>
+                    </View>
+                    <View>
+                      <Text
+                        style={{
+                          color: 'gray',
+                          textTransform: 'capitalize',
+                          fontSize: hp(2),
+                        }}>
+                        {item?.remainingBalance ? item?.remainingBalance.toFixed(2) :item?.remainingBalance }
+                      </Text>
+                    </View>
+                  </View>
+
+
                   <View style={{flexDirection: 'row'}}>
                     <View style={styles.flexSTYLES}>
                       <Money_icons name="money" style={styles.iconsStyls} />
