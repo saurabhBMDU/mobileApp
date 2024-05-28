@@ -41,6 +41,7 @@ export const updateAppointmentCallStatus= async (id,obj) => {
 
 export const getAppointments = async (query) => {
     console.log(`${serverUrl}?${query}`);
+    console.log('query in api hit ',query);
     let config = {
         headers:{
             'Content-type':"*",

@@ -150,7 +150,7 @@ const Reschedule = ({ cartID, closeModal, drrIdes, modeOf }) => {
                 <Text
                   style={styles.label}
                   onPress={() => generateRandomTimeSlots()}>
-                  Select Slot:
+                  Select Slot: 
                 </Text>
                 <Dropdown
                   style={[

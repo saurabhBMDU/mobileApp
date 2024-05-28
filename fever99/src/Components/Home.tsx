@@ -137,7 +137,7 @@ const Home = () => {
       title: 'Total Consultation',
       data: '0',
       url: 'Appointment',
-      baceURL:"status=today",
+      baceURL:"",
       roleArr: [Roles.DOCTOR, Roles.FRANCHISE],
     },
     {
@@ -145,7 +145,7 @@ const Home = () => {
       title: 'Today Consultation',
       data: '0',
       url: 'Appointment',
-      baceURL:"status=today",
+      baceURL:"finalStatus=today",
       roleArr: [Roles.DOCTOR, Roles.FRANCHISE],
     },
     {
@@ -153,7 +153,7 @@ const Home = () => {
       title: 'Pending Consultation',
       data: '0',
       url: 'Appointment',
-      baceURL:"status=pending",
+      baceURL:"finalStatus=pending",
       roleArr: [Roles.DOCTOR, Roles.FRANCHISE],
     },
     {
@@ -842,9 +842,15 @@ const Home = () => {
                 {[...docData.filter((el: any) => el.roleArr.some((ele: string) => ele == userObj?.role))].map((item, index) => (
                   <Pressable
                     key={index}
-                    onPress={() => navigation.navigate(item.url,{
-                      baseurl:`${item.baceURL}`
-                    })}
+                    
+                    onPress={() => {
+                      console.log('url',item.url)
+                      console.log('baceURL',item.baceURL)
+                      navigation.navigate(item.url,{
+                      baseurl:`${item.baceURL}`,
+                      page:  1 ,
+                      key: Math.random().toString(),
+                    }) }}
                     style={{
                       width: wp(42),
                       height: hp(15),
@@ -893,7 +899,7 @@ const Home = () => {
                   marginBottom: hp(2),
                   fontSize: hp(1.8),
                 }}>
-                Number of Appointment
+                Number of Appointment 
               </Text>
               {appointmentData && appointmentData.length > 0 && (
                 <LineChart

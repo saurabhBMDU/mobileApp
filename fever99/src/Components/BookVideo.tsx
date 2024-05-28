@@ -1630,6 +1630,27 @@ const BookVideo = (props: any) => {
 
 
 
+
+  // const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  // const [isFocus, setIsFocus] = useState(false);
+
+  const renderDropdownItem = (item : any) => (
+    <View
+      style={{
+        padding: 10,
+        margin:5,
+        borderRadius:10,
+        backgroundColor: item.value === 'no' ? '#d3d3d3' : 'white',
+      }}
+    >
+      <Text style={{ color: item.value === 'no' ? 'gray' : 'black' }}>
+        {item.label}
+      </Text>
+    </View>
+  );
+
+
+
   const textInputStyle = {
     height: hp(7.1),
     width: wp(29),
@@ -1675,6 +1696,7 @@ const BookVideo = (props: any) => {
   const [months, setMonths] = useState <number>(0);
   const [dateTime, setDateTime] = useState('');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
+  const [selectedTimeSlotNotAvailable, setSelectedTimeSlotNotAvailable] = useState('');
   const [gender, setGender] = useState('');
   const [mode, setMode] = useState('');
   const [patientName, setPatientName] = useState('');
@@ -2051,7 +2073,7 @@ const BookVideo = (props: any) => {
                     fontFamily: mainFontBold,
                     color: 'black',
                   }}>
-                  Select Slot:
+                  Select Slot: 
                 </Text>
                 {/* <Dropdown
                   style={[styles.dropdown, isFocus && {borderWidth: 0.5}]}
@@ -2087,38 +2109,54 @@ const BookVideo = (props: any) => {
                 /> */}
 
 <Dropdown
-  style={[styles.dropdown, isFocus && { borderWidth: 0.5 }]}
-  placeholderStyle={styles.placeholderStyle}
-  selectedTextStyle={styles.selectedTextStyle}
-  inputSearchStyle={styles.inputSearchStyle}
-  iconStyle={styles.iconStyle}
-  data={timeSlotss}
-  search
-  maxHeight={300}
-  labelField="label"
-  valueField="value"
-  placeholder="Select Slot"
-  searchPlaceholder="Search..."
-  value={selectedTimeSlot}
-  onFocus={() => setIsFocus(true)}
-  onBlur={() => setIsFocus(false)}
-  onChange={(item: any) => {
-    console.log('selected time slot', item.label); // Log the selected date (label)
-    console.log('selected value', item.value); // Log the selected value ('yes' or 'no')
+        style={{
+          // height: 50,
+          // borderColor: 'gray',
+          // borderWidth: isFocus ? 0.5 : 1,
+          // borderRadius: 8,
+          // paddingHorizontal: 8,
+          // backgroundColor:'gray'
+          height: hp(6.6),
+          borderColor: 'gray',
+          borderWidth: 0.5,
+          borderRadius: wp(1.2),
+          paddingHorizontal: 8,
+          marginTop: hp(1),
+          width: wp(45),
+          fontSize: hp(2),
+          backgroundColor: '#F2F2F2E5',
+        }}
+        placeholderStyle={{ fontSize: 16, color: 'gray' }}
+        selectedTextStyle={{ fontSize: 16, color: 'black' }}
+        inputSearchStyle={{ height: 40, fontSize: 16 }}
+        iconStyle={{ width: 20, height: 20 }}
+        data={timeSlotss}
+        search
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder= {selectedTimeSlot ? selectedTimeSlot :  "Select Slot"}
+        searchPlaceholder="Search..."
+        value={selectedTimeSlot}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={(item) => {
+          console.log('selected time slot', item.label);
+          console.log('selected value', item.value);
 
-    // Check if the value is 'yes' or 'no'
-    if (item.value === 'yes') {
-      // Update the state with the selected date (label)
-      setSelectedTimeSlot(item.label);
-      setIsFocus(false);
-    } else {
-      // If value is not 'yes', show an alert indicating the slot is already booked
-      alert('This time slot is already booked');
-      // You can choose to keep the selectedTimeSlot state unchanged or clear it based on your requirement
-      // setSelectedTimeSlot(''); // Clear the selected time slot if needed
-    }
-  }}
-/>
+          if (item.value === 'no') {
+            // setSelectedTimeSlot(item.label);
+            setSelectedTimeSlotNotAvailable(item.value)
+            Alert.alert('This time slot is already booked');
+          } else {
+            setSelectedTimeSlotNotAvailable(item.value)
+            setIsFocus(false);
+            setSelectedTimeSlot(item.label);
+          }
+        }}
+        renderItem={renderDropdownItem}
+      />
+
 
 
               </View>
@@ -2815,7 +2853,7 @@ const BookVideo = (props: any) => {
             </Text>
           </TouchableOpacity>
         )}
-        {page == 1 ? (
+        {page == 1  ? (
           <TouchableOpacity
           style={{
             width: wp(45),
@@ -2828,6 +2866,13 @@ const BookVideo = (props: any) => {
           }}
 
           onPress={() => {
+
+             if(selectedTimeSlotNotAvailable === 'no'){
+              showAlert('please change time slot it is occupied')
+               return
+             }
+
+
             const fields = [
               { value: dateTime.trim(), message: 'Date is mandatory !!!' },
               { value: selectedTimeSlot.trim(), message: 'Time Slot is mandatory !!!' },
@@ -2895,6 +2940,7 @@ const BookVideo = (props: any) => {
                 fontSize: hp(1.8),
                 color: 'white',
                 fontFamily: mainFontmedium,
+                
               }}>
               Next
             </Text>
@@ -2919,7 +2965,7 @@ const BookVideo = (props: any) => {
                 color: 'white',
                 fontFamily: mainFontmedium,
               }}>
-              Proceed
+              Skip
             </Text>
           </TouchableOpacity>
         )}

@@ -63,7 +63,31 @@ import axios from '../Services/axios.service';
 const {height, width} = Dimensions.get('window');
 const mainFontBold = 'Montserrat-Bold';
 
+import { useFocusEffect } from '@react-navigation/native';
+
+
 const Appointment = (proper: any) => {
+
+
+  const [page, setPage] = useState(proper?.route?.params?.page);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setPage(proper?.route?.params?.page); // Assuming you are passing the page value via route params
+      HandleGetAppointmentsPaginated(proper?.route?.params?.page,proper?.route?.params?.baseurl)
+      // if (focused) {
+        handleGetAndSetUser();
+      // }
+      return () => {
+        // Cleanup if needed
+      };
+    }, [proper?.route?.params])
+  );
+
+
+
+  // console.log('coming in appointment page from home page ',proper?.route?.params)
+
   const serverUrl = url;
   const handleLogout = async () => {
     try {
@@ -115,7 +139,7 @@ const Appointment = (proper: any) => {
   const [lastPageReached, setLastPageReached] = useState(false);
   const [prevLimit, setPrevLimit] = useState(10);
 
-  const [page, setPage] = useState(1);
+  // const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const focused = useIsFocused();
   const [selectedAppointmentId, setSelectedAppointmentId] = useState('');
@@ -150,13 +174,16 @@ const Appointment = (proper: any) => {
     ).start();
   };
 
-  const HandleGetAppointmentsPaginated = async (pageValue: any) => {
+  const HandleGetAppointmentsPaginated = async (pageValue: any, baseUrl : any ) => {
     try {
-      
+      console.log('page and base url',page,baseUrl)
+      // alert(baseUrl);
+      // console.log('handle get pagginated appointment working in line 156 in appointment.tsx file');
+
       let queryString = `page=${pageValue}&limit=${limit}`;
-      if (proper?.route?.params?.baseurl !== undefined) {
-        queryString = `page=${pageValue}&limit=${limit}&${filterData}`;
-      }
+      // if (proper?.route?.params?.baseurl !== undefined) {
+        queryString = `page=${pageValue}&limit=${limit}&${proper?.route?.params?.baseurl}`;
+      // }
       console.log(queryString)
       if (fromDate && fromDate != '') {
         queryString = `${queryString}&fromDate=${fromDate}`;
@@ -164,13 +191,15 @@ const Appointment = (proper: any) => {
       if (toDate && toDate != '') {
         queryString = `${queryString}&toDate=${toDate}`;
       }
+      // console.log('before qury stirn',queryString)
       let {data: res} = await getAppointments(queryString);
+      // console.log('query from backend is here',res);
 
       if (res.data) {
-        if (pageValue == 1) {
-          setAppointmentsArr([...res.data]);
+        if (res.data) {
+          setAppointmentsArr(res.data);
         } else {
-          setAppointmentsArr((prev: any) => [...prev, ...res.data]);
+          // setAppointmentsArr((prev: any) => [...prev, ...res.data]);
           setLastPageReached(true);
         }
       }
@@ -182,6 +211,11 @@ const Appointment = (proper: any) => {
       // toastError(err);
     }
   };
+
+  // useEffect(()=>{
+  //   alert('working')
+  //   HandleGetAppointmentsPaginated(1);
+  // },[])
 
   const HandleGetAppointmentsWithFilterPaginated = async () => {
     try {
@@ -210,18 +244,18 @@ const Appointment = (proper: any) => {
     }
   };
 
-  useEffect(() => {
-    HandleGetAppointmentsPaginated(1);
-    const tempInterval = setInterval(
-      () => HandleGetAppointmentsPaginated(1),
-      20000,
-    );
-    return () => {
-      setAppointmentsArr([]);
-      setPage(1);
-      clearInterval(tempInterval);
-    };
-  }, [proper?.route?.params?.baseur]);
+  // useEffect(() => {
+  //   HandleGetAppointmentsPaginated(1);
+    // const tempInterval = setInterval(
+    //   () => HandleGetAppointmentsPaginated(1),
+    //   20000,
+    // );
+    // return () => {
+    //   setAppointmentsArr([]);
+    //   setPage(1);
+    //   clearInterval(tempInterval);
+    // };
+  // }, [proper?.route?.params?.baseur]);
 
   const handleGetAndSetUser = async () => {
     let userData = await getUser();
@@ -620,7 +654,7 @@ const handleDownloadPrescription = async (_id: string) => {
           </TouchableWithoutFeedback>
         </Modal>
 
-        {user == 'DOCTOR' && (
+        {/* {user == 'DOCTOR' && ( */}
           <View
             style={{
               width: wp(95),
@@ -708,7 +742,7 @@ const handleDownloadPrescription = async (_id: string) => {
               </Text>
             </TouchableOpacity>
           </View>
-        )}
+        {/* )} */}
 
         <Modal
           isVisible={bookmodal}
@@ -909,10 +943,10 @@ const handleDownloadPrescription = async (_id: string) => {
           }
           removeClippedSubviews={true}
           contentContainerStyle={{paddingBottom: hp(10)}}
-          onEndReached={() => {
-            setPage(page + 1);
-            HandleGetAppointmentsPaginated(page + 1);
-          }}
+          // onEndReached={() => {
+          //   setPage(page + 1);
+          //   HandleGetAppointmentsPaginated(page + 1);
+          // }}
           onEndReachedThreshold={0.5}
           initialNumToRender={limit}
           renderItem={({item, index}) => {

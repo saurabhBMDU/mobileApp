@@ -302,14 +302,14 @@ export default function Settings() {
         <ScrollView
           style={{paddingHorizontal: 10, backgroundColor: '#fff'}}
           showsVerticalScrollIndicator={false}>
-          <TouchableOpacity onPress={handleNotificationToggle}>
-            <Notification_icons
+          {/* <TouchableOpacity onPress={handleNotificationToggle}> */}
+            {/* <Notification_icons
               name={
                 isNotification === 'ON' ? 'notifications-off' : 'notifications'
               }
               style={styles.notificationIcons}
-            />
-          </TouchableOpacity>
+            /> */}
+          {/* </TouchableOpacity> */}
           <View style={{alignItems: 'center', marginBottom: hp(5)}}>
             <Image
               source={handleRenderProfilePhoto()}
@@ -327,7 +327,7 @@ export default function Settings() {
               fontSize: hp(2.6),
               color: '#1263AC',
             }}>
-            Basic Informations
+            Basic Informations 
           </Text>
 
           <View
