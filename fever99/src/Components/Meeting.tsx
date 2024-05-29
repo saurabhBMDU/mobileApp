@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import AgoraUIKit from 'agora-rn-uikit';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
-import {Text} from 'react-native';
+import {Text, BackHandler} from 'react-native';
 import {getMeetingToken} from '../Services/meeting.service';
 import {toastError} from '../utils/toast.utils';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
@@ -12,18 +12,56 @@ const Meeting = (props: any) => {
   const [uid, setuid] = useState(Math.floor(Math.random() * 1000));
   const [token, setToken] = useState('');
 
+  const [disconnect,setDisconnect] = useState(false);
+
   const connectionData = {
     appId: 'b671aeda83ee48d582e9cc33f83b30cb',
     channel: props.route.params.data,
     // token: token
   };
+
+
+
+  useEffect(() => {
+    // Set up the BackHandler event listener
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackPress,
+    );
+
+    return () => {
+      // Clean up the event listener when the component is unmounted
+      backHandler.remove();
+    };
+  }, []);
+
+  // Function to handle the back button press
+  const handleBackPress = () => {
+    // Close the app
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'PAC' }], // Ensure 'Home' is your home screen's name
+    });
+    BackHandler.exitApp();
+    // return true; // Prevent default behavior (going back)
+    // return /false; // Continue default behavior (going back)
+  };
+
+
   const rtcCallbacks = {
 
     EndCall: () => {
       console.log('this call back is working fine to end call ')
       // alert('wow')
       setVideoCall(false);
-      navigation.goBack();
+      if (navigation.canGoBack()) {
+        navigation.goBack();
+      } else {
+        // Handle what to do if there is no screen to go back to
+        // For example, navigate to a specific screen or reset the navigation stack
+        handleBackPress(); // Replace 'HomeScreen' with the desired screen
+        setDisconnect(true)
+      }
     },
   };
   const focused = useIsFocused();
@@ -66,6 +104,7 @@ const Meeting = (props: any) => {
   const remoteBtnStyle = {backgroundColor: '#2edb8555'};
   return (
     <>
+    { disconnect ?<Text>Call Disconnected..</Text> :
       <AgoraUIKit
         connectionData={connectionData}
         settings={{
@@ -130,6 +169,7 @@ const Meeting = (props: any) => {
         }}
         rtcCallbacks={rtcCallbacks}
       />
+}
     </>
   );
 };

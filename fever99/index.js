@@ -319,7 +319,7 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
         } else if(detail["notification"]["data"]["data"]){
           //for incoming call 
           InCallManager.stopRingtone(); 
-          Linking.openURL(`fever99://app/Meeting/${detail["notification"]["data"]["appointmentId"]}`)
+          // Linking.openURL(`fever99://app/Meeting/${detail["notification"]["data"]["appointmentId"]}`)
           setTimeout(() => {
             // navigate('PAC');  appointmentId
             // InCallManager.stopRingtone(); 

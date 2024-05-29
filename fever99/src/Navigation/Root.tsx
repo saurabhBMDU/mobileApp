@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext, LoginContext, UserDataContext } from '../../App';
 import Appointment_History from '../Components/Appointment_History';
 import BookClient from '../Components/BookClient';
@@ -121,23 +121,34 @@ export default function Root() {
   }, []);
 
 
+  const [splash,setSplash] = useState(true)
+
+
+  useEffect(() => {
+    setTimeout(() => {
+      setSplash(false)
+    }, 5000);
+  }, []);
 
 
 
-  return (
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="SplashScreen" component={SplashScreen} />
-        <Stack.Screen name="Root" component={RootScreens} />
-      </Stack.Navigator>
-  );
-}
 
-function RootScreens() {
-  const [isAuthorized] = useContext(AuthContext);
+//   return (
+//       <Stack.Navigator screenOptions={{ headerShown: false }}>
+//         <Stack.Screen name="SplashScreen" component={SplashScreen} />
+//         <Stack.Screen name="Root" component={RootScreens} />
+//       </Stack.Navigator>
+//   );
+// }
+
+// function RootScreens() {
+//   const [isAuthorized] = useContext(AuthContext);
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }
     }>
+           
       {
+        splash ? <Stack.Screen name="SplashScreen" component={SplashScreen} /> :
         isAuthorized ?
           <>
             <Stack.Screen name='BottamTab' component={BottamTab} />
@@ -164,7 +175,7 @@ function RootScreens() {
             <Stack.Screen name='ClintPayment' component={ClintPayment} />
             <Stack.Screen name='PayementScreen3' component={PayementScreen} />
             <Stack.Screen name='PaymentFail' component={PaymentFail} />
-            <Stack.Screen name='Meeting' component={Meeting} />
+            {/* <Stack.Screen name='Meeting' component={Meeting} /> */}
             <Stack.Screen name='Settings' component={Settings} />
             <Stack.Screen name='Income' component={Income} />
           </>
@@ -178,7 +189,8 @@ function RootScreens() {
             <Stack.Screen name='GetOTP' component={GetOTP} />
             <Stack.Screen name='ForgotPassword' component={ForgotPassword} />
           </>
-      }
+      } 
+      <Stack.Screen name='Meeting' component={Meeting} />
       <Stack.Screen name='ContactUs' component={Contactus} />
       <Stack.Screen name='ReturnandRefundPolicy' component={ReturnandRefundPolicy} />
       <Stack.Screen name='PAC' component={PrivacyPolicy} />

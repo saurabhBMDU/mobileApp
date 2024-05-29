@@ -4,7 +4,7 @@ import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messag
 
 import { NavigationContainer, useLinkTo } from '@react-navigation/native';
 import React, { createContext, useEffect, useState } from 'react';
-import { Linking,PermissionsAndroid, Platform } from 'react-native';
+import { Linking,PermissionsAndroid, Platform ,AppState} from 'react-native';
 import RNCallKeep from 'react-native-callkeep';
 import PushNotification from 'react-native-push-notification';
 import Toast from 'react-native-toast-message';
@@ -875,6 +875,9 @@ useEffect(() =>{
   }, [isAuthorized]);
 
 
+
+  //old linking 
+
   const linking = {
     prefixes: ['fever99://app'],
     config: {
@@ -884,6 +887,46 @@ useEffect(() =>{
       },
     },
   };
+
+
+
+  // useEffect(() => {
+  //   const handleAppStateChange = (nextAppState) => {
+  //     if (nextAppState === 'active') {
+  //       // Reset navigation stack to Home when the app is brought to the foreground
+  //       navigationRef.current?.reset({
+  //         index: 0,
+  //         routes: [{ name: 'PAC' }],
+  //       });
+  //     }
+  //   };
+
+  //   AppState.addEventListener('change', handleAppStateChange);
+
+  //   return () => {
+  //     AppState.removeEventListener('change', handleAppStateChange);
+  //   };
+  // }, []);
+
+
+
+  // useEffect(() => {
+  //   const handleUrl = ({ url  }) => {
+  //     const route = url.replace(/.*?:\/\//g, '');
+  //     const [path, appointmentId] = route.split('/');
+  //     if (path === 'meeting') {
+  //       InCallManager.stopRingtone();
+  //       navigate('Meeting', { appointmentId });
+  //     }
+  //   };
+  
+  //   Linking.addEventListener('url', handleUrl);
+  //   return () => {
+  //     Linking.removeEventListener('url', handleUrl);
+  //   };
+  // }, []);
+ 
+
   // return (
   //   <UserDataContext.Provider value={[userData, setUserData]}>
   //     <LoginContext.Provider value={[user, setUser]}>

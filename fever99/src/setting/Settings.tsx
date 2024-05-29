@@ -52,9 +52,15 @@ export default function Settings() {
     },
   ];
 
-  const [option, setOption] = useState<any[]>([]);
+  const [option, setOption] = useState([{"label": "12:00 AM  12:15 AM", "value": "12:00 AM  12:15 AM"}, {"label": "12:15 AM  12:30 AM", "value": "12:15 AM  12:30 AM"}, {"label": "12:30 AM  12:45 AM", "value": "12:30 AM  12:45 AM"}, {"label": "12:45 AM  1:00 AM", "value": "12:45 AM  1:00 AM"}, {"label": "1:00 AM  1:15 AM", "value": "1:00 AM  1:15 AM"}, {"label": "1:15 AM  1:30 AM", "value": "1:15 AM  1:30 AM"}, {"label": "1:30 AM  1:45 AM", "value": "1:30 AM  1:45 AM"}, {"label": "1:45 AM  2:00 AM", "value": "1:45 AM  2:00 AM"}, {"label": "2:00 AM  2:15 AM", "value": "2:00 AM  2:15 AM"}, {"label": "2:15 AM  2:30 AM", "value": "2:15 AM  2:30 AM"}, {"label": "2:30 AM  2:45 AM", "value": "2:30 AM  2:45 AM"}, {"label": "2:45 AM  3:00 AM", "value": "2:45 AM  3:00 AM"}, {"label": "3:00 AM  3:15 AM", "value": "3:00 AM  3:15 AM"}, {"label": "3:15 AM  3:30 AM", "value": "3:15 AM  3:30 AM"}, {"label": "3:30 AM  3:45 AM", "value": "3:30 AM  3:45 AM"}, {"label": "3:45 AM  4:00 AM", "value": "3:45 AM  4:00 AM"}, {"label": "4:00 AM  4:15 AM", "value": "4:00 AM  4:15 AM"}, {"label": "4:15 AM  4:30 AM", "value": "4:15 AM  4:30 AM"}, {"label": "4:30 AM  4:45 AM", "value": "4:30 AM  4:45 AM"},{"label": "04:30 AM  04:45 AM", "value": "04:30 AM  04:45 AM"}, {"label": "4:45 AM  5:00 AM", "value": "4:45 AM  5:00 AM"}, {"label": "5:00 AM  5:15 AM", "value": "5:00 AM  5:15 AM"}, {"label": "5:15 AM  5:30 AM", "value": "5:15 AM  5:30 AM"}, {"label": "5:30 AM  5:45 AM", "value": "5:30 AM  5:45 AM"}, {"label": "5:45 AM  6:00 AM", "value": "5:45 AM  6:00 AM"}, {"label": "6:00 AM  6:15 AM", "value": "6:00 AM  6:15 AM"}, {"label": "6:15 AM  6:30 AM", "value": "6:15 AM  6:30 AM"}, {"label": "6:30 AM  6:45 AM", "value": "6:30 AM  6:45 AM"}, {"label": "6:45 AM  7:00 AM", "value": "6:45 AM  7:00 AM"}, {"label": "7:00 AM  7:15 AM", "value": "7:00 AM  7:15 AM"}, {"label": "7:15 AM  7:30 AM", "value": "7:15 AM  7:30 AM"}, {"label": "7:30 AM  7:45 AM", "value": "7:30 AM  7:45 AM"}, {"label": "7:45 AM  8:00 AM", "value": "7:45 AM  8:00 AM"}, {"label": "8:00 AM  8:15 AM", "value": "8:00 AM  8:15 AM"}, {"label": "8:15 AM  8:30 AM", "value": "8:15 AM  8:30 AM"}, {"label": "8:30 AM  8:45 AM", "value": "8:30 AM  8:45 AM"}, {"label": "8:45 AM  9:00 AM", "value": "8:45 AM  9:00 AM"}, {"label": "9:00 AM  9:15 AM", "value": "9:00 AM  9:15 AM"}, {"label": "9:15 AM  9:30 AM", "value": "9:15 AM  9:30 AM"}, {"label": "9:30 AM  9:45 AM", "value": "9:30 AM  9:45 AM"}, {"label": "9:45 AM  10:00 AM", "value": "9:45 AM  10:00 AM"}, {"label": "10:00 AM  10:15 AM", "value": "10:00 AM  10:15 AM"}, {"label": "10:15 AM  10:30 AM", "value": "10:15 AM  10:30 AM"}, {"label": "10:30 AM  10:45 AM", "value": "10:30 AM  10:45 AM"}, {"label": "10:45 AM  11:00 AM", "value": "10:45 AM  11:00 AM"}, {"label": "11:00 AM  11:15 AM", "value": "11:00 AM  11:15 AM"}, {"label": "11:15 AM  11:30 AM", "value": "11:15 AM  11:30 AM"}, {"label": "11:30 AM  11:45 AM", "value": "11:30 AM  11:45 AM"}, {"label": "11:45 AM  12:00 PM", "value": "11:45 AM  12:00 PM"}, {"label": "12:00 PM  12:15 PM", "value": "12:00 PM  12:15 PM"}, {"label": "12:15 PM  12:30 PM", "value": "12:15 PM  12:30 PM"}, {"label": "12:30 PM  12:45 PM", "value": "12:30 PM  12:45 PM"}, {"label": "12:45 PM  1:00 PM", "value": "12:45 PM  1:00 PM"}, {"label": "1:00 PM  1:15 PM", "value": "1:00 PM  1:15 PM"}, {"label": "1:15 PM  1:30 PM", "value": "1:15 PM  1:30 PM"}, {"label": "1:30 PM  1:45 PM", "value": "1:30 PM  1:45 PM"}, {"label": "1:45 PM  2:00 PM", "value": "1:45 PM  2:00 PM"}, {"label": "2:00 PM  2:15 PM", "value": "2:00 PM  2:15 PM"}, {"label": "2:15 PM  2:30 PM", "value": "2:15 PM  2:30 PM"}, {"label": "2:30 PM  2:45 PM", "value": "2:30 PM  2:45 PM"}, {"label": "2:45 PM  3:00 PM", "value": "2:45 PM  3:00 PM"}, {"label": "3:00 PM  3:15 PM", "value": "3:00 PM  3:15 PM"}, {"label": "3:15 PM  3:30 PM", "value": "3:15 PM  3:30 PM"}, {"label": "3:30 PM  3:45 PM", "value": "3:30 PM  3:45 PM"}, {"label": "3:45 PM  4:00 PM", "value": "3:45 PM  4:00 PM"}, {"label": "4:00 PM  4:15 PM", "value": "4:00 PM  4:15 PM"}, {"label": "4:15 PM  4:30 PM", "value": "4:15 PM  4:30 PM"}, {"label": "4:30 PM  4:45 PM", "value": "4:30 PM  4:45 PM"}, {"label": "4:45 PM  5:00 PM", "value": "4:45 PM  5:00 PM"}, {"label": "5:00 PM  5:15 PM", "value": "5:00 PM  5:15 PM"}, {"label": "5:15 PM  5:30 PM", "value": "5:15 PM  5:30 PM"}, {"label": "5:30 PM  5:45 PM", "value": "5:30 PM  5:45 PM"}, {"label": "5:45 PM  6:00 PM", "value": "5:45 PM  6:00 PM"}, {"label": "6:00 PM  6:15 PM", "value": "6:00 PM  6:15 PM"}, {"label": "6:15 PM  6:30 PM", "value": "6:15 PM  6:30 PM"}, {"label": "6:30 PM  6:45 PM", "value": "6:30 PM  6:45 PM"}, {"label": "6:45 PM  7:00 PM", "value": "6:45 PM  7:00 PM"}, {"label": "7:00 PM  7:15 PM", "value": "7:00 PM  7:15 PM"}, {"label": "7:15 PM  7:30 PM", "value": "7:15 PM  7:30 PM"}, {"label": "7:30 PM  7:45 PM", "value": "7:30 PM  7:45 PM"}, {"label": "7:45 PM  8:00 PM", "value": "7:45 PM  8:00 PM"}, {"label": "8:00 PM  8:15 PM", "value": "8:00 PM  8:15 PM"}, {"label": "8:15 PM  8:30 PM", "value": "8:15 PM  8:30 PM"}, {"label": "8:30 PM  8:45 PM", "value": "8:30 PM  8:45 PM"}, {"label": "8:45 PM  9:00 PM", "value": "8:45 PM  9:00 PM"}, {"label": "9:00 PM  9:15 PM", "value": "9:00 PM  9:15 PM"}, {"label": "9:15 PM  9:30 PM", "value": "9:15 PM  9:30 PM"}, {"label": "9:30 PM  9:45 PM", "value": "9:30 PM  9:45 PM"}, {"label": "9:45 PM  10:00 PM", "value": "9:45 PM  10:00 PM"}, {"label": "10:00 PM  10:15 PM", "value": "10:00 PM  10:15 PM"}, {"label": "10:15 PM  10:30 PM", "value": "10:15 PM  10:30 PM"}, {"label": "10:30 PM  10:45 PM", "value": "10:30 PM  10:45 PM"}, {"label": "10:45 PM  11:00 PM", "value": "10:45 PM  11:00 PM"}, {"label": "11:00 PM  11:15 PM", "value": "11:00 PM  11:15 PM"}, {"label": "11:15 PM  11:30 PM", "value": "11:15 PM  11:30 PM"}, {"label": "11:30 PM  11:45 PM", "value": "11:30 PM  11:45 PM"}, {"label": "11:45 PM  12:00 AM", "value": "11:45 PM  12:00 AM"}]);
+
+
+  // const [option, setOption] = useState([])
 
   const [timeSlot, setTimeSlot] = useState([]);
+
+  console.log('time slot is here',timeSlot)
+
   const [timeSlotoffline, setTimeSlotoffline] = useState([]);
 
   const focused = useIsFocused();
@@ -66,15 +72,15 @@ export default function Settings() {
   const [profilePhoto, setProfilePhoto] = useState('');
   const [email, setemail] = useState();
   const [image, setImage] = useState<any>('');
-  const [serviceCharge, setServiceCharge] = useState('');
-  const [address, setAddress] = useState('');
-  const [pinCode, setPinCode] = useState('');
-  const [state, setState] = useState('');
+  // const [serviceCharge, setServiceCharge] = useState('');
+  // const [address, setAddress] = useState('');
+  // const [pinCode, setPinCode] = useState('');
+  // const [state, setState] = useState('');
   const [mobile, setMobile] = useState('');
-  const [specialization, setSpecialization] = useState('');
-  const [abhaid, setAbhaid] = useState('');
+  // const [specialization, setSpecialization] = useState('');
+  // const [abhaid, setAbhaid] = useState('');
   const [userObj, setUserObj] = useState<any>('');
-  const [isNotification, setIsNotification] = useState('OFF');
+  // const [isNotification, setIsNotification] = useState('OFF');
 
 
   const [accountNumber, setaccountNumber] = useState('');
@@ -90,19 +96,19 @@ export default function Settings() {
   
 
   const handleGetAndSetUser = async () => {
+    // alert('workig')
     let userData = await getUser();
     setName(userData?.name);
     setemail(userData?.email);
     setMobile(userData?.mobile);
     setGender(userData?.gender);
-    
     console.log('user data',userData)
 
     //  let {data : res}  any =  await  getDoctorWithBankDetails(userData._id)
      let {data: res}: any = await getDoctorWithBankDetails(userData._id);
 
-   console.log('detail all for doctor and other-------=', res.data.extraDetail.accountNumber)
-
+   console.log('detail all for doctor and other-------=', res.data.data.timeSlotoffline)
+    
     //setting account details 
     // setaccountNumber(res.data.extraDetail.accountNumber)
 
@@ -111,21 +117,23 @@ export default function Settings() {
     if (userData) {
       // console.log('all user data with details ',userData)
       setUserObj(userData);
-      setGender(userData?.gender);
-      setImage(userData?.image);
-      setServiceCharge(userData?.serviceCharge);
-      setAddress(userData?.address);
-      setName(userData?.name);
-      setPinCode(userData?.pinCode);
-      setState(userData?.state);
-      setMobile(userData?.mobile);
-      setSpecialization(userData?.specialization);
-      setAbhaid(userData?.abhaid);
-      setemail(userData?.email);
-      setProfilePhoto(userData?.image);
-      setTimeSlot(userData?.timeSlot.map((el: any) => el.value));
-      setTimeSlotoffline(userData?.timeSlotoffline.map((el: any) => el.value));
-      setIsNotification(userData?.isNotification);
+      setGender(res?.data?.data?.gender);
+      setImage(res?.data?.data?.image);
+      // setServiceCharge(res?.data?.data?.serviceCharge);
+      // setAddress(res?.data?.data?.address);
+      setName(res?.data?.data?.name);
+      // setPinCode(userData?.pinCode);
+      // setState(userData?.state);
+      setMobile(res?.data?.data?.mobile);
+      // setSpecialization(userData?.specialization);
+      // setAbhaid(userData?.abhaid);
+      setemail(res?.data?.data?.email);
+      setProfilePhoto(res?.data?.data?.image);
+      // setTimeSlot(userData?.timeSlot.map((el: any) => el.value));
+      setTimeSlot(res?.data?.data?.timeSlot.map((el: any) => el.label));
+      // setOption(userData?.timeSlot); 
+      setTimeSlotoffline(res?.data?.data?.timeSlotoffline.map((el: any) => el.value));
+      // setIsNotification(userData?.isNotification);
 
       //setting all bank details
       setaccountNumber(res.data.extraDetail.accountNumber);
@@ -142,7 +150,7 @@ export default function Settings() {
     // if (focused) {
       handleGetAndSetUser();
     // }
-  }, [focused]);
+  }, []);
 
   const handleSubmit = async () => {
     try {
@@ -158,13 +166,15 @@ export default function Settings() {
           value: el,
         }));
       }
+      console.log('sending time slot to backend ',obj)
       let {data: res}: any = await updateSlot(obj);
       if (res) {
         await setUser(res.data);
         toastSuccess(res.message);
         handleGetAndSetUser();
         setUserObj(res.data);
-        setTimeSlot(res?.data?.timeSlot.map((el: any) => el.value));
+        // setTimeSlot(res?.data?.timeSlot.map((el: any) => el.value));
+        setOption(res?.data?.timeSlot.map((el: any) => el.value))
         setTimeSlotoffline(
           res?.data?.timeSlotoffline.map((el: any) => el.value),
         );
@@ -243,54 +253,64 @@ export default function Settings() {
     }
   };
 
-  useEffect(() => {
-    if (focused) {
-      function generateTimeArray() {
-        const times = [];
-        for (let hours = 0; hours < 24; hours++) {
-          for (let minutes = 0; minutes < 59; minutes += 15) {
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            const formattedHours = hours % 12 || 12;
-            const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-            const startTime = `${formattedHours}:${formattedMinutes} ${ampm}`;
+  // useEffect(() => {
+  //   if (focused) {
+  //     function generateTimeArray() {
+  //       const times = [];
+  //       for (let hours = 0; hours < 24; hours++) {
+  //         for (let minutes = 0; minutes < 59; minutes += 15) {
+  //           const ampm = hours >= 12 ? 'PM' : 'AM';
+  //           const formattedHours = hours % 12 || 12;
+  //           const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+  //           const startTime = `${formattedHours}:${formattedMinutes} ${ampm}`;
 
-            // Calculate the next 15-minute interval
-            const nextHours = (hours + Math.floor((minutes + 15) / 60)) % 24;
-            const nextAmPm = nextHours >= 12 ? 'PM' : 'AM';
-            const formattedNextHours = nextHours % 12 || 12;
-            const nextMinutes = (minutes + 15) % 60;
-            const formattedNextMinutes =
-              nextMinutes < 10 ? `0${nextMinutes}` : nextMinutes;
-            const endTime = `${formattedNextHours}:${formattedNextMinutes} ${nextAmPm}`;
-            // Concatenate the start and end times with a space
-            times.push({
-              label: `${startTime} - ${endTime}`,
-              value: `${startTime} - ${endTime}`,
-            });
-          }
-        }
-        return times;
-      }
+  //           // Calculate the next 15-minute interval
+  //           const nextHours = (hours + Math.floor((minutes + 15) / 60)) % 24;
+  //           const nextAmPm = nextHours >= 12 ? 'PM' : 'AM';
+  //           const formattedNextHours = nextHours % 12 || 12;
+  //           const nextMinutes = (minutes + 15) % 60;
+  //           const formattedNextMinutes =
+  //             nextMinutes < 10 ? `0${nextMinutes}` : nextMinutes;
+  //           const endTime = `${formattedNextHours}:${formattedNextMinutes} ${nextAmPm}`;
+  //           // Concatenate the start and end times with a space
+  //           times.push({
+  //             label: `${startTime}  ${endTime}`,
+  //             value: `${startTime}  ${endTime}`,
+  //           });
+  //         }
+  //       }
+  //       return times;
+  //     }
 
-      const timeArray = generateTimeArray();
-      setOption(timeArray);
-    }
-  }, [focused]);
+  //     const timeArray = generateTimeArray();
+  //     console.log('generate time is here',timeArray)
+  //     setOption(timeArray);
+  //   }
+  // }, [focused]);
+
+
+
+
   // Notofication on and off code
-  const handleNotificationToggle = async () => {
-    try {
-      const response = await axios.put(`${url}/notification-alert`, {
-        isNotification: isNotification,
-      });
-      if (response.status === 200) {
-        handleGetAndSetUser();
-      } else {
-        throw new Error('Failed to update notification setting');
-      }
-    } catch (error: any) {
-      console.error('Error toggling notification:', error.message);
-    }
-  };
+
+  // const handleNotificationToggle = async () => {
+  //   try {
+  //     const response = await axios.put(`${url}/notification-alert`, {
+  //       isNotification: isNotification,
+  //     });
+  //     if (response.status === 200) {
+  //       handleGetAndSetUser();
+  //     } else {
+  //       throw new Error('Failed to update notification setting');
+  //     }
+  //   } catch (error: any) {
+  //     console.error('Error toggling notification:', error.message);
+  //   }
+  // };
+
+
+
+
 
   if (isConnected === false) {
     return <InterNetError labels={'Setting'} />;
@@ -650,6 +670,7 @@ export default function Settings() {
                     searchPlaceholder="Search..."
                     value={timeSlot}
                     onChange={(item: any) => {
+                      console.log('item',item)
                       setTimeSlot(item);
                       console.log(item, 'item');
                     }}
