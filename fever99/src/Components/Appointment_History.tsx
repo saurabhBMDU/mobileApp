@@ -1289,7 +1289,7 @@ const Appointment_History = (props: any) => {
                               </Text>
                             ) : (
                               <Text style={{color: 'white', fontSize: hp(2)}}>
-                                Prescription
+                                Prescription 
                                 {moment(item.createdAt).format(
                                   'DD/MM/YYYY h:mm:ss a',
                                 )}

@@ -73,6 +73,8 @@ const Profile = () => {
   const [rechargeAmounterr, setRechargeAmounterr] = useState('')
   const [withdrawError, setWithdrawArr] = useState('');
 
+  const [showError,setShowError] = useState(false);
+
   let baseURL = userObj.role == Roles.DOCTOR ? `${url}/doctor-total-income` : `${url}/franchise-total-income`
   let WithdrawalUrl =  `${url}/withdraw` 
 
@@ -211,7 +213,7 @@ const Profile = () => {
       return;
     }
     if (tempAmount < 1000) {
-      setRechargeAmounterr("The amount should be more then 1000.");
+      // setRechargeAmounterr("The amount should be more then 1000.");
       return;
     }
       try {
@@ -219,16 +221,19 @@ const Profile = () => {
         console.log("respons", response);
         if (response.status === 200) {
           setWithdrawModal(false);
+          setShowWithdrawal(false);
           toastSuccess(`${response?.data?.message}`)
           setPaymentModal(false);
         }
         else {
           setWithdrawModal(false);
+          setShowWithdrawal(false);
           toastSuccess(`${response?.data?.message}`)
           setPaymentModal(false);
           // toastError("Please try again later")
         }
       } catch (error) {
+        setShowWithdrawal(false);
         console.error('Error occurred while making withdrawal:', error);
         setWithdrawArr("Failed to withdraw amount");
       }
@@ -612,7 +617,7 @@ const Profile = () => {
               <View>
                 <TouchableOpacity
                   onPress={() => {
-                    setPaymentModal(true)
+                    // setPaymentModal(true)
                     setShowWithdrawal(true)
                   }}
                   style={styles.clickbleLines}>
@@ -636,7 +641,7 @@ const Profile = () => {
                   <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
                 </TouchableOpacity>
 
-                <Modal
+               { ShowWithdrawal && <Modal
                   isVisible={ShowWithdrawal}
                   animationIn={'bounceIn'}
                   animationOut={'slideOutDown'}
@@ -664,11 +669,18 @@ const Profile = () => {
                       placeholder="Amount"
                       keyboardType="number-pad"
                       style={styles.modalInputfilde}
-                      onChangeText={(e: any) => setAmount(e)}
+                      onChangeText={(e: any) =>{
+                         setAmount(e);
+                         if(e <1000){
+                            setShowError(true)
+                         }else{
+                          setShowError(false)
+                         }   
+                        }}
                       value={`${amount}`}
                       placeholderTextColor="gray"
                     />
-                    <Text style={{ color: "red" }}>{rechargeAmounterr}</Text>
+                   { showError && <Text style={{ color: "red" }}>The amount should be more then 1000.</Text>}
                     <TouchableOpacity
                       // onPress={() => HandleWithdrawlAmountToWallet()}
                       onPress={HandleWithdrawAmount}
@@ -683,6 +695,7 @@ const Profile = () => {
                         navigation.navigate('Withdrawal History');
                         setPaymentModal(false);
                         setPaymentModal(false)
+                        setShowWithdrawal(false)
                       }}
                       style={styles.modalBtn}>
                       <Text style={styles.modlaSubmittext}>
@@ -690,7 +703,7 @@ const Profile = () => {
                       </Text>
                     </TouchableOpacity>}
                   </View>
-                </Modal>
+                </Modal>}
               </View>
             </View>
           )}
@@ -807,6 +820,35 @@ const Profile = () => {
             </View>
             <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
           </TouchableOpacity>
+
+
+          {/* if franche and patient login then show download invoice option */}
+          {(userObj.role == Roles.FRANCHISE || userObj?.role == Roles.PATIENT ) &&
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Download Invoice')}
+
+            //ProfileTemrs
+            style={styles.clickbleLines}>
+            <View
+              style={{
+                flexDirection: 'row',
+                height: wp(8),
+                alignItems: 'center',
+              }}>
+              <List_faq name="list" style={styles.allIconsStyle} />
+              <Text
+                style={{
+                  fontSize: hp(1.8),
+                  color: '#4A4D64',
+                  fontFamily: mainFont,
+                  marginLeft: wp(2),
+                }}>
+                Download Invoice
+              </Text>
+            </View>
+            <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
+          </TouchableOpacity>
+          }
 
 
           <TouchableOpacity

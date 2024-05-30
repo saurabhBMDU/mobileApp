@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const AppointmentPagination = ({ currentPage, onPageChange }) => {
+const AppointmentPagination = ({ currentPage,totalPage, onPageChange }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -12,10 +12,22 @@ const AppointmentPagination = ({ currentPage, onPageChange }) => {
       >
         <Text style={styles.buttonText}>Previous</Text>
       </TouchableOpacity>
-      <Text style={styles.pageNumber}>{`Page ${currentPage}`}</Text>
+      <Text style={styles.pageNumber}>{`Total ${totalPage}`}</Text>
+      <Text style={styles.pageNumber}>{`Current ${currentPage}`}</Text>
+      
       <TouchableOpacity
-        style={styles.button}
-        onPress={() => onPageChange(currentPage + 1)}
+        style={[styles.button,  currentPage >= totalPage && styles.disabledButton]}
+        onPress={() =>{ 
+          console.log('currentpage ',currentPage );
+          console.log('totalpage',totalPage);
+      
+          if(currentPage < totalPage ){
+           onPageChange(currentPage + 1);
+        }else{
+          // alert('There is no remaining page')
+        }
+          }}
+         
       >
         <Text style={styles.buttonText}>Next</Text>
       </TouchableOpacity>

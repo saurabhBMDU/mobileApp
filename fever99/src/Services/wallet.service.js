@@ -23,16 +23,28 @@ export const getIncomeTransction = async () => {
 }
 
 
-export const getWithdrawalHistory = async (page) => {
-    console.log('page ',page)
+export const getWithdrawalHistory = async (query) => {
+    console.log('page ',query);
     let config = {
         headers: {
             'Content-type': "application/json",
             "Access-control-Allow-Origin": "*"
         }
     }
-    return await axios.get(`${url}/withdraws?page=${page}`, config);
+    return await axios.get(`${url}/withdraws?${query}`, config);
 }
+
+// export const getAppointments = async (query) => {
+//     console.log(`${serverUrl}?${query}`);
+//     console.log('query in api hit ',query);
+//     let config = {
+//         headers:{
+//             'Content-type':"*",
+//             "Access-control-Allow-Origin":"*"
+//         }
+//     }
+//   return await axios.get(`${serverUrl}?${query}` , config);
+// };
 
 // export const addAmountToWallet = async (obj) => {
 //     let config = {

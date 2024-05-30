@@ -1896,8 +1896,8 @@ const BookVideo = (props: any) => {
         expertId: userData._id,
         files,
         gender,
-        height,
-        heightUnit,
+        height : heightUnits == 'cm' ?  centimeters : 0,
+        heightUnit : heightUnits,
         weight,
         bmi,
         city,
@@ -1912,8 +1912,11 @@ const BookVideo = (props: any) => {
         suger1,
         suger2,
         suger3,
+        feet,
+        inch : inches
       };
-      console.log(obj);
+      console.log('obj console only ',obj);
+      // return 
       let {data: res} = await addAppointments(obj);
       showAlert(res.message)
       if(res?.status){
@@ -2108,7 +2111,7 @@ const BookVideo = (props: any) => {
                   }}
                 /> */}
 
-<Dropdown
+        <Dropdown
         style={{
           height: hp(6.6),
           borderColor: 'gray',

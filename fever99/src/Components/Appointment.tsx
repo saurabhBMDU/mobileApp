@@ -149,6 +149,7 @@ const Appointment = (proper: any) => {
   const [id, setid] = useState(null);
   const [lastPageReached, setLastPageReached] = useState(false);
   const [prevLimit, setPrevLimit] = useState(10);
+  const[totalPages,setTotalPages] = useState(0);
 
   // const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -204,11 +205,12 @@ const Appointment = (proper: any) => {
       }
       // console.log('before qury stirn',queryString)
       let {data: res} = await getAppointments(queryString);
-      // console.log('query from backend is here',res);
+      console.log('query from backend is here',res.totalPages);
 
       if (res.data) {
         if (res.data) {
-          setAppointmentsArr(res.data);
+          setAppointmentsArr(res?.data);
+          setTotalPages(res?.totalPages)
         } else {
           // setAppointmentsArr((prev: any) => [...prev, ...res.data]);
           setLastPageReached(true);
@@ -1681,7 +1683,7 @@ const handleDownloadPrescription = async (_id: string) => {
         />
       )}
 
-  { showPage && <AppointmentPagination currentPage={page} onPageChange={handlePageChange} />}
+  { showPage && <AppointmentPagination currentPage={page} totalPage={totalPages} onPageChange={handlePageChange} />}
 
 
         <Modal

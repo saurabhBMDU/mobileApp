@@ -44,6 +44,7 @@ import HomeFirstScreen from '../Components/HomeFirstScreen';
 import ChatPreviewScreen from '../Components/ChatPreviewScreen';
 import SplashScreen from '../commonScreen/SplashScreen';
 import WithdrawalHistory from '../Components/WithdrawalHistory';
+import DownloadInvoice from '../Components/DownloadInvoice';
 
 const Stack = createNativeStackNavigator();
 
@@ -164,6 +165,7 @@ export default function Root() {
             <Stack.Screen name='SMART PRESCRIPTION' component={SmartPrescriptionPage} />
             <Stack.Screen name='Withdrawal History' component={WithdrawalHistory} />
             <Stack.Screen name='Notifications' component={NotificationShow} />
+            <Stack.Screen name='Download Invoice' component={DownloadInvoice} />
             <Stack.Screen name='About fever99' component={AboutFeverMainPage} />
             <Stack.Screen name='BookClient' component={BookClient} />
             <Stack.Screen name='EditiProfile' component={EditProfile} />

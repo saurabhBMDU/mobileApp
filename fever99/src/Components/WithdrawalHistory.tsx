@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, FlatList, StyleSheet, Dimensions,ActivityIndicator} from 'react-native';
+import {View, Text, FlatList, StyleSheet, Dimensions,ActivityIndicator,TouchableOpacity,TextInput} from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
+import Modal from 'react-native-modal';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -17,11 +18,15 @@ import {getWithdrawalHistory } from '../Services/wallet.service';
 import Status_icons from 'react-native-vector-icons/FontAwesome';
 import AppointmentPagination from './AppointmentPagination';
 
+import Clode_icons from 'react-native-vector-icons/AntDesign';
+import {Calendar} from 'react-native-calendars';
+
 
 const {height, width} = Dimensions.get('window');
 
 const mainFont = 'Montserrat-Regular';
 const mainFontBold = 'Montserrat-Bold';
+const maincolor = '#1263AC';
 
 const WithdrawalHistory = () => {
   const focused = useIsFocused();
@@ -31,16 +36,42 @@ const WithdrawalHistory = () => {
 
   const [page,setPage] = useState(1);
 
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, settoDate] = useState('');
+
+  const [userObj, setUserObj] = useState<any>('');
+  const [dateModal, setDateModal] = useState(false);
+  const [dateToModal, setDateToModal] = useState(false);
+
+  const [limit, setLimit] = useState(10);
+
+
+ 
+
+  const [totalPages,setTotalPages] = useState(0);
+
+
 
 
   const handlegetTrasction = async (page:number) => {
     try {
         setLoading(true)
-      const {data: res} = await getWithdrawalHistory(page);
+
+        let queryString = `page=${1}&limit=${limit}`;
+
+        if (fromDate && fromDate !== '') {
+          queryString = `${queryString}&fromDate=${fromDate}`;
+        }
+        if (toDate && toDate !== '') {
+          queryString = `${queryString}&toDate=${toDate}`;
+        }
+
+      const {data: res} = await getWithdrawalHistory(queryString);
       console.log('Transactions data not found in the response', res);
       if (res?.withdrawals) {
         setLoading(false)
         setIncomeTrans(res?.withdrawals);
+        setTotalPages(res.totalPages);
       } else {
         setLoading(false)
         console.error('Transactions data not found in the response');
@@ -71,6 +102,55 @@ const handlePageChange = (no : number) => {
     handlegetTrasction(no)
   };
 
+
+
+  const HandleGetAppointmentsWithFilterPaginated = async () => {
+    try {
+      setPage(1);
+      setLoading(true)
+      let queryString = `page=${1}&limit=${limit}`;
+
+      if (fromDate && fromDate !== '') {
+        queryString = `${queryString}&fromDate=${fromDate}`;
+      }
+      if (toDate && toDate !== '') {
+        queryString = `${queryString}&toDate=${toDate}`;
+      }
+
+      try {
+        setLoading(true)
+      const {data: res} = await getWithdrawalHistory(queryString);
+      console.log('Transactions data not found in the response', res);
+      if (res?.withdrawals) {
+        setLoading(false)
+        setIncomeTrans(res?.withdrawals);
+      } else {
+        setLoading(false)
+        console.error('Transactions data not found in the response');
+      }
+      setLoading(false);
+    } catch (err) {
+        setLoading(false)
+      // Handle errors here
+      console.error('Error while fetching transactions:', err);
+      setLoading(false);
+    }
+
+    //   if (res.data) {
+    //     if (!isEqual(res.data, appointmentsArr)) {
+    //       setAppointmentsArr([...res.data]);
+    //     }
+    //   }
+
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      // toastError(err);
+    }
+  };
+
+
+
   
   return (
     <View
@@ -84,6 +164,178 @@ const handlePageChange = (no : number) => {
         // label={`Income Wallet Balance : ₹${balance}`}
         btn={false}
       />
+
+
+<View
+            style={{
+              width: wp(95),
+              alignSelf: 'center',
+              marginTop: hp(1),
+              flexDirection: 'row',
+              // marginBottom: hp(1),
+              justifyContent: 'space-between',
+            }}>
+            <TouchableOpacity
+              onPress={() => setDateModal(true)}
+              style={{width: wp(35)}}>
+              <Text
+                style={{
+                  color: 'black',
+                  fontSize: hp(1.8),
+                  fontFamily: mainFont,
+                }}>
+                From Date:
+              </Text>
+              <TextInput
+                editable={false}
+                placeholder="YYYY-MM-DD"
+                value={fromDate}
+                placeholderTextColor={'gray'}
+                style={{
+                  height: hp(6),
+                  width: wp(35),
+                  backgroundColor: '#F2F2F2E5',
+                  marginTop: hp(0.5),
+                  borderRadius: 5,
+                  borderColor: 'gray',
+                  borderWidth: 0.7,
+                }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setDateToModal(true)}
+              style={{width: wp(35)}}>
+              <Text
+                style={{
+                  color: 'black',
+                  fontSize: hp(1.8),
+                  fontFamily: mainFont,
+                }}>
+                To Date:
+              </Text>
+              <TextInput
+                editable={false}
+                placeholder="YYYY-MM-DD"
+                value={toDate}
+                placeholderTextColor={'gray'}
+                style={{
+                  height: hp(6),
+                  width: wp(35),
+                  backgroundColor: '#F2F2F2E5',
+                  marginTop: hp(0.5),
+                  borderRadius: 5,
+                  borderColor: 'gray',
+                  borderWidth: 0.7,
+                }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                HandleGetAppointmentsWithFilterPaginated();
+                setPage(1);
+              }}
+              style={{
+                width: wp(18),
+                backgroundColor: maincolor,
+                height: hp(6),
+                marginTop: hp(3),
+                borderRadius: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: hp(1.7),
+                  fontFamily: mainFont,
+                }}>
+                Apply
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+
+            <Modal
+          isVisible={dateModal}
+          animationIn={'bounceIn'}
+          animationOut={'bounceOut'}
+          onBackButtonPress={() => setDateModal(false)}
+          style={{marginLeft: 0, marginRight: 0}}>
+          <View
+            style={{
+              width: wp(85),
+              paddingTop: hp(1),
+              paddingBottom: hp(3),
+              backgroundColor: 'white',
+              alignSelf: 'center',
+              borderRadius: 5,
+              paddingLeft: wp(4),
+              paddingRight: wp(4),
+            }}>
+            <TouchableOpacity
+              onPress={() => setDateModal(false)}
+              style={{alignSelf: 'flex-end'}}>
+              <Clode_icons
+                name="close"
+                style={{
+                  fontSize: hp(4),
+                  paddingLeft: wp(6),
+                  marginBottom: hp(1),
+                }}
+              />
+            </TouchableOpacity>
+            <Calendar
+              onDayPress={day => {
+                setFromDate(day.dateString);
+                setDateModal(false);
+              }}
+            />
+          </View>
+        </Modal>
+
+        <Modal
+          isVisible={dateToModal}
+          animationIn={'bounceIn'}
+          animationOut={'bounceOut'}
+          onBackButtonPress={() => setDateToModal(false)}
+          style={{marginLeft: 0, marginRight: 0}}>
+          <View
+            style={{
+              width: wp(85),
+              paddingTop: hp(1),
+              paddingBottom: hp(3),
+              backgroundColor: 'white',
+              alignSelf: 'center',
+              borderRadius: 5,
+              paddingLeft: wp(4),
+              paddingRight: wp(4),
+            }}>
+            <TouchableOpacity
+              onPress={() => setDateToModal(false)}
+              style={{alignSelf: 'flex-end'}}>
+              <Clode_icons
+                name="close"
+                style={{
+                  fontSize: hp(4),
+                  paddingLeft: wp(6),
+                  marginBottom: hp(1),
+                }}
+              />
+            </TouchableOpacity>
+            <Calendar
+              onDayPress={day => {
+                settoDate(day.dateString);
+                setDateToModal(false);
+              }}
+              minDate={
+                fromDate && fromDate != ''
+                  ? `${new Date(fromDate)}`
+                  : `${new Date()}`
+              }
+            />
+          </View>
+        </Modal>
+
 
         {loading ? (
           <View
@@ -324,7 +576,7 @@ const handlePageChange = (no : number) => {
         }}
       />
     )}
-      <AppointmentPagination currentPage={page} onPageChange={handlePageChange} />
+      <AppointmentPagination currentPage={page}   totalPage={totalPages} onPageChange={handlePageChange} />
     </View>
   );
 };

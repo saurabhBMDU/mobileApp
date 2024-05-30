@@ -240,6 +240,10 @@ const Meeting = (props: any) => {
       console.log('this callback is working fine to end call');
       setDisconnect(true);
       setVideoCall(false);
+      if (navigation.canGoBack()) {
+        navigation.goBack();
+        return true; // Prevent default behavior
+      }
       // navigation.goBack();
     },
   };
@@ -284,10 +288,10 @@ const Meeting = (props: any) => {
   const remoteBtnStyle = {backgroundColor: '#2edb8555'};
   return (
     <View style={{flex: 1}}>
-      {disconnect ? (
+      {/* {disconnect ? (
         <Text style={{textAlign: 'center', marginTop: 20}}>Call Disconnected...</Text>
       ) : (
-        videoCall && (
+        videoCall && ( */}
           
           <AgoraUIKit
             connectionData={ !disconnect ?  connectionData : connectionData2}
@@ -346,8 +350,8 @@ const Meeting = (props: any) => {
             }}
             rtcCallbacks={rtcCallbacks}
           />
-        )
-      )}
+        {/* )
+      )} */}
     </View>
   );
 };

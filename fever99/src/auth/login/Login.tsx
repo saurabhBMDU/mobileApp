@@ -89,7 +89,13 @@ const Login = () => {
         password,
       };
 
+      console.log('data', {
+        email,
+        password,
+      })
+
       const {data: res}: any = await loginUser(obj);
+      console.log('invalid creanedtion',)
       if (res.status == false) {
         if (res.error === 'User already login in other device') {
           showModalPopup();
@@ -103,6 +109,7 @@ const Login = () => {
         setUser(res?.user?.role);
         setUserData(JSON.stringify(res?.user));
         setIsAuthorized(true);
+        console.log('user logged i ')
       }
     } catch (err) {
       showAlert(err.message);

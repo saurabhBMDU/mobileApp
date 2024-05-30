@@ -59,3 +59,17 @@ export const getAppointmentById = async (id) => {
     }
   return await axios.get(`${serverUrl}/${id}` , config);
 };
+
+
+
+
+export const DownloadInvoiceFile = async (id) => {
+    let config = {
+        headers:{
+            'Content-type':"*",
+            "Access-control-Allow-Origin":"*"
+        }
+    }
+  return await axios.get(`${url}/invoice` , config);
+};
+
