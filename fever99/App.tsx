@@ -882,7 +882,7 @@ useEffect(() =>{
     prefixes: ['fever99://app'],
     config: {
       screens: {
-        PAC: 'PAC',
+        // PAC: 'PAC',
         Meeting: 'Meeting/:data',
       },
     },

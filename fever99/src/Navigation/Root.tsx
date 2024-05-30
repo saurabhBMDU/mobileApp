@@ -43,14 +43,13 @@ import Appointment from '../Components/Appointment';
 import HomeFirstScreen from '../Components/HomeFirstScreen';
 import ChatPreviewScreen from '../Components/ChatPreviewScreen';
 import SplashScreen from '../commonScreen/SplashScreen';
+import WithdrawalHistory from '../Components/WithdrawalHistory';
 
 const Stack = createNativeStackNavigator();
 
 
 
 export default function Root() {
-
-
 
 
   const handleLogout = async () => {
@@ -163,6 +162,7 @@ export default function Root() {
             <Stack.Screen name='ProfileTemrs' component={ProfileTermsAndConditions} />
             <Stack.Screen name='faq' component={FAQ} />
             <Stack.Screen name='SMART PRESCRIPTION' component={SmartPrescriptionPage} />
+            <Stack.Screen name='Withdrawal History' component={WithdrawalHistory} />
             <Stack.Screen name='Notifications' component={NotificationShow} />
             <Stack.Screen name='About fever99' component={AboutFeverMainPage} />
             <Stack.Screen name='BookClient' component={BookClient} />

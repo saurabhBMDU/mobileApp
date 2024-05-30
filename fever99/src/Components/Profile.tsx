@@ -63,17 +63,18 @@ const Profile = () => {
   const [userObj, setUserObj] = useState<any>({});
   const [count, setCount] = useState(0);
   const [paymentModal, setPaymentModal] = useState(false);
+  const [ShowWithdrawal, setShowWithdrawal] = useState(false);
   const [amount, setAmount] = useState('');
   const [withdraModal, setWithdrawModal] = useState(false);
   const [withdrawAmounr, setWithdrawAmounr] = useState('');
   const [errorso, setErrorO] = useState("");
-  const [getEarning, setGetearning] = useState('');
+  const [getEarning, setGetearning] = useState(0);
   const [errorWithdrow, setwodraw] = useState("")
   const [rechargeAmounterr, setRechargeAmounterr] = useState('')
   const [withdrawError, setWithdrawArr] = useState('');
 
   let baseURL = userObj.role == Roles.DOCTOR ? `${url}/doctor-total-income` : `${url}/franchise-total-income`
-
+  let WithdrawalUrl =  `${url}/withdraw` 
 
   const handleLogout2 = async () => {
     try {
@@ -182,6 +183,7 @@ const Profile = () => {
       // toastError(error);
     }
   }
+
   //  get income amount 
   const getIncomeAmount = async () => {
     try {
@@ -201,28 +203,35 @@ const Profile = () => {
     getIncomeAmount();
   }, []);
 
+  //withdrawal money
   const HandleWithdrawAmount = async () => {
-    if (withdrawAmounr < 500) {
-      setwodraw("Amount must be greater than 500");
+    let tempAmount = parseInt(`${amount}`) || 0;
+    if (!tempAmount) {
+      setRechargeAmounterr("Please enter amount")
       return;
     }
-    if (getEarning < withdrawAmounr) {
+    if (tempAmount < 1000) {
+      setRechargeAmounterr("The amount should be more then 1000.");
+      return;
+    }
       try {
-        const response = await axios.post(`${url}/withdraw`);
+        const response = await axios.post(`${url}/withdraw`,{amount:tempAmount});
         console.log("respons", response);
         if (response.status === 200) {
           setWithdrawModal(false);
-          toastSuccess("Your money will be credited within 3-5 working days.")
+          toastSuccess(`${response?.data?.message}`)
+          setPaymentModal(false);
         }
         else {
           setWithdrawModal(false);
+          toastSuccess(`${response?.data?.message}`)
+          setPaymentModal(false);
           // toastError("Please try again later")
         }
       } catch (error) {
         console.error('Error occurred while making withdrawal:', error);
         setWithdrawArr("Failed to withdraw amount");
       }
-    }
 
   };
   const imageSize = Math.min(hp(27), wp(17));
@@ -526,6 +535,7 @@ const Profile = () => {
             <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
           </TouchableOpacity>
 
+{/* for reacharge */}
           {userObj.role == Roles.FRANCHISE && (
             <View>
               <View>
@@ -593,6 +603,98 @@ const Profile = () => {
               </View>
             </View>
           )}
+
+          {/* for withdrawal */}
+
+
+          {(userObj.role == Roles.FRANCHISE|| userObj.role == Roles.DOCTOR) && (
+            <View>
+              <View>
+                <TouchableOpacity
+                  onPress={() => {
+                    setPaymentModal(true)
+                    setShowWithdrawal(true)
+                  }}
+                  style={styles.clickbleLines}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      height: wp(8),
+                      alignItems: 'center',
+                    }}>
+                    <Money_Icons name="money" style={styles.allIconsStyle} />
+                    <Text
+                      style={{
+                        fontSize: hp(1.8),
+                        color: '#4A4D64',
+                        fontFamily: mainFont,
+                        marginLeft: wp(2),
+                      }}>
+                   Withdrawal Money
+                    </Text>
+                  </View>
+                  <Right_Icons name="right" style={{ fontSize: hp(3.1) }} />
+                </TouchableOpacity>
+
+                <Modal
+                  isVisible={ShowWithdrawal}
+                  animationIn={'bounceIn'}
+                  animationOut={'slideOutDown'}
+                  onBackButtonPress={() => { setPaymentModal(false), setRechargeAmounterr('') }}
+                  style={{ marginLeft: 0, marginRight: 0 }}>
+                  <View style={styles.modalView}>
+
+                    <View style={styles.textAndClose}>
+                      <Text style={styles.modalhi}>
+                      Withdrawal  Amount
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() => { 
+                          setPaymentModal(false), 
+                          setRechargeAmounterr('');
+                          setShowWithdrawal(false);
+                           }}>
+                        <Image
+                          source={require('../../assets/images/close.png')}
+                          style={{ tintColor: '#FA6C23', height: wp(4), width: wp(4) }}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    <TextInput
+                      placeholder="Amount"
+                      keyboardType="number-pad"
+                      style={styles.modalInputfilde}
+                      onChangeText={(e: any) => setAmount(e)}
+                      value={`${amount}`}
+                      placeholderTextColor="gray"
+                    />
+                    <Text style={{ color: "red" }}>{rechargeAmounterr}</Text>
+                    <TouchableOpacity
+                      // onPress={() => HandleWithdrawlAmountToWallet()}
+                      onPress={HandleWithdrawAmount}
+                      style={styles.modalBtn}>
+                      <Text style={styles.modlaSubmittext}>
+                      Withdrawal 
+                      </Text>
+                    </TouchableOpacity>
+                   { ShowWithdrawal &&<TouchableOpacity
+                      // onPress={() => HandleWithdrawlAmountToWallet()}
+                      onPress={() => {
+                        navigation.navigate('Withdrawal History');
+                        setPaymentModal(false);
+                        setPaymentModal(false)
+                      }}
+                      style={styles.modalBtn}>
+                      <Text style={styles.modlaSubmittext}>
+                      Show Withdrawal History
+                      </Text>
+                    </TouchableOpacity>}
+                  </View>
+                </Modal>
+              </View>
+            </View>
+          )}
+
           {/* {(userObj.role == Roles.FRANCHISE || userObj.role == Roles.DOCTOR) &&
             <View>
               <TouchableOpacity

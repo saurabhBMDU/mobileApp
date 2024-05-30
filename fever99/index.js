@@ -319,14 +319,15 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
         } else if(detail["notification"]["data"]["data"]){
           //for incoming call 
           InCallManager.stopRingtone(); 
-          // Linking.openURL(`fever99://app/Meeting/${detail["notification"]["data"]["appointmentId"]}`)
+          navigationRef.navigate('Meeting');
+          Linking.openURL(`fever99://app/Meeting/${detail["notification"]["data"]["appointmentId"]}`)
           setTimeout(() => {
             // navigate('PAC');  appointmentId
             // InCallManager.stopRingtone(); 
             Linking.openURL(`fever99://app/Meeting/${detail["notification"]["data"]["appointmentId"]}`)
             // Check if navigation is ready and navigate if so
             if (navigationRef.isReady()) {
-              // navigationRef.navigate('PAC');
+              navigationRef.navigate('Meeting');
               // InCallManager.stopRingtone(); 
               Linking.openURL(`fever99://app/Meeting/${detail["notification"]["data"]["appointmentId"]}`)
             } else {

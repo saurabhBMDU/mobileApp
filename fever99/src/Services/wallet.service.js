@@ -22,6 +22,18 @@ export const getIncomeTransction = async () => {
     return await axios.get(`${url}/franchise-income`, config);
 }
 
+
+export const getWithdrawalHistory = async (page) => {
+    console.log('page ',page)
+    let config = {
+        headers: {
+            'Content-type': "application/json",
+            "Access-control-Allow-Origin": "*"
+        }
+    }
+    return await axios.get(`${url}/withdraws?page=${page}`, config);
+}
+
 // export const addAmountToWallet = async (obj) => {
 //     let config = {
 //         headers: {

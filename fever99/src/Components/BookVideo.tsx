@@ -2073,7 +2073,7 @@ const BookVideo = (props: any) => {
                     fontFamily: mainFontBold,
                     color: 'black',
                   }}>
-                  Select Slot: 
+                  Select Slot:
                 </Text>
                 {/* <Dropdown
                   style={[styles.dropdown, isFocus && {borderWidth: 0.5}]}
@@ -2110,12 +2110,6 @@ const BookVideo = (props: any) => {
 
 <Dropdown
         style={{
-          // height: 50,
-          // borderColor: 'gray',
-          // borderWidth: isFocus ? 0.5 : 1,
-          // borderRadius: 8,
-          // paddingHorizontal: 8,
-          // backgroundColor:'gray'
           height: hp(6.6),
           borderColor: 'gray',
           borderWidth: 0.5,

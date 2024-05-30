@@ -22,6 +22,7 @@ const url = 'https://api.fever99.com/api/';
 const Reschedule = ({ cartID, closeModal, drrIdes, modeOf }) => {
   const [dateTime, setDatetime] = useState('');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
+  const [alreadyBooked, setAlreadyBooked] = useState(false);
   const [isFocus, setIsFocus] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -63,10 +64,11 @@ const Reschedule = ({ cartID, closeModal, drrIdes, modeOf }) => {
       }
       const responseData = await response.json();
       console.log("Response:", responseData);
-      const timeSlotsArray = responseData[modeOf === "Video" ? "extractedOnlineTimes" : "extractedOfflineTimes"].map(time => ({
-        label: time,
-        value: time
-      }));
+      const timeSlotsArray = responseData[modeOf === "Video" ? "extractedOnlineTimes" : "extractedOfflineTimes"]
+      // .map(time => ({
+      //   label: time,
+      //   value: time
+      // }));
       setTimeSlot(timeSlotsArray);
     } catch (error) {
       console.error('Error fetching time slots:', error.message);
@@ -80,6 +82,10 @@ const Reschedule = ({ cartID, closeModal, drrIdes, modeOf }) => {
 
 
   const handleSubmit = async () => {
+    if(alreadyBooked){
+      alert('choose other time slot this is occupied')
+      return 
+    }
     if (!dateTime || !selectedTimeSlot) {
       setErrors('Both fields are required');
       return;
@@ -108,6 +114,25 @@ const Reschedule = ({ cartID, closeModal, drrIdes, modeOf }) => {
       setIsLoading(false);
     }
   };
+
+
+
+  
+  const renderDropdownItem = (item) => (
+    <View
+      style={{
+        padding: 10,
+        margin:5,
+        borderRadius:10,
+        backgroundColor: item.value === 'no' ? '#d3d3d3' : 'white',
+      }}
+    >
+      <Text style={{ color: item.value === 'no' ? 'gray' : 'black' }}>
+        {item.label}
+      </Text>
+    </View>
+  );
+
 
   return (
     <View style={styles.mainView}>
@@ -167,15 +192,24 @@ const Reschedule = ({ cartID, closeModal, drrIdes, modeOf }) => {
                   maxHeight={300}
                   labelField="label"
                   valueField="value"
-                  placeholder="Select Slot"
+                  placeholder={ !alreadyBooked ? selectedTimeSlot : "Select Slot"}
                   searchPlaceholder="Search..."
-                  value={selectedTimeSlot}
+                  value={ !alreadyBooked  ? selectedTimeSlot : 'Select Slot'}
                   onFocus={() => setIsFocus(true)}
                   onBlur={() => setIsFocus(false)}
                   onChange={item => {
-                    setSelectedTimeSlot(item.value);
+                   
+                    if(item.value === 'no'){
+                      alert('this time slot is already booked')
+                      setAlreadyBooked(true)
+                      setSelectedTimeSlot('');
+                    }else{
+                      setSelectedTimeSlot(item.label);
+                      setAlreadyBooked(false)
+                    }
                     setIsFocus(false);
                   }}
+                  renderItem={renderDropdownItem}
                 />
               </View>
               <TouchableOpacity

@@ -337,7 +337,7 @@ const EditProfile = () => {
                   fontSize: hp(1.7),
                   fontFamily: mainFontmedium,
                 }}>
-                Address
+                Clinic Address
               </Text>
               <TextInput
                 onChangeText={e => setAddress(e)}
@@ -421,7 +421,7 @@ const EditProfile = () => {
               </View>
             )}
 
-            {userObj.role == Roles.DOCTOR && (
+            {/* {userObj.role == Roles.DOCTOR && (
               <View style={{width: wp(95), marginTop: hp(2)}}>
                 <Text
                   style={{
@@ -439,8 +439,9 @@ const EditProfile = () => {
                   style={styles.inputfildeStyle}
                 />
               </View>
-            )}
-            {(userObj.role == Roles.DOCTOR ||
+            )} */}
+
+            {/* {(userObj.role == Roles.DOCTOR ||
               userObj.role == Roles.FRANCHISE) && (
               <View style={{width: wp(95), marginTop: hp(2)}}>
                 <Text
@@ -452,7 +453,7 @@ const EditProfile = () => {
                   Uplode Document
                 </Text>
               </View>
-            )}
+            )} */}
             <View style={{marginTop: hp(2), width: wp(95)}}>
               <Text
                 style={{

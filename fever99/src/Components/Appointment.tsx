@@ -16,6 +16,7 @@ import {
   TouchableWithoutFeedback,
   View,
   Alert,
+  ActivityIndicator,
   PermissionsAndroid,
 } from 'react-native';
 import Clode_icons from 'react-native-vector-icons/AntDesign';
@@ -64,6 +65,7 @@ const {height, width} = Dimensions.get('window');
 const mainFontBold = 'Montserrat-Bold';
 
 import { useFocusEffect } from '@react-navigation/native';
+import AppointmentPagination from './AppointmentPagination';
 
 
 const Appointment = (proper: any) => {
@@ -71,12 +73,21 @@ const Appointment = (proper: any) => {
 
   const [page, setPage] = useState(proper?.route?.params?.page);
 
+  const [showPage,setShowPage] = useState(false)
+
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, settoDate] = useState('');
+
+
   useFocusEffect(
     React.useCallback(() => {
       setPage(proper?.route?.params?.page); // Assuming you are passing the page value via route params
       HandleGetAppointmentsPaginated(proper?.route?.params?.page,proper?.route?.params?.baseurl)
       // if (focused) {
         handleGetAndSetUser();
+        //clear date on first rendering
+        setFromDate('');
+        settoDate('');
       // }
       return () => {
         // Cleanup if needed
@@ -147,8 +158,7 @@ const Appointment = (proper: any) => {
   const [details, setDetails] = useState('');
   const [complaintModal, setComplaintModal] = useState(false);
 
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, settoDate] = useState('');
+ 
   const [filterData, setFilterData] = useState(proper?.route?.params?.baseurl);
 
   const [animation] = useState(new Animated.Value(1));
@@ -174,9 +184,10 @@ const Appointment = (proper: any) => {
     ).start();
   };
 
-  const HandleGetAppointmentsPaginated = async (pageValue: any, baseUrl : any ) => {
+  const HandleGetAppointmentsPaginated = async (pageValue: any) => {
     try {
-      console.log('page and base url',page,baseUrl)
+      setLoading(true)
+      console.log('page and base url',page)
       // alert(baseUrl);
       // console.log('handle get pagginated appointment working in line 156 in appointment.tsx file');
 
@@ -212,6 +223,18 @@ const Appointment = (proper: any) => {
     }
   };
 
+
+
+
+
+
+
+  const handlePageChange = (page : number) => {
+    setPage(page);
+    HandleGetAppointmentsPaginated(page)
+    console.log('page',page)
+  };
+
   // useEffect(()=>{
   //   alert('working')
   //   HandleGetAppointmentsPaginated(1);
@@ -221,6 +244,7 @@ const Appointment = (proper: any) => {
     try {
       setFilterData('');
       setPage(1);
+      setLoading(true)
       let queryString = `page=${1}&limit=${limit}`;
 
       if (fromDate && fromDate !== '') {
@@ -844,6 +868,17 @@ const handleDownloadPrescription = async (_id: string) => {
 
         {/*  this modal created to submit the feedback option */}
 
+        {loading ? (
+          <View
+          style={{
+            flex:1,
+            alignItems:"center",
+            justifyContent:'center',
+          }}
+          >
+        <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      ) : (
         <FlatList
           showsVerticalScrollIndicator={false}
           data={appointmentsArr}
@@ -943,10 +978,11 @@ const handleDownloadPrescription = async (_id: string) => {
           }
           removeClippedSubviews={true}
           contentContainerStyle={{paddingBottom: hp(10)}}
-          // onEndReached={() => {
-          //   setPage(page + 1);
-          //   HandleGetAppointmentsPaginated(page + 1);
-          // }}
+          onEndReached={() => {
+            // setPage(page + 1);
+            // HandleGetAppointmentsPaginated(page + 1);
+            setShowPage(true)
+          }}
           onEndReachedThreshold={0.5}
           initialNumToRender={limit}
           renderItem={({item, index}) => {
@@ -1643,6 +1679,10 @@ const handleDownloadPrescription = async (_id: string) => {
             );
           }}
         />
+      )}
+
+  { showPage && <AppointmentPagination currentPage={page} onPageChange={handlePageChange} />}
+
 
         <Modal
           isVisible={soModalreschedule}
