@@ -661,7 +661,7 @@ return (
               <View style={styles.userMessage}>
                 {!item.type || item.type === 'text' ? (
                   <View style={styles.userTextMessage}>
-                    <Text style={[styles.messageText,{fontFamily: mainFont}]}>{item.message}</Text>
+                    <Text style={[styles.messageText,{fontFamily: mainFont,color:'#fff'}]}>{item.message}</Text>
                   </View>
                 ) : allowedFile.some(el => el.toLowerCase().includes(item.type.toLowerCase())) ? (
                  <TouchableOpacity

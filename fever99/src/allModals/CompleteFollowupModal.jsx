@@ -85,6 +85,7 @@ const CompleteFollowupModal = ({ cartID, closeModal, drrIdes, modeOf }) => {
       });
       console.log(response);
       if (response.status === 200) {
+        
         offModal();
       } else {
         
@@ -97,17 +98,17 @@ const CompleteFollowupModal = ({ cartID, closeModal, drrIdes, modeOf }) => {
   const handleFinalSubmit = () => {
     Alert.alert(
       'Completed!',
-      'Appointment completed successfully.',
+      'Are you sure you want to complete this appointment.',
       [
         {
-          text: 'Completed',
+          text: 'Yes',
           onPress: () => completedStatus(),
           // style: 'default', // or 'cancel' for iOS
           color: 'blue', // text color
           backgroundColor: 'lightblue' // background color
         },
         {
-          text: 'Cancel',
+          text: 'No',
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel'
         },
@@ -138,26 +139,34 @@ const CompleteFollowupModal = ({ cartID, closeModal, drrIdes, modeOf }) => {
       <View style={styles.subView}>
         {!soInputField ? (
           <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+           
+
+           <TouchableOpacity
+              onPress={() => handleFinalSubmit()}
+              style={[styles.bothButton, { backgroundColor: mainColor }]}>
+              <Text
+                style={{ color: 'white', fontFamily: mainFont, fontSize: hp(2) }}>
+                Complete
+              </Text>
+            </TouchableOpacity>
+
             <TouchableOpacity
               style={[styles.bothButton, { borderColor: mainColor }]}
-              onPress={() => setSoInputField(true)}>
+              // onPress={() => setSoInputField(true)}
+              onPress={() => closeModal()}
+              >
               <Text
                 style={{
                   color: mainColor,
                   fontFamily: mainFont,
                   fontSize: hp(2),
                 }}>
-                Follow Up
+                Cancel
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => handleFinalSubmit()}
-              style={[styles.bothButton, { backgroundColor: mainColor }]}>
-              <Text
-                style={{ color: 'white', fontFamily: mainFont, fontSize: hp(2) }}>
-                Completed
-              </Text>
-            </TouchableOpacity>
+
+           
+
           </View>
         ) : (
           <View>

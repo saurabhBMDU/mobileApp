@@ -976,11 +976,11 @@ useEffect(() =>{
                 
                
                { isFirstPage ?
-                ( 
+                (  
                 <LoggedOutScreen callBackFunction={CallBackFunction}/>
-                ) : 
-                (<Root />)
-              } 
+                 ) : 
+                 (<Root />)
+               }  
 
         
               {/* <Toast /> */}

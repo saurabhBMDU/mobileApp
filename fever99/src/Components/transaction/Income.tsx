@@ -169,7 +169,7 @@ const Income = () => {
                           color: 'black',
                           fontFamily: mainFontBold,
                         }}>
-                        Types:
+                        Type:
                       </Text>
                     </View>
                     <View>
@@ -183,6 +183,29 @@ const Income = () => {
                       </Text>
                     </View>
                   </View>
+
+                 
+
+                  <View style={{flexDirection: 'row'}}>
+                    <View style={styles.flexSTYLES}>
+                      <Money_icons name="money" style={styles.iconsStyls} />
+                      <Text
+                        style={{
+                          marginLeft: wp(2),
+                          fontSize: hp(1.8),
+                          color: 'black',
+                          fontFamily: mainFontBold,
+                        }}>
+                        Amount:
+                      </Text>
+                    </View>
+                    <View>
+                      <Text style={{color: 'gray', fontSize: hp(2)}}>
+                        ₹ {item?.amount}
+                      </Text>
+                    </View>
+                  </View>
+
 
                   <View style={{flexDirection: 'row'}}>
                     <View style={styles.flexSTYLES}>
@@ -213,25 +236,7 @@ const Income = () => {
                   </View>
 
 
-                  <View style={{flexDirection: 'row'}}>
-                    <View style={styles.flexSTYLES}>
-                      <Money_icons name="money" style={styles.iconsStyls} />
-                      <Text
-                        style={{
-                          marginLeft: wp(2),
-                          fontSize: hp(1.8),
-                          color: 'black',
-                          fontFamily: mainFontBold,
-                        }}>
-                        Amount:
-                      </Text>
-                    </View>
-                    <View>
-                      <Text style={{color: 'gray', fontSize: hp(2)}}>
-                        ₹ {item?.amount}
-                      </Text>
-                    </View>
-                  </View>
+
                   <View style={{flexDirection: 'row'}}>
                     <View style={styles.flexSTYLES}>
                       <Descriptyin_icosn

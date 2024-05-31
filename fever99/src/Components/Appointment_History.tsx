@@ -682,7 +682,7 @@ const Appointment_History = (props: any) => {
                       fontFamily: mainFontBold,
                       fontSize: hp(1.8),
                     }}>
-                    BP
+                    BP mm of Hg
                   </Text>
                   <TextInput
                     onChangeText={e => setBp(e)}
@@ -698,7 +698,7 @@ const Appointment_History = (props: any) => {
                       fontFamily: mainFontBold,
                       fontSize: hp(1.8),
                     }}>
-                    Pulse Rate
+                    Pulse Per minute
                   </Text>
                   <TextInput
                     onChangeText={e => setPulse(e)}
@@ -721,7 +721,7 @@ const Appointment_History = (props: any) => {
                       fontFamily: mainFontBold,
                       fontSize: hp(1.8),
                     }}>
-                    Body Temperature
+                    Body Temperature 
                   </Text>
                   <TextInput
                     onChangeText={e => setBodyTemperature(e)}
@@ -747,69 +747,20 @@ const Appointment_History = (props: any) => {
                   />
                 </View>
               </View>
-              <View style={{justifyContent: 'space-between', marginTop: hp(1)}}>
-                <View style={{width: wp(95)}}>
-                  <Text
-                    style={{
-                      color: 'black',
-                      fontFamily: mainFontBold,
-                      fontSize: hp(1.8),
-                    }}>
-                    Postprandial Sugar(PPBS) mg/dl
-                  </Text>
-                  <TextInput
-                    onChangeText={e => setSuger1(e)}
-                    value={suger1}
-                    style={[styles.inputFildsstyls, {width: wp(95)}]}
-                    placeholder={
-                      isLoading ? 'Loading...' : 'Postprandial Sugar (PPBS)'
-                    }
-                  />
-                </View>
-              </View>
-              <View style={{width: wp(95), marginTop: hp(1)}}>
-                <Text
-                  style={{
-                    color: 'black',
-                    fontFamily: mainFontBold,
-                    fontSize: hp(1.8),
-                  }}>
-                  Random Blood Sugar(RBS) mg/dl
-                </Text>
-                <TextInput
-                  onChangeText={e => setSuger3(e)}
-                  value={suger3}
-                  style={[styles.inputFildsstyls, {width: wp(95)}]}
-                  placeholder={
-                    isLoading ? 'Loading...' : 'Random Blood Sugar(RBS)'
-                  }
-                />
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  marginTop: hp(1),
-                }}>
-                <View style={{width: wp(45)}}>
-                  <Text
-                    style={{
-                      color: 'black',
-                      fontFamily: mainFontBold,
-                      fontSize: hp(1.8),
-                    }}>
-                    Fasting Sugar(FBS) mg/dl
-                  </Text>
-                  <TextInput
-                    onChangeText={e => setSuger2(e)}
-                    value={suger2}
-                    style={[styles.inputFildsstyls, {width: wp(45)}]}
-                    placeholder={
-                      isLoading ? 'Loading...' : 'Fasting Sugar (FBS)'
-                    }
-                  />
-                </View>
-                <View style={{width: wp(45)}}>
+
+              <View 
+              style={{
+                // justifyContent: 'space-between', 
+                // marginTop: hp(1)}}
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems:'center',
+                marginTop: hp(1),
+              }}
+                >
+               
+
+               <View style={{width: wp(45)}}>
                   <Text
                     style={{
                       color: 'black',
@@ -826,6 +777,83 @@ const Appointment_History = (props: any) => {
                     placeholder={isLoading ? 'Loading...' : 'RR'}
                   />
                 </View>
+             
+
+              <View style={{width: wp(45), marginTop: hp(1)}}>
+                <Text
+                  style={{
+                    color: 'black',
+                    fontFamily: mainFontBold,
+                    fontSize: hp(1.8),
+                  }}>
+                  Random Blood Sugar(RBS) mg/dl
+                </Text>
+                <TextInput
+                  onChangeText={e => setSuger3(e)}
+                  value={suger3}
+                  style={[styles.inputFildsstyls, {width: wp(45)}]}
+                  placeholder={
+                    isLoading ? 'Loading...' : 'Random Blood Sugar(RBS)'
+                  }
+                />
+              </View>
+
+              
+
+
+              </View>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems:'center',
+                  marginTop: hp(1),
+                }}>
+                  
+                <View style={{width: wp(45)}}>
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontFamily: mainFontBold,
+                      fontSize: hp(1.8),
+                    }}>
+                    Fasting Blood Sugar
+                    (FBS) mg/dl
+                  </Text>
+                  <TextInput
+                    onChangeText={e => setSuger2(e)}
+                    value={suger2}
+                    style={[styles.inputFildsstyls, {width: wp(45)}]}
+                    placeholder={
+                      isLoading ? 'Loading...' : 'Fasting Sugar (FBS)'
+                    }
+                  />
+                </View>
+
+
+                <View style={{width: wp(45)}}>
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontFamily: mainFontBold,
+                      fontSize: hp(1.8),
+                    }}>
+                    Postprandial Sugar(PPBS) mg/dl
+                  </Text>
+                  <TextInput
+                    onChangeText={e => setSuger1(e)}
+                    value={suger1}
+                    style={[styles.inputFildsstyls, {width: wp(45)}]}
+                    placeholder={
+                      isLoading ? 'Loading...' : 'Postprandial Sugar (PPBS)'
+                    }
+                  />
+                </View>
+
+               
+
+
               </View>
 
               {/* <View
@@ -974,9 +1002,9 @@ const Appointment_History = (props: any) => {
                             <View>
                              <Text
                   style={{
-                    fontSize: hp(1.8),
-                    fontFamily: 'mainFontBold',
                     color: 'black',
+                    fontFamily: mainFontBold,
+                    fontSize: hp(1.8),
                     // marginBottom: hp(1)
                   }}>
                   Feet
@@ -991,14 +1019,16 @@ const Appointment_History = (props: any) => {
                         />
                         </View>
                         <View
-                       
+                        style={{
+                          width: wp(30), 
+                        }}
                         >
                         <Text
                   style={{
-                    fontSize: hp(1.8),
-                    fontFamily: 'mainFontBold',
                     color: 'black',
-                    marginLeft:10,
+                      fontFamily: mainFontBold,
+                      fontSize: hp(1.8),
+                      marginLeft:10,
                     // marginBottom: hp(1)
                   }}>
                   inch
@@ -1011,21 +1041,21 @@ const Appointment_History = (props: any) => {
                           placeholder="inch"
                           style={[
                             textInputStyle,
-                            {width: wp(20), marginLeft: wp(2)},
+                            {width: wp(23), marginLeft: wp(2)},
                           ]}
                         />
                         </View>
                       </View>
                       <View style={{
-                        width: wp(50), 
-                        marginLeft: wp(2),
+                        width: wp(45), 
+                      
                         
                         }}>
                         <Text
                           style={{
-                            fontSize: hp(1.8),
-                            fontFamily: 'mainFontBold',
                             color: 'black',
+                            fontFamily: mainFontBold,
+                            fontSize: hp(1.8),
                             // marginBottom: hp(1),
                           }}>
                           Weight (kg)
@@ -1043,12 +1073,14 @@ const Appointment_History = (props: any) => {
                     </>
                   ) : (
                     <>
-                    <View>
+                    <View
+                     style={{width: wp(45),}}
+                    >
                       <Text
                           style={{
-                            fontSize: hp(1.8),
-                            fontFamily: 'mainFontBold',
                             color: 'black',
+                            fontFamily: mainFontBold,
+                            fontSize: hp(1.8),
                             // marginBottom: hp(1),
                           }}>Centimeters</Text>
                       <TextInput
@@ -1057,16 +1089,16 @@ const Appointment_History = (props: any) => {
                         onChangeText={text => setCentimeters(text)}
                         placeholderTextColor="#8E8E8E"
                         placeholder="Centimeters"
-                        style={[textInputStyle, {width: wp(30)}]}
+                        style={[textInputStyle, {width: wp(45)}]}
                       />
                       </View>
 
-                      <View style={{width: wp(63), marginLeft: wp(2)}}>
+                      <View style={{width: wp(45), marginLeft: wp(5)}}>
                         <Text
                           style={{
-                            fontSize: hp(1.8),
-                            fontFamily: 'mainFontBold',
                             color: 'black',
+                            fontFamily: mainFontBold,
+                            fontSize: hp(1.8),
                             // marginBottom: hp(1),
                           }}>
                           Weight (kg)

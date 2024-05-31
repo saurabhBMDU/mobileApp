@@ -101,45 +101,38 @@
 // export default HomeFirstScreen2;
 
 
-
-
 import React from 'react';
-import { View, Text, StyleSheet, Dimensions,Button } from 'react-native';
-// import { Button } from 'react-native-elements';
+import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity, BackHandler } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
-const LoggedOutScreen = ({callBackFunction}) => {
+const LoggedOutScreen = ({ callBackFunction}) => {
 
   const handleLoginAgain = () => {
-    // Handle login again action
     callBackFunction();
   };
 
   const handleNeverMind = () => {
-    // Handle never mind action
-    // You can navigate to a different screen or just exit the app
-    navigation.navigate('Home'); // Assuming you have a home screen
+      BackHandler.exitApp();
   };
 
   return (
     <View style={styles.container}>
+      <Image
+        source={{ uri: 'https://api.placid.app/u/0rmfa?title=Logged%20out' }} // Replace with your image URL
+        style={styles.image}
+      />
       <Text style={styles.title}>Logged Out</Text>
       <Text style={styles.message}>
         You have been logged out because you just logged in on another device. Would you like to log in again?
       </Text>
       <View style={styles.buttonContainer}>
-        <Button
-          title="Login Again"
-          buttonStyle={styles.loginButton}
-          onPress={callBackFunction}
-        />
-        <Button
-          title="Never Mind"
-          type="outline"
-          buttonStyle={styles.neverMindButton}
-        //   onPress={handleNeverMind}
-        />
+        <TouchableOpacity style={styles.loginButton} onPress={handleLoginAgain}>
+          <Text style={styles.loginButtonText}>Login Again</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.neverMindButton} onPress={handleNeverMind}>
+          <Text style={styles.neverMindButtonText}>Close App</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -153,25 +146,50 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#f7f7f7',
   },
+  image: {
+    width: 150,
+    height: 150,
+    marginBottom: 20,
+    borderRadius: 75,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#333',
   },
   message: {
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 40,
+    color: '#666',
   },
   buttonContainer: {
     width: width * 0.8,
   },
   loginButton: {
     backgroundColor: '#007bff',
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
     marginBottom: 10,
+  },
+  loginButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   neverMindButton: {
     borderColor: '#007bff',
+    borderWidth: 1,
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  neverMindButtonText: {
+    color: '#007bff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
