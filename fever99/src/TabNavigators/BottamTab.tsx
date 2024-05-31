@@ -116,6 +116,7 @@ const BottamTab = () => {
                 }}
             />}
 
+
             <Botmtab.Screen name='Appointment' component={Appointment}
                 options={{
                     tabBarIcon: ({ focused }) => (

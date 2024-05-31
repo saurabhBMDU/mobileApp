@@ -10,7 +10,10 @@ import {PERMISSIONS, request, check, RESULTS} from 'react-native-permissions';
 import {Dropdown} from 'react-native-element-dropdown';
 import RNFetchBlob from 'rn-fetch-blob';
 import url from '../Services/url.service';
-import {DownloadInvoiceFile} from '../Services/appointments.service';
+import {DownloadInvoiceFile, DownloadSingleInvoice} from '../Services/appointments.service';
+import { getJwt } from '../Services/user.service';
+
+import {toastError, toastSuccess} from '../utils/toast.utils';
 
 const DownloadInvoice = () => {
   const maincolor = '#1263AC';
@@ -128,83 +131,161 @@ const DownloadInvoice = () => {
 
 
 
+ 
 
 
-  const handleDownloadPrescription = async (id: any,index : any) => {
-    try {
-      setDownloadingIndex(index);
-      console.log('id',id)
-      const hasPermission = await requestStoragePermission();
-      if (!hasPermission) {
-        alert('Storage permission denied');
-        return;
-      }
+      // const handleDownloadPrescription = async (id :any, index:any) => {
+      //   try {
 
-      const downloadUrl =`${serverUrl}/transaction-invoice/${id}`;
-      const {config, fs} = RNFetchBlob;
-      const downloadDir = fs.dirs.DownloadDir;
+      //     let jwtToken = await getJwt()
+      //     console.log(jwtToken);
 
-      if (Platform.OS === 'android') {
-        if (Platform.Version >= 29) {
-          // Use MediaStore for Android 10 and above
-          RNFetchBlob.config({
-            fileCache: true,
-            addAndroidDownloads: {
-              useDownloadManager: true,
-              notification: true,
-              mime: 'application/pdf',
-              description: 'File downloaded by download manager.',
-              mediaScannable: true,
-              path: `${downloadDir}/invoice-by-id${id}.pdf`,
-            },
-          })
-            .fetch('GET', downloadUrl)
-            .then(res => {
-              setDownloadingIndex(false)
-              alert('invoice Downloaded');
-            })
-            .catch(err => {
-              // console.log(err);
-              setDownloadingIndex(false)
-              alert('Download failed');
-            });
-        } else {
-          // For Android 9 and below
-          RNFetchBlob.config({
-            fileCache: true,
-            addAndroidDownloads: {
-              useDownloadManager: true,
-              notification: true,
-              path: `${downloadDir}/invoice-by-id${id}.pdf`,
-              mime: 'application/pdf',
-              description: 'File downloaded by download manager.',
-            },
-          })
-            .fetch('GET', downloadUrl)
-            .then(res => {
-              RNFetchBlob.android.actionViewIntent(
-                res.path(),
-                'application/pdf',
-              );
-              setDownloadingIndex(false)
-              alert('invoice Downloaded');
-            })
-            .catch(err => {
-              // console.log(err);
-              setDownloadingIndex(false)
-              alert('Download failed');
-            });
+      //     setDownloadingIndex(index);
+      //     console.log('id', id);
+      //     const hasPermission = await requestStoragePermission();
+      //     if (!hasPermission) {
+      //       alert('Storage permission denied');
+      //       return;
+      //     }
+      
+      //     const downloadUrl = `${serverUrl}/transaction-invoice/${id}`;
+      //     console.log('download url', downloadUrl);
+      //     const { fs } = RNFetchBlob;
+      //     const downloadDir = fs.dirs.DownloadDir;
+      
+      //     // Retrieve the JWT token
+      //     // const jwtToken = getJwtToken();
+      
+      //     if (Platform.OS === 'android') {
+      //       const config = {
+      //         headers: {
+      //           Authorization: `${jwtToken}`,
+      //           'Content-type':"*",
+      //           "Access-control-Allow-Origin":"*"
+      //         },
+      //         responseType: 'blob' // Important for downloading binary data
+      //       };
+      
+      //       axios.get(downloadUrl, config)
+      //         .then(response => {
+      //           const filePath = `${downloadDir}/invoice-by-id${id}.pdf`;
+      //           const base64Data = RNFetchBlob.base64.encode(response.data);
+      
+      //           RNFetchBlob.fs.writeFile(filePath, base64Data, 'base64')
+      //             .then(() => {
+      //               if (Platform.Version >= 29) {
+      //                 RNFetchBlob.android.addCompleteDownload({
+      //                   title: `Invoice ${id}`,
+      //                   description: 'File downloaded by download manager.',
+      //                   mime: 'application/pdf',
+      //                   path: filePath,
+      //                   showNotification: true,
+      //                 });
+      //               } else {
+      //                 RNFetchBlob.android.actionViewIntent(filePath, 'application/pdf');
+      //               }
+      //               setDownloadingIndex(false);
+      //               alert('Invoice Downloaded');
+      //             })
+      //             .catch(err => {
+      //               console.log(err);
+      //               setDownloadingIndex(false);
+      //               alert('Download failed');
+      //             });
+      //         })
+      //         .catch(error => {
+      //           console.log(error);
+      //           setDownloadingIndex(false);
+      //           alert('Download failed');
+      //         });
+      //     } else {
+      //       setDownloadingIndex(false);
+      //       alert('Not Configured');
+      //     }
+      //   } catch (error) {
+      //     console.error(error);
+      //     setDownloadingIndex(false);
+      //     alert('An error occurred');
+      //   }
+      // };
+  
+
+
+      const handleDownloadPrescription = async (_id: string, index: any) => {
+        try {
+          setDownloadingIndex(index)
+          const hasPermission = await requestStoragePermission();
+          if (!hasPermission) {
+            toastError('Storage permission denied');
+            return;
+          }
+    
+          const url = `${serverUrl}/transaction-invoice/${_id}`;
+          const {config, fs} = RNFetchBlob;
+          const downloadDir = fs.dirs.DownloadDir;
+    
+          if (Platform.OS === 'android') {
+            if (Platform.Version >= 29) {
+              // Use MediaStore for Android 10 and above
+              RNFetchBlob.config({
+                fileCache: true,
+                addAndroidDownloads: {
+                  useDownloadManager: true,
+                  notification: true,
+                  mime: 'application/pdf',
+                  description: 'File downloaded by download manager.',
+                  mediaScannable: true,
+                  path: `${downloadDir}/invoice${_id}.pdf`,
+                },
+              })
+                .fetch('GET', url)
+                .then(res => {
+                  toastSuccess('Prescription Downloaded');
+                  setDownloadingIndex('')
+                })
+                .catch(err => {
+                  // console.log(err);
+                  toastError('Download failed');
+                  setDownloadingIndex('')
+                });
+            } else {
+              // For Android 9 and below
+              RNFetchBlob.config({
+                fileCache: true,
+                addAndroidDownloads: {
+                  useDownloadManager: true,
+                  notification: true,
+                  path: `${downloadDir}/invoice${_id}.pdf`,
+                  mime: 'application/pdf',
+                  description: 'File downloaded by download manager.',
+                },
+              })
+                .fetch('GET', url)
+                .then(res => {
+                  RNFetchBlob.android.actionViewIntent(
+                    res.path(),
+                    'application/pdf',
+                  );
+                  toastSuccess('Prescription Downloaded');
+                  setDownloadingIndex('');
+                })
+                .catch(err => {
+                  // console.log(err);
+                  toastError('Download failed');
+                  setDownloadingIndex('');
+                });
+            }
+          } else {
+            toastError('Not Configured');
+            setDownloadingIndex('')
+          }
+        } catch (error) {
+          // console.error(error);
+          toastError('An error occurred');
+          setDownloadingIndex('')
         }
-      } else {
-        setDownloadingIndex(false)
-        alert('Not Configured');
-      }
-    } catch (error) {
-      // console.error(error);
-      setDownloadingIndex(false)
-      alert('An error occurred');
-    }
-  };
+      };
+    
 
 
   const handleGetAllInvoice = async () => {
@@ -307,7 +388,7 @@ const DownloadInvoice = () => {
             </View>
           </View>
           )
-      ) : (
+      ) : invoice ? (
         <FlatList
           data={invoice}
           keyExtractor={(item, index) => `${index}`}
@@ -335,7 +416,15 @@ const DownloadInvoice = () => {
             </View>
           )}
         />
-      )}
+      ) : (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',  }}>
+        <View style={{ padding: 20, borderRadius: 10 }}>
+           <Text> No Invoice Found</Text>
+          </View>
+        </View>
+      )
+    
+    }
     </View>
   );
 };

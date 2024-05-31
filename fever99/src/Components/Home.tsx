@@ -941,7 +941,7 @@ const Home = () => {
                   fontSize: hp(1.8),
                   marginTop: hp(2),
                 }}>
-                Income Wallet
+                Income Wallet 
               </Text>
               {monthlyIncomeData && monthlyIncomeData.length > 0 && (
                 <LineChart

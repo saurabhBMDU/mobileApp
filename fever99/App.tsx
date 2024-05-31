@@ -2,9 +2,9 @@
 // import messaging from '@react-native-firebase/messaging';
 import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 
-import { NavigationContainer, useLinkTo } from '@react-navigation/native';
-import React, { createContext, useEffect, useState } from 'react';
-import { Linking,PermissionsAndroid, Platform ,AppState} from 'react-native';
+import { NavigationContainer, useLinkTo,useNavigationContainerRef } from '@react-navigation/native';
+import React, { createContext, useEffect, useRef, useState } from 'react';
+import { Linking,PermissionsAndroid, Platform ,AppState, View} from 'react-native';
 import RNCallKeep from 'react-native-callkeep';
 import PushNotification from 'react-native-push-notification';
 import Toast from 'react-native-toast-message';
@@ -44,6 +44,8 @@ import acceptCall from './callingIcons/incoming.png';
 import rejectCall from './callingIcons/missed-call.png';
 import { addAppointmentHistory } from './src/Services/appointmentHistory.service';
 import { fileurl } from './src/Services/url.service';
+
+import LoggedOutScreen from './src/Components/LoggedOutScreen';
 
 
 // import ringtone from './callingIcons/ringtone.mp3'
@@ -349,7 +351,15 @@ const handleIncomingCall = async (callUUID) => {
     permission();
   })
   
-  
+ const [isFirstPage,setIsFirstPage] = useState(false);
+
+  const CallBackFunction = () =>{
+    console.log('working call back')
+        // alert('call back is working fine')
+        setIsFirstPage(false)
+  }
+
+
 
   useEffect(() => {
     const handleForegroundEvent = async ({ type, detail }) => {
@@ -435,6 +445,14 @@ const handleIncomingCall = async (callUUID) => {
     const unsubscribeMessaging = messaging().onMessage(async (remoteMessage) => {
       console.log('new notificaion received',remoteMessage)
       let userData = await getUser();
+      if(remoteMessage?.data?.title == 'Logout'){
+        console.log('login chek')
+        CheckIsUserLoggedIn()
+        handleLogout()
+        setIsFirstPage(true);
+        
+
+      }
       if (remoteMessage?.data?.otherData === "show") {
         console.log('incoming call', remoteMessage);
         RNCallKeep.displayIncomingCall(remoteMessage?.data?.appointmentId, "Doctor", "fever99");
@@ -527,34 +545,8 @@ const handleIncomingCall = async (callUUID) => {
     //     number: 10,
     //   });
     }
-      // else if (remoteMessage?.data?.title !== "New Message!") {
-      //   console.log('cominghere');
-
-      //   const channelId = await notifee.createChannel({
-      //     id: "notificaion",
-      //     name: "new",
-      //     importance: AndroidImportance.HIGH,
-      //   });
-  
-      //   await notifee.displayNotification({
-      //     title: `${remoteMessage.data.title}`,
-      //     body: `${remoteMessage.data.description}`,
-      //     // data: {appointmentId:remoteMessage.data.appointmentId,fromId:remoteMessage.data.fromId},
-      //     android: {
-      //       channelId,
-      //       // actions: [
-      //       //   {
-      //       //     title: 'Reply',
-      //       //     icon: 'https://my-cdn.com/icons/reply.png',
-      //       //     pressAction: {
-      //       //       id: 'reply',
-      //       //     },
-      //       //     input: true, // enable free text input
-      //       //   },
-      //       // ],
-      //     },
-      //   });
-
+      // else if (remoteMessage?.data?.title == 'Logout') {
+      //     console.log('title user logged out')
 
       //   // PushNotification.localNotification({
       //   //   channelId: 'fever99',
@@ -961,8 +953,10 @@ useEffect(() =>{
     <UserDataContext.Provider value={[userData, setUserData]}>
       <LoginContext.Provider value={[user, setUser]}>
         <LanguageContext.Provider value={[language, setLanguage]}>
+       
           <AuthContext.Provider value={[isAuthorized, setIsAuthorized]}>
-  
+        
+
             <NavigationContainer
               ref={navigationRef}
               linking={linking}
@@ -979,12 +973,23 @@ useEffect(() =>{
                   setRouteName(currentRouteName);
                 }
               }}>
-              <Root />
+                
+               
+               { isFirstPage ?
+                ( 
+                <LoggedOutScreen callBackFunction={CallBackFunction}/>
+                ) : 
+                (<Root />)
+              } 
+
+        
               {/* <Toast /> */}
+              {/*  */}
             </NavigationContainer>
             {deviceVersion < backendVeriosn && 
             <UpdateModal isVisible={showUpdateModal} onClose={() => setShowUpdateModal(false)} />
             }
+           
             {/* Render UpdateModal */}
           </AuthContext.Provider>
         </LanguageContext.Provider>

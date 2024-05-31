@@ -73,3 +73,14 @@ export const DownloadInvoiceFile = async (id) => {
   return await axios.get(`${url}/invoice` , config);
 };
 
+
+export const DownloadSingleInvoice = async (id) => {
+    let config = {
+        headers:{
+            'Content-type':"*",
+            "Access-control-Allow-Origin":"*"
+        }
+    }
+  return await axios.get(`${url}/transaction-invoice/${id}` , config);
+};
+

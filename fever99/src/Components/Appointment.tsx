@@ -70,8 +70,9 @@ import AppointmentPagination from './AppointmentPagination';
 
 const Appointment = (proper: any) => {
 
+   
 
-  const [page, setPage] = useState(proper?.route?.params?.page);
+  const [page, setPage] = useState(proper?.route?.params?.page || 1);
 
   const [showPage,setShowPage] = useState(false)
 
@@ -81,7 +82,7 @@ const Appointment = (proper: any) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      setPage(proper?.route?.params?.page); // Assuming you are passing the page value via route params
+      setPage(proper?.route?.params?.page ||  1); // Assuming you are passing the page value via route params
       HandleGetAppointmentsPaginated(proper?.route?.params?.page,proper?.route?.params?.baseurl)
       // if (focused) {
         handleGetAndSetUser();
@@ -94,8 +95,6 @@ const Appointment = (proper: any) => {
       };
     }, [proper?.route?.params])
   );
-
-
 
   // console.log('coming in appointment page from home page ',proper?.route?.params)
 

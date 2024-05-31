@@ -826,7 +826,7 @@ const Write_Prescription = (props: any) => {
                     paddingLeft: wp(3),
                   }}>
                   <Text style={{fontSize: hp(1.7), fontFamily: mainFont}}>
-                    Sugar :
+                    RBS :
                     <Text style={{color: '#757474'}}>
                       {appointMentObj?.suger3}
                     </Text>
@@ -889,19 +889,7 @@ const Write_Prescription = (props: any) => {
                     </Text>
                   </Text>
                 </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginTop: hp(1),
-                    paddingLeft: wp(3),
-                  }}>
-                  <Text style={{fontSize: hp(1.7), fontFamily: mainFont}}>
-                    RR :
-                    <Text style={{color: '#757474'}}>
-                      {appointMentObj?.respiratoryRate}
-                    </Text>
-                  </Text>
-                </View>
+
                 <View
                   style={{
                     flexDirection: 'row',
@@ -915,6 +903,22 @@ const Write_Prescription = (props: any) => {
                     </Text>
                   </Text>
                 </View>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(1),
+                    paddingLeft: wp(3),
+                  }}>
+                  <Text style={{fontSize: hp(1.7), fontFamily: mainFont}}>
+                    RR :
+                    <Text style={{color: '#757474'}}>
+                      {appointMentObj?.respiratoryRate}
+                    </Text>
+                  </Text>
+                </View>
+               
+
                 <View
                   style={{
                     flexDirection: 'row',
