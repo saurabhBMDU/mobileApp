@@ -570,6 +570,7 @@ const handleDownloadPrescription = async (_id: string) => {
   };
   const closeRescheduleModal = () => {
     setSoModalreschedule(false);
+    HandleGetAppointmentsPaginated(proper?.route?.params?.page,proper?.route?.params?.baseurl)
   };
   //  this code for upodate status botton
   const [soUpdateModals, setSoupdateModals] = useState<boolean>(false);

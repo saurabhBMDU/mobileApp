@@ -19,7 +19,7 @@ import url from '../Services/url.service';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Headerr from '../ReuseableComp/Headerr';
 import {getDoctorWithBankDetails, getUser, setUser, updateSlot} from '../Services/user.service';
-import {toastError, toastSuccess} from '../utils/toast.utils';
+// import {alert, alert} from '../utils/toast.utils';
 // import { navigationRef } from '../Navigation/Root';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {generateFilePath} from '../Services/url.service';
@@ -170,7 +170,7 @@ export default function Settings() {
       let {data: res}: any = await updateSlot(obj);
       if (res) {
         await setUser(res.data);
-        toastSuccess(res.message);
+        alert(res.message);
         handleGetAndSetUser();
         setUserObj(res.data);
         // setTimeSlot(res?.data?.timeSlot.map((el: any) => el.value));
@@ -181,7 +181,7 @@ export default function Settings() {
         navigation.goBack();
       }
     } catch (error) {
-      toastError(error);
+      alert(error);
     }
   };
   const handleRenderProfilePhoto = () => {
@@ -212,9 +212,16 @@ export default function Settings() {
       !upiId ||
       !upiNumber
     ) {
-      toastError('All fields are mandatory');
+      alert('All fields are mandatory');
       return;
     }
+     
+     if(upiNumber.length != 10){
+      console.log('number')
+        alert('upi number must be 10 digit vlaid indian number')
+        return
+     }
+
     // const getRespons = async () => {
       console.log(`${url}/doctor-detail/${userObj?._id}`);
       const response = await axios.get(`${url}/doctor-detail/${userObj?._id}`);
@@ -243,13 +250,13 @@ export default function Settings() {
       );
       console.log('resposne for account details',response.data)
       if (response.status === 200) {
-        toastSuccess('Account details successfully added');
+        alert('Account details successfully added');
       } else {
-        toastError('Unable to add Account details');
+        alert('Unable to add Account details');
       }
     } catch (error) {
-      console.error('Error adding account details:', error);
-      toastError('Error adding account details');
+      console.error('Error adding account details:', error.message);
+      alert('Error adding account details');
     }
   };
 
@@ -610,6 +617,7 @@ export default function Settings() {
                   value={String(upiNumber)}
                   onChangeText={e => setupiNumber(e)}
                   style={styles.inputfildeStyle}
+                  keyboardType='number-pad'
                 />
               </View>
               <TouchableOpacity

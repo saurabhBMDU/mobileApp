@@ -26,7 +26,7 @@ import {
   updatePassword,
   updateProfile,
 } from '../Services/user.service';
-import {toastError, toastSuccess} from '../utils/toast.utils';
+
 import {Roles} from '../utils/constant';
 const {height, width} = Dimensions.get('window');
 import {useNetInfo} from '@react-native-community/netinfo';
@@ -87,7 +87,7 @@ const EditProfile = () => {
         setisLodings(false);
       }
     } catch (err) {
-      toastError(err);
+      alert(err);
     }
   };
 
@@ -111,7 +111,7 @@ const EditProfile = () => {
   //       setImage(file);
   //     }
   //   } catch (error) {
-  //     toastError(error);
+  //     alert(error);
   //   }
   // };
 
@@ -130,7 +130,7 @@ const EditProfile = () => {
         }
       }
     } catch (error) {
-      toastError(error);
+      alert(error);
     }
   };
 
@@ -166,7 +166,7 @@ const EditProfile = () => {
 
       let {data: res}: any = await updateProfile(formData);
       if (res) {
-        toastSuccess(res.message);
+        alert(res.message);
         await setUser(res.data);
         setGender(res.data?.gender);
         setImage(res.data?.image);
@@ -188,7 +188,7 @@ const EditProfile = () => {
     } catch (error) {
       setIsLoadingSubmit(false); // Set loading state to true
 
-      toastError(error);
+      alert(error);
     }
   };
 
@@ -209,19 +209,19 @@ const EditProfile = () => {
   const handleUpdatePasswordSubmit = async () => {
     try {
       if (newPassword == '') {
-        toastError('Please enter new password');
+        alert('Please enter new password');
         return;
       }
       if (oldPassword == '') {
-        toastError('Please enter old password');
+        alert('Please enter old password');
         return;
       }
       if (confirmPassword == '') {
-        toastError('Please enter confirm password');
+        alert('Please enter confirm password');
         return;
       }
       if (newPassword != confirmPassword) {
-        toastError('Confirm password does not match new password');
+        alert('Confirm password does not match new password');
         return;
       }
 
@@ -232,11 +232,11 @@ const EditProfile = () => {
       };
       let {data: res}: any = await updatePassword(obj);
       if (res.success) {
-        toastSuccess(res.message);
+        alert(res.message);
         navigation.goBack();
       }
     } catch (error) {
-      toastError(error);
+      alert(error);
     }
   };
 
