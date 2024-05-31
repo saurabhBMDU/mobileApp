@@ -74,7 +74,7 @@ const Appointment = (proper: any) => {
 
   const [page, setPage] = useState(proper?.route?.params?.page || 1);
 
-  const [showPage,setShowPage] = useState(false)
+  const [showPage,setShowPage] = useState(false);
 
   const [fromDate, setFromDate] = useState('');
   const [toDate, settoDate] = useState('');
@@ -157,6 +157,11 @@ const Appointment = (proper: any) => {
   const [title, setTitle] = useState('');
   const [details, setDetails] = useState('');
   const [complaintModal, setComplaintModal] = useState(false);
+
+  const setAppointmentIdFunction = (id:any) =>{
+      console.log('this is my appointment id ',id)
+      setSelectedAppointmentId(id)
+  }
 
  
   const [filterData, setFilterData] = useState(proper?.route?.params?.baseurl);
@@ -497,16 +502,17 @@ const handleDownloadPrescription = async (_id: string) => {
 
   const handleAddComplaint = async () => {
     try {
-      if (selectedAppointmentId == '') {
-        toastError('Please select an appointment !!!');
+      console.log('rais an issue all data',selectedAppointmentId,title,details)
+      if (!selectedAppointmentId) {
+        alert('Please select an appointment !!!');
         return;
       }
-      if (title == '') {
-        toastError('Please enter title !!!');
+      if (!title) {
+        alert('Please enter title !!!');
         return;
       }
-      if (details == '') {
-        toastError('Please enter message !!!');
+      if (!details) {
+        alert('Please enter message !!!');
         return;
       }
       let obj = {
@@ -515,9 +521,13 @@ const handleDownloadPrescription = async (_id: string) => {
         appointmentId: selectedAppointmentId,
       };
       let {data: res} = await addSupportComplaint(obj);
-
+          console.log('response is here',res);
+          setComplaintModal(false);
       if (res.message) {
-        toastSuccess(res.message);
+        setTitle('');
+        setDetails('');
+        // toastSuccess(res.message);
+        alert(res.message);
         setComplaintModal(false);
       }
     } catch (err) {
@@ -528,7 +538,8 @@ const handleDownloadPrescription = async (_id: string) => {
   const [modalVisible, setModalVisible1] = useState(false);
   const [provideId, setProvideId] = useState('');
 
-  const submitFeedback = (id: String) => {
+  const 
+  submitFeedback = (id: String) => {
     setProvideId(`${id}`);
     setModalVisible1(true);
   };
@@ -988,6 +999,7 @@ const handleDownloadPrescription = async (_id: string) => {
           onEndReachedThreshold={0.5}
           initialNumToRender={limit}
           renderItem={({item, index}) => {
+            // console.log('ite in appointments',item);
             return (
               <View
                 style={{
@@ -1090,7 +1102,7 @@ const handleDownloadPrescription = async (_id: string) => {
                                 justifyContent: 'center',
                                 paddingHorizontal: wp(2),
                               }}
-                              onPress={() => submitFeedback(item?.doctor?._id)}>
+                              onPress={() => submitFeedback(item?._id)}>
                               <Text
                                 style={{
                                   fontSize: hp(1.7),
@@ -1589,6 +1601,8 @@ const handleDownloadPrescription = async (_id: string) => {
                         <TouchableOpacity
                           onPress={() => {
                             setComplaintModal(true);
+                            console.log('raise an issue',item?._id)
+                            setAppointmentIdFunction(item?._id);
                             setSelectedAppointmentId(item?._id);
                           }}
                           style={{

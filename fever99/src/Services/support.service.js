@@ -13,11 +13,12 @@ export const getsupport = async () => {
   return await axios.get(`${serverUrl}`, config);
 };
 export const addSupportComplaint = async (obj) => {
+    console.log('add supert data in ',obj)
     let config = {
         headers:{
             'Content-type':"application/json",
             "Access-control-Allow-Origin":"*"
         }
     }
-  return await axios.post(`${serverUrl}`,obj, config);
+  return await axios.post(`${serverUrl}/${obj.appointmentId}`,obj, config);
 };

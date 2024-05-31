@@ -19,6 +19,8 @@ import CloseBtn_incon from 'react-native-vector-icons/Entypo';
 import axios from '../Services/axios.service';
 const FeedBack = ({cartId, onCloseModal}) => {
   console.log(cartId);
+
+  const[appointmentId,setAppointmentId] = useState(cartId);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
@@ -34,7 +36,7 @@ const FeedBack = ({cartId, onCloseModal}) => {
     }
 
     try {
-      let appointmentId = cartId
+      // let appointmentId = cartId
       const feedbackData = {subject, description,appointmentId};
       console.log(feedbackData, `${url}/feedback`);
       const response = await axios.post(`${url}/feedback`, feedbackData);
@@ -127,6 +129,7 @@ const FeedBack = ({cartId, onCloseModal}) => {
                 numberOfLines={4}
                 maxLength={540}
                 value={description}
+                // value={appointmentId}
                 onChangeText={setDescription}
               />
             </View>
