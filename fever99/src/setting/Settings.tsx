@@ -107,7 +107,7 @@ export default function Settings() {
     //  let {data : res}  any =  await  getDoctorWithBankDetails(userData._id)
      let {data: res}: any = await getDoctorWithBankDetails(userData._id);
 
-   console.log('detail all for doctor and other-------=', res.data.data.timeSlotoffline)
+   console.log('detail all for doctor and other-------=', res.data.extraDetail)
     
     //setting account details 
     // setaccountNumber(res.data.extraDetail.accountNumber)

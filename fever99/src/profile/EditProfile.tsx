@@ -21,6 +21,7 @@ import Openeye_closeEye from 'react-native-vector-icons/Ionicons';
 import DocumentPicker from 'react-native-document-picker';
 import {generateFilePath} from '../Services/url.service';
 import {
+  getDoctorWithBankDetails,
   getUser,
   setUser,
   updatePassword,
@@ -31,6 +32,10 @@ import {Roles} from '../utils/constant';
 const {height, width} = Dimensions.get('window');
 import {useNetInfo} from '@react-native-community/netinfo';
 import InterNetError from '../noInterNet/InterNetError';
+import AddWorkExperience from '../Components/ProfileExperience';
+import ProfileEducation from '../Components/ProfileEducation';
+import ProfileExperiencelist from '../Components/ProfileExperienceList';
+import ProfileEducationGet from '../Components/ProfileEducationGet';
 const EditProfile = () => {
   // checking internet connection
   const netInfo = useNetInfo();
@@ -65,10 +70,23 @@ const EditProfile = () => {
   const [viewPasswd, setViewPasswd] = useState(true);
   const [preView, setPreviewPasswd] = useState(true);
 
+  const [addExperience, setAddExperience] = useState(false);
+  const [addEducation, setAddEducation] = useState(false);
+
+   const [experienceData,setExperienceData] = useState('');
+   const [educationData,setEducationData] = useState('');
+
   const handleGetAndSetUser = async () => {
     setisLodings(true);
     try {
       let userData = await getUser();
+
+      let {data: res}: any = await getDoctorWithBankDetails(userData._id);
+
+      console.log('detail all for doctor and other-------=', res.data.extraDetail)
+      setEducationData(res.data.extraDetail.education)
+      setExperienceData(res.data.extraDetail.experience)
+       
       if (userData) {
         setUserObj(userData);
         setGender(userData?.gender);
@@ -81,7 +99,7 @@ const EditProfile = () => {
         setMobile(userData?.mobile);
         setSpecialization(userData?.specialization);
         setAbhaid(userData?.abhaid);
-        console.log('user data and apiid',abhaid)
+        console.log('user data and apiid', abhaid);
         setemail(userData?.email);
         setProfilePhoto(userData?.image);
         setisLodings(false);
@@ -98,7 +116,7 @@ const EditProfile = () => {
   }, [focused]);
 
   useEffect(() => {
-      handleGetAndSetUser();
+    handleGetAndSetUser();
   }, []);
 
   // const handleDocumentPicker = async () => {
@@ -134,16 +152,12 @@ const EditProfile = () => {
     }
   };
 
-
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
   const handleSubmit = async () => {
     try {
-
       setIsLoadingSubmit(true); // Set loading state to true
 
       let formData = new FormData();
-
-      
 
       Object.entries(userObj).map(entry => {
         const [key, value] = entry;
@@ -162,7 +176,18 @@ const EditProfile = () => {
         formData.append('abhaid', abhaid);
       }
 
-       console.log('this is form data without entry',{serviceCharge,abhaid,address,name,pinCode,state,gender,mobile,specialization,image})
+      console.log('this is form data without entry', {
+        serviceCharge,
+        abhaid,
+        address,
+        name,
+        pinCode,
+        state,
+        gender,
+        mobile,
+        specialization,
+        image,
+      });
 
       let {data: res}: any = await updateProfile(formData);
       if (res) {
@@ -184,7 +209,6 @@ const EditProfile = () => {
         navigation.goBack();
       }
       setIsLoadingSubmit(false); // Set loading state to true
-
     } catch (error) {
       setIsLoadingSubmit(false); // Set loading state to true
 
@@ -240,6 +264,29 @@ const EditProfile = () => {
     }
   };
 
+  const data = [
+    {
+      jobTitle: 'Software Engineer',
+      companyName: 'Example Inc',
+      startMonth: 'January',
+      startYear: '2022',
+      endMonth: 'Present',
+      endYear: '',
+      jobDescription:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    },
+    {
+      jobTitle: 'Software Engineer',
+      companyName: 'Example Inc',
+      startMonth: 'January',
+      startYear: '2022',
+      endMonth: 'Present',
+      endYear: '',
+      jobDescription:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    },
+  ];
+
   if (isConnected == false) {
     return <InterNetError labels={'Edit Profile'} />;
   } else {
@@ -270,7 +317,7 @@ const EditProfile = () => {
               />
             </TouchableOpacity>
           </View>
-          
+
           <View style={{marginTop: hp(1.5), width: wp(95)}}>
             <View style={{width: wp(95)}}>
               <Text
@@ -454,6 +501,74 @@ const EditProfile = () => {
                 </Text>
               </View>
             )} */}
+
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <View style={{padding: 10, margin: 10, borderRadius: 10}}>
+                <Text style={{color: '#000000', fontWeight: 'bold'}}>
+                  Total Experience
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  setAddExperience(!addExperience);
+                  setAddEducation(false);
+                }}
+                style={{
+                  backgroundColor: 'green',
+                  padding: 10,
+                  margin: 10,
+                  borderRadius: 10,
+                }}>
+                <Text style={{color: '#fff'}}>Add Experience</Text>
+              </TouchableOpacity>
+            </View>
+
+            {addExperience && (
+              <View>
+                <AddWorkExperience />
+              </View>
+            )}
+
+            <View>
+              <ProfileExperiencelist data={experienceData} />
+            </View>
+
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <View style={{padding: 10, margin: 10, borderRadius: 10}}>
+                <Text style={{color: '#000000', fontWeight: 'bold'}}>
+                  Education
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  setAddEducation(!addEducation);
+                  setAddExperience(false);
+                }}
+                style={{
+                  backgroundColor: 'green',
+                  padding: 10,
+                  margin: 10,
+                  borderRadius: 10,
+                }}>
+                <Text style={{color: '#fff'}}>Add Education</Text>
+              </TouchableOpacity>
+            </View>
+            {addEducation && (
+              <View>
+                <ProfileEducation />
+              </View>
+            )}
+
+            <View>
+              <ProfileEducationGet data={educationData} />
+            </View>
+
+          
+
+           
+
             <View style={{marginTop: hp(2), width: wp(95)}}>
               <Text
                 style={{
@@ -558,118 +673,11 @@ const EditProfile = () => {
               </Text>
             </TouchableOpacity> */}
 
-
-<>
-      <TouchableOpacity
-        onPress={() => handleSubmit()}
-        style={{
-          width: wp(95),
-          height: hp(5),
-          backgroundColor: '#50B148',
-          borderRadius: 5,
-          alignItems: 'center',
-          justifyContent: 'center',
-          alignSelf: 'center',
-          marginVertical: 25,
-        }}>
-        <Text
-          style={{
-            fontSize: hp(1.8),
-            color: 'white',
-            fontFamily: mainFontmedium,
-          }}>
-          Submit
-        </Text>
-      </TouchableOpacity>
-      {isLoadingSubmit && (
-        <View
-          style={{
-            position: 'absolute',
-            // height:'100%',
-            // width:'100%',
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: 'rgba(10, 10, 10, 0.5)',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <ActivityIndicator size="large" color="#ffffff" />
-        </View>
-      )}
-    </>
-
-
-
-           {!isLoadingSubmit && <View
-              style={{
-                borderWidth: 0.5,
-                borderColor: 'gray',
-                borderRadius: 5,
-                padding: 10,
-              }}>
-              <View style={{width: wp(95), marginTop: hp(2)}}>
-                <Text
-                  style={{
-                    color: 'black',
-                    fontSize: hp(1.7),
-                    fontFamily: mainFontmedium,
-                  }}>
-                  Old Password
-                </Text>
-                <TextInput
-                  onChangeText={e => setOldPassword(e)}
-                  value={`${oldPassword}`}
-                  secureTextEntry
-                  maxLength={6}
-                  placeholder="Enter Your old password"
-                  placeholderTextColor={'gray'}
-                  style={[styles.inputfildeStyle, {width: wp(90)}]}
-                />
-              </View>
-              <View style={{width: wp(95), marginTop: hp(2)}}>
-                <Text
-                  style={{
-                    color: 'black',
-                    fontSize: hp(1.7),
-                    fontFamily: mainFontmedium,
-                  }}>
-                  New Password
-                </Text>
-                <TextInput
-                  onChangeText={e => setNewPassword(e)}
-                  value={`${newPassword}`}
-                  secureTextEntry
-                  maxLength={6}
-                  placeholder="Enter Your new password"
-                  placeholderTextColor={'gray'}
-                  style={[styles.inputfildeStyle, {width: wp(90)}]}
-                />
-              </View>
-              <View style={{width: wp(95), marginTop: hp(1.8)}}>
-                <Text
-                  style={{
-                    color: 'black',
-                    fontSize: hp(1.7),
-                    fontFamily: mainFontmedium,
-                  }}>
-                  Confirm Password
-                </Text>
-                <TextInput
-                  onChangeText={e => setConfirmPassword(e)}
-                  value={`${confirmPassword}`}
-                  secureTextEntry
-                  maxLength={6}
-                  placeholder="Confirm Your password"
-                  placeholderTextColor={'gray'}
-                  style={[styles.inputfildeStyle, {width: wp(90)}]}
-                />
-              </View>
+            <>
               <TouchableOpacity
-                onPress={() => handleUpdatePasswordSubmit()}
+                onPress={() => handleSubmit()}
                 style={{
-                  width: wp(90),
+                  width: wp(95),
                   height: hp(5),
                   backgroundColor: '#50B148',
                   borderRadius: 5,
@@ -684,10 +692,116 @@ const EditProfile = () => {
                     color: 'white',
                     fontFamily: mainFontmedium,
                   }}>
-                  Update Password
+                  Submit
                 </Text>
               </TouchableOpacity>
-            </View>}
+              {isLoadingSubmit && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    // height:'100%',
+                    // width:'100%',
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    backgroundColor: 'rgba(10, 10, 10, 0.5)',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <ActivityIndicator size="large" color="#ffffff" />
+                </View>
+              )}
+            </>
+
+            {!isLoadingSubmit && (
+              <View
+                style={{
+                  borderWidth: 0.5,
+                  borderColor: 'gray',
+                  borderRadius: 5,
+                  padding: 10,
+                }}>
+                <View style={{width: wp(95), marginTop: hp(2)}}>
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontSize: hp(1.7),
+                      fontFamily: mainFontmedium,
+                    }}>
+                    Old Password
+                  </Text>
+                  <TextInput
+                    onChangeText={e => setOldPassword(e)}
+                    value={`${oldPassword}`}
+                    secureTextEntry
+                    maxLength={6}
+                    placeholder="Enter Your old password"
+                    placeholderTextColor={'gray'}
+                    style={[styles.inputfildeStyle, {width: wp(90)}]}
+                  />
+                </View>
+                <View style={{width: wp(95), marginTop: hp(2)}}>
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontSize: hp(1.7),
+                      fontFamily: mainFontmedium,
+                    }}>
+                    New Password
+                  </Text>
+                  <TextInput
+                    onChangeText={e => setNewPassword(e)}
+                    value={`${newPassword}`}
+                    secureTextEntry
+                    maxLength={6}
+                    placeholder="Enter Your new password"
+                    placeholderTextColor={'gray'}
+                    style={[styles.inputfildeStyle, {width: wp(90)}]}
+                  />
+                </View>
+                <View style={{width: wp(95), marginTop: hp(1.8)}}>
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontSize: hp(1.7),
+                      fontFamily: mainFontmedium,
+                    }}>
+                    Confirm Password
+                  </Text>
+                  <TextInput
+                    onChangeText={e => setConfirmPassword(e)}
+                    value={`${confirmPassword}`}
+                    secureTextEntry
+                    maxLength={6}
+                    placeholder="Confirm Your password"
+                    placeholderTextColor={'gray'}
+                    style={[styles.inputfildeStyle, {width: wp(90)}]}
+                  />
+                </View>
+                <TouchableOpacity
+                  onPress={() => handleUpdatePasswordSubmit()}
+                  style={{
+                    width: wp(90),
+                    height: hp(5),
+                    backgroundColor: '#50B148',
+                    borderRadius: 5,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    alignSelf: 'center',
+                    marginVertical: 25,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: hp(1.8),
+                      color: 'white',
+                      fontFamily: mainFontmedium,
+                    }}>
+                    Update Password
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </ScrollView>
       </ScrollView>

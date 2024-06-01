@@ -34,6 +34,18 @@ export const updateProfile = async (obj) => {
   return await axios.put(`${url}/doctor/update`, obj, config);
 };
 
+export const updateProfileTo = async (experience) => {
+  console.log('all data is here',experience)
+  let config = {
+    headers: {
+      'Content-Type': 'application/json',
+      'accept': "application/json",
+      "Access-Control-Allow-Origin": "*"
+    }
+  }
+
+  return await axios.put(`${url}/update-doctor-detail`,experience, config);
+};
 
 
 export const updateUserStatus = async (id, obj) => {
