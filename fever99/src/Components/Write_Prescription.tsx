@@ -80,6 +80,8 @@ const Write_Prescription = (props: any) => {
   const [isFocus, setIsFocus] = useState(false);
 
   const [appointMentObj, setAppointMentObj] = useState<any>({});
+
+  console.log('appintmetn obj is here',appointMentObj)
   const [soModalreschedule, setSoModalreschedule] = useState<boolean>(false);
   const [preView, setPreview] = useState<boolean>(false);
   const focused = useIsFocused();
@@ -795,6 +797,7 @@ const Write_Prescription = (props: any) => {
                     </Text>
                   </Text>
                 </View>
+               
                 <View
                   style={{
                     flexDirection: 'row',
@@ -806,6 +809,19 @@ const Write_Prescription = (props: any) => {
                     <Text style={{color: '#757474'}}>{appointMentObj?.bp}</Text>
                   </Text>
                 </View>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(1),
+                    paddingLeft: wp(3),
+                  }}>
+                  <Text style={{fontSize: hp(1.7), fontFamily: mainFont}}>
+                    FBS :
+                    <Text style={{color: '#757474'}}>{appointMentObj?.suger2}</Text>
+                  </Text>
+                </View>
+
                 <View
                   style={{
                     flexDirection: 'row',
@@ -900,6 +916,20 @@ const Write_Prescription = (props: any) => {
                     Pulse :
                     <Text style={{color: '#757474'}}>
                       {appointMentObj?.pulse}
+                    </Text>
+                  </Text>
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: hp(1),
+                    paddingLeft: wp(3),
+                  }}>
+                  <Text style={{fontSize: hp(1.7), fontFamily: mainFont}}>
+                    PPBS :
+                    <Text style={{color: '#757474'}}>
+                      {appointMentObj?.suger1}
                     </Text>
                   </Text>
                 </View>
