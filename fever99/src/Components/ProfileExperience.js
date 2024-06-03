@@ -509,7 +509,7 @@ const AddWorkExperience = () => {
     else if (pickerType === 'endYear') setEndYear(item);
     else if (pickerType === 'country') setCountry(item);
     setPickerVisible(false);
-    
+
   };
 
   const handleSubmit = async () => {
@@ -668,7 +668,7 @@ const AddWorkExperience = () => {
           editable={false}
         />
       </TouchableOpacity>
-      {/* {!currentlyWorkHere && (
+       {/* {!currentlyWorkHere && ( */}
         <>
           <TouchableOpacity onPress={() => handleOpenPicker('endMonth')}>
             <TextInput
@@ -687,7 +687,7 @@ const AddWorkExperience = () => {
             />
           </TouchableOpacity>
         </>
-      )} */}
+      {/* )}  */}
       <TextInput
         style={[styles.input, styles.textArea]}
         placeholder="Job Description"
@@ -699,6 +699,7 @@ const AddWorkExperience = () => {
       onPress={ () => { 
         handleSubmit();
         setAddExperience(false)
+        fetchExperiences();
         }}
         >
         <Text style={styles.submitButtonText}>Submit</Text>

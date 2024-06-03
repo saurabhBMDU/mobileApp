@@ -563,9 +563,11 @@ const EditProfile = () => {
             </View> */}
 
             {/* {addExperience && ( */}
-              <View>
+             
+            {userObj.role == Roles.DOCTOR && (  <View>
                 <AddWorkExperience />
-              </View>
+              </View>)}
+
             {/* )} */}
 
             <View>
@@ -595,17 +597,17 @@ const EditProfile = () => {
             </View> */}
 
             {/* {addEducation && ( */}
-              <View>
+
+            {userObj.role == Roles.DOCTOR && ( <View>
                 <ProfileEducation />
-              </View>
+              </View>)}
+
             {/* )} */}
 
-            <View>
-              {/* <ProfileEducationGet /> */}
-            </View>
+           
 
 
-            <View
+            {userObj.role == Roles.DOCTOR && ( <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <View style={{padding: 10, margin: 10, borderRadius: 10}}>
                 <Text style={{color: '#000000', fontWeight: 'bold'}}>
@@ -626,9 +628,9 @@ const EditProfile = () => {
                 }}>
                 <Text style={{color: '#fff'}}>About Me</Text>
               </TouchableOpacity>
-            </View>
+            </View>)}
             
-           {  addAboutMe && <>
+            {userObj.role == Roles.DOCTOR &&   addAboutMe && <>
             <Text
              style={{marginLeft:10,}}
              >Add about me</Text>
@@ -666,15 +668,15 @@ const EditProfile = () => {
 
             {/* shwo about me */}
 
-            { showAboutMessage && 
-  <View style={{ 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    padding: 10, 
-    borderWidth: 1, 
-    borderRadius: 10,
-    // margin: 10 
-  }}>
+            {userObj.role == Roles.DOCTOR &&  showAboutMessage && 
+            <View style={{ 
+              flexDirection: 'row', 
+              justifyContent: 'space-between', 
+              padding: 10, 
+              borderWidth: 1, 
+              borderRadius: 10,
+              // margin: 10 
+            }}>
     <Text style={{ flex: 1 }}>
       {showAboutMessage}
     </Text>

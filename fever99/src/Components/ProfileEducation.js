@@ -730,7 +730,11 @@ const Profilestudy = () => {
 
           <TouchableOpacity 
             style={styles.submitButton} 
-            onPress={handleSubmit} 
+            onPress={ () => { 
+              handleSubmit(); 
+              fetchExperiences();
+              setClicked(!clicked)
+            }} 
             disabled={isLoadingSubmit}
           >
             <Text style={styles.submitButtonText}>Save</Text>
