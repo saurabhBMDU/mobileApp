@@ -48,6 +48,21 @@ export const updateProfileTo = async (experience) => {
 };
 
 
+export const deleteExperienceEducationForDoctorProfile = async (index,experience) => {
+  console.log('all data is here',index,experience)
+  let config = {
+    headers: {
+      'Content-Type': 'application/json',
+      'accept': "application/json",
+      "Access-Control-Allow-Origin": "*"
+    }
+  }
+
+  return await axios.put(`${url}/update-doctor/${index}`,experience, config);
+};
+
+
+
 export const updateUserStatus = async (id, obj) => {
   let config = {
     headers: {

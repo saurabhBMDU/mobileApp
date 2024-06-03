@@ -1,23 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity,Image } from 'react-native';
+import { deleteExperienceEducationForDoctorProfile, getDoctorWithBankDetails, getUser, updateProfileTo } from '../Services/user.service';
 
-const ProfileExperiencelist = ({data}) => {
+const ProfileExperiencelist = () => {
 
-    console.log('expereince daata',experiences)
-  const [experiences, setExperiences] = useState(data);
+  
+  const [experiences, setExperiences] = useState();
+  // console.log('expereince daata',experiences,data)
 
+ 
+  const [deleteExperience,setDeleteExperience] = useState([]);
 
-  useEffect(() => {
-    fetchExperiences();
-  }, []);
 
   const fetchExperiences = async () => {
+    // setisLodings(true);
+    try {
+      let userData = await getUser();
+      let {data: res} = await getDoctorWithBankDetails(userData._id);
+      console.log('detail all for doctor and other-------=',res.data.extraDetail.experience)
+      setExperiences(res.data.extraDetail.experience);
+      // setExperienceData(res.data.extraDetail.experience)
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+   useEffect(()=>{
+    fetchExperiences();
+  },[]);
+
+  
+
+  const deleteExperienceApi = async (index) => {
     try {
       // const response = await fetch('http://your-backend-url/experiences');
       // const data = await response.json();
+
+      let experience = { 'experience' : 'experience'}
+      console.log('index and data',index,experience)
+       
+      let {data: res} = await deleteExperienceEducationForDoctorProfile(index,experience);
+      console.log('delete experince response  is here',res)
+
       setExperiences(data);
     } catch (error) {
-      console.error('Error fetching experiences:', error);
+      console.error('Error fetching experiences:', error.message);
     }
   };
 
@@ -25,6 +52,8 @@ const ProfileExperiencelist = ({data}) => {
     const newExperiences = [...experiences];
     newExperiences.splice(index, 1);
     setExperiences(newExperiences);
+    deleteExperienceApi(index);
+
   };
 
   const renderExperienceItem = ({ item, index }) => (
@@ -33,7 +62,9 @@ const ProfileExperiencelist = ({data}) => {
     
     <View style={{flexDirection:'row',justifyContent:"space-between"}}>
       <Text style={styles.jobTitle}>{item.jobTitle}</Text>
-      <TouchableOpacity onPress={() => handleDelete(index)} style={styles.deleteButton}>
+      <TouchableOpacity 
+      onPress={() =>{ handleDelete(index)} }
+      style={styles.deleteButton}>
       <Image
       source={require('../../assets/images/bin.png')}
       style={{height:24,width:24}}

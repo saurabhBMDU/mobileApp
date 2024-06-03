@@ -21,11 +21,13 @@ import Openeye_closeEye from 'react-native-vector-icons/Ionicons';
 import DocumentPicker from 'react-native-document-picker';
 import {generateFilePath} from '../Services/url.service';
 import {
+  deleteExperienceEducationForDoctorProfile,
   getDoctorWithBankDetails,
   getUser,
   setUser,
   updatePassword,
   updateProfile,
+  updateProfileTo,
 } from '../Services/user.service';
 
 import {Roles} from '../utils/constant';
@@ -72,9 +74,14 @@ const EditProfile = () => {
 
   const [addExperience, setAddExperience] = useState(false);
   const [addEducation, setAddEducation] = useState(false);
+  const [addAboutMe,setAboutMe] = useState(false);
 
    const [experienceData,setExperienceData] = useState('');
    const [educationData,setEducationData] = useState('');
+
+   const [aboutMeMessage,setAboutMeMessage] = useState('');
+
+   const [showAboutMessage,setshowAboutMessage] = useState('');
 
   const handleGetAndSetUser = async () => {
     setisLodings(true);
@@ -86,6 +93,7 @@ const EditProfile = () => {
       console.log('detail all for doctor and other-------=', res.data.extraDetail)
       setEducationData(res.data.extraDetail.education)
       setExperienceData(res.data.extraDetail.experience)
+      setshowAboutMessage(res.data.extraDetail.aboutMe)
        
       if (userData) {
         setUserObj(userData);
@@ -108,6 +116,30 @@ const EditProfile = () => {
       alert(err);
     }
   };
+
+
+//save about me
+
+  const saveAboutMe = async () => {
+     
+      const aboutMe = {'aboutMe' : aboutMeMessage}
+      console.log('aboutMe',aboutMe)
+
+    let {data: res} = await updateProfileTo(aboutMe);
+    console.log('response is here',res);
+  }
+
+  //delete about  me 
+  const deleteAboutMe = async () => {
+    let aboutMe = { 'aboutMe' : 'aboutMe'}
+    console.log('index and data',aboutMe);
+     
+    let {data: res} = await deleteExperienceEducationForDoctorProfile(0,aboutMe);
+    console.log('delete experince response  is here',res)
+  }
+
+   
+
 
   useEffect(() => {
     if (focused) {
@@ -502,7 +534,7 @@ const EditProfile = () => {
               </View>
             )} */}
 
-            <View
+            {/* <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <View style={{padding: 10, margin: 10, borderRadius: 10}}>
                 <Text style={{color: '#000000', fontWeight: 'bold'}}>
@@ -522,19 +554,19 @@ const EditProfile = () => {
                 }}>
                 <Text style={{color: '#fff'}}>Add Experience</Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
 
-            {addExperience && (
+            {/* {addExperience && ( */}
               <View>
                 <AddWorkExperience />
               </View>
-            )}
+            {/* )} */}
 
             <View>
-              <ProfileExperiencelist data={experienceData} />
+              {/* <ProfileExperiencelist /> */}
             </View>
 
-            <View
+            {/* <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <View style={{padding: 10, margin: 10, borderRadius: 10}}>
                 <Text style={{color: '#000000', fontWeight: 'bold'}}>
@@ -554,16 +586,89 @@ const EditProfile = () => {
                 }}>
                 <Text style={{color: '#fff'}}>Add Education</Text>
               </TouchableOpacity>
-            </View>
-            {addEducation && (
+            </View> */}
+
+            {/* {addEducation && ( */}
               <View>
                 <ProfileEducation />
               </View>
-            )}
+            {/* )} */}
 
             <View>
-              <ProfileEducationGet data={educationData} />
+              {/* <ProfileEducationGet /> */}
             </View>
+
+
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <View style={{padding: 10, margin: 10, borderRadius: 10}}>
+                <Text style={{color: '#000000', fontWeight: 'bold'}}>
+                  About Me
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  setAddEducation(false);
+                  setAddExperience(false);
+                  setAboutMe(!addAboutMe)
+                }}
+                style={{
+                  backgroundColor: 'green',
+                  padding: 10,
+                  margin: 10,
+                  borderRadius: 10,
+                }}>
+                <Text style={{color: '#fff'}}>About Me</Text>
+              </TouchableOpacity>
+            </View>
+            
+            <Text
+             style={{marginLeft:10,}}
+             >Add about me</Text>
+          <TextInput 
+           style={{
+            //  backgroundColor:"bwhitelack",
+             padding:10,
+             margin:10,
+             borderWidth:1,
+             borderRadius:10
+           }}
+            // style={styles.input}
+            value={aboutMeMessage}
+            onChangeText={setAboutMeMessage}
+            multiline
+          />
+
+           <TouchableOpacity
+           onPress={ () => saveAboutMe()}
+           style={{
+            padding:10,
+            margin:10,
+            borderRadius:10,
+            borderWidth:1,
+            backgroundColor:'#1dbf25',
+            alignSelf:'center',
+           }}
+           >
+            <Text style={{color:'#fff'}}>update About Me</Text>
+           </TouchableOpacity>
+
+            {/* shwo about me */}
+
+            <Text>{showAboutMessage}</Text>
+
+            <TouchableOpacity
+           onPress={ () => deleteAboutMe()}
+           style={{
+            padding:10,
+            margin:10,
+            borderRadius:10,
+            borderWidth:1
+           }}
+           >
+            <Text>delete Save me</Text>
+           </TouchableOpacity>
+
 
           
 
