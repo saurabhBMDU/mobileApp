@@ -126,6 +126,9 @@ const EditProfile = () => {
       console.log('aboutMe',aboutMe)
 
     let {data: res} = await updateProfileTo(aboutMe);
+    if(res.message){
+      alert(res.message);
+    }
     console.log('response is here',res);
   }
 
@@ -135,6 +138,9 @@ const EditProfile = () => {
     console.log('index and data',aboutMe);
      
     let {data: res} = await deleteExperienceEducationForDoctorProfile(0,aboutMe);
+    if(res){
+      alert(res.message)
+    }
     console.log('delete experince response  is here',res)
   }
 
@@ -608,8 +614,8 @@ const EditProfile = () => {
               </View>
               <TouchableOpacity
                 onPress={() => {
-                  setAddEducation(false);
-                  setAddExperience(false);
+                  // setAddEducation(false);
+                  // setAddExperience(false);
                   setAboutMe(!addAboutMe)
                 }}
                 style={{
@@ -622,6 +628,7 @@ const EditProfile = () => {
               </TouchableOpacity>
             </View>
             
+           {  addAboutMe && <>
             <Text
              style={{marginLeft:10,}}
              >Add about me</Text>
@@ -640,7 +647,10 @@ const EditProfile = () => {
           />
 
            <TouchableOpacity
-           onPress={ () => saveAboutMe()}
+           onPress={ () => {
+            saveAboutMe()
+            handleGetAndSetUser()
+          }}
            style={{
             padding:10,
             margin:10,
@@ -652,22 +662,40 @@ const EditProfile = () => {
            >
             <Text style={{color:'#fff'}}>update About Me</Text>
            </TouchableOpacity>
+           </>}
 
             {/* shwo about me */}
 
-            <Text>{showAboutMessage}</Text>
-
-            <TouchableOpacity
-           onPress={ () => deleteAboutMe()}
-           style={{
-            padding:10,
-            margin:10,
-            borderRadius:10,
-            borderWidth:1
-           }}
-           >
-            <Text>delete Save me</Text>
-           </TouchableOpacity>
+            { showAboutMessage && 
+  <View style={{ 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    padding: 10, 
+    borderWidth: 1, 
+    borderRadius: 10,
+    // margin: 10 
+  }}>
+    <Text style={{ flex: 1 }}>
+      {showAboutMessage}
+    </Text>
+    <TouchableOpacity
+      onPress={() => { 
+        deleteAboutMe();
+        handleGetAndSetUser();
+      }}
+      style={{
+        padding: 5, 
+        marginLeft: 10, 
+      }}
+    >
+      <Image
+        source={require('../../assets/images/bin.png')}
+        style={{ height: 24, width: 24 }}
+      />
+    </TouchableOpacity>
+  </View> 
+}
+       
 
 
           

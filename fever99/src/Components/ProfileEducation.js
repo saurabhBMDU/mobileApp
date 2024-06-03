@@ -503,11 +503,25 @@ const Profilestudy = () => {
     }
   };
 
+  // const handleOpenPicker = (type) => {
+  //   setPickerType(type);
+  //   setPickerOptions(type === 'startMonth' || type === 'endMonth' ? months : type === 'startYear' || type === 'endYear' ? years : filteredCountries);
+  //   setPickerVisible(true);
+  // };
+
+
   const handleOpenPicker = (type) => {
     setPickerType(type);
-    setPickerOptions(type === 'startMonth' || type === 'endMonth' ? months : type === 'startYear' || type === 'endYear' ? years : filteredCountries);
+    if (type === 'startMonth' || type === 'endMonth') {
+      setPickerOptions(months);
+    } else if (type === 'startYear' || type === 'endYear') {
+      setPickerOptions(years);
+    } else if (type === 'country') {
+      setPickerOptions(countries);
+    }
     setPickerVisible(true);
   };
+
 
   const handlePickerSelect = (item) => {
     if (pickerType === 'startMonth') setStartMonth(item);
@@ -572,7 +586,7 @@ const Profilestudy = () => {
     }
   };
 
-  const filteredCountries = countries.filter(country =>
+  const filteredCountries = pickerOptions.filter(country =>
     country.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -755,7 +769,10 @@ const Profilestudy = () => {
             renderItem={({ item }) => (
               <TouchableOpacity 
                 style={styles.pickerItem} 
-                onPress={() => handlePickerSelect(item)}
+                onPress={() =>{
+                   handlePickerSelect(item)
+                   setSearchQuery('')
+                  }}
               >
                 <Text style={styles.pickerItemText}>{item}</Text>
               </TouchableOpacity>
@@ -764,7 +781,10 @@ const Profilestudy = () => {
           />
           <TouchableOpacity 
             style={styles.modalCloseButton} 
-            onPress={() => setPickerVisible(false)}
+            onPress={() => {
+              setPickerVisible(false)
+              setSearchQuery('')
+            }}
           >
             <Text style={styles.modalCloseButtonText}>Close</Text>
           </TouchableOpacity>

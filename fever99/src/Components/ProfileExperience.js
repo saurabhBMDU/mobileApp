@@ -509,6 +509,7 @@ const AddWorkExperience = () => {
     else if (pickerType === 'endYear') setEndYear(item);
     else if (pickerType === 'country') setCountry(item);
     setPickerVisible(false);
+    
   };
 
   const handleSubmit = async () => {
