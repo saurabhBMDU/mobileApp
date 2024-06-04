@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -15,12 +15,29 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Roles} from '../../utils/constant';
 import {useNavigation} from '@react-navigation/native';
+import {getUser} from '../../Services/user.service';
 
 const Abouts_dr = (props: any) => {
   const mainFont = 'Montserrat-Regular';
   const [doctorData, setDoctorObj] = useState(props?.route?.params?.doctorId);
+  const [userData, setUserData] = useState('');
+
+  console.log(
+    'this is console data for checking',
+    props?.route?.params?.doctorId.userExtraDetails.aboutMe,
+  );
 
   const navigation: any = useNavigation();
+
+  const loggedInUserDetails = async () => {
+    let userData = await getUser();
+    // console.log('userdata',userData);
+    setUserData(userData);
+  };
+
+  useEffect(() => {
+    loggedInUserDetails();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -97,24 +114,190 @@ const Abouts_dr = (props: any) => {
             <Text style={styles.value}>{doctorData.city}</Text>
           </View>
 
-          <View style={styles.commonD_flex}>
-            <Text style={styles.label}>Service Charge:</Text>
-            <Text style={styles.value}>₹{doctorData.serviceCharge}</Text>
-          </View>
-          <View style={styles.commonD_flex}>
-            <Text style={styles.label}>Service Charge:</Text>
-            <Text style={styles.value}>₹{doctorData.serviceChargepatient}</Text>
-          </View>
+          {userData?.role === 'FRANCHISE' && (
+            <View style={styles.commonD_flex}>
+              <Text style={styles.label}>Service Charge:</Text>
+              <Text style={styles.value}>₹{doctorData.serviceCharge}</Text>
+            </View>
+          )}
+
+          {userData?.role === 'PATIENT' && (
+            <View style={styles.commonD_flex}>
+              <Text style={styles.label}>Service Charge:</Text>
+              <Text style={styles.value}>
+                ₹{doctorData.serviceChargepatient}
+              </Text>
+            </View>
+          )}
+
           <View style={styles.commonD_flex}>
             <Text style={styles.label}>Organization:</Text>
             <Text style={styles.value}>
               {doctorData.userExtraDetails.currentOrganization}
             </Text>
           </View>
+
           <View style={styles.commonD_flex}>
             <Text style={styles.label}>Address:</Text>
             <Text style={styles.value}>{doctorData.address}</Text>
           </View>
+
+          {/* About Me */}
+
+          {doctorData?.userExtraDetails?.aboutMe && (
+            <>
+              <View style={{padding: 10}}>
+                <Text
+                  style={{
+                    color: '#000000',
+                    fontWeight: 'bold',
+                    alignSelf: 'center',
+                  }}>
+                  About Me{' '}
+                </Text>
+              </View>
+              <Text
+                style={{
+                  padding: 10,
+                  margin: 10,
+                  color: '#00000',
+                }}>
+                {doctorData?.userExtraDetails?.aboutMe}
+              </Text>
+            </>
+          )}
+
+          {/* Education Details */}
+          {doctorData?.userExtraDetails?.education?.length > 1 &&
+          <View
+            style={{backgroundColor: '#fff', borderRadius: 10, padding: 10}}>
+            <Text
+              style={{
+                color: '#000000',
+                alignSelf: 'center',
+                fontWeight: 'bold',
+                fontSize: 18,
+              }}>
+              Education Details{' '}
+            </Text>
+          </View>
+         }
+
+          {doctorData?.userExtraDetails?.education?.length > 1 &&
+            doctorData?.userExtraDetails?.education?.map(
+              (item: any, index: any) => {
+                return (
+                  <View>
+                    <View
+                      style={{
+                        backgroundColor: '#1263AC',
+                        padding: 10,
+                        margin: 10,
+                        borderRadius: 10,
+                      }}>
+                      <Text style={{color: '#fff'}}>Degree {index + 1}</Text>
+                    </View>
+
+                    {/* <Text style={styles.jobTitle}>{item.study}</Text> */}
+                    <View style={styles.commonD_flex}>
+                      <Text style={styles.label}>Designation:</Text>
+                      <Text style={styles.value}>{item.study}</Text>
+                    </View>
+                    {/* </View> */}
+                    <View style={styles.commonD_flex}>
+                      <Text style={styles.label}>College Name:</Text>
+                      <Text style={styles.value}>{item.collegeName}</Text>
+                    </View>
+                    {/* <Text style={styles.companyName}>{item.collegeName}</Text> */}
+                    <View style={styles.commonD_flex}>
+                      <Text style={styles.label}>Field Of Study:</Text>
+                      <Text style={styles.value}>{item.fieldOfStudy}</Text>
+                    </View>
+                    {/* <Text style={styles.companyName}>{item.fieldOfStudy}</Text> */}
+                    <View style={styles.commonD_flex}>
+                      <Text style={styles.label}>City And State:</Text>
+                      <Text style={styles.value}>{item.cityState}</Text>
+                    </View>
+                    {/* <Text style={styles.companyName}>{item.cityState}</Text> */}
+                    <View style={styles.commonD_flex}>
+                      <Text style={styles.label}>Date:</Text>
+                      <Text style={styles.value}>
+                        {' '}
+                        {item.startMonth} {item.startYear} - {item.endMonth}{' '}
+                        {item.endYear}
+                      </Text>
+                    </View>
+                  </View>
+                );
+              },
+            )}
+
+          {/* Experience Details */}
+          {doctorData?.userExtraDetails?.experience?.length > 1 &&
+          <View
+            style={{backgroundColor: '#fff', borderRadius: 10, padding: 10}}>
+            <Text
+              style={{
+                color: '#000000',
+                alignSelf: 'center',
+                fontWeight: 'bold',
+                fontSize: 18,
+              }}>
+              Experience Details{' '}
+            </Text>
+          </View>
+        }
+
+          {doctorData?.userExtraDetails?.experience?.length > 1 &&
+            doctorData?.userExtraDetails?.experience?.map(
+              (item: any, index: any) => {
+                return (
+                  <View
+                  // style={styles.experienceItem}
+                  >
+                    <View
+                      style={{
+                        backgroundColor: '#1263AC',
+                        padding: 10,
+                        margin: 10,
+                        borderRadius: 10,
+                      }}>
+                      <Text style={{color: '#fff'}}>
+                        Experience {index + 1}
+                      </Text>
+                    </View>
+
+                    <View style={styles.commonD_flex}>
+                      <Text style={styles.label}>job Title:</Text>
+                      <Text style={styles.value}>{item.jobTitle}</Text>
+                    </View>
+
+                    <View style={styles.commonD_flex}>
+                      <Text style={styles.label}>Company Name:</Text>
+                      <Text style={styles.value}>{item.companyName}</Text>
+                    </View>
+
+                    <View style={styles.commonD_flex}>
+                      <Text style={styles.label}>Company Name:</Text>
+                      <Text style={styles.value}>{item.country}</Text>
+                    </View>
+
+                    <View style={styles.commonD_flex}>
+                      <Text style={styles.label}>Date:</Text>
+                      <Text style={styles.value}>
+                        {item.startMonth} {item.startYear} -{' '}
+                        {`${item.endMonth} ${item.endYear}`}
+                      </Text>
+                    </View>
+
+                    <View style={styles.commonD_flex}>
+                      <Text style={styles.label}>Job Description:</Text>
+                      <Text style={styles.value}>{item.jobDescription}</Text>
+                    </View>
+                  </View>
+                );
+              },
+            )}
         </View>
         <View
           style={{
@@ -246,5 +429,80 @@ const styles = StyleSheet.create({
 
     padding: 10,
     // margin:10,
+  },
+
+  //new details
+  experienceList: {
+    paddingBottom: 20,
+  },
+  experienceItem: {
+    padding: 15,
+    borderRadius: 5,
+    backgroundColor: '#fff',
+    marginBottom: 10,
+  },
+  jobTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  companyName: {
+    fontSize: 14,
+    color: '#666',
+  },
+  dates: {
+    fontSize: 14,
+    color: '#888',
+  },
+  deleteButton: {
+    padding: 5,
+  },
+  noExperienceContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noExperienceText: {
+    fontSize: 16,
+    color: '#888',
+  },
+  toggleButton: {
+    backgroundColor: '#3b5998',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  toggleButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: wp('80%'),
+    backgroundColor: 'white',
+    borderRadius: wp('2%'),
+    padding: wp('5%'),
+    height: hp('50%'),
+  },
+  searchInput: {
+    height: 40,
+    borderColor: '#888',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 16,
+  },
+  pickerItem: {
+    padding: 15,
+  },
+  pickerItemText: {
+    fontSize: 16,
   },
 });

@@ -90,10 +90,10 @@ const EditProfile = () => {
 
       let {data: res}: any = await getDoctorWithBankDetails(userData._id);
 
-      console.log('detail all for doctor and other-------=', res.data.extraDetail)
-      setEducationData(res.data.extraDetail.education)
-      setExperienceData(res.data.extraDetail.experience)
-      setshowAboutMessage(res.data.extraDetail.aboutMe)
+      console.log('detail all for doctor and other-------=', res?.data?.extraDetail)
+      setEducationData(res?.data?.extraDetail?.education)
+      setExperienceData(res?.data?.extraDetail?.experience)
+      setshowAboutMessage(res?.data?.extraDetail?.aboutMe)
        
       if (userData) {
         setUserObj(userData);
@@ -356,14 +356,20 @@ const EditProfile = () => {
             </TouchableOpacity>
           </View>
 
-          <View style={{marginTop: hp(1.5), width: wp(95)}}>
-            <View style={{width: wp(95)}}>
+          <View 
+          style={{marginTop: hp(1.5), width: wp(95)}}
+          >
+            <View 
+            style={{width: wp(95)}}
+            >
               <Text
-                style={{
-                  color: 'black',
-                  fontSize: hp(1.7),
-                  fontFamily: mainFontmedium,
-                }}>
+                // style={{
+                //   color: 'black',
+                //   fontSize: hp(1.7),
+                //   fontFamily: mainFontmedium,
+                // }}
+                style={styles.label}
+                >
                 Name
               </Text>
               <TextInput
@@ -415,15 +421,18 @@ const EditProfile = () => {
                 style={styles.inputfildeStyle}
               />
             </View>
-            <View style={{width: wp(95), marginTop: hp(2)}}>
-              <Text
+            
+          <View style={{width: wp(95), marginTop: hp(2)}}>
+         
+           <Text
                 style={{
                   color: 'black',
                   fontSize: hp(1.7),
                   fontFamily: mainFontmedium,
                 }}>
-                Clinic Address
+             {userObj?.role == Roles?.DOCTOR ?   'Clinic Address' : 'Address' }
               </Text>
+          
               <TextInput
                 onChangeText={e => setAddress(e)}
                 value={address}
@@ -431,7 +440,8 @@ const EditProfile = () => {
                 placeholderTextColor={'gray'}
                 style={styles.inputfildeStyle}
               />
-            </View>
+            </View> 
+
             <View style={{width: wp(95), marginTop: hp(2)}}>
               <Text
                 style={{
@@ -955,19 +965,32 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: 'gray',
   },
+  label:{
+    fontSize: 16,
+    // color: '#333',
+    color:"#000000",
+    marginBottom: 8,
+  },
   inputfildeStyle: {
-    width: wp(95),
-    height: hp(5.5),
-    marginTop: hp(0.5),
-    backgroundColor: '#F1ECEC',
-    borderColor: 'gray',
-    borderWidth: 0.5,
-    borderRadius: 3,
-    paddingLeft: wp(1),
-    paddingRight: wp(3),
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    // width: wp(95),
+    // height: hp(5.5),
+    // marginTop: hp(0.5),
+    // backgroundColor: '#F1ECEC',
+    // borderColor: 'gray',
+    // borderWidth: 0.5,
+    // borderRadius: 3,
+    // paddingLeft: wp(1),
+    // paddingRight: wp(3),
+    // flexDirection: 'row',
+    // justifyContent: 'space-between',
+    // alignItems: 'center',
+    height: 40,
+    borderColor: '#888',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 16,
+
   },
 });
 

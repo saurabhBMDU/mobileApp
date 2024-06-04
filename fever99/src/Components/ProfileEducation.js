@@ -624,7 +624,9 @@ const Profilestudy = () => {
       </TouchableOpacity>
 
       {clicked ? (
-        <View style={styles.form}>
+        <View 
+        style={styles.form}
+        >
           <Text style={styles.label}>Degree *</Text>
           <TextInput
             style={styles.input}
