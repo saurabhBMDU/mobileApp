@@ -614,19 +614,72 @@ const Profilestudy = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <View>
+
+<View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flex: 1,
+          // padding: wp('5%'),
+          backgroundColor: '#3b5998',
+          marginTop:10,
+        }}>
+        <View style={{padding: 10, margin: 10, borderRadius: 10}}>
+          <Text style={{
+            color:'#fff', 
+            fontSize: wp('5%'),
+
+            fontSize: wp('5%'),
+            fontWeight: 'bold',
+
+            }}>Education</Text>
+        </View>
+        {/* <TouchableOpacity
+          onPress={() => {
+            setAddExperience(!addExperience);
+          }}
+          style={{
+            backgroundColor: 'green',
+            padding: 10,
+            margin: 10,
+            borderRadius: 10,
+          }}>
+          <Text style={{color: '#fff'}}>Add</Text>
+        </TouchableOpacity> */}
 
 <TouchableOpacity 
+        // style={styles.toggleButton} 
+        style={{
+          backgroundColor: 'green',
+          padding: 10,
+          margin: 10,
+          borderRadius: 10,
+        }}
+        onPress={() => setClicked(!clicked)}
+      >
+        <Text style={styles.toggleButtonText}>{clicked ? 'Add' : 'Add'}</Text>
+      </TouchableOpacity>
+
+      </View>
+      
+    <View style={styles.container}>
+
+        {/* <TouchableOpacity 
         style={styles.toggleButton} 
         onPress={() => setClicked(!clicked)}
       >
         <Text style={styles.toggleButtonText}>{clicked ? 'Close' : 'Add Education'}</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       {clicked ? (
         <View 
         style={styles.form}
         >
+            <Text style={[styles.label,
+              {alignSelf:'center'}]}>Add Education / Degree</Text>
+
           <Text style={styles.label}>Degree *</Text>
           <TextInput
             style={styles.input}
@@ -797,6 +850,7 @@ const Profilestudy = () => {
         </View>
         </View>
       </Modal>
+    </View>
     </View>
   );
 };

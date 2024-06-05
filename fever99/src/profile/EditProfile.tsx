@@ -341,8 +341,13 @@ const EditProfile = () => {
               justifyContent: 'center',
               alignItems: 'center',
               width: '100%',
+              backgroundColor: '#F5F5F5',
             }}>
-            <TouchableOpacity onPress={() => handleDocumentPicker()}>
+            <TouchableOpacity 
+            style={{
+              backgroundColor: '#F5F5F5',
+            }}
+            onPress={() => handleDocumentPicker()}>
               <Image
                 source={handleRenderProfilePhoto()}
                 style={{
@@ -351,16 +356,33 @@ const EditProfile = () => {
                   resizeMode: 'center',
                   borderRadius: wp(40),
                   marginTop: hp(1.5),
+                  // backgroundColor: '#F5F5F5',
                 }}
               />
             </TouchableOpacity>
           </View>
 
+        
+         <View
+          style={{
+        //   padding:20,
+        //   flex:1,
+        //   backgroundColor: '#3b5998',
+        // backgroundColor: '#F5F5F5',
+         }}
+
+         >
+
           <View 
-          style={{marginTop: hp(1.5), width: wp(95)}}
+          // style={{marginTop: hp(1.5), width: wp(95)}}
+          style={{
+            padding:20,
+            flex:1,
+            backgroundColor: '#F5F5F5',
+           }}
           >
             <View 
-            style={{width: wp(95)}}
+            // style={{width: wp(85)}}
             >
               <Text
                 // style={{
@@ -380,16 +402,17 @@ const EditProfile = () => {
                 style={styles.inputfildeStyle}
               />
             </View>
-            <View style={{width: wp(95), marginTop: hp(2)}}>
+            <View 
+            // style={{width: wp(95), marginTop: hp(2)}}
+            >
               <Text
-                style={{
-                  color: 'black',
-                  fontSize: hp(1.7),
-                  fontFamily: mainFontmedium,
-                }}>
+                style={styles.label}
+                >
                 Email
               </Text>
-              <View style={{width: wp(95)}}>
+              <View 
+              // style={{width: wp(95)}}
+              >
                 <TextInput
                   value={email}
                   editable={false}
@@ -401,13 +424,11 @@ const EditProfile = () => {
                 />
               </View>
             </View>
-            <View style={{width: wp(95), marginTop: hp(2)}}>
+            <View 
+            // style={{width: wp(95), marginTop: hp(2)}}
+            >
               <Text
-                style={{
-                  color: 'black',
-                  fontSize: hp(1.7),
-                  fontFamily: mainFontmedium,
-                }}>
+                style={styles.label}>
                 Phone Number
               </Text>
               <TextInput
@@ -422,14 +443,12 @@ const EditProfile = () => {
               />
             </View>
             
-          <View style={{width: wp(95), marginTop: hp(2)}}>
+          <View 
+          // style={{width: wp(95), marginTop: hp(2)}}
+          >
          
            <Text
-                style={{
-                  color: 'black',
-                  fontSize: hp(1.7),
-                  fontFamily: mainFontmedium,
-                }}>
+                style={styles.label}>
              {userObj?.role == Roles?.DOCTOR ?   'Clinic Address' : 'Address' }
               </Text>
           
@@ -442,13 +461,11 @@ const EditProfile = () => {
               />
             </View> 
 
-            <View style={{width: wp(95), marginTop: hp(2)}}>
+            <View 
+            // style={{width: wp(95), marginTop: hp(2)}}
+            >
               <Text
-                style={{
-                  color: 'black',
-                  fontSize: hp(1.7),
-                  fontFamily: mainFontmedium,
-                }}>
+                style={styles.label}>
                 State
               </Text>
               <TextInput
@@ -459,13 +476,11 @@ const EditProfile = () => {
                 style={styles.inputfildeStyle}
               />
             </View>
-            <View style={{width: wp(95), marginTop: hp(2)}}>
+            <View 
+            // style={{width: wp(95), marginTop: hp(2)}}
+            >
               <Text
-                style={{
-                  color: 'black',
-                  fontSize: hp(1.7),
-                  fontFamily: mainFontmedium,
-                }}>
+                style={styles.label}>
                 Country
               </Text>
               <TextInput
@@ -475,13 +490,11 @@ const EditProfile = () => {
                 style={styles.inputfildeStyle}
               />
             </View>
-            <View style={{width: wp(95), marginTop: hp(2)}}>
+            <View 
+            // style={{width: wp(95), marginTop: hp(2)}}
+            >
               <Text
-                style={{
-                  color: 'black',
-                  fontSize: hp(1.7),
-                  fontFamily: mainFontmedium,
-                }}>
+                 style={styles.label}>
                 Pincode
               </Text>
               <TextInput
@@ -496,13 +509,11 @@ const EditProfile = () => {
             </View>
 
             {userObj.role == Roles.DOCTOR && (
-              <View style={{width: wp(95), marginTop: hp(2)}}>
+              <View 
+              // style={{width: wp(95), marginTop: hp(2)}}
+              >
                 <Text
-                  style={{
-                    color: 'black',
-                    fontSize: hp(1.7),
-                    fontFamily: mainFontmedium,
-                  }}>
+                   style={styles.label}>
                   Specialization
                 </Text>
                 <TextInput
@@ -515,6 +526,136 @@ const EditProfile = () => {
                 />
               </View>
             )}
+
+
+            <View 
+            // style={{marginTop: hp(2), width: wp(95)}}
+            >
+              <Text
+                  style={styles.label}>
+                How do you identify yourself?
+              </Text>
+              <View
+                style={{
+                  // width: wp(95),
+                  flexDirection: 'row',
+                  marginTop: hp(1),
+                  justifyContent: 'space-between',
+                }}
+                >
+                <TouchableOpacity
+                  onPress={() => setGender('Male')}
+                  style={{
+                    borderColor: '#686868',
+                    borderWidth: gender == 'Male' ? 0 : 0.8,
+                    width: wp(20),
+                    // padding:10,
+                    height: hp(5),
+                    borderRadius: 5,
+                    backgroundColor: gender == 'Male' ? maincolor : 'white',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      color: gender == 'Male' ? 'white' : '#686868',
+                      fontSize: hp(1.8),
+                      fontFamily: mainFont,
+                    }}>
+                    Male
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setGender('Female')}
+                  style={{
+                    borderColor: '#686868',
+                    borderWidth: gender == 'Female' ? 0 : 0.8,
+                    width: wp(20),
+                    // padding:10,
+                    height: hp(5),
+                    borderRadius: 5,
+                    backgroundColor: gender == 'Female' ? maincolor : 'white',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      color: gender == 'Female' ? 'white' : '#686868',
+                      fontSize: hp(1.8),
+                      fontFamily: mainFont,
+                    }}>
+                    Female
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setGender('Other')}
+                  style={{
+                    borderColor: '#686868',
+                    borderWidth: gender == 'Other' ? 0 : 0.8,
+                    width: wp(20),
+                    // padding:10,
+                    height: hp(5),
+                    borderRadius: 5,
+                    backgroundColor: gender == 'Other' ? maincolor : 'white',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      color: gender == 'Other' ? 'white' : '#686868',
+                      fontSize: hp(1.8),
+                      fontFamily: mainFont,
+                    }}>
+                    Other
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+
+            
+            <>
+              <TouchableOpacity
+                onPress={() => handleSubmit()}
+                style={{
+                  width: wp(95),
+                  height: hp(5),
+                  backgroundColor: '#50B148',
+                  borderRadius: 5,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  alignSelf: 'center',
+                  marginVertical: 25,
+                }}>
+                <Text
+                  style={{
+                    fontSize: hp(1.8),
+                    color: 'white',
+                    fontFamily: mainFontmedium,
+                  }}>
+                  Submit 
+                </Text>
+              </TouchableOpacity>
+              {isLoadingSubmit && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    // height:'100%',
+                    // width:'100%',
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    backgroundColor: 'rgba(10, 10, 10, 0.5)',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <ActivityIndicator size="large" color="#ffffff" />
+                </View>
+              )}
+            </>
+
+            </View>
 
             {/* {userObj.role == Roles.DOCTOR && (
               <View style={{width: wp(95), marginTop: hp(2)}}>
@@ -617,28 +758,47 @@ const EditProfile = () => {
            
 
 
-            {userObj.role == Roles.DOCTOR && ( <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <View style={{padding: 10, margin: 10, borderRadius: 10}}>
-                <Text style={{color: '#000000', fontWeight: 'bold'}}>
-                  About Me
-                </Text>
-              </View>
-              <TouchableOpacity
-                onPress={() => {
-                  // setAddEducation(false);
-                  // setAddExperience(false);
-                  setAboutMe(!addAboutMe)
-                }}
-                style={{
-                  backgroundColor: 'green',
-                  padding: 10,
-                  margin: 10,
-                  borderRadius: 10,
-                }}>
-                <Text style={{color: '#fff'}}>About Me</Text>
-              </TouchableOpacity>
-            </View>)}
+       
+
+
+            {userObj.role == Roles.DOCTOR && (
+                   <View
+                   style={{
+                     flexDirection: 'row',
+                     justifyContent: 'space-between',
+                     alignItems: 'center',
+                     flex: 1,
+                     // padding: wp('5%'),
+                     backgroundColor: '#3b5998',
+                     marginTop:10,
+                     marginBottom:10
+                   }}>
+                   <View style={{padding: 10, margin: 10, borderRadius: 10}}>
+                     <Text style={{ 
+                       color:'#fff', 
+                       fontSize: wp('5%'),
+                       fontWeight: 'bold',
+                   }}>About Me</Text>
+                   </View>
+                   <TouchableOpacity
+                     onPress={() => {
+                       setAboutMe(!addAboutMe)
+                     }}
+                     style={{
+                       backgroundColor: 'green',
+                       padding: 10,
+                       margin: 10,
+                       borderRadius: 10,
+                     }}>
+                     <Text 
+                     style={{
+                       color: '#fff',
+                       fontSize: 16,
+                       fontWeight: 'bold',
+                       }}>Add</Text>
+                   </TouchableOpacity>
+                 </View>
+          )}
             
             {userObj.role == Roles.DOCTOR &&   addAboutMe && <>
             <Text
@@ -668,7 +828,7 @@ const EditProfile = () => {
             margin:10,
             borderRadius:10,
             borderWidth:1,
-            backgroundColor:'#1dbf25',
+            backgroundColor: '#3b5998',
             alignSelf:'center',
            }}
            >
@@ -714,87 +874,7 @@ const EditProfile = () => {
 
            
 
-            <View style={{marginTop: hp(2), width: wp(95)}}>
-              <Text
-                style={{
-                  color: 'black',
-                  fontSize: hp(1.7),
-                  fontFamily: mainFontmedium,
-                }}>
-                How do you identify yourself?
-              </Text>
-              <View
-                style={{
-                  width: wp(95),
-                  flexDirection: 'row',
-                  marginTop: hp(1),
-                  justifyContent: 'space-between',
-                }}>
-                <TouchableOpacity
-                  onPress={() => setGender('Male')}
-                  style={{
-                    borderColor: '#686868',
-                    borderWidth: gender == 'Male' ? 0 : 0.8,
-                    width: wp(30),
-                    height: hp(5),
-                    borderRadius: 5,
-                    backgroundColor: gender == 'Male' ? maincolor : 'white',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      color: gender == 'Male' ? 'white' : '#686868',
-                      fontSize: hp(1.8),
-                      fontFamily: mainFont,
-                    }}>
-                    Male
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => setGender('Female')}
-                  style={{
-                    borderColor: '#686868',
-                    borderWidth: gender == 'Female' ? 0 : 0.8,
-                    width: wp(30),
-                    height: hp(5),
-                    borderRadius: 5,
-                    backgroundColor: gender == 'Female' ? maincolor : 'white',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      color: gender == 'Female' ? 'white' : '#686868',
-                      fontSize: hp(1.8),
-                      fontFamily: mainFont,
-                    }}>
-                    Female
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => setGender('Other')}
-                  style={{
-                    borderColor: '#686868',
-                    borderWidth: gender == 'Other' ? 0 : 0.8,
-                    width: wp(30),
-                    height: hp(5),
-                    borderRadius: 5,
-                    backgroundColor: gender == 'Other' ? maincolor : 'white',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      color: gender == 'Other' ? 'white' : '#686868',
-                      fontSize: hp(1.8),
-                      fontFamily: mainFont,
-                    }}>
-                    Other
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+          
 
             {/* <TouchableOpacity
               onPress={() => handleSubmit()}
@@ -818,46 +898,6 @@ const EditProfile = () => {
               </Text>
             </TouchableOpacity> */}
 
-            <>
-              <TouchableOpacity
-                onPress={() => handleSubmit()}
-                style={{
-                  width: wp(95),
-                  height: hp(5),
-                  backgroundColor: '#50B148',
-                  borderRadius: 5,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  alignSelf: 'center',
-                  marginVertical: 25,
-                }}>
-                <Text
-                  style={{
-                    fontSize: hp(1.8),
-                    color: 'white',
-                    fontFamily: mainFontmedium,
-                  }}>
-                  Submit
-                </Text>
-              </TouchableOpacity>
-              {isLoadingSubmit && (
-                <View
-                  style={{
-                    position: 'absolute',
-                    // height:'100%',
-                    // width:'100%',
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    backgroundColor: 'rgba(10, 10, 10, 0.5)',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <ActivityIndicator size="large" color="#ffffff" />
-                </View>
-              )}
-            </>
 
             {!isLoadingSubmit && (
               <View
@@ -967,8 +1007,7 @@ const styles = StyleSheet.create({
   },
   label:{
     fontSize: 16,
-    // color: '#333',
-    color:"#000000",
+    color: '#333',
     marginBottom: 8,
   },
   inputfildeStyle: {

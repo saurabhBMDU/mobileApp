@@ -1,5 +1,3 @@
-
-
 // import React, { useState } from 'react';
 // import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Modal, FlatList } from 'react-native';
 // import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -9,7 +7,7 @@
 //     const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
 //     const handleSubmit = async () => {
 //       try {
-//         setIsLoadingSubmit(true); 
+//         setIsLoadingSubmit(true);
 //         const data = {
 //             jobTitle,
 //             companyName,
@@ -23,17 +21,14 @@
 //             jobDescription,
 //           }
 
-
-      
 //         //   setExperiences([...experiences, experience]);
 
 //           console.log('All experiences:', data);
 
-      
 //           // Reset form fields
 //           const experience = {'experience' : data}
 //           console.log('expernect',experience)
-  
+
 //         let {data: res} = await updateProfileTo(experience);
 //         console.log('response is here',res)
 //         if (res) {
@@ -49,17 +44,16 @@
 //         setStartYear('');
 //         setEndMonth('');
 //         setEndYear('');
-//         setJobDescription('');      
+//         setJobDescription('');
 
 //         }
-  
+
 //       } catch (error) {
 //         setIsLoadingSubmit(false); // Set loading state to true
-  
+
 //         alert(error);
 //       }
 //     };
-  
 
 //   const [jobTitle, setJobTitle] = useState('');
 //   const [companyName, setCompanyName] = useState('');
@@ -78,7 +72,7 @@
 //   const [experiences, setExperiences] = useState([]);
 
 //   const [clicked,setClicked] = useState(false);
-  
+
 //   const months = [
 //     'January', 'February', 'March', 'April', 'May', 'June',
 //     'July', 'August', 'September', 'October', 'November', 'December'
@@ -87,38 +81,37 @@
 //   const years = Array.from({ length: 50 }, (_, i) => `${new Date().getFullYear() - i}`);
 
 //   const countries = [
-//     "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", 
-//     "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", 
-//     "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", 
-//     "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", 
-//     "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", 
-//     "Chad", "Chile", "China", "Colombia", "Comoros", "Congo, Democratic Republic of the", 
-//     "Congo, Republic of the", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", 
-//     "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", 
-//     "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", 
-//     "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", 
-//     "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", 
-//     "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", 
-//     "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", 
-//     "Korea, North", "Korea, South", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", 
-//     "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", 
-//     "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", 
-//     "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", 
-//     "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", 
-//     "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", 
-//     "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", 
-//     "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", 
-//     "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", 
-//     "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", 
-//     "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", 
-//     "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", 
-//     "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", 
-//     "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", 
-//     "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", 
-//     "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", 
+//     "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda",
+//     "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain",
+//     "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia",
+//     "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso",
+//     "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic",
+//     "Chad", "Chile", "China", "Colombia", "Comoros", "Congo, Democratic Republic of the",
+//     "Congo, Republic of the", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic",
+//     "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt",
+//     "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia",
+//     "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana",
+//     "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti",
+//     "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland",
+//     "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati",
+//     "Korea, North", "Korea, South", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon",
+//     "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg",
+//     "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands",
+//     "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia",
+//     "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal",
+//     "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia",
+//     "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea",
+//     "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia",
+//     "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines",
+//     "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia",
+//     "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands",
+//     "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname",
+//     "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand",
+//     "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey",
+//     "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom",
+//     "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela",
 //     "Vietnam", "Yemen", "Zambia", "Zimbabwe"
 //   ];
-  
 
 //   const handleOpenPicker = (type) => {
 //     setPickerType(type);
@@ -141,9 +134,6 @@
 //     });
 //   };
 
-
-
-
 // //   const [pickerOptions, setPickerOptions] = useState([]);
 //   const [searchQuery, setSearchQuery] = useState('');
 
@@ -154,21 +144,18 @@
 //   const filteredCountries = countries.filter(country =>
 //     country.toLowerCase().includes(searchQuery.toLowerCase())
 //   );
-  
-
-
 
 //   return (
 //     <ScrollView style={styles.container}>
 //       <Text style={styles.label}>Job title <Text style={styles.required}>*</Text></Text>
-//       <TextInput 
+//       <TextInput
 //         style={styles.input}
 //         value={jobTitle}
 //         onChangeText={setJobTitle}
 //       />
 
 //       <Text style={styles.label}>Company name</Text>
-//       <TextInput 
+//       <TextInput
 //         style={styles.input}
 //         value={companyName}
 //         onChangeText={setCompanyName}
@@ -195,7 +182,7 @@
 //             data={filteredCountries}
 //             keyExtractor={(item) => item}
 //             renderItem={({ item }) => (
-//               <TouchableOpacity onPress={() =>{ 
+//               <TouchableOpacity onPress={() =>{
 //                 handlePickerSelect(item)
 //                 console.log('clicked')
 //                 setSearchQuery(item)
@@ -209,12 +196,10 @@
 //         )}
 //       </View>
 
-
 //       {/*  */}
 
-
 //       <Text style={styles.label}>City, State</Text>
-//       <TextInput 
+//       <TextInput
 //         style={styles.input}
 //         value={cityState}
 //         onChangeText={setCityState}
@@ -258,7 +243,7 @@
 //       </View>
 
 //       <Text style={styles.label}>Job description</Text>
-//       <TextInput 
+//       <TextInput
 //         style={[styles.input, styles.textArea]}
 //         value={jobDescription}
 //         onChangeText={setJobDescription}
@@ -266,9 +251,9 @@
 //       />
 
 //       <TouchableOpacity
-//         onPress={ () => { 
+//         onPress={ () => {
 //             // saveExperienceData();
-//             handleSubmit(); 
+//             handleSubmit();
 //         }}
 //         style={{ backgroundColor: 'blue', padding: 10, margin: 10, borderRadius: 10 }}
 //       >
@@ -303,7 +288,7 @@
 //   container: {
 //     flex: 1,
 //     padding: wp('5%'),
-//   },    
+//   },
 //   countrySearchContainer: {
 //     position: 'relative',
 //     marginBottom: hp('2%'),
@@ -417,17 +402,28 @@
 
 // export default AddWorkExperience;
 
-
-
-
-
-
-
-
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Modal, FlatList, Image } from 'react-native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { updateProfileTo, deleteExperienceEducationForDoctorProfile, getDoctorWithBankDetails, getUser } from '../Services/user.service';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Modal,
+  FlatList,
+  Image,
+} from 'react-native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import {
+  updateProfileTo,
+  deleteExperienceEducationForDoctorProfile,
+  getDoctorWithBankDetails,
+  getUser,
+} from '../Services/user.service';
 
 const AddWorkExperience = () => {
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
@@ -448,49 +444,227 @@ const AddWorkExperience = () => {
   const [clicked, setClicked] = useState(false);
   const [experiences, setExperiences] = useState([]);
 
-  const [addExperience,setAddExperience] = useState(false)
+  const [addExperience, setAddExperience] = useState(false);
 
   const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 
-  const years = Array.from({ length: 50 }, (_, i) => `${new Date().getFullYear() - i}`);
+  const years = Array.from(
+    {length: 50},
+    (_, i) => `${new Date().getFullYear() - i}`,
+  );
 
   const countries = [
-    "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", 
-    "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", 
-    "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", 
-    "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", 
-    "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", 
-    "Chad", "Chile", "China", "Colombia", "Comoros", "Congo, Democratic Republic of the", 
-    "Congo, Republic of the", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", 
-    "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", 
-    "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", 
-    "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", 
-    "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", 
-    "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", 
-    "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", 
-    "Korea, North", "Korea, South", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", 
-    "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", 
-    "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", 
-    "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", 
-    "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", 
-    "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", 
-    "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", 
-    "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", 
-    "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", 
-    "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", 
-    "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", 
-    "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", 
-    "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", 
-    "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", 
-    "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", 
-    "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", 
-    "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+    'Afghanistan',
+    'Albania',
+    'Algeria',
+    'Andorra',
+    'Angola',
+    'Antigua and Barbuda',
+    'Argentina',
+    'Armenia',
+    'Australia',
+    'Austria',
+    'Azerbaijan',
+    'Bahamas',
+    'Bahrain',
+    'Bangladesh',
+    'Barbados',
+    'Belarus',
+    'Belgium',
+    'Belize',
+    'Benin',
+    'Bhutan',
+    'Bolivia',
+    'Bosnia and Herzegovina',
+    'Botswana',
+    'Brazil',
+    'Brunei',
+    'Bulgaria',
+    'Burkina Faso',
+    'Burundi',
+    'Cabo Verde',
+    'Cambodia',
+    'Cameroon',
+    'Canada',
+    'Central African Republic',
+    'Chad',
+    'Chile',
+    'China',
+    'Colombia',
+    'Comoros',
+    'Congo, Democratic Republic of the',
+    'Congo, Republic of the',
+    'Costa Rica',
+    'Croatia',
+    'Cuba',
+    'Cyprus',
+    'Czech Republic',
+    'Denmark',
+    'Djibouti',
+    'Dominica',
+    'Dominican Republic',
+    'Ecuador',
+    'Egypt',
+    'El Salvador',
+    'Equatorial Guinea',
+    'Eritrea',
+    'Estonia',
+    'Eswatini',
+    'Ethiopia',
+    'Fiji',
+    'Finland',
+    'France',
+    'Gabon',
+    'Gambia',
+    'Georgia',
+    'Germany',
+    'Ghana',
+    'Greece',
+    'Grenada',
+    'Guatemala',
+    'Guinea',
+    'Guinea-Bissau',
+    'Guyana',
+    'Haiti',
+    'Honduras',
+    'Hungary',
+    'Iceland',
+    'India',
+    'Indonesia',
+    'Iran',
+    'Iraq',
+    'Ireland',
+    'Israel',
+    'Italy',
+    'Jamaica',
+    'Japan',
+    'Jordan',
+    'Kazakhstan',
+    'Kenya',
+    'Kiribati',
+    'Korea, North',
+    'Korea, South',
+    'Kuwait',
+    'Kyrgyzstan',
+    'Laos',
+    'Latvia',
+    'Lebanon',
+    'Lesotho',
+    'Liberia',
+    'Libya',
+    'Liechtenstein',
+    'Lithuania',
+    'Luxembourg',
+    'Madagascar',
+    'Malawi',
+    'Malaysia',
+    'Maldives',
+    'Mali',
+    'Malta',
+    'Marshall Islands',
+    'Mauritania',
+    'Mauritius',
+    'Mexico',
+    'Micronesia',
+    'Moldova',
+    'Monaco',
+    'Mongolia',
+    'Montenegro',
+    'Morocco',
+    'Mozambique',
+    'Myanmar',
+    'Namibia',
+    'Nauru',
+    'Nepal',
+    'Netherlands',
+    'New Zealand',
+    'Nicaragua',
+    'Niger',
+    'Nigeria',
+    'North Macedonia',
+    'Norway',
+    'Oman',
+    'Pakistan',
+    'Palau',
+    'Palestine',
+    'Panama',
+    'Papua New Guinea',
+    'Paraguay',
+    'Peru',
+    'Philippines',
+    'Poland',
+    'Portugal',
+    'Qatar',
+    'Romania',
+    'Russia',
+    'Rwanda',
+    'Saint Kitts and Nevis',
+    'Saint Lucia',
+    'Saint Vincent and the Grenadines',
+    'Samoa',
+    'San Marino',
+    'Sao Tome and Principe',
+    'Saudi Arabia',
+    'Senegal',
+    'Serbia',
+    'Seychelles',
+    'Sierra Leone',
+    'Singapore',
+    'Slovakia',
+    'Slovenia',
+    'Solomon Islands',
+    'Somalia',
+    'South Africa',
+    'South Sudan',
+    'Spain',
+    'Sri Lanka',
+    'Sudan',
+    'Suriname',
+    'Sweden',
+    'Switzerland',
+    'Syria',
+    'Taiwan',
+    'Tajikistan',
+    'Tanzania',
+    'Thailand',
+    'Timor-Leste',
+    'Togo',
+    'Tonga',
+    'Trinidad and Tobago',
+    'Tunisia',
+    'Turkey',
+    'Turkmenistan',
+    'Tuvalu',
+    'Uganda',
+    'Ukraine',
+    'United Arab Emirates',
+    'United Kingdom',
+    'United States',
+    'Uruguay',
+    'Uzbekistan',
+    'Vanuatu',
+    'Vatican City',
+    'Venezuela',
+    'Vietnam',
+    'Yemen',
+    'Zambia',
+    'Zimbabwe',
   ];
 
-  const handleOpenPicker = (type) => {
+  const handleOpenPicker = type => {
     setPickerType(type);
     if (type === 'startMonth' || type === 'endMonth') {
       setPickerOptions(months);
@@ -502,19 +676,18 @@ const AddWorkExperience = () => {
     setPickerVisible(true);
   };
 
-  const handlePickerSelect = (item) => {
+  const handlePickerSelect = item => {
     if (pickerType === 'startMonth') setStartMonth(item);
     else if (pickerType === 'startYear') setStartYear(item);
     else if (pickerType === 'endMonth') setEndMonth(item);
     else if (pickerType === 'endYear') setEndYear(item);
     else if (pickerType === 'country') setCountry(item);
     setPickerVisible(false);
-
   };
 
   const handleSubmit = async () => {
     try {
-      setIsLoadingSubmit(true); 
+      setIsLoadingSubmit(true);
       const data = {
         jobTitle,
         companyName,
@@ -526,13 +699,13 @@ const AddWorkExperience = () => {
         endMonth,
         endYear,
         jobDescription,
-      }
+      };
       console.log('All experiences:', data);
-      const experience = { 'experience': data }
-      console.log('experience', experience)
-  
-      let { data: res } = await updateProfileTo(experience);
-      console.log('response is here', res)
+      const experience = {experience: data};
+      console.log('experience', experience);
+
+      let {data: res} = await updateProfileTo(experience);
+      console.log('response is here', res);
       if (res) {
         alert(res.message);
         setJobTitle('');
@@ -544,10 +717,10 @@ const AddWorkExperience = () => {
         setStartYear('');
         setEndMonth('');
         setEndYear('');
-        setJobDescription('');      
+        setJobDescription('');
       }
     } catch (error) {
-      setIsLoadingSubmit(false); 
+      setIsLoadingSubmit(false);
       alert(error);
     }
   };
@@ -555,8 +728,11 @@ const AddWorkExperience = () => {
   const fetchExperiences = async () => {
     try {
       let userData = await getUser();
-      let { data: res } = await getDoctorWithBankDetails(userData._id);
-      console.log('detail all for doctor and other:', res.data.extraDetail.experience)
+      let {data: res} = await getDoctorWithBankDetails(userData._id);
+      console.log(
+        'detail all for doctor and other:',
+        res.data.extraDetail.experience,
+      );
       setExperiences(res.data.extraDetail.experience);
     } catch (err) {
       alert(err);
@@ -567,188 +743,259 @@ const AddWorkExperience = () => {
     fetchExperiences();
   }, []);
 
-  const deleteExperienceApi = async (index) => {
+  const deleteExperienceApi = async index => {
     try {
-      let experience = { 'experience': 'experience' }
-      console.log('index and data', index, experience)
-      let { data: res } = await deleteExperienceEducationForDoctorProfile(index, experience);
-      console.log('delete experience response is here', res)
-      fetchExperiences(); 
+      let experience = {experience: 'experience'};
+      console.log('index and data', index, experience);
+      let {data: res} = await deleteExperienceEducationForDoctorProfile(
+        index,
+        experience,
+      );
+      console.log('delete experience response is here', res);
+      fetchExperiences();
     } catch (error) {
       console.error('Error deleting experience:', error.message);
     }
   };
 
-  const handleDelete = (index) => {
+  const handleDelete = index => {
     const newExperiences = [...experiences];
     newExperiences.splice(index, 1);
     setExperiences(newExperiences);
     deleteExperienceApi(index);
   };
 
-  const renderExperienceItem = ({ item, index }) => (
+  const renderExperienceItem = ({item, index}) => (
     <View style={styles.experienceItem}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <Text style={styles.label}>{item.jobTitle}</Text>
         <TouchableOpacity onPress={() => handleDelete(index)}>
-          <Image 
-           source={require('../../assets/images/bin.png')}
-          style={styles.deleteIcon} />
+          <Image
+            source={require('../../assets/images/bin.png')}
+            style={styles.deleteIcon}
+          />
         </TouchableOpacity>
       </View>
       <Text>{item.companyName}</Text>
-      <Text>{item.cityState}, {item.country}</Text>
-      <Text>{item.startMonth} {item.startYear} - {item.currentlyWorkHere ? 'Present' : `${item.endMonth} ${item.endYear}`}</Text>
+      <Text>
+        {item.cityState}, {item.country}
+      </Text>
+      <Text>
+        {item.startMonth} {item.startYear} -{' '}
+        {item.currentlyWorkHere
+          ? 'Present'
+          : `${item.endMonth} ${item.endYear}`}
+      </Text>
       <Text>{item.jobDescription}</Text>
     </View>
   );
 
   const filteredOptions = pickerOptions.filter(option =>
-    option.toLowerCase().includes(searchQuery.toLowerCase())
+    option.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
-
     <>
-            <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <View style={{padding: 10, margin: 10, borderRadius: 10}}>
-                <Text style={{color: '#000000', fontWeight: 'bold'}}>
-                  Total Experience
-                </Text>
-              </View>
-              <TouchableOpacity
-                onPress={() => {
-                  setAddExperience(!addExperience);
-                }}
-                style={{
-                  backgroundColor: 'green',
-                  padding: 10,
-                  margin: 10,
-                  borderRadius: 10,
-                }}>
-                <Text style={{color: '#fff'}}>Add Experience</Text>
-              </TouchableOpacity>
-            </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flex: 1,
+          // padding: wp('5%'),
+          backgroundColor: '#3b5998',
+          marginTop:10,
+        }}>
+        <View style={{padding: 10, margin: 10, borderRadius: 10}}>
+          <Text style={[styles.heading,{color:"#fff"}]}>Work Experiences</Text>
+        </View>
+        <TouchableOpacity
+          onPress={() => {
+            setAddExperience(!addExperience);
+          }}
+          style={{
+            backgroundColor: 'green',
+            padding: 10,
+            margin: 10,
+            borderRadius: 10,
+          }}>
+          <Text 
+          style={{
+            color: '#fff',
+            fontSize: 16,
+            fontWeight: 'bold',
+            }}>Add</Text>
+        </TouchableOpacity>
+      </View>
 
-
-    <ScrollView style={styles.container}>
-
-   { addExperience && <View>
-      {/* <> */}
-      <Text style={styles.heading}>Add Work Experience</Text>
-      <TextInput style={styles.input} placeholder="Job Title" value={jobTitle} onChangeText={setJobTitle} />
-      <TextInput style={styles.input} placeholder="Company Name" value={companyName} onChangeText={setCompanyName} />
-      <TouchableOpacity onPress={() => handleOpenPicker('country')}>
-        <TextInput
-          style={styles.input}
-          placeholder="Country"
-          value={country}
-          editable={false}
-        />
-      </TouchableOpacity>
-      <TextInput style={styles.input} placeholder="City/State" value={cityState} onChangeText={setCityState} />
-      {/* <TouchableOpacity onPress={() => setCurrentlyWorkHere(!currentlyWorkHere)}>
+      <ScrollView style={styles.container}>
+        {addExperience && (
+          <View
+          style={{
+            flex: 1,
+            // padding: 20,
+            backgroundColor: '#F5F5F5',
+          }}
+          >
+            {/* <> */}
+            <Text style={[styles.label,{alignSelf:"center"}]}>Add Work Experience</Text>
+            <Text style={styles.label}>Job Title </Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Job Title"
+              value={jobTitle}
+              onChangeText={setJobTitle}
+            />
+            <Text style={styles.label}>Company Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Company Name"
+              value={companyName}
+              onChangeText={setCompanyName}
+            />
+            <TouchableOpacity onPress={() => handleOpenPicker('country')}>
+            <Text style={styles.label}>Country </Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Country"
+                value={country}
+                editable={false}
+              />
+            </TouchableOpacity>
+            <Text style={styles.label}>City/State</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="City/State"
+              value={cityState}
+              onChangeText={setCityState}
+            />
+            {/* <TouchableOpacity onPress={() => setCurrentlyWorkHere(!currentlyWorkHere)}>
         <Text style={styles.checkbox}>{currentlyWorkHere ? '✓' : ''}</Text>
         <Text style={styles.label}>I currently work here</Text>
       </TouchableOpacity> */}
-      <TouchableOpacity onPress={() => handleOpenPicker('startMonth')}>
-        <TextInput
-          style={styles.input}
-          placeholder="Start Month"
-          value={startMonth}
-          editable={false}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => handleOpenPicker('startYear')}>
-        <TextInput
-          style={styles.input}
-          placeholder="Start Year"
-          value={startYear}
-          editable={false}
-        />
-      </TouchableOpacity>
-       {/* {!currentlyWorkHere && ( */}
-        <>
-          <TouchableOpacity onPress={() => handleOpenPicker('endMonth')}>
-            <TextInput
-              style={styles.input}
-              placeholder="End Month"
-              value={endMonth}
-              editable={false}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleOpenPicker('endYear')}>
-            <TextInput
-              style={styles.input}
-              placeholder="End Year"
-              value={endYear}
-              editable={false}
-            />
-          </TouchableOpacity>
-        </>
-      {/* )}  */}
-      <TextInput
-        style={[styles.input, styles.textArea]}
-        placeholder="Job Description"
-        value={jobDescription}
-        onChangeText={setJobDescription}
-        multiline={true}
-      />
-      <TouchableOpacity style={styles.submitButton} 
-      onPress={ () => { 
-        handleSubmit();
-        setAddExperience(false)
-        fetchExperiences();
-        }}
-        >
-        <Text style={styles.submitButtonText}>Submit</Text>
-      </TouchableOpacity>
-
-      </View>}
-
-      <Text style={styles.heading}>Work Experiences</Text>
-      <FlatList
-        data={experiences}
-        renderItem={renderExperienceItem}
-        keyExtractor={(item, index) => index.toString()}
-      />
-
-      <Modal visible={isPickerVisible} animationType="slide" transparent={true}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search..."
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-            />
-            <FlatList
-              data={filteredOptions}
-              renderItem={({ item }) => (
-                <TouchableOpacity onPress={() =>{ 
-                handlePickerSelect(item)
-                setSearchQuery('');
-                }}
-                >
-                  <Text style={styles.pickerItem}>{item}</Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item, index) => index.toString()}
-            />
+           <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+            <TouchableOpacity
+             onPress={() => handleOpenPicker('startMonth')}
+             style={{width:'48%'}}
+             >
+            <Text style={styles.label}>Start Month</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Start Month"
+                value={startMonth}
+                editable={false}
+              />
+            </TouchableOpacity>
             <TouchableOpacity 
-            style={styles.closeButton} 
-            onPress={() => {
-              setPickerVisible(false)
-              setSearchQuery('');
-            }}>
-              <Text style={styles.closeButtonText}>Close</Text>
+             style={{width:'48%'}}
+            onPress={() => handleOpenPicker('startYear')}>
+            <Text style={styles.label}>Start Year</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Start Year"
+                value={startYear}
+                editable={false}
+              />
+            </TouchableOpacity>
+            </View>
+            {/* {!currentlyWorkHere && ( */}
+            <View
+              style={{flexDirection:"row",justifyContent:'space-between'}}
+            >
+              <TouchableOpacity 
+              style={{width:'48%'}}
+              onPress={() => handleOpenPicker('endMonth')}>
+              <Text style={styles.label}>End Month</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="End Month"
+                  value={endMonth}
+                  editable={false}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity 
+               style={{width:'48%'}}
+              onPress={() => handleOpenPicker('endYear')}>
+              <Text style={styles.label}>End Year </Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="End Year"
+                  value={endYear}
+                  editable={false}
+                />
+              </TouchableOpacity>
+            </View>
+            {/* )}  */}
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              placeholder="Job Description"
+              value={jobDescription}
+              onChangeText={setJobDescription}
+              multiline={true}
+            />
+            <TouchableOpacity
+              // style={styles.submitButton}
+              style={{
+                backgroundColor: '#3b5998',
+                padding: 15,
+                borderRadius: 5,
+                alignItems: 'center',
+              }}
+              onPress={() => {
+                handleSubmit();
+                setAddExperience(false);
+                fetchExperiences();
+              }}>
+              <Text style={styles.submitButtonText}>Save</Text>
             </TouchableOpacity>
           </View>
-        </View>
-      </Modal>
-    </ScrollView>
-  </>
+        )}
+
+        {/* <Text style={styles.heading}>Work Experiences</Text> */}
+        <FlatList
+          data={experiences}
+          renderItem={renderExperienceItem}
+          keyExtractor={(item, index) => index.toString()}
+        />
+
+        <Modal
+          visible={isPickerVisible}
+          animationType="slide"
+          transparent={true}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search..."
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+              />
+              <FlatList
+                data={filteredOptions}
+                renderItem={({item}) => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      handlePickerSelect(item);
+                      setSearchQuery('');
+                    }}>
+                    <Text style={styles.pickerItem}>{item}</Text>
+                  </TouchableOpacity>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+              />
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => {
+                  setPickerVisible(false);
+                  setSearchQuery('');
+                }}>
+                <Text style={styles.closeButtonText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      </ScrollView>
+    </>
   );
 };
 
@@ -761,7 +1008,7 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: wp('5%'),
     fontWeight: 'bold',
-    marginBottom: hp('2%'),
+    color:"#000000"
   },
   input: {
     backgroundColor: 'white',
@@ -777,9 +1024,22 @@ const styles = StyleSheet.create({
     marginRight: wp('2%'),
     fontSize: wp('5%'),
   },
+  // label: {
+  //   fontSize: wp('4%'),
+  //   fontWeight: 'bold',
+  // },
   label: {
-    fontSize: wp('4%'),
-    fontWeight: 'bold',
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 8,
+  },
+  input: {
+    height: 40,
+    borderColor: '#888',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 16,
   },
   submitButton: {
     backgroundColor: '#007BFF',
@@ -814,7 +1074,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: wp('2%'),
     padding: wp('5%'),
-    height:hp('50%')
+    height: hp('50%'),
   },
   searchInput: {
     backgroundColor: '#f0f0f0',
