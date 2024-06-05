@@ -444,6 +444,8 @@ const AddWorkExperience = () => {
   const [clicked, setClicked] = useState(false);
   const [experiences, setExperiences] = useState([]);
 
+  const[editExperience,setEditExperience]= useState(false)
+
   const [addExperience, setAddExperience] = useState(false);
 
   const months = [
@@ -765,16 +767,64 @@ const AddWorkExperience = () => {
     deleteExperienceApi(index);
   };
 
+
+  const handleEdit = index => {
+    setEditExperience(true)
+    // const newExperiences = [...experiences];
+    // newExperiences.splice(index, 1);
+    // setExperiences(newExperiences);
+
+    deleteExperienceApi(index);
+  };
+
   const renderExperienceItem = ({item, index}) => (
     <View style={styles.experienceItem}>
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <Text style={styles.label}>{item.jobTitle}</Text>
-        <TouchableOpacity onPress={() => handleDelete(index)}>
+        <TextInput
+        style={[styles.label,{
+          // borderWidth: editExperience ? 1 : 0,
+          // borderRadius: editExperience ? 10 : 0,
+          // padding: editExperience ? 10 : 0
+        }]}
+        value={item.jobTitle}
+        />
+       <View 
+       style={{flexDirection:"row"}}
+       >
+        <TouchableOpacity 
+        style={{marginLeft:10}}
+        onPress={() => handleDelete(index)}>
           <Image
             source={require('../../assets/images/bin.png')}
             style={styles.deleteIcon}
           />
         </TouchableOpacity>
+        <TouchableOpacity 
+        style={{marginLeft:30}}
+        onPress={() => {
+          // handleDelete(index)
+
+          handleEdit(index);
+          setAddExperience(!addExperience);
+
+          setJobTitle(item.jobTitle)
+          setCompanyName(item.companyName)
+          setCountry(item.country)
+          setCityState(item.cityState)
+          setStartMonth(item.startMonth)
+          setStartYear(item.startYear)
+          setEndMonth(item.endMonth)
+          setEndYear(item.endYear)
+          setJobDescription(item.jobDescription)
+
+       }}
+        >
+          <Image
+            source={require('../../assets/images/edit2.png')}
+            style={styles.deleteIcon}
+          />
+        </TouchableOpacity>
+        </View>
       </View>
       <Text>{item.companyName}</Text>
       <Text>
@@ -933,7 +983,22 @@ const AddWorkExperience = () => {
               onChangeText={setJobDescription}
               multiline={true}
             />
-            <TouchableOpacity
+           { editExperience ? (<TouchableOpacity
+              // style={styles.submitButton}
+              style={{
+                backgroundColor: '#3b5998',
+                padding: 15,
+                borderRadius: 5,
+                alignItems: 'center',
+              }}
+              onPress={() => {
+                handleSubmit();
+                setAddExperience(false);
+                fetchExperiences();
+              }}>
+              <Text style={styles.submitButtonText}>Update</Text>
+            </TouchableOpacity>) :
+            (<TouchableOpacity
               // style={styles.submitButton}
               style={{
                 backgroundColor: '#3b5998',
@@ -947,7 +1012,7 @@ const AddWorkExperience = () => {
                 fetchExperiences();
               }}>
               <Text style={styles.submitButtonText}>Save</Text>
-            </TouchableOpacity>
+            </TouchableOpacity>)}
           </View>
         )}
 
