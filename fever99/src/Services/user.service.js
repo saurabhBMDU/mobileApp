@@ -48,7 +48,20 @@ export const updateProfileTo = async (experience) => {
 };
 
 
-export const deleteExperienceEducationForDoctorProfile = async (index,experience) => {
+
+  export const deleteExperienceEducationForDoctorProfile = async (index,experience) => {
+    console.log('all data is here',index,experience)
+    let config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'accept': "application/json",
+        "Access-Control-Allow-Origin": "*"
+      }
+    }
+  return await axios.put(`${url}/update-doctor/${index}`,experience, config);
+};
+
+export const updateExperienceEducationForDoctorProfile = async (index,key,experience) => {
   console.log('all data is here',index,experience)
   let config = {
     headers: {
@@ -57,8 +70,7 @@ export const deleteExperienceEducationForDoctorProfile = async (index,experience
       "Access-Control-Allow-Origin": "*"
     }
   }
-
-  return await axios.put(`${url}/update-doctor/${index}`,experience, config);
+return await axios.put(`${url}/edit-doctor-experience/${index}/${key}`,experience, config);
 };
 
 

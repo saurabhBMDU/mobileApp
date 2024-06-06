@@ -1373,7 +1373,7 @@ const Appointment_History = (props: any) => {
               : 'Book New Appt'}
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => {
             userObj?.role == Roles.DOCTOR
               ? handlechangeAppointmentStatus()
@@ -1391,7 +1391,34 @@ const Appointment_History = (props: any) => {
             style={{color: 'white', fontFamily: mainFont, fontSize: hp(1.8)}}>
             {userObj?.role == Roles.DOCTOR ? 'Update' : `Follow Up`}
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+
+       {  userObj?.role == Roles.DOCTOR && 
+        <TouchableOpacity
+          onPress={() => {
+            userObj?.role == Roles.DOCTOR
+              // ? 
+              handlechangeAppointmentStatus()
+              // : setBookmodal(true);
+          }}
+          style={{
+            width: wp(45),
+            height: hp(5),
+            backgroundColor: '#50B148',
+            borderRadius: 5,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text
+            style={{color: 'white', fontFamily: mainFont, fontSize: hp(1.8)}}>
+            {userObj?.role == Roles.DOCTOR &&
+            // ? 
+            'Update' 
+            // : 
+            // `Follow Up`
+          }
+          </Text>
+        </TouchableOpacity>}
       </View>
       <Modal
         isVisible={bookmodal}

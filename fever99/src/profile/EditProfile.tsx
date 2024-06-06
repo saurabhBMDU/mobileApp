@@ -16,6 +16,9 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+
+import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Headerr from '../ReuseableComp/Headerr';
 import Openeye_closeEye from 'react-native-vector-icons/Ionicons';
 import DocumentPicker from 'react-native-document-picker';
@@ -65,6 +68,59 @@ const EditProfile = () => {
   const [userObj, setUserObj] = useState<any>('');
   const [isLoading, setisLodings] = useState(true);
 
+  const [timeSlot, setTimeSlot] = useState<any[]>([]);
+  
+  const [option, setOption] = useState<any[]>([]);
+
+  // const languageKnownString = '[{"label":"English","value":"English"},{"label":"Hindi","value":"Hindi"}]';
+
+  const indianLanguages = [
+    {"label":"English","value":"English"},
+    {"label":"Hindi","value":"Hindi"},
+    {"label":"Assamese","value":"Assamese"},
+    {"label":"Bengali","value":"Bengali"},
+    {"label":"Bodo","value":"Bodo"},
+    {"label":"Dogri","value":"Dogri"},
+    {"label":"Gujarati","value":"Gujarati"},
+    {"label":"Kannada","value":"Kannada"},
+    {"label":"Kashmiri","value":"Kashmiri"},
+    {"label":"Konkani","value":"Konkani"},
+    {"label":"Maithili","value":"Maithili"},
+    {"label":"Malayalam","value":"Malayalam"},
+    {"label":"Manipuri","value":"Manipuri"},
+    {"label":"Marathi","value":"Marathi"},
+    {"label":"Nepali","value":"Nepali"},
+    {"label":"Odia","value":"Odia"},
+    {"label":"Punjabi","value":"Punjabi"},
+    {"label":"Sanskrit","value":"Sanskrit"},
+    {"label":"Santali","value":"Santali"},
+    {"label":"Sindhi","value":"Sindhi"},
+    {"label":"Tamil","value":"Tamil"},
+    {"label":"Telugu","value":"Telugu"},
+    {"label":"Urdu","value":"Urdu"}
+  ];
+  
+
+  // const languageKnown = JSON.parse(languageKnownString);
+ 
+
+  useEffect(()=> {
+    // setTimeSlot(languageKnown)
+    setOption(indianLanguages)
+  },[])
+
+
+  const transformSelectedLanguages = (selectedValues) => {
+    return selectedValues.map(value => {
+      const language = indianLanguages.find(lang => lang.value === value);
+      return language ? { label: language.label, value: language.value } : null;
+    }).filter(Boolean); // Remove any null values
+  };
+
+
+  const[Organization,setOrganization] = useState('');
+  
+
   const [confirmPassword, setConfirmPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [oldPassword, setOldPassword] = useState('');
@@ -90,10 +146,19 @@ const EditProfile = () => {
 
       let {data: res}: any = await getDoctorWithBankDetails(userData._id);
 
-      console.log('detail all for doctor and other-------=', res?.data?.extraDetail)
+      console.log('detail', res?.data?.data.languageKnown)
+
+      setOrganization(res?.data?.extraDetail?.currentOrganization)
       setEducationData(res?.data?.extraDetail?.education)
       setExperienceData(res?.data?.extraDetail?.experience)
       setshowAboutMessage(res?.data?.extraDetail?.aboutMe)
+      setAboutMeMessage(res?.data?.extraDetail?.aboutMe)
+
+      
+      if(res?.data?.data && res?.data?.data?.languageKnown.length>0){
+      const languageKnown = JSON.parse(res?.data?.data?.languageKnown);
+      setTimeSlot(languageKnown);
+    }
        
       if (userData) {
         setUserObj(userData);
@@ -191,11 +256,19 @@ const EditProfile = () => {
   };
 
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
+
   const handleSubmit = async () => {
     try {
       setIsLoadingSubmit(true); // Set loading state to true
 
       let formData = new FormData();
+   
+      if(timeSlot && timeSlot.length >0 &&Roles.DOCTOR){
+        console.log('language known',timeSlot)
+        const  languageKnownJson = JSON.stringify(timeSlot);
+        formData.append('languageKnown', languageKnownJson);
+      }
+    
 
       Object.entries(userObj).map(entry => {
         const [key, value] = entry;
@@ -209,6 +282,8 @@ const EditProfile = () => {
       formData.append('gender', gender);
       formData.append('mobile', mobile);
       formData.append('specialization', specialization);
+      formData.append('currentOrganization', Organization);
+     
       formData.append('image', image);
       if (userObj.role == Roles.DOCTOR) {
         formData.append('abhaid', abhaid);
@@ -476,6 +551,61 @@ const EditProfile = () => {
                 style={styles.inputfildeStyle}
               />
             </View>
+
+
+
+
+            {userObj?.role == Roles.DOCTOR && (
+            <>
+              <Text>Add Language</Text>
+              {/* <View style={{ flexDirection: 'row', marginTop: hp(1), justifyContent: 'space-between', }}> */}
+                <View 
+                // style={{ width: wp(90) }}
+                >
+                  <Text style={{ fontSize: hp(1.8), fontFamily: mainFont, color: 'black', }}>Select Language </Text>
+                  <MultiSelect
+                    style={styles.dropdown1}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    inputSearchStyle={styles.inputSearchStyle}
+                    iconStyle={styles.iconStyle}
+                    search
+                    data={option}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Select Language"
+                    searchPlaceholder="Search..."
+                    // value={timeSlot}
+                    value={timeSlot.map(lang => lang.value)} 
+                    onChange={(item: any) => {
+                      const transformed = transformSelectedLanguages(item);
+                      setTimeSlot(transformed);
+                      // setTimeSlot(item);
+                      console.log(transformed, 'item');
+                    }}
+                    renderLeftIcon={() => (<AntDesign style={styles.icon} color="black" name="Safety" size={20} />)}
+                    selectedStyle={styles.selectedStyle}
+                  />
+                </View>
+              {/* </View> */}
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  marginTop: hp(1),
+                  justifyContent: 'space-between',
+                }}>
+             
+              </View>
+              <TouchableOpacity
+                onPress={() => handleSubmit()}
+                style={{ width: wp(94), marginTop: hp(5), height: hp(5), backgroundColor: '#50B148', borderRadius: 5, alignItems: 'center', justifyContent: 'center', }}>
+                <Text style={{ color: 'white', fontFamily: mainFontmedium, }}> Proceed</Text>
+              </TouchableOpacity>
+            </>
+          )}
+
+
             <View 
             // style={{width: wp(95), marginTop: hp(2)}}
             >
@@ -526,7 +656,26 @@ const EditProfile = () => {
                 />
               </View>
             )}
+          {/* Organization */}
 
+          {userObj.role == Roles.DOCTOR && (
+              <View 
+              // style={{width: wp(95), marginTop: hp(2)}}
+              >
+                <Text
+                   style={styles.label}>
+                  Organization
+                </Text>
+                <TextInput
+                  editable={true}
+                  onChangeText={e => setOrganization(e)}
+                  value={Organization}
+                  placeholder={isLoading ? 'Loading...' : 'Your Organization'}
+                  placeholderTextColor={'gray'}
+                  style={styles.inputfildeStyle}
+                />
+              </View>
+            )}
 
             <View 
             // style={{marginTop: hp(2), width: wp(95)}}
@@ -865,6 +1014,23 @@ const EditProfile = () => {
         style={{ height: 24, width: 24 }}
       />
     </TouchableOpacity>
+
+    {/* <TouchableOpacity
+      onPress={() => { 
+        // deleteAboutMe();
+        handleGetAndSetUser();
+      }}
+      style={{
+        padding: 5, 
+        marginLeft: 10, 
+      }}
+    >
+        <Image
+            source={require('../../assets/images/edit2.png')}
+            style={{height:24,width:24}}
+          />
+    </TouchableOpacity> */}
+
   </View> 
 }
        
@@ -1031,6 +1197,53 @@ const styles = StyleSheet.create({
     marginBottom: 16,
 
   },
+
+  //drop down  css 
+  dropdown1: {
+    height: hp(6.7),
+    borderColor: 'gray',
+    borderWidth: 0.5,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    marginTop: hp(1),
+    width: wp(85),
+    backgroundColor: '#F2F2F2E5',
+  },
+  placeholderStyle: {
+    fontSize: 16,
+    color: '#8E8E8E',
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+    color: '#8E8E8E',
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
+    color: '#8E8E8E',
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  dropdown: {
+    height: 50,
+    backgroundColor: 'transparent',
+    borderBottomColor: 'gray',
+    borderBottomWidth: 0.5,
+  },
+  textSelectedStyle: {
+    marginRight: 5,
+    fontSize: 16,
+  },
+
+  icon: {
+    marginRight: 5,
+  },
+  selectedStyle: {
+    borderRadius: 12,
+  },
+
 });
 
 export default EditProfile;

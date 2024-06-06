@@ -247,13 +247,14 @@ const Register = () => {
         behavior={'padding'}
         keyboardVerticalOffset={Platform.OS == 'ios' ? 100 : 50}
         style={{
-          height:hp(80),
+          height: !showOtpInput ?  hp(90) :  hp(80),
         }}>
         <View
           style={{
             height: hp(100),
             justifyContent: 'center',
-            marginTop: hp(-13),          
+            marginTop:  !showOtpInput ? hp(-8) : hp(-13),   
+            position:'relative'       
           }}>
           <Text
             style={{

@@ -6,6 +6,7 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  TextInput,
 } from 'react-native';
 import {generateFilePath} from '../../Services/url.service';
 import {
@@ -24,8 +25,25 @@ const Abouts_dr = (props: any) => {
 
   console.log(
     'this is console data for checking',
-    props?.route?.params?.doctorId.userExtraDetails.aboutMe,
+    props?.route?.params?.doctorId.languageKnown,
   );
+
+  // Parse the JSON string
+  const functionTogetLanguage = () => {
+    if (props?.route?.params?.doctorId.languageKnown && props?.route?.params?.doctorId.languageKnown.length > 0) {
+      const languagesArray = JSON.parse(
+        props?.route?.params?.doctorId.languageKnown,
+      );
+      // Extract the labels
+      const labels = languagesArray.map((language: any) => language.label);
+
+      // Join the labels into a single string
+      const languagesString = labels.join(', ');
+      return languagesString;
+    } else {
+      return '';
+    }
+  };
 
   const navigation: any = useNavigation();
 
@@ -44,31 +62,59 @@ const Abouts_dr = (props: any) => {
       <ScrollView
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}>
-        <View style={styles.MainView}>
-          <Image
-            source={{uri: generateFilePath(doctorData.image)}}
-            style={styles.image}
-          />
-          <View style={styles.MainTwo}>
-            <Text
-              style={{
-                fontWeight: 'bold',
-                fontSize: wp(4),
-                marginBottom: 5,
-                color: '#fff',
-              }}>
-              {doctorData.name}
-            </Text>
-            <Text
-              style={{
-                fontSize: wp(4),
-                flexWrap: 'wrap',
-                width: 150,
-                color: '#fff',
-              }}>
-              {doctorData.specialization}
-            </Text>
+        <View
+          // style={styles.MainView}
+          style={{
+            backgroundColor: '#1263AC',
+            // flexDirection:'row',
+            // justifyContent:'center',
+            // alignItems:'center'
+          }}>
+          <View
+            style={{
+              backgroundColor: '#1263AC',
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              alignItems: 'center',
+              marginTop: 10,
+            }}>
+            <Image
+              source={{uri: generateFilePath(doctorData.image)}}
+              style={styles.image}
+            />
+
+            <View>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: wp(4),
+                  marginBottom: 5,
+                  color: '#fff',
+                }}>
+                {doctorData.name}
+              </Text>
+              <Text
+                style={{
+                  fontSize: wp(4),
+                  flexWrap: 'wrap',
+                  width: 150,
+                  color: '#fff',
+                }}>
+                {doctorData.specialization}
+              </Text>
+            </View>
           </View>
+
+          <Text
+            style={{
+              color: '#fff',
+              fontSize: 15,
+              marginLeft: 50,
+              marginBottom: 10,
+              marginTop: 10,
+            }}>
+            {functionTogetLanguage()}
+          </Text>
         </View>
 
         <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
@@ -91,7 +137,7 @@ const Abouts_dr = (props: any) => {
             <Text style={styles.iconText}>
               {doctorData.userExtraDetails.registrationNumber}
             </Text>
-            <Text style={styles.iconTextSecond}>Registration NO.</Text>
+            <Text style={styles.iconTextSecond}>Registration No.</Text>
           </View>
         </View>
         {/* fourth */}
@@ -147,43 +193,52 @@ const Abouts_dr = (props: any) => {
           {doctorData?.userExtraDetails?.aboutMe && (
             <>
               <View style={{padding: 10}}>
+                <View style={{ 
+                  backgroundColor: '#1263AC',
+                  padding:10,
+                  borderRadius:10,
+                }}>
                 <Text
                   style={{
-                    color: '#000000',
+                    color: '#fff',
+                    alignSelf: 'left',
                     fontWeight: 'bold',
-                    alignSelf: 'center',
+                    fontSize: 18,
                   }}>
                   About Me{' '}
                 </Text>
+             </View>
               </View>
               <Text
                 style={{
                   padding: 10,
                   margin: 10,
                   color: '#00000',
+                  borderWidth:1,
+                  borderRadius:10,
                 }}>
-                {doctorData?.userExtraDetails?.aboutMe}
+                 {doctorData?.userExtraDetails?.aboutMe}
               </Text>
             </>
           )}
 
           {/* Education Details */}
-          {doctorData?.userExtraDetails?.education?.length > 1 &&
-          <View
-            style={{backgroundColor: '#fff', borderRadius: 10, padding: 10}}>
-            <Text
-              style={{
-                color: '#000000',
-                alignSelf: 'center',
-                fontWeight: 'bold',
-                fontSize: 18,
-              }}>
-              Education Details{' '}
-            </Text>
-          </View>
-         }
+          {doctorData?.userExtraDetails?.education?.length > 0 && (
+            <View
+              style={{backgroundColor: '#fff', borderRadius: 10, padding: 10}}>
+              <Text
+                style={{
+                  color: '#000000',
+                  alignSelf: 'center',
+                  fontWeight: 'bold',
+                  fontSize: 18,
+                }}>
+                Education Details{' '}
+              </Text>
+            </View>
+          )}
 
-          {doctorData?.userExtraDetails?.education?.length > 1 &&
+          {doctorData?.userExtraDetails?.education?.length > 0 &&
             doctorData?.userExtraDetails?.education?.map(
               (item: any, index: any) => {
                 return (
@@ -233,22 +288,22 @@ const Abouts_dr = (props: any) => {
             )}
 
           {/* Experience Details */}
-          {doctorData?.userExtraDetails?.experience?.length > 1 &&
-          <View
-            style={{backgroundColor: '#fff', borderRadius: 10, padding: 10}}>
-            <Text
-              style={{
-                color: '#000000',
-                alignSelf: 'center',
-                fontWeight: 'bold',
-                fontSize: 18,
-              }}>
-              Experience Details{' '}
-            </Text>
-          </View>
-        }
+          {doctorData?.userExtraDetails?.experience?.length > 0 && (
+            <View
+              style={{backgroundColor: '#fff', borderRadius: 10, padding: 10}}>
+              <Text
+                style={{
+                  color: '#000000',
+                  alignSelf: 'center',
+                  fontWeight: 'bold',
+                  fontSize: 18,
+                }}>
+                Experience Details{' '}
+              </Text>
+            </View>
+          )}
 
-          {doctorData?.userExtraDetails?.experience?.length > 1 &&
+          {doctorData?.userExtraDetails?.experience?.length > 0 &&
             doctorData?.userExtraDetails?.experience?.map(
               (item: any, index: any) => {
                 return (
@@ -373,7 +428,7 @@ const styles = StyleSheet.create({
     width: wp(20), // Adjust image size
     height: wp(20),
     borderRadius: wp(15), // Adjust border radius for circular image
-    marginBottom: hp(1.5), // Add margin for spacing
+    // marginBottom: hp(1.5), // Add margin for spacing
     backgroundColor: '#eee',
     marginLeft: wp(2),
     borderWidth: 2,

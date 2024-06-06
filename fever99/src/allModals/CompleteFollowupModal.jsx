@@ -171,7 +171,7 @@ const CompleteFollowupModal = ({ cartID, closeModal, drrIdes, modeOf }) => {
         ) : (
           <View>
             <View style={styles.d_flex}>
-              <Text style={styles.follupText}>Follow Up</Text>
+              {/* <Text style={styles.follupText}>Follow Up</Text> */}
               <TouchableOpacity onPress={() => setSoInputField(false)}>
                 <RemoveIcon name="remove" style={styles.minusIcons} />
               </TouchableOpacity>

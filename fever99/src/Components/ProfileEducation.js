@@ -427,9 +427,9 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Modal, FlatList, Image } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Modal, FlatList, Image,Alert } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { updateProfileTo, getDoctorWithBankDetails, getUser, deleteExperienceEducationForDoctorProfile } from '../Services/user.service';
+import { updateProfileTo, getDoctorWithBankDetails, getUser, deleteExperienceEducationForDoctorProfile, updateExperienceEducationForDoctorProfile } from '../Services/user.service';
 
 const Profilestudy = () => {
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
@@ -448,6 +448,10 @@ const Profilestudy = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [experiences, setExperiences] = useState([]);
   const [clicked, setClicked] = useState(false);
+
+  const[edit,setEdit]= useState(false);
+
+  const [editIndex,setEditIndex] = useState('');
 
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -586,6 +590,31 @@ const Profilestudy = () => {
     }
   };
 
+
+  const handeUpdateEducation = async () => {
+    const key = 'education'
+    const data = {
+      study,
+      fieldOfStudy,
+      country,
+      collegeName,
+      cityState,
+      startMonth,
+      startYear,
+      endMonth,
+      endYear,
+    };
+
+    const education = { 'education': data };
+
+    console.log('All experiences:',education);
+  
+     const {data: res} = await  updateExperienceEducationForDoctorProfile(editIndex,key,education)
+     console.log('resopnose for edit experiece',res);
+
+
+  }
+
   const filteredCountries = pickerOptions.filter(country =>
     country.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -594,8 +623,25 @@ const Profilestudy = () => {
     <View style={styles.experienceItem}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <Text style={styles.jobTitle}>{item.study}</Text>
+        <View style={{flexDirection:'row',justifyContent:"center",alignItems:'center'
+        }}>
         <TouchableOpacity 
-          onPress={() => handleDelete(index)} 
+          onPress={() =>{
+            Alert.alert(
+              "Delete Confirmation",
+              "Are you sure you want to delete this item?",
+              [
+                {
+                  text: "Cancel",
+                  onPress: () => console.log("Cancel Pressed"),
+                  style: "cancel"
+                },
+                { text: "Yes", onPress: () => handleDelete(index) }
+              ],
+              { cancelable: false }
+            );
+    
+            }}
           style={styles.deleteButton}
         >
           <Image
@@ -603,8 +649,42 @@ const Profilestudy = () => {
             style={{ height: 24, width: 24 }}
           />
         </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={{
+            marginLeft:20,
+          }}
+          onPress={() => {
+
+            setStudy(item.study);
+            setFieldOfStudy(item.fieldOfStudy);
+            setCountry(item.country);
+            setCollegeName(item.collegeName);
+            setStartMonth(item.startMonth);
+            setStartYear(item.startYear);
+            setEndMonth(item.endMonth);
+            setEndYear(item.endYear);
+            setCityState(item.cityState);
+
+            setClicked(true)
+            setEdit(true);
+            setEditIndex(index)
+
+            // alert('edit is pressed');
+        }} 
+          // style={styles.deleteButton}
+        >
+           <Image
+            source={require('../../assets/images/edit2.png')}
+            style={{height:24,width:24}}
+          />
+        </TouchableOpacity>
+        </View>
+
+
       </View>
       <Text style={styles.companyName}>{item.collegeName}</Text>
+      <Text style={styles.companyName}>{item.country}</Text>
       <Text style={styles.companyName}>{item.fieldOfStudy}</Text>
       <Text style={styles.companyName}>{item.cityState}</Text>
       <Text style={styles.dates}>
@@ -636,18 +716,7 @@ const Profilestudy = () => {
 
             }}>Education</Text>
         </View>
-        {/* <TouchableOpacity
-          onPress={() => {
-            setAddExperience(!addExperience);
-          }}
-          style={{
-            backgroundColor: 'green',
-            padding: 10,
-            margin: 10,
-            borderRadius: 10,
-          }}>
-          <Text style={{color: '#fff'}}>Add</Text>
-        </TouchableOpacity> */}
+       
 
 <TouchableOpacity 
         // style={styles.toggleButton} 
@@ -657,7 +726,21 @@ const Profilestudy = () => {
           margin: 10,
           borderRadius: 10,
         }}
-        onPress={() => setClicked(!clicked)}
+        onPress={() => { 
+          setClicked(!clicked);
+          setEdit(false);
+
+          setStudy('');
+          setFieldOfStudy('');
+          setCountry('India');
+          setCollegeName('');
+          setStartMonth('');
+          setStartYear('');
+          setEndMonth('');
+          setEndYear('');
+          setCityState('');
+
+        }}
       >
         <Text style={styles.toggleButtonText}>{clicked ? 'Add' : 'Add'}</Text>
       </TouchableOpacity>
@@ -678,7 +761,21 @@ const Profilestudy = () => {
         style={styles.form}
         >
             <Text style={[styles.label,
-              {alignSelf:'center'}]}>Add Education / Degree</Text>
+              {alignSelf:'center'}]}>{ edit ? 'Update Education' : 'Add Education / Degree'}</Text>
+
+            <TouchableOpacity
+            style={{
+              alignSelf:'flex-end',
+            }}
+            onPress={()=>{
+              setClicked(false);
+            }}
+            >
+              <Text style={{
+                fontWeight:'bold',
+                fontSize:20,
+              }}> X </Text>
+              </TouchableOpacity>
 
           <Text style={styles.label}>Degree *</Text>
           <TextInput
@@ -783,7 +880,19 @@ const Profilestudy = () => {
             </View>
           </View>
 
-          <TouchableOpacity 
+         { edit ? (<TouchableOpacity 
+            style={styles.submitButton} 
+            onPress={ () => { 
+              setEdit(false)
+              fetchExperiences();
+              setClicked(!clicked)
+              handeUpdateEducation();
+            }} 
+            disabled={isLoadingSubmit}
+          >
+            <Text style={styles.submitButtonText}>Update</Text>
+          </TouchableOpacity>):
+         ( <TouchableOpacity 
             style={styles.submitButton} 
             onPress={ () => { 
               handleSubmit(); 
@@ -792,8 +901,10 @@ const Profilestudy = () => {
             }} 
             disabled={isLoadingSubmit}
           >
-            <Text style={styles.submitButtonText}>Save</Text>
-          </TouchableOpacity>
+            <Text style={styles.submitButtonText}>save</Text>
+          </TouchableOpacity>)
+          }
+
         </View>
       ) : (
         <ScrollView contentContainerStyle={styles.experienceList}>

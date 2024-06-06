@@ -413,6 +413,7 @@ import {
   Modal,
   FlatList,
   Image,
+  Alert,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -421,6 +422,7 @@ import {
 import {
   updateProfileTo,
   deleteExperienceEducationForDoctorProfile,
+  updateExperienceEducationForDoctorProfile,
   getDoctorWithBankDetails,
   getUser,
 } from '../Services/user.service';
@@ -447,6 +449,8 @@ const AddWorkExperience = () => {
   const[editExperience,setEditExperience]= useState(false)
 
   const [addExperience, setAddExperience] = useState(false);
+
+  const[showUpdate,setShowUpdate] = useState(false)
 
   const months = [
     'January',
@@ -720,6 +724,7 @@ const AddWorkExperience = () => {
         setEndMonth('');
         setEndYear('');
         setJobDescription('');
+        fetchExperiences();
       }
     } catch (error) {
       setIsLoadingSubmit(false);
@@ -760,6 +765,7 @@ const AddWorkExperience = () => {
     }
   };
 
+
   const handleDelete = index => {
     const newExperiences = [...experiences];
     newExperiences.splice(index, 1);
@@ -769,13 +775,34 @@ const AddWorkExperience = () => {
 
 
   const handleEdit = index => {
-    setEditExperience(true)
+    setEditExperience(index)
     // const newExperiences = [...experiences];
     // newExperiences.splice(index, 1);
     // setExperiences(newExperiences);
 
-    deleteExperienceApi(index);
+    // deleteExperienceApi(index);
   };
+
+  const handleUpdateExperience = async () => {
+     const key='experience'
+     const data = {
+      jobTitle,
+      companyName,
+      country,
+      cityState,
+      currentlyWorkHere,
+      startMonth,
+      startYear,
+      endMonth,
+      endYear,
+      jobDescription,
+    };
+    console.log('All experiences:', data);
+    const experience = {experience: data};
+     const {data: res} = await  updateExperienceEducationForDoctorProfile(editExperience,key,experience)
+     console.log('resopnose for edit experiece',res);
+
+  }
 
   const renderExperienceItem = ({item, index}) => (
     <View style={styles.experienceItem}>
@@ -793,7 +820,24 @@ const AddWorkExperience = () => {
        >
         <TouchableOpacity 
         style={{marginLeft:10}}
-        onPress={() => handleDelete(index)}>
+        onPress={() =>{
+        Alert.alert(
+          "Delete Confirmation",
+          "Are you sure you want to delete this item?",
+          [
+            {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel"
+            },
+            { text: "Yes", onPress: () => handleDelete(index) }
+          ],
+          { cancelable: false }
+        );
+
+        // handleDelete(index)
+      }}
+        >
           <Image
             source={require('../../assets/images/bin.png')}
             style={styles.deleteIcon}
@@ -817,6 +861,7 @@ const AddWorkExperience = () => {
           setEndYear(item.endYear)
           setJobDescription(item.jobDescription)
 
+          setShowUpdate(true)
        }}
         >
           <Image
@@ -862,6 +907,20 @@ const AddWorkExperience = () => {
         <TouchableOpacity
           onPress={() => {
             setAddExperience(!addExperience);
+
+            setJobTitle('');
+            setCompanyName('');
+            setCountry('India');
+            setCityState('');
+            setCurrentlyWorkHere(false);
+            setStartMonth('');
+            setStartYear('');
+            setEndMonth('');
+            setEndYear('');
+            setJobDescription('');
+
+            setShowUpdate(false)
+      
           }}
           style={{
             backgroundColor: 'green',
@@ -874,7 +933,7 @@ const AddWorkExperience = () => {
             color: '#fff',
             fontSize: 16,
             fontWeight: 'bold',
-            }}>Add</Text>
+            }}> Add </Text>
         </TouchableOpacity>
       </View>
 
@@ -888,7 +947,22 @@ const AddWorkExperience = () => {
           }}
           >
             {/* <> */}
-            <Text style={[styles.label,{alignSelf:"center"}]}>Add Work Experience</Text>
+            <Text style={[styles.label,{alignSelf:"center"}]}>{ showUpdate ? 'Update Work Experience' : 'Add Work Experience'}</Text>
+            <TouchableOpacity
+            style={{
+              alignSelf:'flex-end',
+            }}
+            onPress={()=>{
+              // setClicked(false);
+              setAddExperience(false);
+            }}
+            >
+              <Text style={{
+                fontWeight:'bold',
+                fontSize:20,
+              }}> X </Text>
+              </TouchableOpacity>
+
             <Text style={styles.label}>Job Title </Text>
             <TextInput
               style={styles.input}
@@ -983,7 +1057,7 @@ const AddWorkExperience = () => {
               onChangeText={setJobDescription}
               multiline={true}
             />
-           { editExperience ? (<TouchableOpacity
+           { showUpdate ? (<TouchableOpacity
               // style={styles.submitButton}
               style={{
                 backgroundColor: '#3b5998',
@@ -992,7 +1066,7 @@ const AddWorkExperience = () => {
                 alignItems: 'center',
               }}
               onPress={() => {
-                handleSubmit();
+                handleUpdateExperience();
                 setAddExperience(false);
                 fetchExperiences();
               }}>
