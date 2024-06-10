@@ -684,6 +684,38 @@ const requestIndividualPermissions = async () => {
 
 
 
+const requestPermissions = async () => {
+  if (Platform.OS === 'android') {
+    try {
+      const granted = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+      ]);
+
+      if (
+        granted['android.permission.CAMERA'] === PermissionsAndroid.RESULTS.GRANTED &&
+        granted['android.permission.RECORD_AUDIO'] === PermissionsAndroid.RESULTS.GRANTED
+      ) {
+        console.log('You can use the camera and mic');
+      } else {
+        console.log('Permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+};
+
+useEffect(()=>{
+  requestPermissions();
+},[])
+
+// requestPermissions()
+
+
+
+
+
 //--------------------
 
 //sendig replay to user back
@@ -777,30 +809,30 @@ useEffect(()=>{
 //.......
 const acceptFromLessAndroid9 = async () => {
   try {
-    if (Platform.OS === 'android' && Platform.Version < 29) {
-      // const permissions = [
-      //   PERMISSIONS.ANDROID.READ_PHONE_STATE,
-      //   PERMISSIONS.ANDROID.CALL_PHONE,
-      //   PERMISSIONS.ANDROID.RECORD_AUDIO,
-      //   PERMISSIONS.ANDROID.MODIFY_AUDIO_SETTINGS,
-      //   PERMISSIONS.ANDROID.BIND_TELECOM_CONNECTION_SERVICE,
-      //   PERMISSIONS.ANDROID.FOREGROUND_SERVICE,
-      // ];
+    if (Platform.OS === 'android' && Platform.Version <= 30) {
+      const permissions = [
+        PERMISSIONS.ANDROID.READ_PHONE_STATE,
+        PERMISSIONS.ANDROID.CALL_PHONE,
+        PERMISSIONS.ANDROID.RECORD_AUDIO,
+        PERMISSIONS.ANDROID.MODIFY_AUDIO_SETTINGS,
+        PERMISSIONS.ANDROID.BIND_TELECOM_CONNECTION_SERVICE,
+        PERMISSIONS.ANDROID.FOREGROUND_SERVICE,
+      ];
 
-      // const permissionRequests = permissions.map(permission =>
-      //   request(permission)
-      // );
+      const permissionRequests = permissions.map(permission =>
+        request(permission)
+      );
 
-      // const results = await Promise.all(permissionRequests);
+      const results = await Promise.all(permissionRequests);
 
-      // const allPermissionsGranted = results.every(
-      //   result => result === RESULTS.GRANTED
-      // );
+      const allPermissionsGranted = results.every(
+        result => result === RESULTS.GRANTED
+      );
 
-      // if (!allPermissionsGranted) {
-      //   console.log('One or more permissions were not granted');
-      //   return;
-      // }
+      if (!allPermissionsGranted) {
+        console.log('One or more permissions were not granted');
+        return;
+      }
 
       const options = {
         ios: {

@@ -193,11 +193,12 @@ import {toastError} from '../utils/toast.utils';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 
 const Meeting = (props: any) => {
+  console.log('coming in meeting in first time',props.route.params.data)
   const navigation: any = useNavigation();
   const [videoCall, setVideoCall] = useState(true);
   const [uid, setuid] = useState(Math.floor(Math.random() * 1000));
   const [token, setToken] = useState('');
-  const [disconnect, setDisconnect] = useState(false);
+  const [disconnect, setDisconnect] = useState(true);
 
   const connectionData = {
     appId: 'b671aeda83ee48d582e9cc33f83b30cb',
@@ -207,7 +208,7 @@ const Meeting = (props: any) => {
 
 
   const connectionData2 = {
-    appId: 'b671aeda833b30cb',
+    appId: 'b671aeda83ee48d582e9cc33f83b30cb',
     channel: '2346789',
     // token: token
   };
@@ -224,12 +225,14 @@ const Meeting = (props: any) => {
   }, []);
 
   const handleBackPress = () => {
+     BackHandler.exitApp();
     console.log('handle back press is working')
     if (navigation.canGoBack()) {
       navigation.goBack();
       return true; // Prevent default behavior
     } else {
-      return false; // Let the system handle the back press
+      // return false; // Let the system handle the back press
+      BackHandler.exitApp();
     }
     // BackHandler.exitApp();
     // return true; // Prevent default behavior
@@ -238,12 +241,15 @@ const Meeting = (props: any) => {
   const rtcCallbacks = {
     EndCall: () => {
       console.log('this callback is working fine to end call');
-      setDisconnect(true);
+      setDisconnect(false);
       setVideoCall(false);
       if (navigation.canGoBack()) {
         navigation.goBack();
+        BackHandler.exitApp();
         return true; // Prevent default behavior
       }
+      BackHandler.exitApp();
+      setVideoCall(false);
       // navigation.goBack();
     },
   };
@@ -279,22 +285,31 @@ const Meeting = (props: any) => {
   };
 
   useEffect(() => {
-    if (focused && props.route.params.data && props.route.params.data != '') {
+    // if (focused && props.route.params.data && props.route.params.data != '') {
       HandleGetMeetingToken();
-      console.log(props.route.params.data, 'props.route.params.data');
-    }
+      // console.log(props.route.params.data, 'props.route.params.data');
+    // }
   }, [focused, props.route.params.data]);
 
   const remoteBtnStyle = {backgroundColor: '#2edb8555'};
   return (
     <View style={{flex: 1}}>
+
       {/* {disconnect ? (
         <Text style={{textAlign: 'center', marginTop: 20}}>Call Disconnected...</Text>
       ) : (
         videoCall && ( */}
           
-          <AgoraUIKit
-            connectionData={ !disconnect ?  connectionData : connectionData2}
+        <AgoraUIKit
+            // connectionData={ disconnect ?  connectionData : connectionData2}
+            connectionData={ connectionData }
+            // connectionData={{
+            //   appId: 'b671aeda83ee48d582e9cc33f83b30cb',
+            //   channel: props.route.params.data,
+            //   // channel :'6662e284c2819eea7e6d6338'
+            //   // token: token
+            // }}
+
             settings={{mode: 0}}
             styleProps={{
               iconSize: 25,
@@ -357,3 +372,5 @@ const Meeting = (props: any) => {
 };
 
 export default Meeting;
+
+

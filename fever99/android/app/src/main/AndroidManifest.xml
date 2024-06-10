@@ -73,6 +73,14 @@
           <data android:scheme="fever99" android:host="app" />
         </intent-filter>
 
+        <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="fever99" android:host="Meeting" />
+      </intent-filter>
+
+
       </activity>
     </application>
     

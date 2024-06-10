@@ -24,3 +24,14 @@ export const getDoctors = async (query) => {
     }
     return await axios.get(`${serverUrl}ForApp?${query}`, config);
 };
+
+
+export const getDoctorsWithoutQyery = async () => {
+    let config = {
+        headers: {
+            'Content-type': "*",
+            "Access-control-Allow-Origin": "*"
+        }
+    }
+    return await axios.get(`${serverUrl}ForApp`, config);
+};

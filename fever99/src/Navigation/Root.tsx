@@ -45,6 +45,8 @@ import ChatPreviewScreen from '../Components/ChatPreviewScreen';
 import SplashScreen from '../commonScreen/SplashScreen';
 import WithdrawalHistory from '../Components/WithdrawalHistory';
 import DownloadInvoice from '../Components/DownloadInvoice';
+import Meeting2 from '../Components/Meeting2';
+import VoiceCallPage from '../Components/MeetingCallPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -192,7 +194,9 @@ export default function Root() {
             <Stack.Screen name='ForgotPassword' component={ForgotPassword} />
           </>
       } 
-      <Stack.Screen name='Meeting' component={Meeting} />
+      {/* <Stack.Screen name='Meeting' component={Meeting} /> */}
+      <Stack.Screen name='Meeting2' component={Meeting2} />
+      <Stack.Screen name='Meeting' component={VoiceCallPage} />
       <Stack.Screen name='ContactUs' component={Contactus} />
       <Stack.Screen name='ReturnandRefundPolicy' component={ReturnandRefundPolicy} />
       <Stack.Screen name='PAC' component={PrivacyPolicy} />

@@ -19,7 +19,7 @@ import {
 import Headerr from '../ReuseableComp/Headerr';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {toastError} from '../utils/toast.utils';
-import {getDoctors} from '../Services/doctor.service';
+import {getDoctors, getDoctorsWithoutQyery} from '../Services/doctor.service';
 import {generateFilePath} from '../Services/url.service';
 import {getstateAndCities} from '../Services/stateCity.service';
 import {Dropdown, MultiSelect} from 'react-native-element-dropdown';
@@ -98,7 +98,25 @@ const Book_Appointment = () => {
       }
       let {data: res} = await getDoctors(queryString);
       if (res.data && res.data.length > 0) {
-        setDoctorsArr((prev: any) => [...prev, ...res.data]);
+        setDoctorsArr(res.data);
+//         const newData = res.data;
+//         // setDoctorsArr((prev: any) => [...prev, ...res.data]);
+
+//         const onlineUsers = newData.filter(user => user.userStatus === 'online');
+// const offlineUsers = newData.filter(user => user.userStatus !== 'online');
+
+// // Concatenate the online users first, followed by the offline users
+// const sortedData = [...onlineUsers, ...offlineUsers];
+
+// setDoctorsArr((prev: any) => {
+//   // Separate the existing online and offline users
+//   const prevOnlineUsers = prev.filter(user => user.userStatus === 'online');
+//   const prevOfflineUsers = prev.filter(user => user.userStatus !== 'online');
+
+//   // Concatenate existing and new users, with online users at the top
+//   return [...prevOnlineUsers, ...prevOfflineUsers, ...sortedData];
+// });
+
         setLoding(false);
         setSpecialisationArr(
           res.spacility.map((el: any) => ({label: el, value: el})),
@@ -135,10 +153,11 @@ const Book_Appointment = () => {
       if (sortType && sortType != '') {
         queryString = `${queryString}&pricesort=${sortType}`;
       }
+      console.log('query',queryString);
       let {data: res} = await getDoctors(queryString);
       if (res.data) {
-        console.log(res.data);
-        console.log(res.data.length);
+        // console.log('resdata in doctors',res.data)
+        // console.log(res.data);
         setDoctorsArr(res.data);
       } else {
         setLastPageReached(true);
@@ -158,6 +177,23 @@ const Book_Appointment = () => {
     }, delay);
     return () => clearTimeout(timer);
   }, [query, price]);
+
+
+  const getinitiData = async ()=>{
+    let {data: res} = await getDoctorsWithoutQyery();
+    if (res.data) {
+      // console.log('resdata in doctors',res.data)
+      // console.log(res.data);
+      // console.log(res.data.map((item,index) => {
+      //    return item.name
+      // }));
+      setDoctorsArr(res.data);
+    }
+  }
+
+  useEffect(()=>{
+     getinitiData();
+  },[])
 
   const handleGetAndSetUser = async () => {
     let userData = await getUser();

@@ -324,6 +324,7 @@ const Appointment = (proper: any) => {
 
   const handleJoinMeeting = async (id: string, callProgress: boolean) => {
     try {
+
       let obj = {
         callInprogress: callProgress,
       };
@@ -336,7 +337,8 @@ const Appointment = (proper: any) => {
             appointmentId: id,
             userId: userObj?._id,
           });
-          if (notificationRes) {
+          console.log('notificaion reasponse for call start',notificationRes);
+          if (notificationRes.success) {
             setMeetingConfirmation(false);
             navigation.navigate('Meeting', {data: id});
           }

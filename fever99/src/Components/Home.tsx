@@ -565,7 +565,8 @@ const Home = () => {
       }
       let { data: res } = await getDoctors(queryString);
       if (res.data) {
-        setDoctorsArr([...res?.data]);
+        // setDoctorsArr([...res?.data]);
+        setDoctorsArr(res?.data);
       } else {
         setLastPageReached(true);
       }
